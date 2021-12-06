@@ -2,6 +2,7 @@ package com.example.chirpnote;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -10,17 +11,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.w3c.dom.Document;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.Realm;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 import io.realm.mongodb.Credentials;
+import io.realm.mongodb.mongo.MongoClient;
+import io.realm.mongodb.mongo.MongoCollection;
+import io.realm.mongodb.mongo.MongoDatabase;
 import io.realm.mongodb.sync.SyncConfiguration;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText mUsername, mPassword;
+
+    MongoClient mongoClient;
+    MongoDatabase mongoDatabase;
+    MongoCollection<Document> mongoCollection; // not sure we need this yet
+    App app;
+    String appID = "chirpnote-jwrci";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +42,14 @@ public class LoginActivity extends AppCompatActivity {
 
         Realm.init(this); // initializes realm, only need to do this once
 
-        String appID = "chirpnote-jwrci";
-        App app = new App(new AppConfiguration.Builder(appID).build());
+
+        app = new App(new AppConfiguration.Builder(appID).build());
+        //startActivity(new Intent(LoginActivity.this,SignUpActivity.class)); // not ready to implement this yet.
+
         AtomicReference<io.realm.mongodb.User> user = new AtomicReference<>();
+
+
+
 
         mUsername = (EditText) findViewById(R.id.editTextUsername);
         mPassword = (EditText) findViewById(R.id.editTextPassword);
