@@ -48,14 +48,12 @@ public class LoginActivity extends AppCompatActivity {
 
         AtomicReference<io.realm.mongodb.User> user = new AtomicReference<>();
 
-
-
-
         mUsername = (EditText) findViewById(R.id.editTextUsername);
         mPassword = (EditText) findViewById(R.id.editTextPassword);
         TextView auth = (TextView) findViewById(R.id.authTextView);
         TextView test = (TextView) findViewById(R.id.testingTextView);
         Button loginButton = (Button) findViewById(R.id.loginButton);
+        Button signUpButton = (Button) findViewById(R.id.signUpButton);
 
         loginButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -84,6 +82,13 @@ public class LoginActivity extends AppCompatActivity {
                         auth.setTextColor(Color.RED);
                     }
                 });
+            }
+        });
+
+        signUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, UserSignUpActivity.class));
             }
         });
     }
