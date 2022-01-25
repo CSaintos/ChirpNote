@@ -40,9 +40,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Realm.init(this); // initializes realm, only need to do this once
-
-
         app = new App(new AppConfiguration.Builder(appID).build());
         //startActivity(new Intent(LoginActivity.this,SignUpActivity.class)); // not ready to implement this yet.
 
