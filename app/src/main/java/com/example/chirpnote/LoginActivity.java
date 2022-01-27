@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         TextView test = (TextView) findViewById(R.id.testingTextView);
         Button loginButton = (Button) findViewById(R.id.loginButton);
         Button signUpButton = (Button) findViewById(R.id.signUpButton);
+        Button testMusicButton = (Button) findViewById(R.id.testMusicButton);
 
         loginButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -85,6 +86,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+            }
+        });
+
+        testMusicButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, TestMusicActivity.class));
             }
         });
     }

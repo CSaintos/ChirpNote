@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
         <activity
+            android:name=".TestMusicActivity"
+            android:exported="false" />
+        <activity
             android:name=".StartUpActivity"
             android:exported="true">
             <intent-filter>
