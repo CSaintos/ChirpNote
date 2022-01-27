@@ -8,12 +8,16 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 
+import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestMusicActivity extends AppCompatActivity {
 
     private MidiDriver midiDriver;
-    private byte[] event;
+    private HashMap<Integer, Button> pianoKeys = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,73 +26,26 @@ public class TestMusicActivity extends AppCompatActivity {
 
         midiDriver = MidiDriver.getInstance();
         midiDriver.start();
+        midiDriver.config()[2] = 44100; // Setting sample rate
 
-        Button noteC = (Button) findViewById(R.id.noteCButton);
-        Button noteD = (Button) findViewById(R.id.noteDButton);
-        Button noteE = (Button) findViewById(R.id.noteEButton);
+        pianoKeys.put(60, (Button) findViewById(R.id.noteCButton));
+        pianoKeys.put(62, (Button) findViewById(R.id.noteDButton));
+        pianoKeys.put(64, (Button) findViewById(R.id.noteEButton));
 
-        noteC.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    playNote(60);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    stopNote(60);
+        for(Map.Entry<Integer, Button> entry : pianoKeys.entrySet()){
+            int noteNumber = entry.getKey();
+            Button b = entry.getValue();
+            b.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) noteNumber, (byte) 0x7F});
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        midiDriver.write(new byte[]{MidiConstants.NOTE_OFF, (byte) noteNumber, (byte) 0x00});
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
-
-        noteD.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    playNote(62);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    stopNote(62);
-                }
-                return false;
-            }
-        });
-
-        noteE.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    playNote(64);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    stopNote(64);
-                }
-                return false;
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        midiDriver.start();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        midiDriver.stop();
-    }
-
-    private void playNote(int noteNumber) {
-        event = new byte[3];
-        event[0] = (byte) (0x90 | 0x00);
-        event[1] = (byte) noteNumber;
-        event[2] = (byte) 0x7F;
-        midiDriver.write(event);
-    }
-
-    private void stopNote(int noteNumber) {
-        event = new byte[3];
-        event[0] = (byte) (0x80 | 0x00);
-        event[1] = (byte) noteNumber;
-        event[2] = (byte) 0x00;
-        midiDriver.write(event);
+            });
+        }
     }
 }
