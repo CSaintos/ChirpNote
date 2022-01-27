@@ -9,11 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
-        <activity
-            android:name=".SignUpActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UserSignUpActivity"/>
+        <activity android:name=".SignUpActivity" />
         <activity
             android:name=".LoginActivity"
             android:exported="true">

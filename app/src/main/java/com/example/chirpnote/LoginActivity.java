@@ -22,7 +22,6 @@ import io.realm.mongodb.Credentials;
 import io.realm.mongodb.mongo.MongoClient;
 import io.realm.mongodb.mongo.MongoCollection;
 import io.realm.mongodb.mongo.MongoDatabase;
-import io.realm.mongodb.sync.SyncConfiguration;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -88,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, UserSignUpActivity.class));
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
             }
         });
     }

@@ -1,58 +1,66 @@
 package com.example.chirpnote;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import org.w3c.dom.Document;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Arrays;
 
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
-import io.realm.mongodb.mongo.MongoClient;
-import io.realm.mongodb.mongo.MongoCollection;
-import io.realm.mongodb.mongo.MongoDatabase;
+import io.realm.mongodb.Credentials;
+import io.realm.mongodb.functions.Functions;
 
 public class SignUpActivity extends AppCompatActivity {
+    private EditText mUsername, mPassword;
 
-    String appID = "chirpnote-jwrci";
     App app;
-    MongoClient mongoClient;
-    MongoDatabase mongoDatabase;
-    MongoCollection<Document> mongoCollection; // not sure we need this
-    User user;
-    EditText email, password;
-    String emailStr, passwordStr;
-    TextView AlreadyHaveAccountText;
-    Button SignUpButton, LogInButton;
-
-
+    String appID = "chirpnote-jwrci";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        Context context = getApplicationContext();
 
         app = new App(new AppConfiguration.Builder(appID).build());
+        Credentials credentials = Credentials.anonymous();
 
-        email = (EditText) findViewById(R.id.SignUpEmailText);
-        password = (EditText) findViewById(R.id.SignUpPasswordText);
-        SignUpButton = (Button) findViewById(R.id.SignUpButton);
-        LogInButton = (Button) findViewById(R.id.LogInButton);
-        AlreadyHaveAccountText = (TextView) findViewById(R.id.AlreadyHaveAccountText);
+        mUsername = (EditText) findViewById(R.id.editTextUsername);
+        mPassword = (EditText) findViewById(R.id.editTextPassword);
+        Button signUpButton = (Button) findViewById(R.id.signUpButton);
 
-        SignUpButton.setOnClickListener(new View.OnClickListener() {
+        signUpButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                //mongoClient = user.getMongoClient("mongodb-atlas"); // 13:36 in video, unable to access getMongoClient() because its using the User class we created in our project
+            public void onClick(View v) {
+                String username = mUsername.getText().toString();
+                String password = mPassword.getText().toString();
+
+                app.loginAsync(credentials, it -> {
+                    if (it.isSuccess()) {
+                        io.realm.mongodb.User user = app.currentUser();
+                        assert user != null;
+                        Functions functionsManager = app.getFunctions(user);
+                        functionsManager.callFunctionAsync("signUp", Arrays.asList(username, password), Boolean.class, result -> {
+                            if (result.isSuccess()) {
+                                if(result.get()){
+                                    Toast.makeText(context, "Sign up successful", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                                } else {
+                                    Toast.makeText(context, "Username taken. Try again", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
             }
         });
-
-
     }
 }
