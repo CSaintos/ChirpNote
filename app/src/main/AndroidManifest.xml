@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
         <activity
+            android:name=".MelodyActivity"
+            android:exported="false" />
+        <activity
             android:name=".TestMusicActivity"
             android:exported="false" />
         <activity
@@ -24,8 +27,7 @@
         <activity android:name=".SignUpActivity" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
     </application>
 
 </manifest>
