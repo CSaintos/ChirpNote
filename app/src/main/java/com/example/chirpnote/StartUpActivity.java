@@ -27,6 +27,8 @@ public class StartUpActivity extends AppCompatActivity {
         app = new App(new AppConfiguration.Builder(appID).build());
         Log.d("Success","Start Screen Created");
         startActivity(new Intent(StartUpActivity.this, LoginActivity.class));
-        Animatoo.animateSpin(StartUpActivity.this);
+        Animatoo.animateFade(StartUpActivity.this);
     }
+
+
 }
