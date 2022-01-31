@@ -6,53 +6,181 @@
     android:layout_height="match_parent"
     tools:context=".TestMusicActivity">
 
+
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/noteCButton"-->
+<!--        android:layout_width="232dp"-->
+<!--        android:layout_height="80dp"-->
+<!--        android:layout_margin="@color/white"-->
+<!--        android:layout_marginBottom="540dp"-->
+<!--        android:background="@drawable/button_whitekey"-->
+<!--        android:text="Note C"-->
+<!--        android:textColor="@color/black"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
+
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/noteCButton"
+        android:id="@+id/noteC4Button"
         android:layout_width="232dp"
         android:layout_height="80dp"
-        android:layout_margin="@color/white"
-        android:layout_marginBottom="600dp"
+        android:layout_marginTop="36dp"
         android:background="@drawable/button_whitekey"
-        android:text="Note C"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="C"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.296"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteD4Button"
+        android:layout_width="232dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="116dp"
+        android:background="@drawable/button_whitekey"
+        android:text="D"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteE4Button"
+        android:layout_width="232dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="196dp"
+        android:background="@drawable/button_whitekey"
+        android:text="E"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteF4Button"
+        android:layout_width="232dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="276dp"
+        android:background="@drawable/button_whitekey"
+        android:text="F"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteG4Button"
+        android:layout_width="232dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="356dp"
+        android:background="@drawable/button_whitekey"
+        android:text="G"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteA4Button"
+        android:layout_width="232dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="436dp"
+        android:background="@drawable/button_whitekey"
+        android:text="A"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteB4Button"
+        android:layout_width="232dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="516dp"
+        android:background="@drawable/button_whitekey"
+        android:text="B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteC5Button"
+        android:layout_width="232dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="596dp"
+        android:background="@drawable/button_whitekey"
+        android:text="C"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/noteCSharpButton"
         android:layout_width="223dp"
         android:layout_height="81dp"
-        android:layout_marginBottom="544dp"
+        android:layout_marginBottom="572dp"
         android:background="@drawable/button_blackkey"
-        android:text="Note C#"
+        android:text="C#"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintHorizontal_bias="0.691"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/noteDButton"
-        android:layout_width="195dp"
-        android:layout_height="83dp"
-        android:layout_marginTop="220dp"
-        android:text="Note D"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteDSharpButton"
+        android:layout_width="223dp"
+        android:layout_height="81dp"
+        android:layout_marginBottom="488dp"
+        android:background="@drawable/button_blackkey"
+        android:text="D#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.245"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.691"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/noteEButton"
-        android:layout_width="194dp"
-        android:layout_height="77dp"
-        android:layout_marginTop="396dp"
-        android:text="Note E"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteFSharpButton"
+        android:layout_width="223dp"
+        android:layout_height="81dp"
+        android:layout_marginBottom="336dp"
+        android:background="@drawable/button_blackkey"
+        android:text="F#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.258"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.691"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteGSharpButton"
+        android:layout_width="223dp"
+        android:layout_height="81dp"
+        android:layout_marginBottom="252dp"
+        android:background="@drawable/button_blackkey"
+        android:text="G#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.691"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/noteASharpButton"
+        android:layout_width="223dp"
+        android:layout_height="81dp"
+        android:layout_marginBottom="168dp"
+        android:background="@drawable/button_blackkey"
+        android:text="A#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.691"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
