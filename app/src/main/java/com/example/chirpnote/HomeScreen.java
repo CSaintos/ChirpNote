@@ -3,31 +3,67 @@ package com.example.chirpnote;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import org.w3c.dom.Document;
-
-import java.util.concurrent.atomic.AtomicReference;
-
-import io.realm.Realm;
-import io.realm.mongodb.App;
-import io.realm.mongodb.AppConfiguration;
-import io.realm.mongodb.Credentials;
-import io.realm.mongodb.mongo.MongoClient;
-import io.realm.mongodb.mongo.MongoCollection;
-import io.realm.mongodb.mongo.MongoDatabase;
 
 public class HomeScreen extends AppCompatActivity {
+
+    private Button newSessionButton = (Button) findViewById(R.id.newSessionButton);
+    private Button loadSessionButton = (Button) findViewById(R.id.loadSessionButton);
+    private Button profileButton = (Button) findViewById(R.id.profileButton);
+    private Button userOpButton = (Button) findViewById(R.id.userOpButton);
+    private Button musicTheoryButton = (Button) findViewById(R.id.musicTheoryButton);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
+        //new session button function
+        newSessionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeScreen.this, NewSession.class);
+                startActivity(intent);
+            }
+        });
+
+        //load session button function
+        loadSessionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeScreen.this, LoadSession.class);
+                startActivity(intent);
+            }
+        });
+
+        //profile button function
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeScreen.this, UserProfile.class);
+                startActivity(intent);
+            }
+        });
+        //user options button function
+        userOpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeScreen.this, UserOptions.class);
+                startActivity(intent);
+            }
+        });
+
+        //music theory info button function
+        musicTheoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeScreen.this, MusicTheoryInfo.class);
+                startActivity(intent);
+            }
+        });
     }
 }
