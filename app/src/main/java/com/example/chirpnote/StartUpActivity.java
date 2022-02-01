@@ -22,5 +22,4 @@ public class StartUpActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.fade_out, R.anim.static_animation);
     }
 
-
 }
