@@ -59,6 +59,7 @@ public class MusicNote {
      */
     public void playNote(MidiDriver midiDriver){
         midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mMidiNumber, (byte) 0x7F});
+
         if(mMelody != null){
             mMelody.writeNoteOn(this);
         }
