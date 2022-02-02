@@ -1,4 +1,4 @@
-package com.example.chirpnote;
+package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import com.example.chirpnote.R;
 
 public class MelodyActivity extends AppCompatActivity {
 

@@ -138,7 +138,7 @@ public class Melody {
         if(!mRecording || note == null){
             return false;
         }
-        mNoteTrack.insertEvent(new NoteOn(getCurrentTick(), 0, note.getNoteNumber(), note.getVelocity()));
+        mNoteTrack.insertEvent(new NoteOn(getCurrentTick(), 0, note.getNoteNumber(), note.VELOCITY));
         return true;
     }
 
@@ -153,7 +153,7 @@ public class Melody {
         if(!mRecording || note == null){
             return false;
         }
-        mNoteTrack.insertEvent(new NoteOff(getCurrentTick(), 0, note.getNoteNumber(), note.getVelocity()));
+        mNoteTrack.insertEvent(new NoteOff(getCurrentTick(), 0, note.getNoteNumber(), note.VELOCITY));
         return true;
     }
 

@@ -1,10 +1,12 @@
-package com.example.chirpnote;
+package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class UserOptions extends AppCompatActivity {
+import com.example.chirpnote.R;
+
+public class UserOptionsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

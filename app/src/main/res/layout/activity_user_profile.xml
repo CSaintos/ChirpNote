@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#7F0BEFEB"
-    tools:context=".UserProfile">
+    tools:context=".activities.UserProfileActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

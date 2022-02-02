@@ -1,13 +1,16 @@
-package com.example.chirpnote;
+package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
-public class UserProfile extends AppCompatActivity {
+import com.example.chirpnote.R;
+
+public class LoadSessionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
+        setContentView(R.layout.activity_load_session);
     }
 }

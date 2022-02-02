@@ -1,4 +1,4 @@
-package com.example.chirpnote;
+package com.example.chirpnote.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.chirpnote.R;
 
 import java.util.Arrays;
 

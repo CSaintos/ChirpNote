@@ -9,6 +9,9 @@ public class MusicNote {
     private int mMidiNumber;
     private Button mButton;
     private Melody mMelody;
+    // The velocity is a default value for all music notes, as most Android device do not have
+    // a pressure sensor in the display, so we have no way of obtaining the velocity for all devices
+    public final int VELOCITY = 110;
 
     /**
      * A music note on the UI keyboard (no recording of this note is planned)
@@ -58,7 +61,7 @@ public class MusicNote {
      * @param midiDriver The MIDI driver to create MIDI events with
      */
     public void playNote(MidiDriver midiDriver){
-        midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mMidiNumber, (byte) 0x7F});
+        midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mMidiNumber, (byte) VELOCITY});
 
         if(mMelody != null){
             mMelody.writeNoteOn(this);
@@ -74,15 +77,5 @@ public class MusicNote {
         if(mMelody != null){
             mMelody.writeNoteOff(this);
         }
-    }
-
-    /**
-     * Gets the velocity at which the note is played.
-     * This is a default value for all music notes, as most Android device do not have a pressure sensor in the display,
-     * so we have no way of obtaining the velocity for all devices
-     * @return
-     */
-    public int getVelocity(){
-        return 127;
     }
 }

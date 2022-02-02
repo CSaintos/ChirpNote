@@ -1,4 +1,4 @@
-package com.example.chirpnote;
+package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+
+import com.example.chirpnote.Melody;
+import com.example.chirpnote.MusicNote;
+import com.example.chirpnote.R;
 
 import org.billthefarmer.mididriver.MidiDriver;
 

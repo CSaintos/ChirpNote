@@ -10,34 +10,37 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
         <activity
-            android:name=".PercussionActivity"
+            android:name=".activities.TestOtherActivity"
             android:exported="false" />
         <activity
-            android:name=".UserProfile"
+            android:name=".activities.PercussionActivity"
             android:exported="false" />
         <activity
-            android:name=".MusicTheoryInfo"
+            android:name=".activities.UserProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".UserOptions"
+            android:name=".activities.MusicTheoryInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".LoadSession"
+            android:name=".activities.UserOptionsActivity"
             android:exported="false" />
         <activity
-            android:name=".NewSession"
+            android:name=".activities.LoadSessionActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeScreen"
+            android:name=".activities.NewSessionActivity"
             android:exported="false" />
         <activity
-            android:name=".MelodyActivity"
+            android:name=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
-            android:name=".TestMusicActivity"
+            android:name=".activities.MelodyActivity"
             android:exported="false" />
         <activity
-            android:name=".StartUpActivity"
+            android:name=".activities.TestMusicActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.StartUpActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,10 +48,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".activities.SignUpActivity" />
         <activity
-            android:name=".LoginActivity"
-            android:exported="true" />
+            android:name=".activities.LoginActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
