@@ -3,6 +3,7 @@ package com.example.chirpnote.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +45,7 @@ public class TestOtherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_other);
 
+        Button setKeyTestButton = (Button) findViewById(R.id.setKeyTestButton);
         // Touch this button to start adding notes to the constructed melody
         // Touch it again to end the process of adding notes to the melody
         Button addNotesButton = (Button) findViewById(R.id.addNotesButton);
@@ -102,6 +104,15 @@ public class TestOtherActivity extends AppCompatActivity {
             });
         }
 
+        // Button to go the free play keyboard activity (for testing)
+        setKeyTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TestOtherActivity.this, SetKeyActivity.class);
+                startActivity(intent);
+            }
+        });
+        // Event listener for record melody button (to record a melody with MIDI notes (the piano keys))
         // Note type/duration toggles
         noteTypes = new ArrayList<>();
         noteTypes.add((ToggleButton) findViewById(R.id.wholeToggleButton));

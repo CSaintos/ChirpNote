@@ -4,6 +4,7 @@ import android.os.StrictMode;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
@@ -43,7 +44,10 @@ public class SetKeyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    songArrayList.addAll(songData("Moth Rock"));
+                    songArrayList.clear();
+                    EditText query = (EditText)findViewById(R.id.editSongQuery);
+                    String songQueryString = query.getText().toString();
+                    songArrayList.addAll(songData(songQueryString));
                     adapter.notifyDataSetChanged();
                 } catch (IOException e) {
                     e.printStackTrace();
