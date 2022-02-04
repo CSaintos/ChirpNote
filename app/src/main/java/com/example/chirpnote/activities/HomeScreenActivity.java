@@ -25,6 +25,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         // For testing only; these will be removed eventually
         Button testKeyboardButton = (Button) findViewById(R.id.testKeyboardButton);
         Button testOtherButton = (Button) findViewById(R.id.testOtherButton);
+        Button testMelodyActButton = (Button) findViewById(R.id.testMelodyActButton);
 
         //new session button function
         newSessionButton.setOnClickListener(new View.OnClickListener() {
@@ -87,5 +88,14 @@ public class HomeScreenActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Button to Melody Activity (for testing)
+        testMelodyActButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeScreenActivity.this, MelodyActivity.class));
+            }
+        });
+
     }
 }

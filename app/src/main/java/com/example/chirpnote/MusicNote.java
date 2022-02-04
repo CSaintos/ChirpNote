@@ -8,7 +8,7 @@ import org.billthefarmer.mididriver.MidiDriver;
 public class MusicNote {
     private int mMidiNumber;
     private Button mButton;
-    private Melody mMelody;
+    private RealTimeMelody mMelody;
     // The velocity is a default value for all music notes, as most Android device do not have
     // a pressure sensor in the display, so we have no way of obtaining the velocity for all devices
     public final int VELOCITY = 110;
@@ -34,7 +34,7 @@ public class MusicNote {
      * @param noteButton The button in the UI that should play this note
      * @param melody The melody where this note's events will be recorded
      */
-    public MusicNote(int noteNumber, Button noteButton, Melody melody){
+    public MusicNote(int noteNumber, Button noteButton, RealTimeMelody melody){
         mMidiNumber = noteNumber;
         mButton = noteButton;
         mMelody = melody;
@@ -62,7 +62,6 @@ public class MusicNote {
      */
     public void playNote(MidiDriver midiDriver){
         midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mMidiNumber, (byte) VELOCITY});
-
         if(mMelody != null){
             mMelody.writeNoteOn(this);
         }

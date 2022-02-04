@@ -10,9 +10,9 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 
-import com.example.chirpnote.Melody;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
+import com.example.chirpnote.RealTimeMelody;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
@@ -22,7 +22,7 @@ public class TestMusicActivity extends AppCompatActivity {
 
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
-    Melody melody;
+    RealTimeMelody melody;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class TestMusicActivity extends AppCompatActivity {
         Button playButton = (Button) findViewById(R.id.playButton);
         Context context = this;
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
-        melody = new Melody(120, melodyFilePath, playButton);
+        melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
         //midiDriver.setVolume(25);  attempted to change the global volume of the midiDriver just to see if the volume of the keys played would change. They don't.
