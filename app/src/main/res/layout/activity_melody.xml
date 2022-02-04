@@ -28,4 +28,43 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/melodybackbutton"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/melodytextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="176dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="177dp"
+        android:fontFamily="@font/bravuratext"
+        android:text="\uE014\uE050\uE014\uE1D7"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RecordMelodyTextView" />
+
+    <Button
+        android:id="@+id/melodyleftbutton"
+        android:layout_width="52dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="30dp"
+        android:text="l"
+        app:layout_constraintEnd_toStartOf="@+id/melodyrightbutton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RecordMelodyTextView" />
+
+    <Button
+        android:id="@+id/melodyrightbutton"
+        android:layout_width="52dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="139dp"
+        android:text="r"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/melodyleftbutton"
+        app:layout_constraintTop_toBottomOf="@+id/RecordMelodyTextView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
