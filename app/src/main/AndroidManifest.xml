@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chirpnote">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -39,6 +40,8 @@
         <activity
             android:name=".activities.TestMusicActivity"
             android:exported="false" />
+        <activity android:name=".activities.SetKeyActivity"
+            android:exported="false"/>
         <activity
             android:name=".activities.StartUpActivity"
             android:exported="true">
