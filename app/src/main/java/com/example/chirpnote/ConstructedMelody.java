@@ -13,7 +13,7 @@ public class ConstructedMelody extends Melody {
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
      * @param tempo The tempo of the melody
      * @param filePath The path to store the file (of the melody recording) at
-     * @param playButton The button used to start playback of the melody
+     * @param playButton The button used to start playback of the melody track
      */
     public ConstructedMelody(int tempo, String filePath, Button playButton){
         super(tempo, filePath, playButton);

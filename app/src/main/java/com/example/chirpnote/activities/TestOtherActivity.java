@@ -1,9 +1,13 @@
 package com.example.chirpnote.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 
+import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
@@ -35,17 +40,37 @@ public class TestOtherActivity extends AppCompatActivity {
     RealTimeMelody realTimeMelody;
     // A melody that is recorded (constructed) by adding notes one at a time
     ConstructedMelody constructedMelody;
-    // State of recording audio
-    boolean recordingAudio = false;
+    // An audio track that is recorded with the device's microphone
+    AudioTrack audio;
     // State of playback
     boolean playing = false;
+
+    // Used to request permission to RECORD_AUDIO
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private boolean permissionToRecordAccepted = false;
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_RECORD_AUDIO_PERMISSION:
+                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if (!permissionToRecordAccepted){
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_other);
 
-        Button setKeyTestButton = (Button) findViewById(R.id.setKeyTestButton);
+        // Request permission to record audio
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+
         // Touch this button to start adding notes to the constructed melody
         // Touch it again to end the process of adding notes to the melody
         Button addNotesButton = (Button) findViewById(R.id.addNotesButton);
@@ -66,12 +91,16 @@ public class TestOtherActivity extends AppCompatActivity {
         Context context = this;
 
         // Real time melody
-        String melodyFilePath = context.getFilesDir().getPath() + "/realTimeMelody.mid";
-        realTimeMelody = new RealTimeMelody(120, melodyFilePath, playButton);
+        String filePath = context.getFilesDir().getPath() + "/realTimeMelody.mid";
+        realTimeMelody = new RealTimeMelody(120, filePath, playButton);
 
         // Constructed melody
-        melodyFilePath = context.getFilesDir().getPath() + "/constructedMelody.mid";
-        constructedMelody = new ConstructedMelody(120, melodyFilePath, playButton);
+        filePath = context.getFilesDir().getPath() + "/constructedMelody.mid";
+        constructedMelody = new ConstructedMelody(120, filePath, playButton);
+
+        // Audio track
+        filePath = context.getFilesDir().getPath() + "/audioTrack.mp4";
+        audio = new AudioTrack(filePath, playButton);
 
         // MIDI driver
         midiDriver = MidiDriver.getInstance();
@@ -104,15 +133,6 @@ public class TestOtherActivity extends AppCompatActivity {
             });
         }
 
-        // Button to go the free play keyboard activity (for testing)
-        setKeyTestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TestOtherActivity.this, SetKeyActivity.class);
-                startActivity(intent);
-            }
-        });
-        // Event listener for record melody button (to record a melody with MIDI notes (the piano keys))
         // Note type/duration toggles
         noteTypes = new ArrayList<>();
         noteTypes.add((ToggleButton) findViewById(R.id.wholeToggleButton));
@@ -182,15 +202,16 @@ public class TestOtherActivity extends AppCompatActivity {
         recordAudioButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNotesButton.setEnabled(recordingAudio);
-                recordMelodyButton.setEnabled(recordingAudio);
-                playButton.setEnabled(recordingAudio);
-                if(!recordingAudio){
-                    recordAudioButton.setText("Does not work yet");
+                addNotesButton.setEnabled(audio.isRecording());
+                recordMelodyButton.setEnabled(audio.isRecording());
+                playButton.setEnabled(audio.isRecording());
+                if(!audio.isRecording()){
+                    recordAudioButton.setText("End Recording");
+                    audio.startRecording();
                 } else {
                     recordAudioButton.setText("Record Audio");
+                    audio.stopRecording();
                 }
-                recordingAudio = !recordingAudio;
             }
         });
 
@@ -202,14 +223,24 @@ public class TestOtherActivity extends AppCompatActivity {
                     playButton.setText("Stop");
                     realTimeMelody.play();
                     constructedMelody.play();
-                    // audio.play();
+                    audio.play();
                 } else {
                     playButton.setText("Play");
                     realTimeMelody.stop();
                     constructedMelody.stop();
-                    // audio.stop();
+                    audio.stop();
                 }
                 playing = !playing;
+            }
+        });
+
+        // Button to go the set key from song activity (for testing)
+        Button setKeyTestButton = (Button) findViewById(R.id.setKeyTestButton);
+        setKeyTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TestOtherActivity.this, SetKeyActivity.class);
+                startActivity(intent);
             }
         });
     }

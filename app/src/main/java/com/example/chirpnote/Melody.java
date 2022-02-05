@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-abstract class Melody {
+abstract class Melody implements Track {
     // States
     private boolean mRecording;
     private boolean mRecorded;
@@ -30,22 +30,25 @@ abstract class Melody {
     protected MidiTrack mNoteTrack;
     private File mOutput;
     private String mFilePath;
-    private long mRecordingStartTime;
 
     // For playback
     private MediaPlayer mMediaPlayer;
     private Button mPlayButton;
 
     /**
-     * A MIDI melody
+     * A MIDI melody track
      * @param tempo The tempo of the melody
      * @param filePath The path to store the file (of the melody recording) at
-     * @param playButton The button used to start playback of the melody
+     * @param playButton The button used to start playback of the melody track
      */
     public Melody(int tempo, String filePath, Button playButton){
         mRecording = false;
         mRecorded = false;
         mMelodyRewritten = false;
+
+        mBPM = tempo;
+        mFilePath = filePath;
+
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
@@ -60,8 +63,6 @@ abstract class Melody {
                 mPlayButton.setText("Play");
             }
         });
-        mBPM = tempo;
-        mFilePath = filePath;
         mPlayButton = playButton;
     }
 
@@ -69,32 +70,18 @@ abstract class Melody {
      * Gets whether or not this melody is currently being played back
      * @return True if the melody is being played
      */
+    @Override
     public boolean isPlaying(){
         return mMediaPlayer.isPlaying();
     }
 
     /**
      * Gets whether or not this melody is currently being recorded
-     * @return True if the melody is being recorded in real time
+     * @return True if the melody is being recorded
      */
+    @Override
     public boolean isRecording(){
         return mRecording;
-    }
-
-    /**
-     * Gets whether or not this melody has been recorded
-     * @return True if the melody was recorded already
-     */
-    public boolean isRecorded(){
-        return mRecorded;
-    }
-
-    /**
-     * Gets the time at which the recording was started
-     * @return The recording start time in milliseconds
-     */
-    protected long getRecordingStart(){
-        return mRecordingStartTime;
     }
 
     /**
@@ -109,12 +96,12 @@ abstract class Melody {
      * Starts the recording process for this MIDI melody
      * @return False if melody is already being recorded (cannot start a new recording process until the current one is stopped)
      */
+    @Override
     public boolean startRecording(){
         if(mRecording || mMediaPlayer.isPlaying()){
             return false;
         }
         mRecording = true;
-        mRecordingStartTime = System.currentTimeMillis();
 
         // Setup MIDI tracks
         mTempoTrack = new MidiTrack();
@@ -136,6 +123,7 @@ abstract class Melody {
      * Stops the recording process for this MIDI melody
      * @return False if melody is not being recorded yet (cannot stop a recording process if it has not been started yet)
      */
+    @Override
     public boolean stopRecording(){
         if(!mRecording){
             return false;
@@ -162,6 +150,7 @@ abstract class Melody {
      * Plays back this melody
      * @return False if recording process active or currently playing the melody
      */
+    @Override
     public boolean play(){
         if(mRecording || !mRecorded || mMediaPlayer.isPlaying()){
             return false;
@@ -183,6 +172,7 @@ abstract class Melody {
      * Stops playback of this melody
      * @return False if not currently playing the melody
      */
+    @Override
     public boolean stop(){
         if(!mMediaPlayer.isPlaying() || mRecording){
             return false;

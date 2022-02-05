@@ -7,15 +7,22 @@ import com.leff.midi.event.NoteOn;
 
 public class RealTimeMelody extends Melody {
     private final int CHANNEL = 0;
+    private long mRecordingStartTime;
 
     /**
      * A MIDI melody which is recorded in real time on the UI keyboard
      * @param tempo The tempo of the melody
      * @param filePath The path to store the file (of the melody recording) at
-     * @param playButton The button used to start playback of the melody
+     * @param playButton The button used to start playback of the melody track
      */
     public RealTimeMelody(int tempo, String filePath, Button playButton){
         super(tempo, filePath, playButton);
+    }
+
+    @Override
+    public boolean startRecording() {
+        mRecordingStartTime = System.currentTimeMillis();
+        return super.startRecording();
     }
 
     /**
@@ -49,6 +56,6 @@ public class RealTimeMelody extends Melody {
     }
 
     private long getCurrentTick(){
-        return (System.currentTimeMillis() - super.getRecordingStart()) * super.getTempo()  * super.RESOLUTION / 60000;
+        return (System.currentTimeMillis() - mRecordingStartTime) * super.getTempo()  * super.RESOLUTION / 60000;
     }
 }
