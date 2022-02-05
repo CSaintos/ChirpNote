@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chirpnote">
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +12,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
+        <activity
+            android:name=".activities.ChangeEmailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ChangeUsernameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ChangeNameActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.TestOtherActivity"
             android:exported="false" />
@@ -41,8 +54,9 @@
         <activity
             android:name=".activities.TestMusicActivity"
             android:exported="false" />
-        <activity android:name=".activities.SetKeyActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".activities.SetKeyActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.StartUpActivity"
             android:exported="true">
