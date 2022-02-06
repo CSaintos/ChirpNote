@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,12 +16,12 @@ import com.example.chirpnote.R;
 
 public class MelodyActivity extends AppCompatActivity {
 
-    Notation notation = new Notation();
-
-    Button backButton;
-    Button leftButton;
-    Button rightButton;
-    TextView melodyText;
+    private Notation notation = new Notation();
+    private Button[] keyButtons;
+    private Button backButton;
+    private Button leftButton;
+    private Button rightButton;
+    private TextView melodyText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,22 @@ public class MelodyActivity extends AppCompatActivity {
         backButton = (Button) findViewById(R.id.melodybackbutton);
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
         rightButton = (Button) findViewById(R.id.melodyrightbutton);
+
+        keyButtons = new Button[] {
+                (Button) findViewById(R.id.melodynoteCbutton),
+                (Button) findViewById(R.id.melodynoteCsharpbutton),
+                (Button) findViewById(R.id.melodynoteDbutton),
+                (Button) findViewById(R.id.melodynoteDsharpbutton),
+                (Button) findViewById(R.id.melodynoteEbutton),
+                (Button) findViewById(R.id.melodynoteFbutton),
+                (Button) findViewById(R.id.melodynoteFsharpbutton),
+                (Button) findViewById(R.id.melodynoteGbutton),
+                (Button) findViewById(R.id.melodynoteGsharpbutton),
+                (Button) findViewById(R.id.melodynoteAbutton),
+                (Button) findViewById(R.id.melodynoteBbutton),
+                (Button) findViewById(R.id.melodynoteCbutton2)
+        };
+
         melodyText = (TextView) findViewById(R.id.melodytextview);
 
         backButton.setOnClickListener(new OnClickListener() {
@@ -41,6 +59,17 @@ public class MelodyActivity extends AppCompatActivity {
         });
 
         initText();
+
+        // Setup listeners for each piano key
+        for (Button note : keyButtons) {
+            note.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent e) {
+                    // TODO add functionality
+                    return false;
+                }
+            });
+        }
     }
 
     void initText() {

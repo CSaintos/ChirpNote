@@ -6,6 +6,66 @@
     android:layout_height="match_parent"
     tools:context=".activities.MelodyActivity">
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteCsharpbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/button_blackkey"
+        android:text="C#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteCbutton"
+        app:layout_constraintEnd_toEndOf="@+id/melodynoteDbutton"
+        app:layout_constraintStart_toStartOf="@+id/melodynoteCbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteDsharpbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/button_blackkey"
+        android:text="D#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteDbutton"
+        app:layout_constraintEnd_toEndOf="@+id/melodynoteEbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteCbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteGsharpbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/button_blackkey"
+        android:text="G#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteGbutton"
+        app:layout_constraintEnd_toEndOf="@+id/melodynoteAbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteFbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteAsharpbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/button_blackkey"
+        android:text="A#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteAbutton"
+        app:layout_constraintEnd_toEndOf="@+id/melodynoteBbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteGbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteFsharpbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/button_blackkey"
+        android:text="F#"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteFbutton"
+        app:layout_constraintEnd_toEndOf="@+id/melodynoteGbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteEbutton" />
+
     <Button
         android:id="@+id/melodybackbutton"
         android:layout_width="wrap_content"
@@ -66,5 +126,95 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/melodyleftbutton"
         app:layout_constraintTop_toBottomOf="@+id/RecordMelodyTextView" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteCbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_whitekey"
+        android:text="C"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/melodynoteDbutton"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteDbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_whitekey"
+        android:text="D"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/melodynoteEbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteCbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteEbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_whitekey"
+        android:text="E"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/melodynoteFbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteDbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteFbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_whitekey"
+        android:text="F"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/melodynoteGbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteEbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteGbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_whitekey"
+        android:text="G"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/melodynoteAbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteFbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteAbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_whitekey"
+        android:text="A"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/melodynoteBbutton"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteGbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteBbutton"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_whitekey"
+        android:text="B"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/melodynoteCbutton2"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteAbutton" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/melodynoteCbutton2"
+        android:layout_width="50dp"
+        android:layout_height="170dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_whitekey"
+        android:text="C"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteBbutton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
