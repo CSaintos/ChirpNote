@@ -1,4 +1,4 @@
-package com.example.chirpnote;
+package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,11 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.chirpnote.R;
+
 import org.w3c.dom.Document;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import io.realm.Realm;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 import io.realm.mongodb.Credentials;
@@ -50,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         TextView test = (TextView) findViewById(R.id.testingTextView);
         Button loginButton = (Button) findViewById(R.id.loginButton);
         Button signUpButton = (Button) findViewById(R.id.signUpButton);
-        Button testMusicButton = (Button) findViewById(R.id.testMusicButton);
+        Button bypassLoginButton = (Button) findViewById(R.id.bypassLoginButton);
 
         loginButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -89,10 +90,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        testMusicButton.setOnClickListener(new OnClickListener() {
+        bypassLoginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, TestMusicActivity.class));
+                startActivity(new Intent(LoginActivity.this, HomeScreenActivity.class));
             }
         });
     }

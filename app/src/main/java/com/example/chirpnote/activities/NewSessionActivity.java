@@ -1,10 +1,12 @@
-package com.example.chirpnote;
+package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class NewSession extends AppCompatActivity {
+import com.example.chirpnote.R;
+
+public class NewSessionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
