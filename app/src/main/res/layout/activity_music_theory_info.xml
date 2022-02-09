@@ -4,7 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#673AB7"
     tools:context=".MusicTheoryInfo">
+
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Music Theory Guide"
+        android:textSize="40dp"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="68dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Roman Numerals"
+        tools:layout_editor_absoluteX="117dp"
+        tools:layout_editor_absoluteY="331dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Basics"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="232dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
