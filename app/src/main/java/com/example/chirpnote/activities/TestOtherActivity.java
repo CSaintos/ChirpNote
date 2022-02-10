@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 
 import com.example.chirpnote.AudioTrack;
+import com.example.chirpnote.Chord;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
@@ -37,13 +39,15 @@ public class TestOtherActivity extends AppCompatActivity {
     // The currently selected note type to add
     private int toggledNoteType = -1;
     // A melody that is recorded in real time by playing the keyboard
-    RealTimeMelody realTimeMelody;
+    private RealTimeMelody realTimeMelody;
     // A melody that is recorded (constructed) by adding notes one at a time
-    ConstructedMelody constructedMelody;
+    private ConstructedMelody constructedMelody;
     // An audio track that is recorded with the device's microphone
-    AudioTrack audio;
+    private AudioTrack audio;
     // State of playback
-    boolean playing = false;
+    private boolean playing = false;
+    // A list of chords
+    private ArrayList<Chord> chords;
 
     // Used to request permission to RECORD_AUDIO
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
@@ -117,16 +121,16 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Setup event listener for each piano key
         for(MusicNote note : pianoKeys){
-            note.getButton().setOnTouchListener(new View.OnTouchListener() {
+            note.getButton().setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.playNote(midiDriver);
+                        note.play(midiDriver);
                         if(constructedMelody.isRecording() && toggledNoteType > -1){
                             constructedMelody.addNote(note, (int) Math.pow(2, toggledNoteType));
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stopNote(midiDriver);
+                        note.stop(midiDriver);
                     }
                     return false;
                 }
@@ -243,6 +247,34 @@ public class TestOtherActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Testing playback for chords
+        chords = new ArrayList<>();
+        chords.add(new Chord(Chord.type.MAJOR, 48, (Button) findViewById(R.id.chordCButton)));
+        chords.add(new Chord(Chord.type.MINOR, 50, (Button) findViewById(R.id.chordDmButton)));
+        /*Chord cMajor = new Chord(Chord.type.MAJOR, 48, (Button) findViewById(R.id.chordCButton));
+        cMajor.octaveUp();
+        cMajor.setInversion(Chord.inversion.FIRST);
+        chords.add(cMajor);
+        Chord dMinor = new Chord(Chord.type.MINOR, 50, (Button) findViewById(R.id.chordDmButton));
+        dMinor.octaveDown();
+        dMinor.setInversion(Chord.inversion.SECOND);
+        chords.add(dMinor);*/
+
+        // Setup event listener for each piano key
+        for(Chord chord : chords){
+            chord.getButton().setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        chord.play(midiDriver);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        chord.stop(midiDriver);
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     @Override

@@ -14,8 +14,20 @@ public class MusicNote {
     public final int VELOCITY = 110;
 
     /**
+     * A music note
+     * @param noteNumber The MIDI number of this note.
+     *                   For all MIDI numbers and their associated notes,
+     *                   see: https://www.inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
+     */
+    public MusicNote(int noteNumber){
+        mMidiNumber = noteNumber;
+        mButton = null;
+        mMelody = null;
+    }
+
+    /**
      * A music note on the UI keyboard (no recording of this note is planned)
-     * @param noteNumber The MIDI number of that note.
+     * @param noteNumber The MIDI number of this note.
      *                   For all MIDI numbers and their associated notes,
      *                   see: https://www.inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
      * @param noteButton The button in the UI that should play this note
@@ -28,7 +40,7 @@ public class MusicNote {
 
     /**
      * A music note on the UI keyboard (this note's events will be recorded to the given melody)
-     * @param noteNumber The MIDI number of that note.
+     * @param noteNumber The MIDI number of this note.
      *                   For all MIDI numbers and their associated notes,
      *                   see: https://www.inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
      * @param noteButton The button in the UI that should play this note
@@ -50,17 +62,31 @@ public class MusicNote {
 
     /**
      * Gets the Button associated with this music note
-     * @return The button that plays this note
+     * @return The button that plays this note (null if this note has no button)
      */
     public Button getButton(){
         return mButton;
     }
 
     /**
+     * Increases the octave of this note
+     */
+    public void octaveUp(){
+        mMidiNumber += 12;
+    }
+
+    /**
+     * Decreases the octave of this note
+     */
+    public void octaveDown(){
+        mMidiNumber -= 12;
+    }
+
+    /**
      * Plays this music note
      * @param midiDriver The MIDI driver to create MIDI events with
      */
-    public void playNote(MidiDriver midiDriver){
+    public void play(MidiDriver midiDriver){
         midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mMidiNumber, (byte) VELOCITY});
         if(mMelody != null){
             mMelody.writeNoteOn(this);
@@ -71,7 +97,7 @@ public class MusicNote {
      * Stops this music note
      * @param midiDriver The MIDI driver to create MIDI events with
      */
-    public void stopNote(MidiDriver midiDriver){
+    public void stop(MidiDriver midiDriver){
         midiDriver.write(new byte[]{MidiConstants.NOTE_OFF, (byte) mMidiNumber, (byte) 0x00});
         if(mMelody != null){
             mMelody.writeNoteOff(this);
