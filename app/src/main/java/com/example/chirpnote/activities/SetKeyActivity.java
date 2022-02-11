@@ -3,12 +3,14 @@ package com.example.chirpnote.activities;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -45,6 +47,18 @@ public class SetKeyActivity extends AppCompatActivity {
         Button searchButton = (Button) findViewById(R.id.keySearchButton);
         ListView listView = (ListView) findViewById(R.id.songListView);
         listView.setAdapter(adapter);
+        EditText editText = (EditText) findViewById(R.id.editSongQuery);
+
+        /*
+        This editText listener calls the button press when the user clicks enter in the search field.
+         */
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                searchButton.performClick();
+                return false;
+            }
+        });
 
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +87,7 @@ public class SetKeyActivity extends AppCompatActivity {
                                     adapter.notifyDataSetChanged();
                                     if (adapter.isEmpty()){
                                         searchButton.setText("No Results. Click For New Search");
+                                        Toast.makeText(SetKeyActivity.this,"Either song is not in database or song query contains typos.",Toast.LENGTH_SHORT).show();
                                     }
                                     else {
                                         searchButton.setText("Click for New Search");
@@ -88,6 +103,9 @@ public class SetKeyActivity extends AppCompatActivity {
 
 
         });
+    /*
+    This listener functions for changing the key of the song on item click. also displays a message to user on click.
+     */
 
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
@@ -106,7 +124,7 @@ public class SetKeyActivity extends AppCompatActivity {
      * @return the songs and keys
      * @throws IOException if any errors occur with query
      */
-    public static ArrayList<String> songData(String songQuery) throws IOException {
+    public ArrayList<String> songData(String songQuery) throws IOException {
         ArrayList<String> songData = new ArrayList<>();
         try {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -120,6 +138,7 @@ public class SetKeyActivity extends AppCompatActivity {
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
                 //bad code throw error
+                Toast.makeText(SetKeyActivity.this,"HTTP ERROR " + conn.getResponseCode(),Toast.LENGTH_LONG).show();
                 throw new RuntimeException("HTTP Response Code:" + responseCode);
             } else {
                 //Grab needed data
@@ -188,17 +207,14 @@ public class SetKeyActivity extends AppCompatActivity {
         JsonObject searchRootObject = searchRootElement.getAsJsonObject();
         int n = searchRootObject.getAsJsonArray("search").size();
         System.out.println("amount of results: " + n);
-//        if (n == 1) {
-//            String noSongID = searchRootObject.getAsJsonArray("search").get(0).getAsJsonObject().getAsString();
-//        }
-        if (n <= 5) {
+        if (n <= 10) {
             for (int i = 0; i < n; i++) {
                 String songID = searchRootObject.getAsJsonArray("search").get(i).getAsJsonObject().get("id").getAsString();
                 listOfIDs.add(songID);
             }
 
         } else {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 10; i++) {
                 String songID = searchRootObject.getAsJsonArray("search").get(i).getAsJsonObject().get("id").getAsString();
                 listOfIDs.add(songID);
             }
