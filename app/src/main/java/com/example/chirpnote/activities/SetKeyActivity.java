@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -83,9 +85,18 @@ public class SetKeyActivity extends AppCompatActivity {
                     }
                 }).start();
             }
+
+
         });
 
-
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //shows the key that has been set on click
+            Toast.makeText(SetKeyActivity.this, "Session Key Set to " + songArrayList.get(position).substring(songArrayList.get(position).lastIndexOf(" ") + 1).replace("m"," Minor"),Toast.LENGTH_SHORT).show();
+            //TODO set the key in session once session class is created.
+        }
+    });
     }
 
 
