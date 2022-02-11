@@ -1,6 +1,7 @@
 package com.example.chirpnote.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -68,6 +69,12 @@ public class SetKeyActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     adapter.notifyDataSetChanged();
+                                    if (adapter.isEmpty()){
+                                        searchButton.setText("No Results. Click For New Search");
+                                    }
+                                    else {
+                                        searchButton.setText("Click for New Search");
+                                    }
                                 }
                             });
                         } catch (IOException e) {
@@ -75,14 +82,6 @@ public class SetKeyActivity extends AppCompatActivity {
                         }
                     }
                 }).start();
-                try {
-                    SetKeyActivity.this.wait(6000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                searchButton.setText("Search");
-
-
             }
         });
 
@@ -178,6 +177,9 @@ public class SetKeyActivity extends AppCompatActivity {
         JsonObject searchRootObject = searchRootElement.getAsJsonObject();
         int n = searchRootObject.getAsJsonArray("search").size();
         System.out.println("amount of results: " + n);
+//        if (n == 1) {
+//            String noSongID = searchRootObject.getAsJsonArray("search").get(0).getAsJsonObject().getAsString();
+//        }
         if (n <= 5) {
             for (int i = 0; i < n; i++) {
                 String songID = searchRootObject.getAsJsonArray("search").get(i).getAsJsonObject().get("id").getAsString();
