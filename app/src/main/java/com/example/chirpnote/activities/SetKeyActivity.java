@@ -1,4 +1,5 @@
 package com.example.chirpnote.activities;
+
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
@@ -24,6 +25,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+/***
+ * This activity works with the getsongBPM API to take in a user's query for a known song, and to
+ * reflect the key of the song to the user for them to select as the session key.
+ */
 public class SetKeyActivity extends AppCompatActivity {
     private static final String API_KEY = "b56665025cc9d931bdf1ab71847da39d"; //GetSongKey API Key
     ArrayList<String> songArrayList = new ArrayList<>();
@@ -33,7 +38,7 @@ public class SetKeyActivity extends AppCompatActivity {
         songArrayList.clear();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key_from_song);
-        ArrayAdapter adapter = new ArrayAdapter<String>(SetKeyActivity.this, android.R.layout.simple_list_item_1,songArrayList);
+        ArrayAdapter adapter = new ArrayAdapter<>(SetKeyActivity.this, android.R.layout.simple_list_item_1, songArrayList);
         Button searchButton = (Button) findViewById(R.id.keySearchButton);
         ListView listView = (ListView) findViewById(R.id.songListView);
         listView.setAdapter(adapter);
@@ -42,16 +47,41 @@ public class SetKeyActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
+            /*
+             * This onclick represents the search button. It uses threading in order to save ui resources
+             * Which avoids freezing of the ui elements during the data calls.
+             */
             public void onClick(View v) {
+                songArrayList.clear();
+                searchButton.setText("Searching");
+                EditText query = (EditText) findViewById(R.id.editSongQuery);
+                String songQueryString = query.getText().toString();
+                //Thread for API Call
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            songArrayList.addAll(songData(songQueryString));
+
+                            //update the ListView
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
                 try {
-                    songArrayList.clear();
-                    EditText query = (EditText)findViewById(R.id.editSongQuery);
-                    String songQueryString = query.getText().toString();
-                    songArrayList.addAll(songData(songQueryString));
-                    adapter.notifyDataSetChanged();
-                } catch (IOException e) {
+                    SetKeyActivity.this.wait(6000);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                searchButton.setText("Search");
+
 
             }
         });
@@ -97,7 +127,6 @@ public class SetKeyActivity extends AppCompatActivity {
                     //gson parsing and posting results
                     songData.add(getSongData(songSB));
                 }
-
 
 
             }
