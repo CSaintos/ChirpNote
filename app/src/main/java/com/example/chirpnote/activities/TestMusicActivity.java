@@ -92,9 +92,9 @@ public class TestMusicActivity extends AppCompatActivity {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.playNote(midiDriver);
+                        note.play(midiDriver);
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stopNote(midiDriver);
+                        note.stop(midiDriver);
                     }
                     return false;
                 }
