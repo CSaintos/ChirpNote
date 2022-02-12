@@ -1,11 +1,17 @@
 package com.example.chirpnote.activities;
+
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +30,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+/***
+ * This activity works with the getsongBPM API to take in a user's query for a known song, and to
+ * reflect the key of the song to the user for them to select as the session key.
+ */
 public class SetKeyActivity extends AppCompatActivity {
     private static final String API_KEY = "b56665025cc9d931bdf1ab71847da39d"; //GetSongKey API Key
     ArrayList<String> songArrayList = new ArrayList<>();
@@ -33,30 +43,78 @@ public class SetKeyActivity extends AppCompatActivity {
         songArrayList.clear();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key_from_song);
-        ArrayAdapter adapter = new ArrayAdapter<String>(SetKeyActivity.this, android.R.layout.simple_list_item_1,songArrayList);
+        ArrayAdapter adapter = new ArrayAdapter<>(SetKeyActivity.this, android.R.layout.simple_list_item_1, songArrayList);
         Button searchButton = (Button) findViewById(R.id.keySearchButton);
         ListView listView = (ListView) findViewById(R.id.songListView);
         listView.setAdapter(adapter);
+        EditText editText = (EditText) findViewById(R.id.editSongQuery);
+
+        /*
+        This editText listener calls the button press when the user clicks enter in the search field.
+         */
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                searchButton.performClick();
+                return false;
+            }
+        });
 
 
         searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
+            /*
+             * This onclick represents the search button. It uses threading in order to save ui resources
+             * Which avoids freezing of the ui elements during the data calls.
+             */
             public void onClick(View v) {
-                try {
-                    songArrayList.clear();
-                    EditText query = (EditText)findViewById(R.id.editSongQuery);
-                    String songQueryString = query.getText().toString();
-                    songArrayList.addAll(songData(songQueryString));
-                    adapter.notifyDataSetChanged();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                songArrayList.clear();
+                searchButton.setText("Searching");
+                EditText query = (EditText) findViewById(R.id.editSongQuery);
+                String songQueryString = query.getText().toString();
+                //Thread for API Call
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            songArrayList.addAll(songData(songQueryString));
 
+                            //update the ListView
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.notifyDataSetChanged();
+                                    if (adapter.isEmpty()){
+                                        searchButton.setText("No Results. Click For New Search");
+                                        Toast.makeText(SetKeyActivity.this,"Either song is not in database or song query contains typos.",Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        searchButton.setText("Click for New Search");
+                                    }
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
+
+
         });
+    /*
+    This listener functions for changing the key of the song on item click. also displays a message to user on click.
+     */
 
-
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //shows the key that has been set on click
+            Toast.makeText(SetKeyActivity.this, "Session Key Set to " + songArrayList.get(position).substring(songArrayList.get(position).lastIndexOf(" ") + 1).replace("m"," Minor"),Toast.LENGTH_SHORT).show();
+            //TODO set the key in session once session class is created.
+        }
+    });
     }
 
 
@@ -66,7 +124,7 @@ public class SetKeyActivity extends AppCompatActivity {
      * @return the songs and keys
      * @throws IOException if any errors occur with query
      */
-    public static ArrayList<String> songData(String songQuery) throws IOException {
+    public ArrayList<String> songData(String songQuery) throws IOException {
         ArrayList<String> songData = new ArrayList<>();
         try {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -80,6 +138,7 @@ public class SetKeyActivity extends AppCompatActivity {
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
                 //bad code throw error
+                Toast.makeText(SetKeyActivity.this,"HTTP ERROR " + conn.getResponseCode(),Toast.LENGTH_LONG).show();
                 throw new RuntimeException("HTTP Response Code:" + responseCode);
             } else {
                 //Grab needed data
@@ -97,7 +156,6 @@ public class SetKeyActivity extends AppCompatActivity {
                     //gson parsing and posting results
                     songData.add(getSongData(songSB));
                 }
-
 
 
             }
@@ -149,14 +207,14 @@ public class SetKeyActivity extends AppCompatActivity {
         JsonObject searchRootObject = searchRootElement.getAsJsonObject();
         int n = searchRootObject.getAsJsonArray("search").size();
         System.out.println("amount of results: " + n);
-        if (n <= 5) {
+        if (n <= 10) {
             for (int i = 0; i < n; i++) {
                 String songID = searchRootObject.getAsJsonArray("search").get(i).getAsJsonObject().get("id").getAsString();
                 listOfIDs.add(songID);
             }
 
         } else {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 10; i++) {
                 String songID = searchRootObject.getAsJsonArray("search").get(i).getAsJsonObject().get("id").getAsString();
                 listOfIDs.add(songID);
             }

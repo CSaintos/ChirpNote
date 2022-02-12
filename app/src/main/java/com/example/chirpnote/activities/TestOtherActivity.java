@@ -240,7 +240,7 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Button to go the set key from song activity (for testing)
         Button setKeyTestButton = (Button) findViewById(R.id.setKeyTestButton);
-        setKeyTestButton.setOnClickListener(new View.OnClickListener() {
+        setKeyTestButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TestOtherActivity.this, SetKeyActivity.class);
@@ -250,15 +250,15 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Testing playback for chords
         chords = new ArrayList<>();
-        chords.add(new Chord(Chord.type.MAJOR, 48, (Button) findViewById(R.id.chordCButton)));
-        chords.add(new Chord(Chord.type.MINOR, 50, (Button) findViewById(R.id.chordDmButton)));
-        /*Chord cMajor = new Chord(Chord.type.MAJOR, 48, (Button) findViewById(R.id.chordCButton));
+        chords.add(new Chord(Chord.Type.MAJOR, 48, (Button) findViewById(R.id.chordCButton)));
+        chords.add(new Chord(Chord.Type.MINOR, 50, (Button) findViewById(R.id.chordDmButton)));
+        /*Chord cMajor = new Chord(Chord.Type.MAJOR, 48, (Button) findViewById(R.id.chordCButton));
         cMajor.octaveUp();
-        cMajor.setInversion(Chord.inversion.FIRST);
+        cMajor.setInversion(Chord.Inversion.FIRST);
         chords.add(cMajor);
-        Chord dMinor = new Chord(Chord.type.MINOR, 50, (Button) findViewById(R.id.chordDmButton));
+        Chord dMinor = new Chord(Chord.Type.MINOR, 50, (Button) findViewById(R.id.chordDmButton));
         dMinor.octaveDown();
-        dMinor.setInversion(Chord.inversion.SECOND);
+        dMinor.setInversion(Chord.Inversion.SECOND);
         chords.add(dMinor);*/
 
         // Setup event listener for each piano key
