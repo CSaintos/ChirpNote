@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ChirpNote</string>
+
+    <!--string name="STAFF5LINES"></string> // For testing
+    <string name="sample"></string-->
 </resources>

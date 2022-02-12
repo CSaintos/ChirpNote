@@ -12,8 +12,11 @@ public class Notation {
     /**
      * Enumeration of individual music syntax symbols
      */
-    public enum syntax {
+    public enum Syntax {
         STAFF5LINES,
+        BARLINESINGLE,
+        BARLINEFINAL,
+        BARLINEREVERSEFINAL,
         GCLEF,
         FCLEF,
         NOTEWHOLE,
@@ -36,24 +39,27 @@ public class Notation {
      * @Param syntax enum
      * @Return unicode string
      */
-    public HashMap<syntax, String> unicode;
+    public static HashMap<Syntax, String> unicode;
     {
         unicode = new HashMap<>();
-        unicode.put(syntax.STAFF5LINES, "\uE014");
-        unicode.put(syntax.GCLEF, "\uE050");
-        unicode.put(syntax.FCLEF, "\uE062");
-        unicode.put(syntax.NOTEWHOLE, "\uE1D2");
-        unicode.put(syntax.NOTEHALFUP, "\uE1D3");
-        unicode.put(syntax.NOTEHALFDOWN, "\uE1D4");
-        unicode.put(syntax.NOTEQUARTERUP, "\uE1D5");
-        unicode.put(syntax.NOTEQUARTERDOWN, "\uE1D6");
-        unicode.put(syntax.NOTE8THUP, "\uE1D7");
-        unicode.put(syntax.NOTE8THDOWN, "\uE1D8");
-        unicode.put(syntax.NOTE16THUP, "\uE1D9");
-        unicode.put(syntax.NOTE16THDOWN, "\uE1DA");
-        unicode.put(syntax.NOTE32NDUP, "\uE1DB");
-        unicode.put(syntax.NOTE32NDDOWN, "\uE1DC");
-        unicode.put(syntax.AUGMENTATIONDOT, "\uE1E7");
+        unicode.put(Syntax.STAFF5LINES, "\uE014");
+        unicode.put(Syntax.BARLINESINGLE, "\uE030");
+        unicode.put(Syntax.BARLINEFINAL, "\uE032");
+        unicode.put(Syntax.BARLINEREVERSEFINAL, "\uE033");
+        unicode.put(Syntax.GCLEF, "\uE050");
+        unicode.put(Syntax.FCLEF, "\uE062");
+        unicode.put(Syntax.NOTEWHOLE, "\uE1D2");
+        unicode.put(Syntax.NOTEHALFUP, "\uE1D3");
+        unicode.put(Syntax.NOTEHALFDOWN, "\uE1D4");
+        unicode.put(Syntax.NOTEQUARTERUP, "\uE1D5");
+        unicode.put(Syntax.NOTEQUARTERDOWN, "\uE1D6");
+        unicode.put(Syntax.NOTE8THUP, "\uE1D7");
+        unicode.put(Syntax.NOTE8THDOWN, "\uE1D8");
+        unicode.put(Syntax.NOTE16THUP, "\uE1D9");
+        unicode.put(Syntax.NOTE16THDOWN, "\uE1DA");
+        unicode.put(Syntax.NOTE32NDUP, "\uE1DB");
+        unicode.put(Syntax.NOTE32NDDOWN, "\uE1DC");
+        unicode.put(Syntax.AUGMENTATIONDOT, "\uE1E7");
     }
 
 }
