@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="361dp"
         android:text=""
-        android:textColor="#E91E1E"
+        android:textColor="?attr/colorError"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

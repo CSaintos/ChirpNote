@@ -8,21 +8,21 @@ import java.util.ArrayList;
 
 public class Chord {
     // Chord type
-    public enum type {
+    public enum Type {
         MAJOR,
         MINOR,
         DIMINISHED
     }
     // Chord inversion
-    public enum inversion {
+    public enum Inversion {
         ROOT,
         FIRST,
         SECOND,
     }
-    private type mType;
+    private Type mType;
     private int mRoot;
     private int mOctave;
-    private inversion mInversion;
+    private Inversion mInversion;
     private ArrayList<MusicNote> mNotes;
     private Button mButton;
 
@@ -31,7 +31,7 @@ public class Chord {
      * @param chordType The type of chord this is
      * @param root The MIDI number for the root note of this chord
      */
-    public Chord(type chordType, int root){
+    public Chord(Type chordType, int root){
         mNotes = new ArrayList<>();
         mType = chordType;
         mRoot = root;
@@ -45,7 +45,7 @@ public class Chord {
      * @param root The MIDI number for the root note of this chord
      * @param chordButton The button in the UI that should play this chord
      */
-    public Chord(type chordType, int root, Button chordButton){
+    public Chord(Type chordType, int root, Button chordButton){
         mNotes = new ArrayList<>();
         mType = chordType;
         mRoot = root;
@@ -59,17 +59,17 @@ public class Chord {
      */
     private void buildChord(){
         mNotes.add(new MusicNote(mRoot));
-        if(mType == type.MAJOR){
+        if(mType == Type.MAJOR){
             mNotes.add(new MusicNote(mRoot + 4));
             mNotes.add(new MusicNote(mRoot + 7));
-        } else if(mType == type.MINOR){
+        } else if(mType == Type.MINOR){
             mNotes.add(new MusicNote(mRoot + 3));
             mNotes.add(new MusicNote(mRoot + 7));
-        } else if(mType == type.DIMINISHED){
+        } else if(mType == Type.DIMINISHED){
             mNotes.add(new MusicNote(mRoot + 3));
             mNotes.add(new MusicNote(mRoot + 6));
         }
-        mInversion = inversion.ROOT;
+        mInversion = Inversion.ROOT;
         // Octave 1: C1-C2, 2: C2-C3, 3: C3-C4, 4: C4-C5, 5: C5-C6
         if(24 <= mRoot && mRoot < 36){
             mOctave = 1;
@@ -88,7 +88,7 @@ public class Chord {
      * Gets the type of this chord
      * @return The chord type
      */
-    public type getType(){
+    public Type getType(){
         return mType;
     }
 
@@ -115,7 +115,7 @@ public class Chord {
      * Gets the inversion this chord is in
      * @return The chord inversion
      */
-    public inversion getInversion(){
+    public Inversion getInversion(){
         return mInversion;
     }
 
@@ -150,6 +150,7 @@ public class Chord {
             mOctave++;
         }
     }
+
     /**
      * Decreases the octave of this chord
      */
@@ -166,25 +167,25 @@ public class Chord {
      * Sets the inversion for this chord
      * @param newInv The new inversion for this chord
      */
-    public void setInversion(inversion newInv){
-        if(newInv == inversion.ROOT){
-            if(mInversion == inversion.FIRST){
+    public void setInversion(Inversion newInv){
+        if(newInv == Inversion.ROOT){
+            if(mInversion == Inversion.FIRST){
                 mNotes.get(0).octaveDown();
-            } else if(mInversion == inversion.SECOND){
+            } else if(mInversion == Inversion.SECOND){
                 mNotes.get(0).octaveDown();
                 mNotes.get(1).octaveDown();
             }
-        } else if(newInv == inversion.FIRST){
-            if(mInversion == inversion.ROOT){
+        } else if(newInv == Inversion.FIRST){
+            if(mInversion == Inversion.ROOT){
                 mNotes.get(0).octaveUp();
-            } else if(mInversion == inversion.SECOND){
+            } else if(mInversion == Inversion.SECOND){
                 mNotes.get(1).octaveDown();
             }
-        } else if(newInv == inversion.SECOND){
-            if(mInversion == inversion.ROOT){
+        } else if(newInv == Inversion.SECOND){
+            if(mInversion == Inversion.ROOT){
                 mNotes.get(0).octaveUp();
                 mNotes.get(1).octaveUp();
-            } else if(mInversion == inversion.FIRST){
+            } else if(mInversion == Inversion.FIRST){
                 mNotes.get(1).octaveUp();
             }
         }

@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
         <activity
+            android:name=".activities.SessionActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChangeEmailActivity"
             android:exported="false" />
         <activity
