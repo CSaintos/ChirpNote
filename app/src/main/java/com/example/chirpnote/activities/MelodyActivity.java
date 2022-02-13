@@ -1,9 +1,13 @@
 package com.example.chirpnote.activities;
 
+import static com.example.chirpnote.Notation.Syntax.*;
+import static com.example.chirpnote.Notation.unicode;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -11,13 +15,16 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.chirpnote.Notation;
 import com.example.chirpnote.R;
+import com.example.chirpnote.Notation.Syntax;
+
+import java.util.HashMap;
 
 public class MelodyActivity extends AppCompatActivity {
 
-    private Notation notation = new Notation();
+    //private Notation notation = new Notation();
     private Button[] keyButtons;
+    private TextView[] staffLines;
     private Button backButton;
     private Button leftButton;
     private Button rightButton;
@@ -47,7 +54,25 @@ public class MelodyActivity extends AppCompatActivity {
                 (Button) findViewById(R.id.melodynoteCbutton2)
         };
 
-        melodyText = (TextView) findViewById(R.id.melodytextview);
+        staffLines = new TextView[] {
+                (TextView) findViewById(R.id.spaceN1textview),
+                (TextView) findViewById(R.id.line0textview),
+                (TextView) findViewById(R.id.space0textview),
+                (TextView) findViewById(R.id.line1textview),
+                (TextView) findViewById(R.id.space1textview),
+                (TextView) findViewById(R.id.line2textview),
+                (TextView) findViewById(R.id.space2textview),
+                (TextView) findViewById(R.id.line3textview),
+                (TextView) findViewById(R.id.space3textview),
+                (TextView) findViewById(R.id.line4textview),
+                (TextView) findViewById(R.id.space4textview),
+                (TextView) findViewById(R.id.line5textview),
+                (TextView) findViewById(R.id.space5textview),
+                (TextView) findViewById(R.id.line6textview),
+                (TextView) findViewById(R.id.space6textview),
+        };
+
+        melodyText = (TextView) findViewById(R.id.stafftextview);
 
         backButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -74,10 +99,41 @@ public class MelodyActivity extends AppCompatActivity {
 
     void initText() {
 
-        String text = notation.unicode.get(Notation.syntax.STAFF5LINES)
-                + notation.unicode.get(Notation.syntax.STAFF5LINES)
-                + notation.unicode.get(Notation.syntax.STAFF5LINES);
+        //HashMap<syntax, String> unicode = Notation.unicode;
+
+        // FIXME Testing text view
+        // Log.d("melody text view",  (melodyText.getText()).toString());
+
+        String text =
+                unicode.get(BARLINESINGLE)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(STAFF5LINES)
+                + unicode.get(BARLINESINGLE);
+
+        //Log.d("setting text to: ", String.valueOf(Html.fromHtml(text, 0)));
 
         melodyText.setText(text);
+        //melodyText.setText((new UnicodeSet("[\\u20B9]")).toString());
+        //melodyText.setText(getString(R.string.STAFF5LINES));
+        //melodyText.setText(new char[]{'♩'}, 0, 1);
+        //Log.d("new melody text view", melodyText.getText().toString());
+    }
+
+    void addNoteToStaff(Syntax symbol, int lineNum) {
+
     }
 }
