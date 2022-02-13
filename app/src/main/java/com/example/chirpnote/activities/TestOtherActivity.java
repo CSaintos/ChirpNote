@@ -21,6 +21,7 @@ import android.widget.ToggleButton;
 import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ConstructedMelody;
+import com.example.chirpnote.ConstructedMelody.NoteDuration;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
@@ -28,16 +29,18 @@ import com.example.chirpnote.RealTimeMelody;
 import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestOtherActivity extends AppCompatActivity {
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
     // A list of music notes to be played on the UI keyboard
     private ArrayList<MusicNote> pianoKeys;
-    // A list of toggle buttons, used to select the duration of the note we want to add to the melody
-    private ArrayList<ToggleButton> noteTypes;
+    // A map of NoteDurations -> ToggleButtons: toggles are used to select the duration of the note we want to add to the melody
+    private HashMap<NoteDuration, ToggleButton> noteDurations;
     // The currently selected note type to add
-    private int toggledNoteType = -1;
+    private NoteDuration toggledNote = null;
     // A melody that is recorded in real time by playing the keyboard
     private RealTimeMelody realTimeMelody;
     // A melody that is recorded (constructed) by adding notes one at a time
@@ -126,8 +129,8 @@ public class TestOtherActivity extends AppCompatActivity {
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         note.play(midiDriver);
-                        if(constructedMelody.isRecording() && toggledNoteType > -1){
-                            constructedMelody.addNote(note, (int) Math.pow(2, toggledNoteType));
+                        if(constructedMelody.isRecording() && toggledNote != null){
+                            constructedMelody.addNote(note, toggledNote);
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         note.stop(midiDriver);
@@ -138,28 +141,29 @@ public class TestOtherActivity extends AppCompatActivity {
         }
 
         // Note type/duration toggles
-        noteTypes = new ArrayList<>();
-        noteTypes.add((ToggleButton) findViewById(R.id.wholeToggleButton));
-        noteTypes.add((ToggleButton) findViewById(R.id.halfToggleButton));
-        noteTypes.add((ToggleButton) findViewById(R.id.quarterToggleButton));
-        noteTypes.add((ToggleButton) findViewById(R.id.eighthToggleButton));
-        for(ToggleButton tb : noteTypes){
-            tb.setEnabled(false);
+        noteDurations = new HashMap<>();
+        noteDurations.put(NoteDuration.WHOLE_NOTE, (ToggleButton) findViewById(R.id.wholeToggleButton));
+        noteDurations.put(NoteDuration.HALF_NOTE, (ToggleButton) findViewById(R.id.halfToggleButton));
+        noteDurations.put(NoteDuration.QUARTER_NOTE, (ToggleButton) findViewById(R.id.quarterToggleButton));
+        noteDurations.put(NoteDuration.EIGHTH_NOTE, (ToggleButton) findViewById(R.id.eighthToggleButton));
+        for(ToggleButton toggle : noteDurations.values()){
+            toggle.setEnabled(false);
         }
 
-        // Setup event listener for each note type toggle
-        for(int i = 0; i < noteTypes.size(); i++){
-            int current = i;
-            noteTypes.get(i).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        // Setup event listener for each note duration toggle
+        for(Map.Entry<NoteDuration, ToggleButton> entry : noteDurations.entrySet()){
+            NoteDuration duration = entry.getKey();
+            ToggleButton toggle = entry.getValue();
+            toggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
-                        if(toggledNoteType > -1){
-                            noteTypes.get(toggledNoteType).setChecked(false);
+                        if(toggledNote != null){
+                            noteDurations.get(toggledNote).setChecked(false);
                         }
-                        toggledNoteType = current;
+                        toggledNote = duration;
                     } else {
-                        toggledNoteType = -1;
+                        toggledNote = null;
                     }
                 }
             });
@@ -179,8 +183,8 @@ public class TestOtherActivity extends AppCompatActivity {
                     addNotesButton.setText("Add Notes to Melody");
                     constructedMelody.stopRecording();
                 }
-                for(ToggleButton tb : noteTypes){
-                    tb.setEnabled(constructedMelody.isRecording());
+                for(ToggleButton toggle : noteDurations.values()){
+                    toggle.setEnabled(constructedMelody.isRecording());
                 }
             }
         });
