@@ -32,9 +32,55 @@ public class Session implements Serializable {
             return string;
         }
     }
+
+    public enum Note {
+        C("C"),
+        C_SHARP("C#"),
+        D("D"),
+        D_SHARP("D#"),
+        E("E"),
+        F("F"),
+        F_SHARP("F#"),
+        G("G"),
+        G_SHARP("G#"),
+        A("A"),
+        A_SHARP("A#"),
+        B("B");
+
+        private String string;
+
+        Note(String str){
+            string = str;
+        }
+
+        @Override
+        public String toString(){
+            return string;
+        }
+    }
+
+    public enum KeyType {
+        MAJOR("MAJOR"),
+        MINOR("MINOR");
+
+        private String string;
+
+        KeyType(String str){
+            string = str;
+        }
+
+        @Override
+        public String toString(){
+            return string;
+        }
+    }
+
     private String mName;
     private Key mKey;
     private int mTempo;
+
+    private Note mNote;
+    private KeyType mKeyType;
 
     /**
      * A session (ChirpNote's project/song type)
@@ -51,6 +97,36 @@ public class Session implements Serializable {
             mTempo = 120;
         }
     }
+
+    /**
+     * TESTING
+     */
+    public Session(String name, Note note, KeyType keyType, int tempo){
+        mNote = note;
+        mKeyType = keyType;
+        if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
+            mTempo = tempo;
+        } else {
+            mTempo = 120;
+        }
+    }
+
+    public int getNoteValue()
+    {
+        if (mNote == Note.C)
+        {
+            return 60;
+        }
+        else if (mNote == Note.D)
+        {
+            return 62;
+        }
+        else
+        {
+            return 64;
+        }
+    }
+
 
     /**
      * Gets the name of this session
@@ -75,4 +151,8 @@ public class Session implements Serializable {
     public int getTempo(){
         return mTempo;
     }
+
+    public Note getNote() {return mNote;}
+
+    public KeyType getKeyType() {return mKeyType;}
 }

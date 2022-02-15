@@ -1,11 +1,11 @@
 package com.example.chirpnote.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chirpnote.R;
 
@@ -26,6 +26,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         Button testKeyboardButton = (Button) findViewById(R.id.testKeyboardButton);
         Button testOtherButton = (Button) findViewById(R.id.testOtherButton);
         Button testMelodyActButton = (Button) findViewById(R.id.testMelodyActButton);
+
+        // create my button here, link it button in xml
+        Button testSmartKeyboardButton = (Button) findViewById(R.id.testSmartKeyboardButton);
+
 
         //new session button function
         newSessionButton.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +98,14 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeScreenActivity.this, MelodyActivity.class));
+            }
+        });
+
+        // Button to Melody Activity (for testing)
+        testSmartKeyboardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeScreenActivity.this, SmartKeyboardActivity.class));
             }
         });
 

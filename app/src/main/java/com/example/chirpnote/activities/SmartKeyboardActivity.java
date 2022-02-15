@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
+import com.example.chirpnote.Session;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
@@ -34,6 +35,9 @@ public class SmartKeyboardActivity extends AppCompatActivity {
 
         Context context = this;
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
+
+        Session session = new Session("Session1", Session.Note.D, Session.KeyType.MAJOR, 120);
+
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
@@ -48,12 +52,13 @@ public class SmartKeyboardActivity extends AppCompatActivity {
 
         //maybe create a session.getKeyValue to initialize the piano keys in a for loop
 
-        int keyStart = session.getKeyValue; // need to modify session class to get this to work
+        //int keyStart = session.getKeyValue; // need to modify session class to get this to work
+        int keyStart = session.getNoteValue();
         int temp = keyStart;
-        String keyType = session.getKeyType; // major or minor
+        Session.KeyType keyType = session.getKeyType(); // major or minor
         ArrayList<Integer> list = new ArrayList<Integer>();
 
-        if (keyType.equals("major")) {
+        if (keyType == Session.KeyType.MAJOR) {
             for (int i = 1; i < 8; i++)
                 if (i == 3 || i == 7) // for half steps
                 {
