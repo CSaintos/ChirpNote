@@ -33,10 +33,12 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         Button recordButton = (Button) findViewById(R.id.recordButton);
         Button playButton = (Button) findViewById(R.id.playButton);
 
+        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
+
         Context context = this;
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
 
-        Session session = new Session("Session1", Session.Note.D, Session.KeyType.MINOR, 120);
+        Session session = new Session("Session1", Session.Note.C, Session.KeyType.MAJOR, 120);
 
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
@@ -127,6 +129,17 @@ public class SmartKeyboardActivity extends AppCompatActivity {
                     playButton.setText("Play");
                     melody.stop();
                 }
+            }
+        });
+
+        // Event listener for changeKey button
+        changeKeyButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Session session = new Session("Session1", Session.Note.E, Session.KeyType.MINOR, 120);
+                session.setKeyType(Session.KeyType.MINOR);
+                session.setNote(Session.Note.E);
+
             }
         });
 

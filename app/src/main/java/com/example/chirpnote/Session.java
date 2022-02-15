@@ -155,4 +155,10 @@ public class Session implements Serializable {
     public Note getNote() {return mNote;}
 
     public KeyType getKeyType() {return mKeyType;}
+
+
+
+    public void setNote(Note note) {mNote = note;}
+
+    public void setKeyType(KeyType keyType) {mKeyType = keyType;}
 }
