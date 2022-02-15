@@ -36,7 +36,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         Context context = this;
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
 
-        Session session = new Session("Session1", Session.Note.D, Session.KeyType.MAJOR, 120);
+        Session session = new Session("Session1", Session.Note.C, Session.KeyType.MAJOR, 120);
 
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
@@ -57,6 +57,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         int temp = keyStart;
         Session.KeyType keyType = session.getKeyType(); // major or minor
         ArrayList<Integer> list = new ArrayList<Integer>();
+        list.add(keyStart);
 
         if (keyType == Session.KeyType.MAJOR) {
             for (int i = 1; i < 8; i++)
@@ -88,6 +89,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
                 }
             }
         }
+
 
         pianoKeys.add(new MusicNote(list.get(0), (Button) findViewById(R.id.key1), melody));
         pianoKeys.add(new MusicNote(list.get(1), (Button) findViewById(R.id.key2), melody));
