@@ -36,7 +36,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         Context context = this;
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
 
-        Session session = new Session("Session1", Session.Note.C, Session.KeyType.MAJOR, 120);
+        Session session = new Session("Session1", Session.Note.D, Session.KeyType.MINOR, 120);
 
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
@@ -53,23 +53,23 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         //maybe create a session.getKeyValue to initialize the piano keys in a for loop
 
         //int keyStart = session.getKeyValue; // need to modify session class to get this to work
-        int keyStart = session.getNoteValue();
-        int temp = keyStart;
+        int noteStart = session.getNoteValue();
+        int currentNote = noteStart;
         Session.KeyType keyType = session.getKeyType(); // major or minor
         ArrayList<Integer> list = new ArrayList<Integer>();
-        list.add(keyStart);
+        list.add(noteStart);
 
         if (keyType == Session.KeyType.MAJOR) {
             for (int i = 1; i < 8; i++)
                 if (i == 3 || i == 7) // for half steps
                 {
-                    temp = temp + 1;
-                    list.add(temp);
+                    currentNote = currentNote + 1;
+                    list.add(currentNote);
                 }
                 else
                 {
-                    temp = temp + 2;
-                    list.add(temp);
+                    currentNote = currentNote + 2;
+                    list.add(currentNote);
                 }
         }
         else // if not major then harmonic minor
@@ -77,15 +77,15 @@ public class SmartKeyboardActivity extends AppCompatActivity {
             for (int i = 1; i < 8; i++) {
                 if (i == 6) // for the raised 7th
                 {
-                    temp = temp + 3;
-                    list.add(temp);
+                    currentNote = currentNote + 3;
+                    list.add(currentNote);
                 } else if (i == 2 || i == 5 || i == 7) // half steps
                 {
-                    temp = temp + 1;
-                    list.add(temp);
+                    currentNote = currentNote + 1;
+                    list.add(currentNote);
                 } else {
-                    temp = temp + 2;
-                    list.add(temp);
+                    currentNote = currentNote + 2;
+                    list.add(currentNote);
                 }
             }
         }
