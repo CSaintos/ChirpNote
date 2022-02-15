@@ -25,6 +25,7 @@ import com.example.chirpnote.ConstructedMelody.NoteDuration;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
+import com.example.chirpnote.Track;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
@@ -47,6 +48,8 @@ public class TestOtherActivity extends AppCompatActivity {
     private ConstructedMelody constructedMelody;
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
+    // Which track was most recently recorded
+    Track lastTrack;
     // State of playback
     private boolean playing = false;
     // A list of chords
@@ -140,7 +143,7 @@ public class TestOtherActivity extends AppCompatActivity {
             });
         }
 
-        // Note type/duration toggles
+        // Note duration toggles
         noteDurations = new HashMap<>();
         noteDurations.put(NoteDuration.WHOLE_NOTE, (ToggleButton) findViewById(R.id.wholeToggleButton));
         noteDurations.put(NoteDuration.HALF_NOTE, (ToggleButton) findViewById(R.id.halfToggleButton));
@@ -179,6 +182,7 @@ public class TestOtherActivity extends AppCompatActivity {
                 if(!constructedMelody.isRecording()){
                     addNotesButton.setText("Stop Adding Notes");
                     constructedMelody.startRecording();
+                    lastTrack = constructedMelody;
                 } else {
                     addNotesButton.setText("Add Notes to Melody");
                     constructedMelody.stopRecording();
@@ -199,6 +203,7 @@ public class TestOtherActivity extends AppCompatActivity {
                 if(!realTimeMelody.isRecording()){
                     recordMelodyButton.setText("End Recording");
                     realTimeMelody.startRecording();
+                    lastTrack = realTimeMelody;
                 } else {
                     recordMelodyButton.setText("Record Melody");
                     realTimeMelody.stopRecording();
@@ -216,6 +221,7 @@ public class TestOtherActivity extends AppCompatActivity {
                 if(!audio.isRecording()){
                     recordAudioButton.setText("End Recording");
                     audio.startRecording();
+                    lastTrack = audio;
                 } else {
                     recordAudioButton.setText("Record Audio");
                     audio.stopRecording();
@@ -227,16 +233,19 @@ public class TestOtherActivity extends AppCompatActivity {
         playButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!playing){
+                //if(!playing){
+                if(!lastTrack.isPlaying()){
                     playButton.setText("Stop");
-                    realTimeMelody.play();
+                    lastTrack.play();
+                    /*realTimeMelody.play();
                     constructedMelody.play();
-                    audio.play();
+                    audio.play();*/
                 } else {
                     playButton.setText("Play");
-                    realTimeMelody.stop();
+                    lastTrack.stop();
+                    /*realTimeMelody.stop();
                     constructedMelody.stop();
-                    audio.stop();
+                    audio.stop();*/
                 }
                 playing = !playing;
             }
