@@ -1,6 +1,5 @@
 package com.example.chirpnote.activities;
 
-import static com.example.chirpnote.Notation.Syntax.*;
 import static com.example.chirpnote.Notation.unicode;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,14 +14,18 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.chirpnote.R;
 import com.example.chirpnote.Notation.Syntax;
+import com.example.chirpnote.Notation;
+import com.example.chirpnote.Notation.NoteFont;
+import com.example.chirpnote.R;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class MelodyActivity extends AppCompatActivity {
 
-    //private Notation notation = new Notation();
+    private Notation notation = new Notation();
+
     private Button[] keyButtons;
     private TextView[] staffLines;
     private Button backButton;
@@ -30,10 +33,14 @@ public class MelodyActivity extends AppCompatActivity {
     private Button rightButton;
     private TextView melodyText;
 
+    private LinkedList<NoteFont> noteList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_melody);
+
+        noteList = new LinkedList<>();
 
         backButton = (Button) findViewById(R.id.melodybackbutton);
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
@@ -84,56 +91,69 @@ public class MelodyActivity extends AppCompatActivity {
         });
 
         initText();
+        // FIXME only for testing
+        noteList.add(notation.new NoteFont(Syntax.SPACE, 5));
+        noteList.add(notation.new NoteFont(Syntax.NOTE8THUP, 5));
 
         // Setup listeners for each piano key
-        for (Button note : keyButtons) {
-            note.setOnTouchListener(new OnTouchListener() {
+        for (int i = 0; i < keyButtons.length; i++) {
+            int finalI = i;
+            keyButtons[i].setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent e) {
-                    // TODO add functionality
+                    // FIXME this is incorrect
+                    noteList.removeLast();
+                    noteList.add(notation.new NoteFont(Syntax.NOTE8THUP, finalI + 1));
+                    displayText();
+
                     return false;
                 }
             });
         }
+
+        displayText();
     }
 
+    /*
+    Initializes the display text with the staff and adds a temporary
+    element into noteList
+     */
     void initText() {
+        StringBuffer sb = new StringBuffer();
 
-        //HashMap<syntax, String> unicode = Notation.unicode;
+        sb.append(unicode.get(Syntax.BARLINESINGLE));
+        for (int i = 0; i < 16; i++) {
+            sb.append(unicode.get(Syntax.STAFF5LINES));
+        }
+        sb.append(unicode.get(Syntax.BARLINESINGLE));
 
-        // FIXME Testing text view
-        // Log.d("melody text view",  (melodyText.getText()).toString());
+        melodyText.setText(sb.toString());
 
-        String text =
-                unicode.get(BARLINESINGLE)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(STAFF5LINES)
-                + unicode.get(BARLINESINGLE);
-
-        //Log.d("setting text to: ", String.valueOf(Html.fromHtml(text, 0)));
-
-        melodyText.setText(text);
-        //melodyText.setText((new UnicodeSet("[\\u20B9]")).toString());
-        //melodyText.setText(getString(R.string.STAFF5LINES));
-        //melodyText.setText(new char[]{'♩'}, 0, 1);
-        //Log.d("new melody text view", melodyText.getText().toString());
+        // TODO do this better
+        noteList.add(notation.new NoteFont(Syntax.GCLEF, 5));
     }
 
-    void addNoteToStaff(Syntax symbol, int lineNum) {
+    /*
+    Displays text from the noteList in the order given.
+     */
+    void displayText() {
+        StringBuffer[] sb = new StringBuffer[staffLines.length];
+        for (int i = 0; i < staffLines.length; i++) {
+            sb[i] = new StringBuffer();
+        }
 
+        for (NoteFont nf : noteList) {
+            for (int i = 0; i < staffLines.length; i++) {
+                if (nf.lineNum == i) {
+                    sb[i].append(unicode.get(nf.symbol));
+                } else {
+                    sb[i].append(unicode.get(Syntax.SPACE));
+                }
+            }
+        }
+
+        for (int i = 0; i < staffLines.length; i++) {
+            staffLines[i].setText(sb[i]);
+        }
     }
 }
