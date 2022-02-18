@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -49,12 +50,21 @@ public class RecordAudioActivity extends AppCompatActivity {
                 playRecordedAudioButton.setEnabled(audio.isRecording());
                 if(!audio.isRecording()){
                     audio.startRecording();
+
+                    timer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                        @Override
+                        public void onChronometerTick(Chronometer chronometer) {
+                            //TODO Visualizer Fix
+                            //waveformView.insertAmplitude((byte) (audio.getmMediaRecorder().getMaxAmplitude()));
+                        }
+                    });
+
+
                 } else {
                     audio.stopRecording();
                     timer.stop();
                 }
             }
-
         });
 
         playRecordedAudioButton.setOnClickListener(new View.OnClickListener() {
@@ -80,11 +90,6 @@ public class RecordAudioActivity extends AppCompatActivity {
                 playing = !playing;
             }
         });
-        timer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                //waveformView.insertAmplitude((byte) MediaRecorder.getAudioSourceMax());
-            }
-        });
+
     }
 }

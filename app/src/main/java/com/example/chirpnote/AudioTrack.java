@@ -161,6 +161,14 @@ public class AudioTrack implements Track {
     }
 
     /**
+     * Getter for mediaRecorder
+     * @return mediaRecorder
+     */
+    public MediaRecorder getmMediaRecorder() {
+        return mMediaRecorder;
+    }
+
+    /**
      * Stops playback of this audio track
      * @return False if not currently playing the audio track
      */
