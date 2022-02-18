@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class WaveformView extends View {
     public WaveformView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        paint.setColor(Color.GREEN);
+        //paint.setColor(Color.GREEN);
         screenWidth = (float) context.getResources().getDisplayMetrics().widthPixels;
         maxSpike = (int) (screenWidth / (width + distance));
     }

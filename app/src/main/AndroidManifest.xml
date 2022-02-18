@@ -59,7 +59,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.SetKeyActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".activities.SmartKeyboardActivity"
             android:exported="false" />
@@ -78,7 +78,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.RecordAudioActivity"
-            android:exported="false" />
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import android.media.MediaRecorder.AudioEncoder;
 import android.media.MediaRecorder.AudioSource;
 import android.media.MediaRecorder.OutputFormat;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import java.io.IOException;
 
@@ -24,6 +25,7 @@ public class AudioTrack implements Track {
     // For playback
     private MediaPlayer mMediaPlayer;
     private Button mPlayButton;
+    private ImageButton mPlayImageButton;
 
     /**
      * An audio track
@@ -53,6 +55,30 @@ public class AudioTrack implements Track {
             }
         });
         mPlayButton = playButton;
+    }
+
+    public AudioTrack(String filePath, ImageButton playImageButton) {
+        mRecording = false;
+        mRecorded = false;
+        mAudioRewritten = false;
+
+        mMediaRecorder = new MediaRecorder();
+        mFilePath = filePath;
+
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+            }
+        });
+        mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.stop();
+            }
+        });
+        mPlayImageButton = playImageButton;
     }
 
     /**
