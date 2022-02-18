@@ -11,7 +11,7 @@ public class MusicNote {
     private RealTimeMelody mMelody;
     // The velocity is a default value for all music notes, as most Android device do not have
     // a pressure sensor in the display, so we have no way of obtaining the velocity for all devices
-    public final int VELOCITY = 110;
+    public final int VELOCITY = 100;
 
     /**
      * A music note

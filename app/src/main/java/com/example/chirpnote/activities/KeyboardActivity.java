@@ -18,7 +18,7 @@ import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.ArrayList;
 
-public class TestMusicActivity extends AppCompatActivity {
+public class KeyboardActivity extends AppCompatActivity {
 
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
@@ -27,7 +27,7 @@ public class TestMusicActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_music);
+        setContentView(R.layout.activity_keyboard);
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
         Button playButton = (Button) findViewById(R.id.playButton);

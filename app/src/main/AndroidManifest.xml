@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
         <activity
+            android:name=".activities.SetKeyActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.SessionActivity"
             android:exported="false" />
         <activity
@@ -55,10 +58,10 @@
             android:name=".activities.MelodyActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.TestMusicActivity"
+            android:name=".activities.KeyboardActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SetKeyActivity"
+            android:name=".activities.SetKeyFromSongActivity"
             android:exported="false" />
         <activity
             android:name=".activities.SmartKeyboardActivity"

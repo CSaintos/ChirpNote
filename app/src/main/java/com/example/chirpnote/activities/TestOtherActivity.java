@@ -256,7 +256,7 @@ public class TestOtherActivity extends AppCompatActivity {
         setKeyTestButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TestOtherActivity.this, SetKeyActivity.class);
+                Intent intent = new Intent(TestOtherActivity.this, SetKeyFromSongActivity.class);
                 startActivity(intent);
             }
         });
