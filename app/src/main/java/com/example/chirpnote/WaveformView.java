@@ -32,8 +32,8 @@ public class WaveformView extends View {
     private int maxSpike;
 
     public void insertAmplitude(float amplitude){
-        amplitudeList.add(amplitude);
-
+        float normalization = (float) Math.min((int) amplitude/7,400);
+        amplitudeList.add(normalization);
         amplitudeSpikes.clear();
         ArrayList<Float> amps = (ArrayList<Float>) amplitudeList.subList(maxSpike,amplitudeList.size()+1);
 

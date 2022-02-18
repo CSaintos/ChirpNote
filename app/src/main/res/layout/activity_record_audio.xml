@@ -19,15 +19,18 @@
 
     <ImageButton
         android:id="@+id/recordAudioActivityButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="62dp"
+        android:layout_height="62dp"
         android:layout_marginBottom="128dp"
+        android:background="#00FFFFFF"
         android:contentDescription="Record"
+        android:scaleType="fitCenter"
+        android:src="@drawable/record_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.335"
+        app:layout_constraintHorizontal_bias="0.318"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_btn_speak_now" />
+        tools:src="@drawable/record_button" />
 
     <ImageButton
         android:id="@+id/playRecordedAudioButton"
@@ -35,12 +38,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="128dp"
         android:contentDescription="Recorded Playback"
+        android:src="@android:drawable/ic_media_play"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.701"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_media_play"
-        tools:ignore="ImageContrastCheck" />
+        tools:ignore="ImageContrastCheck"
+        tools:src="@android:drawable/ic_media_play" />
 
     <TextView
         android:id="@+id/recordAudioText"
@@ -52,4 +56,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Chronometer
+        android:id="@+id/recordTimer"
+        android:layout_width="123dp"
+        android:layout_height="48dp"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.689" />
 </androidx.constraintlayout.widget.ConstraintLayout>
