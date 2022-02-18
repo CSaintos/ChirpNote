@@ -13,6 +13,7 @@ public class Notation {
      * Enumeration of individual music syntax symbols
      */
     public enum Syntax {
+        SPACE,
         STAFF5LINES,
         BARLINESINGLE,
         BARLINEFINAL,
@@ -42,6 +43,7 @@ public class Notation {
     public static HashMap<Syntax, String> unicode;
     {
         unicode = new HashMap<>();
+        unicode.put(Syntax.SPACE, "     ");
         unicode.put(Syntax.STAFF5LINES, "\uE014");
         unicode.put(Syntax.BARLINESINGLE, "\uE030");
         unicode.put(Syntax.BARLINEFINAL, "\uE032");
@@ -60,6 +62,16 @@ public class Notation {
         unicode.put(Syntax.NOTE32NDUP, "\uE1DB");
         unicode.put(Syntax.NOTE32NDDOWN, "\uE1DC");
         unicode.put(Syntax.AUGMENTATIONDOT, "\uE1E7");
+    }
+
+    public class NoteFont {
+        public NoteFont() {}
+        public NoteFont(Syntax symbol, int lineNum) {
+            this.symbol = symbol;
+            this.lineNum = lineNum;
+        }
+        public Syntax symbol;
+        public int lineNum;
     }
 
 }
