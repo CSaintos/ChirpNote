@@ -1,12 +1,9 @@
 package com.example.chirpnote.activities;
 
 import android.content.Context;
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import com.example.chirpnote.AudioTrack;
@@ -16,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RecordAudioActivity extends AppCompatActivity {
 
@@ -29,6 +29,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     private Chronometer timer;
     private WaveformView waveformView;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_record_audio);
@@ -37,6 +38,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         recordButton = findViewById(R.id.recordAudioActivityButton);
         playRecordedAudioButton = findViewById(R.id.playRecordedAudioButton);
         playRecordedAudioButton.setEnabled(false);
+        waveformView = findViewById(R.id.waveformView);
         // Audio track
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp4";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
@@ -45,24 +47,26 @@ public class RecordAudioActivity extends AppCompatActivity {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Timer ticker = new Timer();
                 timer.setBase(SystemClock.elapsedRealtime());
                 timer.start();
                 playRecordedAudioButton.setEnabled(audio.isRecording());
                 if(!audio.isRecording()){
                     audio.startRecording();
-
-                    timer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                    ticker.schedule(new TimerTask() {
                         @Override
-                        public void onChronometerTick(Chronometer chronometer) {
-                            //TODO Visualizer Fix
-                            //waveformView.insertAmplitude((byte) (audio.getmMediaRecorder().getMaxAmplitude()));
+                        public void run() {
+                            waveformView.insertAmplitude((float) (audio.getmMediaRecorder().getMaxAmplitude()));
+
                         }
-                    });
+                    },0,100);
 
 
                 } else {
                     audio.stopRecording();
                     timer.stop();
+                    ticker.cancel();
+
                 }
             }
         });
