@@ -79,7 +79,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         testKeyboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeScreenActivity.this, TestMusicActivity.class);
+                Intent intent = new Intent(HomeScreenActivity.this, KeyboardActivity.class);
                 startActivity(intent);
             }
         });

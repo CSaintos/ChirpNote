@@ -18,5 +18,6 @@ public class SessionActivity extends AppCompatActivity {
         Session session = (Session) getIntent().getSerializableExtra("session");
         ((TextView) findViewById(R.id.sessionNameText)).setText("Session Name: " + session.getName());
         ((TextView) findViewById(R.id.tempoText)).setText("Tempo: " + session.getTempo() + " BPM");
+        ((TextView) findViewById(R.id.keyText)).setText("Key: " + session.getKey());
     }
 }

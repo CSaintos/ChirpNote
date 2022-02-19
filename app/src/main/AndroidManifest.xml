@@ -8,10 +8,13 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="Chirpnote"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
+        <activity
+            android:name=".activities.SetKeyActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.SessionActivity"
             android:exported="false" />
@@ -55,11 +58,11 @@
             android:name=".activities.MelodyActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.TestMusicActivity"
+            android:name=".activities.KeyboardActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SetKeyActivity"
-            android:exported="false" />
+            android:name=".activities.SetKeyFromSongActivity"
+            android:exported="true" />
         <activity
             android:name=".activities.SmartKeyboardActivity"
             android:exported="false" />
@@ -78,7 +81,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.RecordAudioActivity"
-            android:exported="false" />
+            android:exported="true" />
     </application>
 
 </manifest>
