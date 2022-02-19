@@ -36,6 +36,13 @@ public class Notation {
         NOTE_16TH_DOWN("\uE1DA"),
         NOTE_32ND_UP("\uE1DB"),
         NOTE_32ND_DOWN("\uE1DC"),
+        /** REST */
+        REST_WHOLE("\uE4E3"),
+        REST_HALF("\uE4E4"),
+        REST_QUARTER("\uE4E5"),
+        REST_8TH("\uE4E6"),
+        REST_16TH("\uE4E7"),
+        REST_32ND("\uE4E8"),
         /** ACCIDENTAL */
         ACCIDENTAL_FLAT("\uE1E7"),
         ACCIDENTAL_NATURAL("\uE261"),
@@ -48,6 +55,7 @@ public class Notation {
         public static final EnumSet<Syntax> STAFF = EnumSet.range(STAFF_5_LINES, BARLINE_REVERSE_FINAL);
         public static final EnumSet<Syntax> CLEF = EnumSet.range(SPACE_CLEF, F_CLEF);
         public static final EnumSet<Syntax> NOTE = EnumSet.range(SPACE_NOTE, NOTE_32ND_DOWN);
+        public static final EnumSet<Syntax> REST = EnumSet.range(REST_WHOLE, REST_32ND);
         public static final EnumSet<Syntax> ACCIDENTAL = EnumSet.range(ACCIDENTAL_FLAT, ACCIDENTAL_SHARP);
         public static final EnumSet<Syntax> MISC = EnumSet.of(AUGMENTATION_DOT);
 

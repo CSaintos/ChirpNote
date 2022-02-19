@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteCsharpbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/button_blackkey"
         android:text="C#"
@@ -21,7 +21,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteDsharpbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/button_blackkey"
         android:text="D#"
@@ -33,7 +33,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteGsharpbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/button_blackkey"
         android:text="G#"
@@ -45,7 +45,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteAsharpbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/button_blackkey"
         android:text="A#"
@@ -57,7 +57,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteFsharpbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/button_blackkey"
         android:text="F#"
@@ -332,7 +332,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteCbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginStart="6dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
@@ -344,7 +344,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteDbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
         android:text="D"
@@ -355,7 +355,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteEbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
         android:text="E"
@@ -366,7 +366,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteFbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
         android:text="F"
@@ -377,7 +377,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteGbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
         android:text="G"
@@ -388,7 +388,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteAbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
         android:text="A"
@@ -399,7 +399,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteBbutton"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
         android:text="B"
@@ -410,7 +410,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteCbutton2"
         android:layout_width="50dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
@@ -418,5 +418,80 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/melodynoteBbutton" />
+
+    <RadioGroup
+        android:id="@+id/melodyradiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="199dp"
+        android:layout_marginEnd="212dp"
+        android:orientation="horizontal"
+        android:translationY="-40dp"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteFsharpbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/melodytextlayout">
+
+        <RadioButton
+            android:id="@+id/melodywholeradiobutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bravura"
+            android:text="Whole" />
+
+        <RadioButton
+            android:id="@+id/melodyhalfradiobutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bravura"
+            android:text="Half" />
+
+        <RadioButton
+            android:id="@+id/melody4thradiobutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/bravura"
+            android:text="Quarter" />
+
+        <RadioButton
+            android:id="@+id/melody8thradiobutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/bravura"
+            android:text="8th" />
+
+        <RadioButton
+            android:id="@+id/melody16thradiobutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/bravura"
+            android:text="16th" />
+
+        <RadioButton
+            android:id="@+id/melody32ndradiobutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/bravura"
+            android:text="32nd" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/melodyrestbutton"
+        android:layout_width="74dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="158dp"
+        android:layout_marginEnd="159dp"
+        android:layout_marginBottom="21dp"
+        android:text="Rest"
+        android:translationY="-10dp"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteGsharpbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

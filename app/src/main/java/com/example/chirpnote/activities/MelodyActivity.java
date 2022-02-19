@@ -5,6 +5,7 @@ import static com.example.chirpnote.Notation.Syntax;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 //import com.example.chirpnote.Notation.Syntax;
@@ -29,14 +31,18 @@ public class MelodyActivity extends AppCompatActivity {
 
     private Button[] keyButtons;
     private TextView[] staffLines;
+    private RadioButton[] noteLengthButtons;
     private Button backButton;
     private Button leftButton;
     private Button rightButton;
+    private Button restButton;
     private TextView melodyText;
     private TextView gclefText;
 
     private LinkedList<NoteFont> noteList;
+    private NoteFont noteLength;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +53,7 @@ public class MelodyActivity extends AppCompatActivity {
         backButton = (Button) findViewById(R.id.melodybackbutton);
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
         rightButton = (Button) findViewById(R.id.melodyrightbutton);
+        restButton = (Button) findViewById(R.id.melodyrestbutton);
 
         keyButtons = new Button[] {
                 (Button) findViewById(R.id.melodynoteCbutton),
@@ -85,6 +92,15 @@ public class MelodyActivity extends AppCompatActivity {
         melodyText = (TextView) findViewById(R.id.stafftextview);
         gclefText = (TextView) findViewById(R.id.gcleftextview);
 
+        noteLengthButtons = new RadioButton[] {
+                (RadioButton) findViewById(R.id.melodywholeradiobutton),
+                (RadioButton) findViewById(R.id.melodyhalfradiobutton),
+                (RadioButton) findViewById(R.id.melody4thradiobutton),
+                (RadioButton) findViewById(R.id.melody8thradiobutton),
+                (RadioButton) findViewById(R.id.melody16thradiobutton),
+                (RadioButton) findViewById(R.id.melody32ndradiobutton)
+        };
+
         backButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,11 +110,98 @@ public class MelodyActivity extends AppCompatActivity {
             }
         });
 
+        leftButton.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+
+        rightButton.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+
+        restButton.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                noteList.removeLast();
+                //Log.d("Note Length", String.valueOf(noteLength.symbol));
+                switch (noteLength.symbol) {
+                    case NOTE_WHOLE:
+                        noteList.add(notation.new NoteFont(Syntax.REST_WHOLE, 5));
+                        break;
+                    case NOTE_HALF_UP:
+                    case NOTE_HALF_DOWN:
+                        noteList.add(notation.new NoteFont(Syntax.REST_HALF, 5));
+                        break;
+                    case NOTE_QUARTER_UP:
+                    case NOTE_QUARTER_DOWN:
+                        noteList.add(notation.new NoteFont(Syntax.REST_QUARTER, 5));
+                        break;
+                    case NOTE_8TH_UP:
+                    case NOTE_8TH_DOWN:
+                        noteList.add(notation.new NoteFont(Syntax.REST_8TH, 5));
+                        break;
+                    case NOTE_16TH_UP:
+                    case NOTE_16TH_DOWN:
+                        noteList.add(notation.new NoteFont(Syntax.REST_16TH, 5));
+                        break;
+                    case NOTE_32ND_UP:
+                    case NOTE_32ND_DOWN:
+                        noteList.add(notation.new NoteFont(Syntax.REST_32ND, 5));
+                        break;
+                }
+
+                displayText();
+
+                return false;
+            }
+        });
+
+        for (int i = 0; i < noteLengthButtons.length; i++) {
+            int finalI = i;
+            noteLengthButtons[i].setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (finalI) {
+                        case 0:
+                            noteLength = notation.new NoteFont(Syntax.NOTE_WHOLE, -1);
+                            break;
+                        case 1:
+                            noteLength = notation.new NoteFont(Syntax.NOTE_HALF_UP, -1);
+                            break;
+                        case 2:
+                            noteLength = notation.new NoteFont(Syntax.NOTE_QUARTER_UP, -1);
+                            break;
+                        case 3:
+                            noteLength = notation.new NoteFont(Syntax.NOTE_8TH_UP, -1);
+                            break;
+                        case 4:
+                            noteLength = notation.new NoteFont(Syntax.NOTE_16TH_UP, -1);
+                            break;
+                        case 5:
+                            noteLength = notation.new NoteFont(Syntax.NOTE_32ND_UP, -1);
+                            break;
+                    }
+
+                    return false;
+                }
+            });
+        }
+
+        /**
+         * Default noteLength and noteLengthButton
+         */
+        noteLengthButtons[0].toggle();
+        noteLength = notation.new NoteFont(Syntax.NOTE_WHOLE, -1);
+
+        // Initialize staff
         initText();
-        // FIXME remove comments once done
-        //noteList.add(notation.new NoteFont(Syntax.SPACE_NOTE, 5));
-        //noteList.add(notation.new NoteFont(Syntax.ACCIDENTAL_SHARP, 5));
-        noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 5));
+        // Add default note to staff
+        noteList.add(notation.new NoteFont(noteLength.symbol, 5));
 
         // Setup listeners for each piano key
         // Attaches each key to a specifc line on the staff
@@ -111,45 +214,45 @@ public class MelodyActivity extends AppCompatActivity {
                     noteList.removeLast();
                     switch (finalI) {
                         case 0:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 1));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, 1));
                             break;
                         case 1:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 1));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 1));
                             break;
                         case 2:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 2));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, 2));
                             break;
                         case 3:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 2));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 2));
                             break;
                         case 4:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 3));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, 3));
                             break;
                         case 5:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 4));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, 4));
                             break;
                         case 6:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 4));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 4));
                             break;
                         case 7:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 5));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, 5));
                             break;
                         case 8:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 5));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 5));
                             break;
                         case 9:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 6));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, 6));
                             break;
                         case 10:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 6));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 6));
                             break;
                         case 11:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 7));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, 7));
                             break;
                         case 12:
-                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 8));
+                            noteList.add(notation.new NoteFont(noteLength.symbol, 8));
                     }
-                    //noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, finalI + 1));
+
                     displayText();
 
                     return false;
