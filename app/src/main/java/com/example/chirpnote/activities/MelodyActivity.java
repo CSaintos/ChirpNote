@@ -1,6 +1,7 @@
 package com.example.chirpnote.activities;
 
-import static com.example.chirpnote.Notation.unicode;
+//import static com.example.chirpnote.Notation.unicode;
+import static com.example.chirpnote.Notation.Syntax;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.chirpnote.Notation.Syntax;
+//import com.example.chirpnote.Notation.Syntax;
 import com.example.chirpnote.Notation;
 import com.example.chirpnote.Notation.NoteFont;
 import com.example.chirpnote.R;
@@ -32,6 +33,7 @@ public class MelodyActivity extends AppCompatActivity {
     private Button leftButton;
     private Button rightButton;
     private TextView melodyText;
+    private TextView gclefText;
 
     private LinkedList<NoteFont> noteList;
 
@@ -57,6 +59,7 @@ public class MelodyActivity extends AppCompatActivity {
                 (Button) findViewById(R.id.melodynoteGbutton),
                 (Button) findViewById(R.id.melodynoteGsharpbutton),
                 (Button) findViewById(R.id.melodynoteAbutton),
+                (Button) findViewById(R.id.melodynoteAsharpbutton),
                 (Button) findViewById(R.id.melodynoteBbutton),
                 (Button) findViewById(R.id.melodynoteCbutton2)
         };
@@ -80,6 +83,7 @@ public class MelodyActivity extends AppCompatActivity {
         };
 
         melodyText = (TextView) findViewById(R.id.stafftextview);
+        gclefText = (TextView) findViewById(R.id.gcleftextview);
 
         backButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -91,19 +95,61 @@ public class MelodyActivity extends AppCompatActivity {
         });
 
         initText();
-        // FIXME only for testing
-        noteList.add(notation.new NoteFont(Syntax.SPACE, 5));
-        noteList.add(notation.new NoteFont(Syntax.NOTE8THUP, 5));
+        // FIXME remove comments once done
+        //noteList.add(notation.new NoteFont(Syntax.SPACE_NOTE, 5));
+        //noteList.add(notation.new NoteFont(Syntax.ACCIDENTAL_SHARP, 5));
+        noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 5));
 
         // Setup listeners for each piano key
+        // Attaches each key to a specifc line on the staff
         for (int i = 0; i < keyButtons.length; i++) {
             int finalI = i;
             keyButtons[i].setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent e) {
-                    // FIXME this is incorrect
+                    // FIXME this is ugly
                     noteList.removeLast();
-                    noteList.add(notation.new NoteFont(Syntax.NOTE8THUP, finalI + 1));
+                    switch (finalI) {
+                        case 0:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 1));
+                            break;
+                        case 1:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 1));
+                            break;
+                        case 2:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 2));
+                            break;
+                        case 3:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 2));
+                            break;
+                        case 4:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 3));
+                            break;
+                        case 5:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 4));
+                            break;
+                        case 6:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 4));
+                            break;
+                        case 7:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 5));
+                            break;
+                        case 8:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 5));
+                            break;
+                        case 9:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 6));
+                            break;
+                        case 10:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 6));
+                            break;
+                        case 11:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 7));
+                            break;
+                        case 12:
+                            noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, 8));
+                    }
+                    //noteList.add(notation.new NoteFont(Syntax.NOTE_8TH_UP, finalI + 1));
                     displayText();
 
                     return false;
@@ -114,44 +160,59 @@ public class MelodyActivity extends AppCompatActivity {
         displayText();
     }
 
-    /*
+    /**
     Initializes the display text with the staff and adds a temporary
     element into noteList
      */
     void initText() {
         StringBuffer sb = new StringBuffer();
 
-        sb.append(unicode.get(Syntax.BARLINESINGLE));
+        sb.append(Syntax.BARLINE_SINGLE.unicode);
         for (int i = 0; i < 16; i++) {
-            sb.append(unicode.get(Syntax.STAFF5LINES));
+            sb.append(Syntax.STAFF_5_LINES.unicode);
         }
-        sb.append(unicode.get(Syntax.BARLINESINGLE));
+        sb.append(Syntax.BARLINE_SINGLE.unicode);
 
         melodyText.setText(sb.toString());
+        // FIXME ? this might need to be implemented differently later
+        gclefText.setText(Syntax.G_CLEF.unicode);
 
-        // TODO do this better
-        noteList.add(notation.new NoteFont(Syntax.GCLEF, 5));
+        noteList.add(notation.new NoteFont(Syntax.SPACE_CLEF, 5));
+        // FIXME ? end of fixme
     }
 
-    /*
+    /**
     Displays text from the noteList in the order given.
      */
     void displayText() {
         StringBuffer[] sb = new StringBuffer[staffLines.length];
+        // Initialize string buffers
         for (int i = 0; i < staffLines.length; i++) {
             sb[i] = new StringBuffer();
         }
 
+        // Add notes to noteList
         for (NoteFont nf : noteList) {
             for (int i = 0; i < staffLines.length; i++) {
-                if (nf.lineNum == i) {
-                    sb[i].append(unicode.get(nf.symbol));
+                if (nf.lineNum == i) { // If this is the line where the note belongs
+                    if (nf.prefix != Syntax.EMPTY) {
+                        sb[i].append(nf.prefix.unicode);
+                    }
+                    sb[i].append(nf.symbol.unicode);
                 } else {
-                    sb[i].append(unicode.get(Syntax.SPACE));
+                    if (nf.prefix != Syntax.EMPTY) {
+                        sb[i].append(Syntax.SPACE_NOTE.unicode);
+                    }
+                    if (Syntax.CLEF.contains(nf.symbol)) {
+                        sb[i].append(Syntax.SPACE_CLEF.unicode);
+                    } else {
+                        sb[i].append(Syntax.SPACE_NOTE.unicode);
+                    }
                 }
             }
         }
 
+        // reset test in staffLines text views
         for (int i = 0; i < staffLines.length; i++) {
             staffLines[i].setText(sb[i]);
         }

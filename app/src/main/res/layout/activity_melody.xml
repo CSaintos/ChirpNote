@@ -186,6 +186,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/gcleftextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/bravura"
+            android:textSize="48sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/stafftextview"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/space2textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
