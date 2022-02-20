@@ -13,6 +13,6 @@ public class SetKeyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key);
 
-
+        // TODO: This activity will be for the circle of fifths, to manually set the key (instead of searching for a song)
     }
 }

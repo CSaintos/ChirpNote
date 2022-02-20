@@ -11,8 +11,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public class AudioTrack implements Track {
+public class AudioTrack implements Track, Serializable {
     // States
     private boolean mRecording;
     private boolean mRecorded;
@@ -100,6 +101,15 @@ public class AudioTrack implements Track {
     }
 
     /**
+     * Gets whether or not this audio track has been recorded
+     * @return True if the audio track has been recorded
+     */
+    @Override
+    public boolean isRecorded(){
+        return mRecorded;
+    }
+
+    /**
      * Starts the recording process for this audio track
      * @return False if the audio track is already being recorded
      */
@@ -179,5 +189,12 @@ public class AudioTrack implements Track {
         }
         mMediaPlayer.stop();
         return false;
+    }
+
+    /**
+     * For testing
+     */
+    public void setPlayButton(Button button){
+        mPlayButton = button;
     }
 }

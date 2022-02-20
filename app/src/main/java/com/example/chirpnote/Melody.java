@@ -7,17 +7,15 @@ import android.widget.Button;
 
 import com.leff.midi.MidiFile;
 import com.leff.midi.MidiTrack;
-import com.leff.midi.event.NoteOff;
-import com.leff.midi.event.NoteOn;
 import com.leff.midi.event.meta.Tempo;
 import com.leff.midi.event.meta.TimeSignature;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 
-abstract class Melody implements Track {
+abstract class Melody implements Track, Serializable {
     // States
     private boolean mRecording;
     private boolean mRecorded;
@@ -49,6 +47,7 @@ abstract class Melody implements Track {
         mBPM = tempo;
         mFilePath = filePath;
 
+        // TODO: MediaPlayer is not Serializable; need to decouple it from tracks
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
@@ -82,6 +81,15 @@ abstract class Melody implements Track {
     @Override
     public boolean isRecording(){
         return mRecording;
+    }
+
+    /**
+     * Gets whether or not this melody has been recorded
+     * @return True if the melody has been recorded
+     */
+    @Override
+    public boolean isRecorded(){
+        return mRecorded;
     }
 
     /**
@@ -179,5 +187,12 @@ abstract class Melody implements Track {
         }
         mMediaPlayer.stop();
         return true;
+    }
+
+    /**
+     * For testing (TODO: Remove play button from all Tracks and move to a new class that globally controls playback of tracks)
+     */
+    public void setPlayButton(Button button){
+        mPlayButton = button;
     }
 }

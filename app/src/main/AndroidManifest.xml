@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chirpnote">
+    package="com.example.chirpnote" >
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,7 +11,10 @@
         android:label="Chirpnote"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ChirpNote">
+        android:theme="@style/Theme.ChirpNote" >
+        <activity
+            android:name=".activities.TestTrackPersistenceActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.SetKeyActivity"
             android:exported="false" />
@@ -68,7 +71,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.StartUpActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

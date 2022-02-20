@@ -58,6 +58,11 @@ public class Key implements Serializable {
     private Type mType;
     private int[] mSteps;
 
+    /**
+     * A Key
+     * @param root The root note of this key
+     * @param type The type of key (type of scale used in this key)
+     */
     public Key(RootNote root, Type type){
         mRootNote = root;
         mType = type;

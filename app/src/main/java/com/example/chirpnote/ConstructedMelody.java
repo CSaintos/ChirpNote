@@ -43,7 +43,7 @@ public class ConstructedMelody extends Melody {
      * Adds a note to this melody with the given duration
      * @param note The note to add
      * @param duration The note duration (1 = whole note, 2 = half, 4 = quarter, etc...)
-     * @return False if not currently recording a melody, or the note duration is invalid
+     * @return False if not currently recording a melody
      */
     public boolean addNote(MusicNote note, NoteDuration duration){
         if(!super.isRecording() || note == null){

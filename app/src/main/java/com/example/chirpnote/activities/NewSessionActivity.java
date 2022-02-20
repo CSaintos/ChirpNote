@@ -1,5 +1,6 @@
 package com.example.chirpnote.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,11 +13,16 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.chirpnote.AudioTrack;
+import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
+import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.Session;
 
 public class NewSessionActivity extends AppCompatActivity {
+    private ConstructedMelody melody;
+    private AudioTrack audio;
     private EditText setName, setTempo;
     private Button createSessionButton;
     private String tempoInvalidMessage = "Tempo must be " + Session.MIN_TEMPO + "-" + Session.MAX_TEMPO + " BPM";
@@ -42,7 +48,9 @@ public class NewSessionActivity extends AppCompatActivity {
                     createSessionButton.setEnabled(false);
                 } else {
                     tempoInvalid.setText("");
-                    createSessionButton.setEnabled(true);
+                    if(melody.isRecorded() && audio.isRecorded()) {
+                        createSessionButton.setEnabled(true);
+                    }
                 }
             }
         }
@@ -69,6 +77,46 @@ public class NewSessionActivity extends AppCompatActivity {
             }
         });
 
+        Button generateMelodyButton = (Button) findViewById(R.id.generateMelodyButton);
+        Button recAudioButton = (Button) findViewById(R.id.recAudioButton3);
+
+        Context context = this;
+        melody = new ConstructedMelody(120, context.getFilesDir().getPath() + "/melody.mid", generateMelodyButton);
+        audio = new AudioTrack(context.getFilesDir().getPath() + "/audioTrack.mp4", recAudioButton);
+
+        generateMelodyButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                melody.startRecording();
+                melody.addNote(new MusicNote(60), ConstructedMelody.NoteDuration.QUARTER_NOTE);
+                melody.addNote(new MusicNote(62), ConstructedMelody.NoteDuration.QUARTER_NOTE);
+                melody.addNote(new MusicNote(64), ConstructedMelody.NoteDuration.QUARTER_NOTE);
+                melody.addNote(new MusicNote(60), ConstructedMelody.NoteDuration.QUARTER_NOTE);
+                melody.stopRecording();
+                generateMelodyButton.setText("Melody generated!");
+                if(audio.isRecorded()){
+                    createSessionButton.setEnabled(true);
+                }
+            }
+        });
+
+        recAudioButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createSessionButton.setEnabled(audio.isRecording());
+                if(!audio.isRecording()){
+                    recAudioButton.setText("End Recording");
+                    audio.startRecording();
+                } else {
+                    recAudioButton.setText("Record Audio");
+                    audio.stopRecording();
+                    if(melody.isRecorded()){
+                        createSessionButton.setEnabled(true);
+                    }
+                }
+            }
+        });
+
         createSessionButton = (Button) findViewById(R.id.createSessionButton);
         createSessionButton.setEnabled(false);
         createSessionButton.setOnClickListener(new OnClickListener() {
@@ -76,7 +124,7 @@ public class NewSessionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
                 Session session = new Session(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
-                                                Integer.parseInt(setTempo.getText().toString()));
+                                                Integer.parseInt(setTempo.getText().toString()), melody, audio);
                 intent.putExtra("session", session);
                 startActivity(intent);
             }
