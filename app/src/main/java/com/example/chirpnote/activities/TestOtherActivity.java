@@ -40,8 +40,8 @@ public class TestOtherActivity extends AppCompatActivity {
     private ArrayList<MusicNote> pianoKeys;
     // A map of NoteDurations -> ToggleButtons: toggles are used to select the duration of the note we want to add to the melody
     private HashMap<NoteDuration, ToggleButton> noteDurations;
-    // The currently selected note type to add
-    private NoteDuration toggledNote = null;
+    // The currently selected note duration to add
+    private NoteDuration toggledDuration = null;
     // A melody that is recorded in real time by playing the keyboard
     private RealTimeMelody realTimeMelody;
     // A melody that is recorded (constructed) by adding notes one at a time
@@ -83,19 +83,23 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Touch this button to start adding notes to the constructed melody
         // Touch it again to end the process of adding notes to the melody
-        Button addNotesButton = (Button) findViewById(R.id.addNotesButton);
+        Button addNotesButton = (Button) findViewById(R.id.testAddNotesButton);
+
+        // Touch this button to add a rest (of the currently selected duration) to the constructed melody
+        Button restButton = (Button) findViewById(R.id.testRestButton);
+        restButton.setEnabled(false);
 
         // Touch this button to start recording a melody by playing the piano keys (note buttons)
         // Touch it again to end the recording
-        Button recordMelodyButton = (Button) findViewById(R.id.recordMelodyButton);
+        Button recordMelodyButton = (Button) findViewById(R.id.testRecordMelodyButton);
 
         // Touch this button to start recording audio
         // Touch it again to end the recording
-        Button recordAudioButton = (Button) findViewById(R.id.recordAudioButton);
+        Button recordAudioButton = (Button) findViewById(R.id.testRecordAudioButton);
 
         // Touch this button to play all recorded tracks (realTimeMelody, constructedMelody, and audio)
         // Touch it again to stop the playback of all tracks
-        Button playButton = (Button) findViewById(R.id.playButton);
+        Button playButton = (Button) findViewById(R.id.testPlayButton);
         playButton.setEnabled(false);
 
         Context context = this;
@@ -132,8 +136,8 @@ public class TestOtherActivity extends AppCompatActivity {
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         note.play(midiDriver);
-                        if(constructedMelody.isRecording() && toggledNote != null){
-                            constructedMelody.addNote(note, toggledNote);
+                        if(constructedMelody.isRecording() && toggledDuration != null){
+                            constructedMelody.addNote(note, toggledDuration);
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         note.stop(midiDriver);
@@ -161,12 +165,14 @@ public class TestOtherActivity extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
-                        if(toggledNote != null){
-                            noteDurations.get(toggledNote).setChecked(false);
+                        if(toggledDuration != null){
+                            noteDurations.get(toggledDuration).setChecked(false);
                         }
-                        toggledNote = duration;
+                        toggledDuration = duration;
+                        restButton.setEnabled(true);
                     } else {
-                        toggledNote = null;
+                        toggledDuration = null;
+                        restButton.setEnabled(false);
                     }
                 }
             });
@@ -184,11 +190,21 @@ public class TestOtherActivity extends AppCompatActivity {
                     constructedMelody.startRecording();
                     lastTrack = constructedMelody;
                 } else {
-                    addNotesButton.setText("Add Notes to Melody");
+                    addNotesButton.setText("Construct Melody");
                     constructedMelody.stopRecording();
                 }
                 for(ToggleButton toggle : noteDurations.values()){
                     toggle.setEnabled(constructedMelody.isRecording());
+                }
+            }
+        });
+
+        // Event listener for rest button (to add rests to the constructed melody)
+        restButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(toggledDuration != null){
+                    constructedMelody.addRest(toggledDuration);
                 }
             }
         });
@@ -252,7 +268,7 @@ public class TestOtherActivity extends AppCompatActivity {
         });
 
         // Button to go the set key from song activity (for testing)
-        Button setKeyTestButton = (Button) findViewById(R.id.setKeyTestButton);
+        Button setKeyTestButton = (Button) findViewById(R.id.testSetKeyButton);
         setKeyTestButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

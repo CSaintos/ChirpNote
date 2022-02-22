@@ -160,6 +160,7 @@ abstract class Melody implements Track {
         if(!mRecording){
             return false;
         }
+        mRecorded = true;
         ArrayList<MidiTrack> tracks = new ArrayList<>();
         tracks.add(mTempoTrack);
         tracks.add(mNoteTrack);
@@ -173,7 +174,9 @@ abstract class Melody implements Track {
             System.err.println(e);
         }
         mRecording = false;
-        mSession.setMelodyRecorded();
+        if(mSession != null) {
+            mSession.setMelodyRecorded();
+        }
         return true;
     }
 

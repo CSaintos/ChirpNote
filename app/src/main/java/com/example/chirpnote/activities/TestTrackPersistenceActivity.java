@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.example.chirpnote.AudioTrack;
@@ -29,7 +30,7 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
         AudioTrack audio = new AudioTrack(session);
         audio.setPlayButton(playAudioButton);
 
-        playAudioButton.setOnClickListener(new View.OnClickListener() {
+        playAudioButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!audio.isPlaying()){
@@ -42,7 +43,7 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
             }
         });
 
-        playMelodyButton.setOnClickListener(new View.OnClickListener() {
+        playMelodyButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!melody.isPlaying()){
@@ -55,7 +56,7 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
             }
         });
 
-        previousActivityButton.setOnClickListener(new View.OnClickListener() {
+        previousActivityButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TestTrackPersistenceActivity.this, SessionActivity.class);

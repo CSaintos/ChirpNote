@@ -28,7 +28,13 @@ public class SessionActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.sessionNameText)).setText("Session Name: " + session.getName());
         ((TextView) findViewById(R.id.tempoText)).setText("Tempo: " + session.getTempo() + " BPM");
         ((TextView) findViewById(R.id.keyText)).setText("Key: " + session.getKey());
-        Button nextActivity = (Button) findViewById(R.id.goToNextActivityButton);
+
+        Button nextActivityButton = (Button) findViewById(R.id.goToNextActivityButton);
+        if(session.isMelodyRecorded() && session.isAudioRecorded()) {
+            nextActivityButton.setEnabled(true);
+        } else {
+            nextActivityButton.setEnabled(false);
+        }
 
         Button generateMelodyButton = (Button) findViewById(R.id.generateMelodyButton);
         ConstructedMelody melody = new ConstructedMelody(session);
@@ -48,7 +54,7 @@ public class SessionActivity extends AppCompatActivity {
                 generateMelodyButton.setText("Melody generated!");
                 session.setMelodyRecorded();
                 if(audio.isRecorded()){
-                    nextActivity.setEnabled(true);
+                    nextActivityButton.setEnabled(true);
                 }
             }
         });
@@ -56,7 +62,6 @@ public class SessionActivity extends AppCompatActivity {
         recAudioButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                nextActivity.setEnabled(audio.isRecording());
                 if(!audio.isRecording()){
                     recAudioButton.setText("End Recording");
                     audio.startRecording();
@@ -65,13 +70,13 @@ public class SessionActivity extends AppCompatActivity {
                     audio.stopRecording();
                     session.setAudioRecorded();
                     if(melody.isRecorded()){
-                        nextActivity.setEnabled(true);
+                        nextActivityButton.setEnabled(true);
                     }
                 }
             }
         });
 
-        nextActivity.setOnClickListener(new View.OnClickListener() {
+        nextActivityButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SessionActivity.this, TestTrackPersistenceActivity.class);

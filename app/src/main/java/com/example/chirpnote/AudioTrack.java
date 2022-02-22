@@ -166,9 +166,12 @@ public class AudioTrack implements Track {
         if(!mRecording){
             return false;
         }
+        mRecorded = true;
         mMediaRecorder.stop();
         mRecording = false;
-        mSession.setAudioRecorded();
+        if(mSession != null) {
+            mSession.setAudioRecorded();
+        }
         return true;
     }
 

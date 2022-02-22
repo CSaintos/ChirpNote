@@ -61,7 +61,7 @@ public class ConstructedMelody extends Melody {
     /**
      * Adds a note to this melody with the given duration
      * @param note The note to add
-     * @param duration The note duration (1 = whole note, 2 = half, 4 = quarter, etc...)
+     * @param duration The note duration
      * @return False if not currently recording a melody
      */
     public boolean addNote(MusicNote note, NoteDuration duration){
@@ -71,6 +71,19 @@ public class ConstructedMelody extends Melody {
         int noteDuration = RESOLUTION * 4 / mNoteDurations.get(duration);
         mNoteTrack.insertNote(CHANNEL, note.getNoteNumber(), note.VELOCITY, mPrevTick, noteDuration);
         mPrevTick += noteDuration;
+        return true;
+    }
+
+    /**
+     * Adds a rest to this melody with the given duration
+     * @param duration The rest duration
+     * @return False if not currently recording a melody
+     */
+    public boolean addRest(NoteDuration duration){
+        if(!super.isRecording()){
+            return false;
+        }
+        mPrevTick += RESOLUTION * 4 / mNoteDurations.get(duration);
         return true;
     }
 
