@@ -12,14 +12,12 @@ import com.leff.midi.event.meta.TimeSignature;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
-abstract class Melody implements Track, Serializable {
+abstract class Melody implements Track {
     // States
     private boolean mRecording;
     private boolean mRecorded;
-    private boolean mMelodyRewritten;
 
     // For recording the melody
     public final int RESOLUTION = 960;
@@ -33,6 +31,8 @@ abstract class Melody implements Track, Serializable {
     private MediaPlayer mMediaPlayer;
     private Button mPlayButton;
 
+    private Session mSession;
+
     /**
      * A MIDI melody track
      * @param tempo The tempo of the melody
@@ -42,7 +42,6 @@ abstract class Melody implements Track, Serializable {
     public Melody(int tempo, String filePath, Button playButton){
         mRecording = false;
         mRecorded = false;
-        mMelodyRewritten = false;
 
         mBPM = tempo;
         mFilePath = filePath;
@@ -63,6 +62,32 @@ abstract class Melody implements Track, Serializable {
             }
         });
         mPlayButton = playButton;
+    }
+
+    /**
+     * A MIDI melody track
+     * @param session The session this melody is a part of
+     */
+    public Melody(Session session){
+        mRecording = false;
+
+        mSession = session;
+        mFilePath = session.getMelodyPath();
+
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+            }
+        });
+        mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.stop();
+                mPlayButton.setText("Play");
+            }
+        });
     }
 
     /**
@@ -87,9 +112,8 @@ abstract class Melody implements Track, Serializable {
      * Gets whether or not this melody has been recorded
      * @return True if the melody has been recorded
      */
-    @Override
     public boolean isRecorded(){
-        return mRecorded;
+        return mSession == null ? mRecorded : mSession.isMelodyRecorded();
     }
 
     /**
@@ -97,7 +121,7 @@ abstract class Melody implements Track, Serializable {
      * @return The BPM of this melody
      */
     public int getTempo(){
-        return mBPM;
+        return mSession == null ? mBPM : mSession.getTempo();
     }
 
     /**
@@ -121,7 +145,7 @@ abstract class Melody implements Track, Serializable {
 
         // Tempo setup
         Tempo tempo = new Tempo();
-        tempo.setBpm(mBPM);
+        tempo.setBpm(mSession == null ? mBPM : mSession.getTempo());
         mTempoTrack.insertEvent(tempo);
 
         return true;
@@ -149,8 +173,7 @@ abstract class Melody implements Track, Serializable {
             System.err.println(e);
         }
         mRecording = false;
-        mRecorded = true;
-        mMelodyRewritten = true;
+        mSession.setMelodyRecorded();
         return true;
     }
 
@@ -160,15 +183,12 @@ abstract class Melody implements Track, Serializable {
      */
     @Override
     public boolean play(){
-        if(mRecording || !mRecorded || mMediaPlayer.isPlaying()){
+        if(mRecording || !isRecorded() || mMediaPlayer.isPlaying()){
             return false;
         }
         try {
-            if(mMelodyRewritten){
-                mMediaPlayer.reset();
-                mMediaPlayer.setDataSource(mFilePath);
-                mMelodyRewritten = false;
-            }
+            mMediaPlayer.reset();
+            mMediaPlayer.setDataSource(mFilePath);
             mMediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();

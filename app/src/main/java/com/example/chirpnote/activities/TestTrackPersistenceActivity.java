@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Session;
@@ -23,19 +24,20 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
         Button previousActivityButton = (Button) findViewById(R.id.goToPreviousActivityButton);
 
         Session session = (Session) getIntent().getSerializableExtra("session");
-        ConstructedMelody melody = (ConstructedMelody) session.getMelody();
+        ConstructedMelody melody = new ConstructedMelody(session);
         melody.setPlayButton(playMelodyButton);
-        session.getAudio().setPlayButton(playAudioButton);
+        AudioTrack audio = new AudioTrack(session);
+        audio.setPlayButton(playAudioButton);
 
         playAudioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!session.getAudio().isPlaying()){
+                if(!audio.isPlaying()){
                     playAudioButton.setText("Stop");
-                    session.getAudio().play();
+                    audio.play();
                 } else {
                     playAudioButton.setText("Play");
-                    session.getAudio().stop();
+                    audio.stop();
                 }
             }
         });
@@ -43,7 +45,7 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
         playMelodyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!session.getAudio().isPlaying()){
+                if(!melody.isPlaying()){
                     playMelodyButton.setText("Stop");
                     melody.play();
                 } else {

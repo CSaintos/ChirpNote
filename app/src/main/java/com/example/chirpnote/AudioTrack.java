@@ -11,13 +11,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.io.IOException;
-import java.io.Serializable;
 
-public class AudioTrack implements Track, Serializable {
+public class AudioTrack implements Track {
     // States
     private boolean mRecording;
     private boolean mRecorded;
-    private boolean mAudioRewritten;
 
     // For recording the audio
     private MediaRecorder mMediaRecorder;
@@ -28,6 +26,8 @@ public class AudioTrack implements Track, Serializable {
     private Button mPlayButton;
     private ImageButton mPlayImageButton;
 
+    private Session mSession;
+
     /**
      * An audio track
      * @param filePath The path to store the file (of the audio recording) at
@@ -36,7 +36,6 @@ public class AudioTrack implements Track, Serializable {
     public AudioTrack(String filePath, Button playButton){
         mRecording = false;
         mRecorded = false;
-        mAudioRewritten = false;
 
         mMediaRecorder = new MediaRecorder();
         mFilePath = filePath;
@@ -61,7 +60,6 @@ public class AudioTrack implements Track, Serializable {
     public AudioTrack(String filePath, ImageButton playImageButton) {
         mRecording = false;
         mRecorded = false;
-        mAudioRewritten = false;
 
         mMediaRecorder = new MediaRecorder();
         mFilePath = filePath;
@@ -80,6 +78,34 @@ public class AudioTrack implements Track, Serializable {
             }
         });
         mPlayImageButton = playImageButton;
+    }
+
+    /**
+     * An audio track
+     * @param session The session this audio track is a part of
+     */
+    public AudioTrack(Session session){
+        mRecording = false;
+
+        mMediaRecorder = new MediaRecorder();
+
+        mSession = session;
+        mFilePath = session.getAudioPath();
+
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+            }
+        });
+        mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.stop();
+                mPlayButton.setText("Play");
+            }
+        });
     }
 
     /**
@@ -104,9 +130,8 @@ public class AudioTrack implements Track, Serializable {
      * Gets whether or not this audio track has been recorded
      * @return True if the audio track has been recorded
      */
-    @Override
     public boolean isRecorded(){
-        return mRecorded;
+        return mSession == null ? mRecorded : mSession.isAudioRecorded();
     }
 
     /**
@@ -143,8 +168,7 @@ public class AudioTrack implements Track, Serializable {
         }
         mMediaRecorder.stop();
         mRecording = false;
-        mRecorded = true;
-        mAudioRewritten = true;
+        mSession.setAudioRecorded();
         return true;
     }
 
@@ -154,15 +178,12 @@ public class AudioTrack implements Track, Serializable {
      */
     @Override
     public boolean play() {
-        if(mRecording || !mRecorded || mMediaPlayer.isPlaying()){
+        if(mRecording || !isRecorded() || mMediaPlayer.isPlaying()){
             return false;
         }
         try {
-            if(mAudioRewritten){
-                mMediaPlayer.reset();
-                mMediaPlayer.setDataSource(mFilePath);
-                mAudioRewritten = false;
-            }
+            mMediaPlayer.reset();
+            mMediaPlayer.setDataSource(mFilePath);
             mMediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();

@@ -40,6 +40,25 @@ public class ConstructedMelody extends Melody {
     }
 
     /**
+     * A MIDI melody which is recorded (constructed) by adding notes from the UI
+     * @param session The session this melody is a part of
+     */
+    public ConstructedMelody(Session session){
+        super(session);
+
+        // Possible note durations when building a melody
+        mNoteDurations = new HashMap<>();
+        mNoteDurations.put(NoteDuration.WHOLE_NOTE, 1);
+        mNoteDurations.put(NoteDuration.HALF_NOTE, 2);
+        mNoteDurations.put(NoteDuration.QUARTER_NOTE, 4);
+        mNoteDurations.put(NoteDuration.EIGHTH_NOTE, 8);
+        mNoteDurations.put(NoteDuration.SIXTEENTH_NOTE, 16);
+        mNoteDurations.put(NoteDuration.THIRTY_SECOND_NOTE, 32);
+
+        mPrevTick = 0; // TODO: Move previous tick to session class (so it can persist and be saved in the database)
+    }
+
+    /**
      * Adds a note to this melody with the given duration
      * @param note The note to add
      * @param duration The note duration (1 = whole note, 2 = half, 4 = quarter, etc...)

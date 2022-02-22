@@ -20,12 +20,6 @@ public interface Track {
     boolean isRecording();
 
     /**
-     * Gets whether or not this track is has been recorded
-     * @return True if the track has been recorded
-     */
-    boolean isRecorded();
-
-    /**
      * Plays this track
      * @return False if the track could not be played back
      */
