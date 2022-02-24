@@ -3,6 +3,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
@@ -39,12 +40,14 @@ public class WaveformView extends View {
     private float screenHeight = 400;
     private float distance = 6;
     private int maxSpike;
+    ArrayList<Float> amps = new ArrayList<>();
 
     public void insertAmplitude(float amplitude){
+        amps.clear();
         float normalization = (float) Math.min((int) amplitude/7,400);
         amplitudeList.add(normalization);
         amplitudeSpikes.clear();
-        ArrayList<Float> amps = new ArrayList<Float>(amplitudeList.subList(amplitudeList.size() - Math.min(amplitudeList.size(),maxSpike), amplitudeList.size()));
+        amps = new ArrayList<Float>(amplitudeList.subList(amplitudeList.size() - Math.min(amplitudeList.size(),maxSpike), amplitudeList.size()));
 
         for (float f:amps){
             int i = amps.indexOf(f);
@@ -53,17 +56,15 @@ public class WaveformView extends View {
             float right = left + width;
             float bottom = top + amps.get(i);
             amplitudeSpikes.add(new RectF(left,top,right,bottom));
-
         }
-        amps.clear();
         invalidate();
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        for (RectF a: amplitudeSpikes){
-            canvas.drawRoundRect(a,radius,radius,paint);
+        for (int i = 0; i < amplitudeSpikes.size();i++){
+            canvas.drawRoundRect(amplitudeSpikes.get(i),radius,radius,paint);
         }
     }
 }

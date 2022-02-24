@@ -28,6 +28,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     private boolean playing = false;
     private Chronometer timer;
     private WaveformView waveformView;
+    Timer ticker = new Timer();
 
 
     @Override
@@ -43,30 +44,37 @@ public class RecordAudioActivity extends AppCompatActivity {
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp4";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
 
+
+
         // Event listener for record audio button (to record audio from the device's microphone)
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Timer ticker = new Timer();
+                ticker.cancel();
+                ticker.purge();
                 timer.setBase(SystemClock.elapsedRealtime());
                 timer.start();
+
                 playRecordedAudioButton.setEnabled(audio.isRecording());
+
+                TimerTask scheduleDraws = new TimerTask() {
+                    @Override
+                    public void run() {
+                        waveformView.insertAmplitude((float) (audio.getmMediaRecorder().getMaxAmplitude()));
+                    }
+                };
+
                 if(!audio.isRecording()){
                     audio.startRecording();
-                    ticker.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            waveformView.insertAmplitude((float) (audio.getmMediaRecorder().getMaxAmplitude()));
-
-                        }
-                    },0,100);
+                    //timer logic
+                    ticker = new Timer();
+                    ticker.schedule(scheduleDraws,0,50);
 
 
                 } else {
                     audio.stopRecording();
                     timer.stop();
-                    ticker.cancel();
-
+                    scheduleDraws.cancel();
                 }
             }
         });
