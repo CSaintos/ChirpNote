@@ -46,7 +46,7 @@ public class KeyboardActivity extends AppCompatActivity {
         // floating window service is running
         // then the floating window service will stop
         if (isMyServiceRunning()) {
-            // onDestroy() method in FloatingWindowGFG
+            // onDestroy() method in FloatingWindow
             // class will be called here
             stopService(new Intent(KeyboardActivity.this, FloatingWindow.class));
         }
@@ -87,7 +87,7 @@ public class KeyboardActivity extends AppCompatActivity {
                 // First it confirms whether the
                 // 'Display over other apps' permission in given
                 if (checkOverlayDisplayPermission()) {
-                    // FloatingWindowGFG service is started
+                    // FloatingWindow service is started
                     startService(new Intent(KeyboardActivity.this, FloatingWindow.class));
                     // The MainActivity closes here
                     finish();
