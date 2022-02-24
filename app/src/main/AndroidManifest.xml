@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chirpnote" >
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -85,6 +87,7 @@
         <activity
             android:name=".activities.RecordAudioActivity"
             android:exported="true" />
+        <service android:name=".FloatingWindow"/>
     </application>
 
 </manifest>
