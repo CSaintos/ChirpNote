@@ -1,6 +1,9 @@
 package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -39,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        hideSystemBars();
 
         app = new App(new AppConfiguration.Builder(appID).build());
         //startActivity(new Intent(LoginActivity.this,SignUpActivity.class)); // not ready to implement this yet.
@@ -96,5 +101,23 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, HomeScreenActivity.class));
             }
         });
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        hideSystemBars();
+    }
+
+    /**
+     * Hides the system status bar and navigation bar
+     * TODO: Add this to all other activities once UI navigation is complete
+     */
+    private void hideSystemBars(){
+        WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());
+        if (windowInsetsController != null) {
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
     }
 }
