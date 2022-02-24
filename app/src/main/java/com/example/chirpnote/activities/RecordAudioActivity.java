@@ -41,7 +41,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         playRecordedAudioButton.setEnabled(false);
         waveformView = findViewById(R.id.waveformView);
         // Audio track
-        String filePath = context.getFilesDir().getPath() + "/audioTrack.mp4";
+        String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
 
 

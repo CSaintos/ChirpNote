@@ -113,7 +113,7 @@ public class TestOtherActivity extends AppCompatActivity {
         constructedMelody = new ConstructedMelody(120, filePath, playButton);
 
         // Audio track
-        filePath = context.getFilesDir().getPath() + "/audioTrack.mp4";
+        filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playButton);
 
         // MIDI driver
