@@ -87,7 +87,7 @@
         <activity
             android:name=".activities.RecordAudioActivity"
             android:exported="true" />
-        <service android:name=".FloatingWindow"/>
+        <service android:name=".activities.FloatingWindowActivity"/>
     </application>
 
 </manifest>

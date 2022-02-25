@@ -1,4 +1,4 @@
-package com.example.chirpnote;
+package com.example.chirpnote.activities;
 
 /*
 import android.app.Service;
@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
  */
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
@@ -37,14 +38,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
-import com.example.chirpnote.activities.KeyboardActivity;
+import com.example.chirpnote.MusicNote;
+import com.example.chirpnote.R;
+import com.example.chirpnote.RealTimeMelody;
 
-public class FloatingWindow extends Service
+import org.billthefarmer.mididriver.MidiDriver;
+
+import java.util.ArrayList;
+
+public class FloatingWindowActivity extends Service
 {
+    private MidiDriver midiDriver;
+    private ArrayList<MusicNote> pianoKeys;
+    RealTimeMelody melody;
+    
+
     // The reference variables for the
     // ViewGroup, WindowManager.LayoutParams,
     // WindowManager, Button, EditText classes are created
@@ -53,9 +64,8 @@ public class FloatingWindow extends Service
     private WindowManager.LayoutParams floatWindowLayoutParam;
     private WindowManager windowManager;
     private Button maximizeBtn;
-    private EditText descEditArea;
 
-    // As FloatingWindow inherits Service class,
+    // As FloatingWindowActivity inherits Service class,
     // it actually overrides the onBind method
     @Nullable
     @Override
@@ -73,6 +83,16 @@ public class FloatingWindow extends Service
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
 
+        Context context = this;
+        String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
+
+
+        midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
+        //midiDriver.setVolume(25);  attempted to change the global volume of the midiDriver just to see if the volume of the keys played would change. They don't.
+        pianoKeys = new ArrayList<>(); // List of notes
+
+
+
 
         // To obtain a WindowManager of a different Display,
         // we need a Context for that display, so WINDOW_SERVICE is used
@@ -85,7 +105,26 @@ public class FloatingWindow extends Service
 
 
         // inflate a new view hierarchy from the floating_layout xml
-        floatView = (ViewGroup) inflater.inflate(R.layout.floating_layout, null);
+//        floatView = (ViewGroup) inflater.inflate(R.layout.floating_layout, null);
+        floatView = (ViewGroup) inflater.inflate(R.layout.activity_test_floating_window, null);
+
+        //    pianoKeys.add(new MusicNote(60, (Button) findViewById(R.id.noteC4Button), melody));
+        pianoKeys.add(new MusicNote(60, (Button) floatView.findViewById(R.id.noteC4Button)));
+
+        // Setup event listener for each piano key
+        for(MusicNote note : pianoKeys){
+            note.getButton().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        note.play(midiDriver);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        note.stop(midiDriver);
+                    }
+                    return false;
+                }
+            });
+        }
 
 
         // The Buttons and the EditText are connected with
@@ -152,7 +191,7 @@ public class FloatingWindow extends Service
 
                 // The app will maximize again. So the MainActivity
                 // class will be called again.
-                Intent backToHome = new Intent(FloatingWindow.this, KeyboardActivity.class);
+                Intent backToHome = new Intent(FloatingWindowActivity.this, KeyboardActivity.class);
 
 
                 // 1) FLAG_ACTIVITY_NEW_TASK flag helps activity to start a new task on the history stack.
@@ -238,6 +277,7 @@ public class FloatingWindow extends Service
 
 
     }
+
 
     // It is called when stopService()
     // method is called in MainActivity

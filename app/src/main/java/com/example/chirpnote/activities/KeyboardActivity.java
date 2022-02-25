@@ -17,7 +17,6 @@ import android.widget.Button;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.chirpnote.FloatingWindow;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
@@ -46,9 +45,9 @@ public class KeyboardActivity extends AppCompatActivity {
         // floating window service is running
         // then the floating window service will stop
         if (isMyServiceRunning()) {
-            // onDestroy() method in FloatingWindow
+            // onDestroy() method in FloatingWindowActivity
             // class will be called here
-            stopService(new Intent(KeyboardActivity.this, FloatingWindow.class));
+            stopService(new Intent(KeyboardActivity.this, FloatingWindowActivity.class));
         }
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
@@ -87,8 +86,8 @@ public class KeyboardActivity extends AppCompatActivity {
                 // First it confirms whether the
                 // 'Display over other apps' permission in given
                 if (checkOverlayDisplayPermission()) {
-                    // FloatingWindow service is started
-                    startService(new Intent(KeyboardActivity.this, FloatingWindow.class));
+                    // FloatingWindowActivity service is started
+                    startService(new Intent(KeyboardActivity.this, FloatingWindowActivity.class));
                     // The MainActivity closes here
                     finish();
                 } else {
@@ -163,7 +162,7 @@ public class KeyboardActivity extends AppCompatActivity {
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             // If this service is found as a running,
             // it will return true or else false.
-            if (FloatingWindow.class.getName().equals(service.service.getClassName())) {
+            if (FloatingWindowActivity.class.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }
