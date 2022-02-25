@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.KeyboardActivity">
+    android:background="@android:color/white">
 
     <Button
-        android:id="@+id/buttonMinimize"
+        android:id="@+id/buttonMaximize"
         android:layout_width="143dp"
         android:layout_height="53dp"
-        android:layout_marginTop="24dp"
-        android:text="MINIMIZE"
+        android:layout_marginTop="16dp"
+        android:text="MAXIMIZE"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.813"
+        app:layout_constraintHorizontal_bias="0.768"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -185,27 +186,7 @@
         app:layout_constraintTop_toBottomOf="@+id/noteG4Button"
         app:layout_constraintVertical_bias="0.608" />
 
-    <Button
-        android:id="@+id/recordButton"
-        android:layout_width="118dp"
-        android:layout_height="48dp"
-        android:text="Rec"
-        app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.641"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noteB4Button"
-        app:layout_constraintVertical_bias="1.0" />
 
-    <Button
-        android:id="@+id/playButton"
-        android:layout_width="79dp"
-        android:layout_height="46dp"
-        android:text="Play"
-        app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.951"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/noteC5Button"
-        app:layout_constraintVertical_bias="1.0" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
