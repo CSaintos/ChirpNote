@@ -17,6 +17,9 @@ import com.example.chirpnote.WaveformView;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * This class represents recording audio from the user's microphone. It will provide certain monitoring elements such as the current chord and waveform representataion of intensity of amplitude.
+ */
 public class RecordAudioActivity extends AppCompatActivity {
 
     //layout items
@@ -26,11 +29,18 @@ public class RecordAudioActivity extends AppCompatActivity {
     private AudioTrack audio;
     Context context = this;
     private boolean playing = false;
+    //This is the minutes/second timer of the recording
     private Chronometer timer;
+    //This is the custom view for the waveform generation
     private WaveformView waveformView;
+    //This timer is a timer initializer for the recording functionality of a waveform
     Timer ticker = new Timer();
 
 
+    /***
+     * onCreate function sets values
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_record_audio);
@@ -50,13 +60,16 @@ public class RecordAudioActivity extends AppCompatActivity {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //purge the timer ticker at every onclick instance to avoid all multiplicative timer errors.
                 ticker.cancel();
                 ticker.purge();
+                //refresh the chronometer timer to 0:00
                 timer.setBase(SystemClock.elapsedRealtime());
                 timer.start();
 
                 playRecordedAudioButton.setEnabled(audio.isRecording());
 
+                //Create the task at every onclick as it gets discarded after every recording and has to be recreated
                 TimerTask scheduleDraws = new TimerTask() {
                     @Override
                     public void run() {
@@ -74,11 +87,16 @@ public class RecordAudioActivity extends AppCompatActivity {
                 } else {
                     audio.stopRecording();
                     timer.stop();
+                    //shut down the task so you can create onClick (Avoid taskAlreadyScheduled)
                     scheduleDraws.cancel();
                 }
             }
         });
 
+        /*
+        OnClick Listener for the play button
+        TODO chronometer needs to be stopped after audio is played.
+         */
         playRecordedAudioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

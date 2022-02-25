@@ -12,18 +12,28 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class represents the custom View used in the XML for the Record Audio Activity
+ */
 public class WaveformView extends View {
 
+    /**
+     * Initializer constructor
+     * @param context this
+     * @param attrs attributes
+     */
     public WaveformView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        //paint.setColor(Color.GREEN);
         screenWidth = (float) context.getResources().getDisplayMetrics().widthPixels;
         maxSpike = (int) (screenWidth / (width + distance));
         this.paint = new Paint();
         paint.setColor(Color.GREEN);
     }
 
+    /**
+     * You need to make two different constructors to be compatible for the view
+     * @param context this
+     */
     public WaveformView(Context context){
         super(context);
         this.paint = new Paint();
@@ -31,6 +41,8 @@ public class WaveformView extends View {
 
     }
 
+
+    //various items related to calculations with screen
     private Paint paint;
     private ArrayList<Float> amplitudeList = new ArrayList<>();
     private ArrayList<RectF> amplitudeSpikes = new ArrayList<>();
@@ -42,6 +54,10 @@ public class WaveformView extends View {
     private int maxSpike;
     ArrayList<Float> amps = new ArrayList<>();
 
+    /**
+     * This method does all the work related to amplification sizes per listen and storage for draw()
+     * @param amplitude the amplitude being returned by the recording
+     */
     public void insertAmplitude(float amplitude){
         amps.clear();
         float normalization = (float) Math.min((int) amplitude/7,400);
@@ -57,9 +73,14 @@ public class WaveformView extends View {
             float bottom = top + amps.get(i);
             amplitudeSpikes.add(new RectF(left,top,right,bottom));
         }
+        //invalidate needed for changing drawing elements
         invalidate();
     }
 
+    /**
+     * Draw Method
+     * @param canvas the canvas of the view
+     */
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
