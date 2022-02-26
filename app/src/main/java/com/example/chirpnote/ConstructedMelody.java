@@ -2,6 +2,10 @@ package com.example.chirpnote;
 
 import android.widget.Button;
 
+import com.leff.midi.MidiFile;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class ConstructedMelody extends Melody {
@@ -62,34 +66,72 @@ public class ConstructedMelody extends Melody {
      * Adds a note to this melody with the given duration
      * @param note The note to add
      * @param duration The note duration
-     * @return False if not currently recording a melody
+     * @exception NullPointerException if the given note is null
+     * @exception IllegalStateException if the note cannot be added
      */
-    public boolean addNote(MusicNote note, NoteDuration duration){
-        if(!super.isRecording() || note == null){
-            return false;
+    public void addNote(MusicNote note, NoteDuration duration) throws  NullPointerException, IllegalStateException {
+        if(note == null){
+            throw new NullPointerException("Cannot add a null MusicNote to the melody");
         }
+        // Recording process is stopped right after it is started for a ConstructedMelody,
+        // so we check if the melody has been recorded, and not if the recording process is active
+        if(!isRecorded()){
+            throw new IllegalStateException("Cannot add a note to the melody if the recording process has not been started");
+        }
+
+        // Read existing MIDI file
+        MidiFile midiFile = null;
+        try {
+            midiFile = new MidiFile(new File(mFilePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Add note to the melody
         int noteDuration = RESOLUTION * 4 / mNoteDurations.get(duration);
-        mNoteTrack.insertNote(CHANNEL, note.getNoteNumber(), note.VELOCITY, mPrevTick, noteDuration);
+        midiFile.getTracks().get(1).insertNote(CHANNEL, note.getNoteNumber(), note.VELOCITY, mPrevTick, noteDuration);
         mPrevTick += noteDuration;
-        return true;
+
+        // Write changes to MIDI file
+        try {
+            midiFile.writeToFile(new File(mFilePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Adds a rest to this melody with the given duration
      * @param duration The rest duration
-     * @return False if not currently recording a melody
+     * @exception IllegalStateException if the rest cannot be added
      */
-    public boolean addRest(NoteDuration duration){
-        if(!super.isRecording()){
-            return false;
+    public void addRest(NoteDuration duration) throws IllegalStateException {
+        // Recording process is stopped right after it is started for a ConstructedMelody,
+        // so we check if the melody has been recorded, and not if the recording process is active
+        if(!isRecorded()){
+            throw new IllegalStateException("Cannot add a rest to the melody if the recording process has not been started");
         }
         mPrevTick += RESOLUTION * 4 / mNoteDurations.get(duration);
-        return true;
+    }
+
+    @Override
+    public void startRecording() throws IllegalStateException {
+        // Starting the recording process overwrites the previously recorded melody
+        // We only want this behavior for a real time melody, so only do this once for a constructed melody
+        if(!isRecorded()) {
+            super.startRecording();
+            // End the recording process instantly to write the MIDI file
+            // All other methods will edit this MIDI file
+            stopRecording();
+        }
     }
 
     @Override
     public void stopRecording() throws IllegalStateException {
-        super.stopRecording();
-        mPrevTick = 0;
+        // Stopping the recording process overwrites the previously recorded melody
+        // We only want this behavior for a real time melody, so only do this once for a constructed melody
+        if(!isRecorded()){
+            super.stopRecording();
+        }
     }
 }

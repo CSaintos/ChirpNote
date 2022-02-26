@@ -46,10 +46,12 @@ public class TestOtherActivity extends AppCompatActivity {
     private RealTimeMelody realTimeMelody;
     // A melody that is recorded (constructed) by adding notes one at a time
     private ConstructedMelody constructedMelody;
+    // Flag for whether or not we're constructing a melody
+    private boolean constructingMelody = false;
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
     // Which track was most recently recorded
-    Track lastTrack;
+    private Track lastTrack;
     // State of playback
     private boolean playing = false;
     // A list of chords
@@ -97,8 +99,8 @@ public class TestOtherActivity extends AppCompatActivity {
         // Touch it again to end the recording
         Button recordAudioButton = (Button) findViewById(R.id.testRecordAudioButton);
 
-        // Touch this button to play all recorded tracks (realTimeMelody, constructedMelody, and audio)
-        // Touch it again to stop the playback of all tracks
+        // Touch this button to play the most recently recorded track
+        // Touch it again to stop the playback of the track
         Button playButton = (Button) findViewById(R.id.testPlayButton);
         playButton.setEnabled(false);
 
@@ -136,7 +138,7 @@ public class TestOtherActivity extends AppCompatActivity {
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         note.play(midiDriver);
-                        if(constructedMelody.isRecording() && toggledDuration != null){
+                        if(constructingMelody && toggledDuration != null){
                             constructedMelody.addNote(note, toggledDuration);
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -182,10 +184,10 @@ public class TestOtherActivity extends AppCompatActivity {
         addNotesButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                recordMelodyButton.setEnabled(constructedMelody.isRecording());
-                recordAudioButton.setEnabled(constructedMelody.isRecording());
-                playButton.setEnabled(constructedMelody.isRecording());
-                if(!constructedMelody.isRecording()){
+                recordMelodyButton.setEnabled(constructingMelody);
+                recordAudioButton.setEnabled(constructingMelody);
+                playButton.setEnabled(true);
+                if(!constructingMelody){
                     addNotesButton.setText("Stop Adding Notes");
                     constructedMelody.startRecording();
                     lastTrack = constructedMelody;
@@ -193,8 +195,9 @@ public class TestOtherActivity extends AppCompatActivity {
                     addNotesButton.setText("Construct Melody");
                     constructedMelody.stopRecording();
                 }
+                constructingMelody = !constructingMelody;
                 for(ToggleButton toggle : noteDurations.values()){
-                    toggle.setEnabled(constructedMelody.isRecording());
+                    toggle.setEnabled(constructingMelody);
                 }
             }
         });

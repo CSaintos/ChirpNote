@@ -132,6 +132,18 @@ public class Chord {
     }
 
     /**
+     * Gets the MusicNotes in this chord
+     * @return An array of the MusicNote
+     */
+    public MusicNote[] getMusicNotes(){
+        MusicNote[] notes = new MusicNote[mNotes.size()];
+        for(int i = 0; i < notes.length; i++){
+            notes[i] = mNotes.get(i);
+        }
+        return notes;
+    }
+
+    /**
      * Gets the Button associated with this chord
      * @return The button that plays this chord (null if this chord has no button)
      */
