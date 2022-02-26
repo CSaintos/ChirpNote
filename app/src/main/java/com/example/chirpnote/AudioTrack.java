@@ -136,12 +136,15 @@ public class AudioTrack implements Track {
 
     /**
      * Starts the recording process for this audio track
-     * @return False if the audio track is already being recorded
+     * @exception IllegalStateException if the recording process cannot be started
      */
     @Override
-    public boolean startRecording(){
-        if(mRecording || mMediaPlayer.isPlaying()){
-            return false;
+    public void startRecording() throws IllegalStateException {
+        if(mRecording){
+            throw new IllegalStateException("Cannot start the recording process when the audio track is already being recorded (stop recording first)");
+        }
+        if(mMediaPlayer.isPlaying()){
+            throw new IllegalStateException("Cannot start the recording process when the audio track is being played back (stop playback first)");
         }
         mRecording = true;
         mMediaRecorder.setAudioSource(AudioSource.MIC);
@@ -154,17 +157,16 @@ public class AudioTrack implements Track {
             e.printStackTrace();
         }
         mMediaRecorder.start();
-        return true;
     }
 
     /**
      * Stops the recording process for this audio track
-     * @return False if the audio track is not being recorded yet
+     * @exception IllegalStateException if the recording process cannot be stopped
      */
     @Override
-    public boolean stopRecording(){
+    public void stopRecording() throws IllegalStateException {
         if(!mRecording){
-            return false;
+            throw new IllegalStateException("Cannot stop the recording process if there is no active recording process (start recording first)");
         }
         mRecorded = true;
         mMediaRecorder.stop();
@@ -172,17 +174,22 @@ public class AudioTrack implements Track {
         if(mSession != null) {
             mSession.setAudioRecorded();
         }
-        return true;
     }
 
     /**
      * Plays back this audio track
-     * @return False if recording process active or currently playing the audio track
+     * @exception IllegalStateException if the audio track cannot be played
      */
     @Override
-    public boolean play() {
-        if(mRecording || !isRecorded() || mMediaPlayer.isPlaying()){
-            return false;
+    public void play() throws IllegalStateException {
+        if(mRecording){
+            throw new IllegalStateException("Cannot play the audio track when there is an active recording process (stop recording first)");
+        }
+        if(!isRecorded()){
+            throw new IllegalStateException("Cannot play the audio track if it has not been recorded yet (record it first)");
+        }
+        if(mMediaPlayer.isPlaying()){
+            throw new IllegalStateException("Cannot play the audio track if it is already being played (stop playback first)");
         }
         try {
             mMediaPlayer.reset();
@@ -191,7 +198,6 @@ public class AudioTrack implements Track {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true;
     }
 
     /**
@@ -204,15 +210,17 @@ public class AudioTrack implements Track {
 
     /**
      * Stops playback of this audio track
-     * @return False if not currently playing the audio track
+     * @exception IllegalStateException if the audio track cannot be stopped
      */
     @Override
-    public boolean stop() {
-        if(!mMediaPlayer.isPlaying() || mRecording){
-            return false;
+    public void stop() throws IllegalStateException {
+        if(mRecording){
+            throw new IllegalStateException("Cannot stop the audio track when there is an active recording process (stop recording first)");
+        }
+        if(!mMediaPlayer.isPlaying() ){
+            throw new IllegalStateException("Cannot stop the audio track if it is not being played (start playback first)");
         }
         mMediaPlayer.stop();
-        return false;
     }
 
     /**

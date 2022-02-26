@@ -88,8 +88,8 @@ public class ConstructedMelody extends Melody {
     }
 
     @Override
-    public boolean stopRecording() {
+    public void stopRecording() throws IllegalStateException {
+        super.stopRecording();
         mPrevTick = 0;
-        return super.stopRecording();
     }
 }

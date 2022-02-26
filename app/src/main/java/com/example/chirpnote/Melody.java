@@ -25,7 +25,7 @@ abstract class Melody implements Track {
     private MidiTrack mTempoTrack;
     protected MidiTrack mNoteTrack;
     private File mOutput;
-    private String mFilePath;
+    protected String mFilePath;
 
     // For playback
     private MediaPlayer mMediaPlayer;
@@ -46,7 +46,6 @@ abstract class Melody implements Track {
         mBPM = tempo;
         mFilePath = filePath;
 
-        // TODO: MediaPlayer is not Serializable; need to decouple it from tracks
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
@@ -126,12 +125,15 @@ abstract class Melody implements Track {
 
     /**
      * Starts the recording process for this MIDI melody
-     * @return False if melody is already being recorded (cannot start a new recording process until the current one is stopped)
+     * @exception IllegalStateException if the recording process cannot be started
      */
     @Override
-    public boolean startRecording(){
-        if(mRecording || mMediaPlayer.isPlaying()){
-            return false;
+    public void startRecording() throws IllegalStateException {
+        if(mRecording){
+            throw new IllegalStateException("Cannot start the recording process when the melody is already being recorded");
+        }
+        if(mMediaPlayer.isPlaying()){
+            throw new IllegalStateException("Cannot start the recording process when the melody is being played back");
         }
         mRecording = true;
 
@@ -145,20 +147,18 @@ abstract class Melody implements Track {
 
         // Tempo setup
         Tempo tempo = new Tempo();
-        tempo.setBpm(mSession == null ? mBPM : mSession.getTempo());
+        tempo.setBpm(getTempo());
         mTempoTrack.insertEvent(tempo);
-
-        return true;
     }
 
     /**
      * Stops the recording process for this MIDI melody
-     * @return False if melody is not being recorded yet (cannot stop a recording process if it has not been started yet)
+     * @exception IllegalStateException if the recording process cannot be stopped
      */
     @Override
-    public boolean stopRecording(){
+    public void stopRecording() throws IllegalStateException {
         if(!mRecording){
-            return false;
+            throw new IllegalStateException("Cannot stop the recording process if there is no active recording process (start recording first)");
         }
         mRecorded = true;
         ArrayList<MidiTrack> tracks = new ArrayList<>();
@@ -177,17 +177,22 @@ abstract class Melody implements Track {
         if(mSession != null) {
             mSession.setMelodyRecorded();
         }
-        return true;
     }
 
     /**
      * Plays back this melody
-     * @return False if recording process active or currently playing the melody
+     * @exception IllegalStateException if the melody cannot be played
      */
     @Override
-    public boolean play(){
-        if(mRecording || !isRecorded() || mMediaPlayer.isPlaying()){
-            return false;
+    public void play() throws IllegalStateException {
+        if(mRecording){
+            throw new IllegalStateException("Cannot play the melody when there is an active recording process (stop recording first)");
+        }
+        if(!isRecorded()){
+            throw new IllegalStateException("Cannot play the melody if it has not been recorded yet (record it first)");
+        }
+        if(mMediaPlayer.isPlaying()){
+            throw new IllegalStateException("Cannot play the melody if it is already being played (stop playback first)");
         }
         try {
             mMediaPlayer.reset();
@@ -196,20 +201,21 @@ abstract class Melody implements Track {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true;
     }
 
     /**
      * Stops playback of this melody
-     * @return False if not currently playing the melody
+     * @exception IllegalStateException if the melody cannot be stopped
      */
     @Override
-    public boolean stop(){
-        if(!mMediaPlayer.isPlaying() || mRecording){
-            return false;
+    public void stop() throws IllegalStateException {
+        if(mRecording){
+            throw new IllegalStateException("Cannot stop the melody when there is an active recording process (stop recording first)");
+        }
+        if(!mMediaPlayer.isPlaying() ){
+            throw new IllegalStateException("Cannot stop the melody if it is not being played (start playback first)");
         }
         mMediaPlayer.stop();
-        return true;
     }
 
     /**

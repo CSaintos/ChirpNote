@@ -20,9 +20,9 @@ public class RealTimeMelody extends Melody {
     }
 
     @Override
-    public boolean startRecording() {
+    public void startRecording() throws IllegalStateException {
+        super.startRecording();
         mRecordingStartTime = System.currentTimeMillis();
-        return super.startRecording();
     }
 
     /**

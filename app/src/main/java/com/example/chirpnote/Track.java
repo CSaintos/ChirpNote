@@ -3,15 +3,13 @@ package com.example.chirpnote;
 public interface Track {
     /**
      * Starts recording this track
-     * @return False if the recording process could not be started
      */
-    boolean startRecording();
+    void startRecording();
 
     /**
      * Stops recording this track
-     * @return False if the track's recording process could not be stopped
      */
-    boolean stopRecording();
+    void stopRecording();
 
     /**
      * Gets whether or not this track is currently being recorded
@@ -21,15 +19,13 @@ public interface Track {
 
     /**
      * Plays this track
-     * @return False if the track could not be played back
      */
-    boolean play();
+    void play();
 
     /**
      * Stops playback of this track
-     * @return False if the track's playback could not be stopped
      */
-    boolean stop();
+    void stop();
 
     /**
      * Gets whether or not this track is currently being played back

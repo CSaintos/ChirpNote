@@ -230,7 +230,7 @@ public class FloatingWindowService extends Service
 
     /**
      * Fixes a bug that causes the MIDI Driver to not start properly
-     * (Bug due to the MIDI Driver is being used in a Service instead of an Activity)
+     * (Bug due to the MIDI Driver being used in a Service instead of an Activity)
      */
     private void startMidiDriverOnce(){
         if(!midiDriverOn){
