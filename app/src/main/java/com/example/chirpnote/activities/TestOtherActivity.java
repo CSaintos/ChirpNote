@@ -142,7 +142,7 @@ public class TestOtherActivity extends AppCompatActivity {
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         note.stop(midiDriver);
                     }
-                    return false;
+                    return true;
                 }
             });
         }

@@ -45,9 +45,9 @@ public class KeyboardActivity extends AppCompatActivity {
         // floating window service is running
         // then the floating window service will stop
         if (isMyServiceRunning()) {
-            // onDestroy() method in FloatingWindowActivity
+            // onDestroy() method in FloatingWindowService
             // class will be called here
-            stopService(new Intent(KeyboardActivity.this, FloatingWindowActivity.class));
+            stopService(new Intent(KeyboardActivity.this, FloatingWindowService.class));
         }
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
@@ -86,8 +86,8 @@ public class KeyboardActivity extends AppCompatActivity {
                 // First it confirms whether the
                 // 'Display over other apps' permission in given
                 if (checkOverlayDisplayPermission()) {
-                    // FloatingWindowActivity service is started
-                    startService(new Intent(KeyboardActivity.this, FloatingWindowActivity.class));
+                    // FloatingWindowService service is started
+                    startService(new Intent(KeyboardActivity.this, FloatingWindowService.class));
                     // The MainActivity closes here
                     finish();
                 } else {
@@ -137,7 +137,7 @@ public class KeyboardActivity extends AppCompatActivity {
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         note.stop(midiDriver);
                     }
-                    return false;
+                    return true;
                 }
             });
         }
@@ -162,7 +162,7 @@ public class KeyboardActivity extends AppCompatActivity {
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             // If this service is found as a running,
             // it will return true or else false.
-            if (FloatingWindowActivity.class.getName().equals(service.service.getClassName())) {
+            if (FloatingWindowService.class.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }

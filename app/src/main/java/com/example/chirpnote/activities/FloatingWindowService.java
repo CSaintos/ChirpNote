@@ -1,31 +1,6 @@
 package com.example.chirpnote.activities;
 
-/*
 import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.PixelFormat;
-import android.os.Build;
-import android.os.IBinder;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-import androidx.annotation.Nullable;
- */
-
-import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
@@ -43,18 +18,16 @@ import androidx.annotation.Nullable;
 
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
-import com.example.chirpnote.RealTimeMelody;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.ArrayList;
 
-public class FloatingWindowActivity extends Service
+public class FloatingWindowService extends Service
 {
     private MidiDriver midiDriver;
+    private boolean midiDriverOn = false;
     private ArrayList<MusicNote> pianoKeys;
-    RealTimeMelody melody;
-    
 
     // The reference variables for the
     // ViewGroup, WindowManager.LayoutParams,
@@ -65,14 +38,13 @@ public class FloatingWindowActivity extends Service
     private WindowManager windowManager;
     private Button maximizeBtn;
 
-    // As FloatingWindowActivity inherits Service class,
+    // As FloatingWindowService inherits Service class,
     // it actually overrides the onBind method
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     @Override
     public void onCreate() {
@@ -83,26 +55,16 @@ public class FloatingWindowActivity extends Service
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
 
-        Context context = this;
-        String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
-
-
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
-        //midiDriver.setVolume(25);  attempted to change the global volume of the midiDriver just to see if the volume of the keys played would change. They don't.
         pianoKeys = new ArrayList<>(); // List of notes
-
-
-
 
         // To obtain a WindowManager of a different Display,
         // we need a Context for that display, so WINDOW_SERVICE is used
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-
         // A LayoutInflater instance is created to retrieve the
         // LayoutInflater for the floating_layout xml
         LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-
 
         // inflate a new view hierarchy from the floating_layout xml
 //        floatView = (ViewGroup) inflater.inflate(R.layout.floating_layout, null);
@@ -117,15 +79,15 @@ public class FloatingWindowActivity extends Service
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        startMidiDriverOnce();
                         note.play(midiDriver);
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         note.stop(midiDriver);
                     }
-                    return false;
+                    return true;
                 }
             });
         }
-
 
         // The Buttons and the EditText are connected with
         // the corresponding component id used in floating_layout xml file
@@ -166,11 +128,9 @@ public class FloatingWindowActivity extends Service
         // The Window will appear in the center of the screen
         floatWindowLayoutParam.gravity = Gravity.CENTER;
 
-
         // X and Y value of the window is set
         floatWindowLayoutParam.x = 0;
         floatWindowLayoutParam.y = 0;
-
 
         // The ViewGroup that inflates the floating_layout.xml is
         // added to the WindowManager with all the parameters
@@ -184,15 +144,12 @@ public class FloatingWindowActivity extends Service
                 // it was previously started
                 stopSelf();
 
-
                 // The window is removed from the screen
                 windowManager.removeView(floatView);
 
-
                 // The app will maximize again. So the MainActivity
                 // class will be called again.
-                Intent backToHome = new Intent(FloatingWindowActivity.this, KeyboardActivity.class);
-
+                Intent backToHome = new Intent(FloatingWindowService.this, KeyboardActivity.class);
 
                 // 1) FLAG_ACTIVITY_NEW_TASK flag helps activity to start a new task on the history stack.
                 // If a task is already running like the floating window service, a new activity will not be started.
@@ -214,7 +171,6 @@ public class FloatingWindowActivity extends Service
             double px;
             double py;
 
-
             @Override
             public boolean onTouch(View v, MotionEvent event){
                 switch (event.getAction()) {
@@ -225,11 +181,9 @@ public class FloatingWindowActivity extends Service
                         x = floatWindowLayoutUpdateParam.x;
                         y = floatWindowLayoutUpdateParam.y;
 
-
                         // returns the original raw X
                         // coordinate of this event
                         px = event.getRawX();
-
 
                         // returns the original raw Y
                         // coordinate of this event
@@ -241,7 +195,6 @@ public class FloatingWindowActivity extends Service
                     case MotionEvent.ACTION_MOVE:
                         floatWindowLayoutUpdateParam.x = (int) ((x + event.getRawX()) - px);
                         floatWindowLayoutUpdateParam.y = (int) ((y + event.getRawY()) - py);
-
 
                         // updated parameter is applied to the WindowManager
                         windowManager.updateViewLayout(floatView, floatWindowLayoutUpdateParam);
@@ -273,16 +226,24 @@ public class FloatingWindowActivity extends Service
 //                return false;
 //            }
 //        });
-
-
-
     }
 
+    /**
+     * Fixes a bug that causes the MIDI Driver to not start properly
+     * (Bug due to the MIDI Driver is being used in a Service instead of an Activity)
+     */
+    private void startMidiDriverOnce(){
+        if(!midiDriverOn){
+            midiDriver.start();
+            midiDriverOn = true;
+        }
+    }
 
     // It is called when stopService()
     // method is called in MainActivity
     @Override
     public void onDestroy() {
+        midiDriver.stop();
         super.onDestroy();
         stopSelf();
         // Window is removed from the screen
