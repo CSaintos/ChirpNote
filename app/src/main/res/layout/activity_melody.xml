@@ -494,4 +494,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
 
+    <Button
+        android:id="@+id/melodynavright"
+        android:layout_width="40dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="124dp"
+        android:layout_marginBottom="21dp"
+        android:text="r"
+        android:translationY="-10dp"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteAsharpbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/melodyrestbutton"
+        app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
+
+    <Button
+        android:id="@+id/melodynavleft"
+        android:layout_width="40dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="123dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="21dp"
+        android:text="l"
+        android:translationY="-15dp"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteFsharpbutton"
+        app:layout_constraintEnd_toStartOf="@+id/melodyrestbutton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
