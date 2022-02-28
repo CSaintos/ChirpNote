@@ -274,6 +274,45 @@ public class MidiTrack
         return true;
     }
 
+    public boolean removeNoteEvent(NoteOn event) {
+        Iterator<MidiEvent> it = mEvents.iterator();
+        MidiEvent prev = null, curr = null, next = null;
+
+        while(it.hasNext()){
+            next = it.next();
+
+            if(curr instanceof NoteOn && noteEventsEqual((NoteOn) curr, event)){
+                break;
+            }
+
+            prev = curr;
+            curr = next;
+            next = null;
+        }
+
+        if(next == null){
+            // Either the event was not found in the track,
+            // or this is the last event in the track.
+            // Either way, we won't need to update any delta times
+            return mEvents.remove(curr);
+        }
+
+        if(!mEvents.remove(curr)){
+            return false;
+        }
+
+        if(prev != null){
+            next.setDelta(next.getTick() - prev.getTick());
+        } else {
+            next.setDelta(next.getTick());
+        }
+        return true;
+    }
+
+    private boolean noteEventsEqual(NoteOn a, NoteOn b){
+        return a.getTick() == b.getTick() && a.getNoteValue() == b.getNoteValue() && a.getVelocity() == b.getVelocity();
+    }
+
     public void closeTrack()
     {
         long lastTick = 0;
