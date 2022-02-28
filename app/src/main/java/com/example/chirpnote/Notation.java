@@ -1,5 +1,7 @@
 package com.example.chirpnote;
 
+import android.graphics.Color;
+
 import java.util.EnumSet;
 import java.util.HashMap;
 
@@ -74,8 +76,10 @@ public class Notation {
         public Syntax prefix;
         public Syntax suffix;
         public int lineNum;
+        public int color;
 
         public NoteFont() {
+            color = Color.DKGRAY;
             symbol = Syntax.EMPTY;
             prefix = Syntax.EMPTY;
             suffix = Syntax.EMPTY;
