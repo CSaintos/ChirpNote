@@ -46,10 +46,14 @@ public class SessionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 melody.startRecording();
-                melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)), ConstructedMelody.NoteDuration.QUARTER_NOTE);
-                melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)), ConstructedMelody.NoteDuration.QUARTER_NOTE);
-                melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)), ConstructedMelody.NoteDuration.QUARTER_NOTE);
-                melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)), ConstructedMelody.NoteDuration.QUARTER_NOTE);
+                melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)),
+                        ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
+                melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)),
+                        ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
+                melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)),
+                        ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
+                melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)),
+                        ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
                 melody.stopRecording();
                 generateMelodyButton.setText("Melody generated!");
                 session.setMelodyRecorded();

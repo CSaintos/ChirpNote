@@ -22,9 +22,11 @@ import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.ConstructedMelody.NoteDuration;
+import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
+import com.example.chirpnote.Session;
 import com.example.chirpnote.Track;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -105,17 +107,20 @@ public class TestOtherActivity extends AppCompatActivity {
         playButton.setEnabled(false);
 
         Context context = this;
+        String basePath = context.getFilesDir().getPath();
+        Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                basePath + "/melody.mid", basePath + "/audioTrack.mp3");
 
         // Real time melody
-        String filePath = context.getFilesDir().getPath() + "/realTimeMelody.mid";
+        String filePath = basePath + "/realTimeMelody.mid";
         realTimeMelody = new RealTimeMelody(120, filePath, playButton);
 
         // Constructed melody
-        filePath = context.getFilesDir().getPath() + "/constructedMelody.mid";
-        constructedMelody = new ConstructedMelody(120, filePath, playButton);
+        constructedMelody = new ConstructedMelody(session);
+        constructedMelody.setPlayButton(playButton);
 
         // Audio track
-        filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
+        filePath = basePath + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playButton);
 
         // MIDI driver
@@ -139,7 +144,7 @@ public class TestOtherActivity extends AppCompatActivity {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         note.play(midiDriver);
                         if(constructingMelody && toggledDuration != null){
-                            constructedMelody.addNote(note, toggledDuration);
+                            constructedMelody.addNote(note, toggledDuration, session.mNextMelodyTick);
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         note.stop(midiDriver);
@@ -207,7 +212,7 @@ public class TestOtherActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(toggledDuration != null){
-                    constructedMelody.addRest(toggledDuration);
+                    constructedMelody.addRest(toggledDuration, session.mNextMelodyTick);
                 }
             }
         });

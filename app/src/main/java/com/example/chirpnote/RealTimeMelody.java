@@ -2,8 +2,8 @@ package com.example.chirpnote;
 
 import android.widget.Button;
 
-import com.leff.midi.event.NoteOff;
-import com.leff.midi.event.NoteOn;
+import com.example.chirpnote.midiLib.src.event.NoteOff;
+import com.example.chirpnote.midiLib.src.event.NoteOn;
 
 public class RealTimeMelody extends Melody {
     private final int CHANNEL = 0;

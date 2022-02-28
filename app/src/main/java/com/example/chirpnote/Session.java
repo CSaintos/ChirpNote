@@ -1,6 +1,8 @@
 package com.example.chirpnote;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Session implements Serializable {
     // Tempo range
@@ -10,7 +12,10 @@ public class Session implements Serializable {
     private String mName;
     private Key mKey;
     private int mTempo;
+    public List<String> mChords;
     private String mMelodyPath;
+    public List<String> mMelodyElements;
+    public int mNextMelodyTick;
     private String mAudioPath;
 
     // States
@@ -49,8 +54,11 @@ public class Session implements Serializable {
         } else {
             mTempo = 120;
         }
+        mChords = new ArrayList<>();
         mMelodyPath = melodyPath;
         mMelodyRecorded = false;
+        mMelodyElements = new ArrayList<>();
+        mNextMelodyTick = 0;
         mAudioPath = audioPath;
         mAudioRecorded = false;
     }

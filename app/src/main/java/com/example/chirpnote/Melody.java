@@ -5,10 +5,10 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.widget.Button;
 
-import com.leff.midi.MidiFile;
-import com.leff.midi.MidiTrack;
-import com.leff.midi.event.meta.Tempo;
-import com.leff.midi.event.meta.TimeSignature;
+import com.example.chirpnote.midiLib.src.MidiFile;
+import com.example.chirpnote.midiLib.src.MidiTrack;
+import com.example.chirpnote.midiLib.src.event.meta.Tempo;
+import com.example.chirpnote.midiLib.src.event.meta.TimeSignature;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ abstract class Melody implements Track {
     private MediaPlayer mMediaPlayer;
     private Button mPlayButton;
 
-    private Session mSession;
+    protected Session mSession;
 
     /**
      * A MIDI melody track
