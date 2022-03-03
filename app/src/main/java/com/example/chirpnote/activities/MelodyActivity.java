@@ -4,7 +4,7 @@ import static com.example.chirpnote.Notation.Syntax;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-//import android.annotation.SuppressLint;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -47,15 +47,18 @@ public class MelodyActivity extends AppCompatActivity {
     private Button restButton;
     private Button navLeftButton;
     private Button navRightButton;
+    private Button octUpButton;
+    private Button octDownButton;
     private TextView melodyText;
     private TextView gclefText;
+    private TextView octaveText;
 
     private LinkedList<NoteFont> noteList;
     private ListIterator<NoteFont> itr;
     private NoteFont currentNote;
     private MidiDriver midiDriver;
 
-    //@SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,8 @@ public class MelodyActivity extends AppCompatActivity {
         restButton = (Button) findViewById(R.id.melodyrestbutton);
         navLeftButton = (Button) findViewById(R.id.melodynavleft);
         navRightButton = (Button) findViewById(R.id.melodynavright);
+        octUpButton = (Button) findViewById(R.id.melodyoctupbutton);
+        octDownButton = (Button) findViewById(R.id.melodyoctdownbutton);
 
         // Initialize the keyboard buttons
         pianoKeys = new MusicNote[] {
@@ -86,14 +91,14 @@ public class MelodyActivity extends AppCompatActivity {
                 new MusicNote(68, (Button) findViewById(R.id.melodynoteGsharpbutton)),
                 new MusicNote(69, (Button) findViewById(R.id.melodynoteAbutton)),
                 new MusicNote(70, (Button) findViewById(R.id.melodynoteAsharpbutton)),
-                new MusicNote(71, (Button) findViewById(R.id.melodynoteBbutton)),
-                new MusicNote(72, (Button) findViewById(R.id.melodynoteCbutton2))
+                new MusicNote(71, (Button) findViewById(R.id.melodynoteBbutton))
         };
 
-        /*keyNotes = new ArrayList<>();
-        for (int i = 60; i < 73; i++) {
-            keyNotes.add(new MusicNote(i));
-        }*/
+        // Initialize text views
+        melodyText = (TextView) findViewById(R.id.stafftextview);
+        gclefText = (TextView) findViewById(R.id.gcleftextview);
+        octaveText = (TextView) findViewById(R.id.melodyoctindicator);
+
 
         // Initialize all staff line text views
         staffLines = new TextView[] {
@@ -113,10 +118,6 @@ public class MelodyActivity extends AppCompatActivity {
                 (TextView) findViewById(R.id.line6textview),
                 (TextView) findViewById(R.id.space6textview),
         };
-
-        // Initialize staff text and clef text views
-        melodyText = (TextView) findViewById(R.id.stafftextview);
-        gclefText = (TextView) findViewById(R.id.gcleftextview);
 
         // Initialize noteLengthButtons
         noteLengthButtons = new RadioButton[] {
@@ -170,29 +171,33 @@ public class MelodyActivity extends AppCompatActivity {
 
                 switch (currentNote.symbol) {
                     case NOTE_WHOLE:
-                        itr.add(notation.new NoteFont(Syntax.REST_WHOLE, 9));
+                        currentNote.symbol = Syntax.REST_WHOLE;
+                        currentNote.lineNum = 9;
                         break;
-                    case NOTE_HALF_UP:
-                    case NOTE_HALF_DOWN:
-                        itr.add(notation.new NoteFont(Syntax.REST_HALF, 7));
+                    case NOTE_HALF_UP: case NOTE_HALF_DOWN:
+                        currentNote.symbol = Syntax.REST_HALF;
+                        currentNote.lineNum = 7;
                         break;
-                    case NOTE_QUARTER_UP:
-                    case NOTE_QUARTER_DOWN:
-                        itr.add(notation.new NoteFont(Syntax.REST_QUARTER, 7));
+                    case NOTE_QUARTER_UP: case NOTE_QUARTER_DOWN:
+                        currentNote.symbol = Syntax.REST_QUARTER;
+                        currentNote.lineNum = 7;
                         break;
-                    case NOTE_8TH_UP:
-                    case NOTE_8TH_DOWN:
-                        itr.add(notation.new NoteFont(Syntax.REST_8TH, 7));
+                    case NOTE_8TH_UP: case NOTE_8TH_DOWN:
+                        currentNote.symbol = Syntax.REST_8TH;
+                        currentNote.lineNum = 7;
                         break;
-                    case NOTE_16TH_UP:
-                    case NOTE_16TH_DOWN:
-                        itr.add(notation.new NoteFont(Syntax.REST_16TH, 7));
+                    case NOTE_16TH_UP: case NOTE_16TH_DOWN:
+                        currentNote.symbol = Syntax.REST_16TH;
+                        currentNote.lineNum = 7;
                         break;
-                    case NOTE_32ND_UP:
-                    case NOTE_32ND_DOWN:
-                        itr.add(notation.new NoteFont(Syntax.REST_32ND, 7));
+                    case NOTE_32ND_UP: case NOTE_32ND_DOWN:
+                        currentNote.symbol = Syntax.REST_32ND;
+                        currentNote.lineNum = 7;
                         break;
                 }
+
+                itr.add(notation.new NoteFont(currentNote));
+
                 if (itr.hasPrevious()) itr.previous();
 
                 displayText();
@@ -209,7 +214,7 @@ public class MelodyActivity extends AppCompatActivity {
                     if (Syntax.CLEF.contains(itr.previous().symbol)) {
                         itr.next();
                     } else {
-                        //currentNote = itr.next();
+                        currentNote = itr.next(); // Due to calling previous in if statement
                         currentNote.color = Color.DKGRAY;
                         currentNote = itr.previous();
                         currentNote.color = Color.BLUE;
@@ -227,13 +232,37 @@ public class MelodyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (itr.hasNext()) {
-                    currentNote.color = Color.DKGRAY;
+                    //currentNote.color = Color.DKGRAY;
+                    itr.set(notation.new NoteFont(currentNote.symbol,
+                            currentNote.prefix,
+                            currentNote.suffix,
+                            currentNote.lineNum,
+                            Color.DKGRAY));
                     currentNote = itr.next();
-                    currentNote.color = Color.BLUE;
-                    Log.d("NoteList", currentNote.symbol.toString());
+                    itr.set(notation.new NoteFont(currentNote.symbol,
+                            currentNote.prefix,
+                            currentNote.suffix,
+                            currentNote.lineNum,
+                            Color.BLUE));
+                    //currentNote.color = Color.BLUE;
+                    Log.d("NoteList", currentNote.color == Color.BLUE ? "True" : "False");
                 }
                 displayText();
             }
+        });
+
+        octDownButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Octave", "Down");
+            }
+        });
+
+        octUpButton.setOnClickListener(new OnClickListener() {
+           @Override
+           public void onClick(View v) {
+                Log.d("Octave", "Up");
+           }
         });
 
         /**
@@ -247,22 +276,28 @@ public class MelodyActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     switch (finalI) {
                         case 0:
-                            currentNote = notation.new NoteFont(Syntax.NOTE_WHOLE, -1);
+                            currentNote.symbol = Syntax.NOTE_WHOLE;
+                            //currentNote = notation.new NoteFont(Syntax.NOTE_WHOLE, -1);
                             break;
                         case 1:
-                            currentNote = notation.new NoteFont(Syntax.NOTE_HALF_UP, -1);
+                            currentNote.symbol = Syntax.NOTE_HALF_UP;
+                            //currentNote = notation.new NoteFont(Syntax.NOTE_HALF_UP, -1);
                             break;
                         case 2:
-                            currentNote = notation.new NoteFont(Syntax.NOTE_QUARTER_UP, -1);
+                            currentNote.symbol = Syntax.NOTE_QUARTER_UP;
+                            //currentNote = notation.new NoteFont(Syntax.NOTE_QUARTER_UP, -1);
                             break;
                         case 3:
-                            currentNote = notation.new NoteFont(Syntax.NOTE_8TH_UP, -1);
+                            currentNote.symbol = Syntax.NOTE_8TH_UP;
+                            //currentNote = notation.new NoteFont(Syntax.NOTE_8TH_UP, -1);
                             break;
                         case 4:
-                            currentNote = notation.new NoteFont(Syntax.NOTE_16TH_UP, -1);
+                            currentNote.symbol = Syntax.NOTE_16TH_UP;
+                            //currentNote = notation.new NoteFont(Syntax.NOTE_16TH_UP, -1);
                             break;
                         case 5:
-                            currentNote = notation.new NoteFont(Syntax.NOTE_32ND_UP, -1);
+                            currentNote.symbol = Syntax.NOTE_32ND_UP;
+                            //currentNote = notation.new NoteFont(Syntax.NOTE_32ND_UP, -1);
                             break;
                     }
                 }
@@ -270,91 +305,73 @@ public class MelodyActivity extends AppCompatActivity {
         }
 
         // Initialize staff
-        initText();
+        initStaffText();
+        //initClefText();
+        initNoteText();
+        initOctaveText();
+
 
         // Setup listeners for each piano key
         // Attaches each key to a specifc line on the staff
-        /*
         for (int i = 0; i < pianoKeys.length; i++) {
             int finalI = i;
-            /*
-            pianoKeys[i].getButton().setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // FIXME this is ugly
-                    if (itr.hasNext()) {
-                        itr.next();
-                        itr.previous();
-                        itr.remove();
-                        //itr.previous();
-                    }
-                    switch (finalI) {
-                        case 0:
-                            itr.add(notation.new NoteFont(currentNote.symbol, 1));
-                            break;
-                        case 1:
-                            itr.add(notation.new NoteFont(currentNote.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 1));
-                            break;
-                        case 2:
-                            itr.add(notation.new NoteFont(currentNote.symbol, 2));
-                            break;
-                        case 3:
-                            itr.add(notation.new NoteFont(currentNote.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 2));
-                            break;
-                        case 4:
-                            itr.add(notation.new NoteFont(currentNote.symbol, 3));
-                            break;
-                        case 5:
-                            itr.add(notation.new NoteFont(currentNote.symbol, 4));
-                            break;
-                        case 6:
-                            itr.add(notation.new NoteFont(currentNote.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 4));
-                            break;
-                        case 7:
-                            itr.add(notation.new NoteFont(currentNote.symbol, 5));
-                            break;
-                        case 8:
-                            itr.add(notation.new NoteFont(currentNote.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 5));
-                            break;
-                        case 9:
-                            itr.add(notation.new NoteFont(currentNote.symbol, 6));
-                            break;
-                        case 10:
-                            itr.add(notation.new NoteFont(currentNote.symbol, Syntax.ACCIDENTAL_SHARP, Syntax.EMPTY, 6));
-                            break;
-                        case 11:
-                            itr.add(notation.new NoteFont(currentNote.symbol, 7));
-                            break;
-                        case 12:
-                            itr.add(notation.new NoteFont(currentNote.symbol, 8));
-                    }
-                    if (itr.hasPrevious()) itr.previous();
 
-                    displayText();
-                }
-            });*/
-            /*
             pianoKeys[finalI].getButton().setOnTouchListener(new OnTouchListener(){
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         pianoKeys[finalI].play(midiDriver);
+
+                        // FIXME this is still ugly
+                        if (itr.hasNext()) {
+                            itr.next();
+                            itr.previous();
+                            itr.remove();
+                        }
+
+                        switch (finalI) {
+                            case 0: case 1:
+                                currentNote.lineNum = 1;
+                                break;
+                            case 2: case 3:
+                                currentNote.lineNum = 2;
+                                break;
+                            case 4:
+                                currentNote.lineNum = 3;
+                                break;
+                            case 5: case 6:
+                                currentNote.lineNum = 4;
+                                break;
+                            case 7: case 8:
+                                currentNote.lineNum = 5;
+                                break;
+                            case 9: case 10:
+                                currentNote.lineNum = 6;
+                                break;
+                            case 11:
+                                currentNote.lineNum = 7;
+                                break;
+                        }
+
+                        switch (finalI) {
+                            case 0: case 2: case 4: case 5: case 7: case 9: case 11:
+                                currentNote.prefix = Syntax.EMPTY;
+                                currentNote.suffix = Syntax.EMPTY;
+                                break;
+                            case 1: case 3: case 6: case 8: case 10:
+                                currentNote.prefix = Syntax.ACCIDENTAL_SHARP;
+                                currentNote.suffix = Syntax.EMPTY;
+                                break;
+                        }
+
+                        itr.add(notation.new NoteFont(currentNote));
+
+                        if (itr.hasPrevious()) itr.previous();
+
+                        displayText();
+
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         pianoKeys[finalI].stop(midiDriver);
-                    }
-                    return true;
-                }
-            });
-        }*/
-
-        for(MusicNote note : pianoKeys){
-            note.getButton().setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.play(midiDriver);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stop(midiDriver);
                     }
                     return true;
                 }
@@ -369,7 +386,7 @@ public class MelodyActivity extends AppCompatActivity {
     Initializes the display text with the staff and adds a temporary
     element into noteList
      */
-    void initText() {
+    void initStaffText() {
         SpannableStringBuilder ssb = new SpannableStringBuilder();
 
         ssb.append(Syntax.BARLINE_SINGLE.unicode);
@@ -379,6 +396,9 @@ public class MelodyActivity extends AppCompatActivity {
         ssb.append(Syntax.BARLINE_SINGLE.unicode);
 
         melodyText.setText(ssb);
+    }
+
+    void initClefText() {
         // FIXME ? this might need to be implemented differently later
         SpannableString clef = new SpannableString(Syntax.G_CLEF.unicode);
         clef.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, clef.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -390,13 +410,24 @@ public class MelodyActivity extends AppCompatActivity {
             itr.next();
         }
         // FIXME ? end of fixme
+    }
 
+    void initNoteText() {
         // Default noteLength and noteLengthButton
-        noteLengthButtons[0].toggle();
-        currentNote = notation.new NoteFont(Syntax.NOTE_WHOLE, -1);
+        noteLengthButtons[0].toggle(); // set Whole Note not length button
+        currentNote = notation.new NoteFont(Syntax.NOTE_WHOLE, 5);
+        currentNote.color = Color.BLUE;
         // Add default note to staff
-        itr.add(notation.new NoteFont(currentNote.symbol, 5));
+        itr.add(notation.new NoteFont(currentNote));
         if (itr.hasPrevious()) Log.d("NoteList", itr.previous().symbol.toString());
+    }
+
+    void initOctaveText() {
+        String keyStr = "C";
+        int octNum = 4;
+
+        Spannable octave = new SpannableString(keyStr + Integer.toString(4));
+        octaveText.setText(octave);
     }
 
     /**
@@ -452,5 +483,17 @@ public class MelodyActivity extends AppCompatActivity {
             //ssb[i].setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, ssb[i].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             staffLines[i].setText(ssb[i]);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        midiDriver.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        midiDriver.stop();
     }
 }

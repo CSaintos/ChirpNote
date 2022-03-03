@@ -90,10 +90,14 @@ public class Notation {
             this.symbol = symbol;
             this.lineNum = lineNum;
         }
-        public NoteFont(Syntax symbol, Syntax prefix, Syntax suffix, int lineNum) {
+        public NoteFont(Syntax symbol, Syntax prefix, Syntax suffix, int lineNum, int color) {
             this(symbol, lineNum);
             this.prefix = prefix;
             this.suffix = suffix;
+            this.color = color;
+        }
+        public NoteFont(NoteFont nf) {
+            this(nf.symbol, nf.prefix, nf.suffix, nf.lineNum, nf.color);
         }
     }
 
