@@ -64,7 +64,8 @@
             android:exported="false" />
         <activity
             android:name=".activities.KeyboardActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SetKeyFromSongActivity"
             android:exported="true" />
