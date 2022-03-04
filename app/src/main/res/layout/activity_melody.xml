@@ -400,24 +400,13 @@
         android:id="@+id/melodynoteBbutton"
         android:layout_width="50dp"
         android:layout_height="150dp"
+        android:layout_marginEnd="55dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/button_whitekey"
         android:text="B"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/melodynoteCbutton2"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteAbutton" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteCbutton2"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/button_whitekey"
-        android:text="C"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteBbutton" />
+        app:layout_constraintStart_toEndOf="@+id/melodynoteAbutton" />
 
     <RadioGroup
         android:id="@+id/melodyradiogroup"
@@ -522,5 +511,42 @@
         app:layout_constraintEnd_toStartOf="@+id/melodyrestbutton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
+
+    <Button
+        android:id="@+id/melodyoctupbutton"
+        android:layout_width="49dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="16dp"
+        android:text="U"
+        app:layout_constraintBottom_toTopOf="@+id/melodyoctdownbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteAsharpbutton" />
+
+    <Button
+        android:id="@+id/melodyoctdownbutton"
+        android:layout_width="49dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="65dp"
+        android:text="D"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteBbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/melodynoteAsharpbutton" />
+
+    <TextView
+        android:id="@+id/melodyoctindicator"
+        android:layout_width="45dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="63dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="11dp"
+        android:text="C4"
+        android:textAlignment="center"
+        android:background="@drawable/text_background"
+        app:layout_constraintBottom_toTopOf="@+id/melodyoctupbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/melodynavright" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
