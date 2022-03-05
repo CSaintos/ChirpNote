@@ -1,7 +1,9 @@
 package com.example.chirpnote.activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.Chronometer;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,6 +28,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     //layout items
     private ImageButton recordButton;
     private ImageButton playRecordedAudioButton;
+    private ImageButton stopRecordedAudioButton;
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
     Context context = this;
@@ -49,10 +53,13 @@ public class RecordAudioActivity extends AppCompatActivity {
         recordButton = findViewById(R.id.recordAudioActivityButton);
         playRecordedAudioButton = findViewById(R.id.playRecordedAudioButton);
         playRecordedAudioButton.setEnabled(false);
+        stopRecordedAudioButton = findViewById(R.id.stopRecordedAudioButton);
+        stopRecordedAudioButton.setEnabled(false);
         waveformView = findViewById(R.id.waveformView);
         // Audio track
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
+        recordButton.setColorFilter(Color.parseColor("#777777"));
 
 
 
@@ -79,6 +86,7 @@ public class RecordAudioActivity extends AppCompatActivity {
 
                 if(!audio.isRecording()){
                     audio.startRecording();
+                    recordButton.setColorFilter(Color.parseColor("#994444"));
                     //timer logic
                     ticker = new Timer();
                     ticker.schedule(scheduleDraws,0,50);
@@ -87,6 +95,7 @@ public class RecordAudioActivity extends AppCompatActivity {
                 } else {
                     audio.stopRecording();
                     timer.stop();
+                    recordButton.setColorFilter(Color.parseColor("#ffffff"));
                     //shut down the task so you can create onClick (Avoid taskAlreadyScheduled)
                     scheduleDraws.cancel();
                 }
@@ -111,13 +120,22 @@ public class RecordAudioActivity extends AppCompatActivity {
                     constructedMelody.play();
                     audio.play();*/
                 } else {
-                    audio.stop();
+                    audio.getmMediaRecorder().pause();
+                    stopRecordedAudioButton.setEnabled(true);
                     timer.stop();
                     /*realTimeMelody.stop();
                     constructedMelody.stop();
                     audio.stop();*/
                 }
                 playing = !playing;
+            }
+        });
+
+        stopRecordedAudioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //write to file
+                audio.getmMediaRecorder().setOutputFile(Environment.getDataDirectory() + "audio.mp3");
             }
         });
 
