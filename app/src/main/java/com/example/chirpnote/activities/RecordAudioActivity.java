@@ -8,6 +8,8 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import com.example.chirpnote.AudioTrack;
 
 import androidx.annotation.Nullable;
@@ -16,7 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,6 +50,8 @@ public class RecordAudioActivity extends AppCompatActivity {
     Timer ticker = new Timer();
 
 
+
+
     /***
      * onCreate function sets values
      * @param savedInstanceState
@@ -60,6 +71,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
         recordButton.setColorFilter(Color.parseColor("#777777"));
+
 
 
 
@@ -93,9 +105,10 @@ public class RecordAudioActivity extends AppCompatActivity {
 
 
                 } else {
+                    stopRecordedAudioButton.setEnabled(true);
                     audio.stopRecording();
                     timer.stop();
-                    recordButton.setColorFilter(Color.parseColor("#ffffff"));
+                    recordButton.setColorFilter(Color.parseColor("#777777"));
                     //shut down the task so you can create onClick (Avoid taskAlreadyScheduled)
                     scheduleDraws.cancel();
                 }
@@ -121,7 +134,6 @@ public class RecordAudioActivity extends AppCompatActivity {
                     audio.play();*/
                 } else {
                     audio.getmMediaRecorder().pause();
-                    stopRecordedAudioButton.setEnabled(true);
                     timer.stop();
                     /*realTimeMelody.stop();
                     constructedMelody.stop();
@@ -135,9 +147,37 @@ public class RecordAudioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //write to file
-                audio.getmMediaRecorder().setOutputFile(Environment.getDataDirectory() + "audio.mp3");
+                try {
+                    InputStream inputStream = new FileInputStream(filePath);
+                    byte arr[] = readByte(inputStream);
+
+
+                    //file output stream
+                    File audioFile = new File(context.getFilesDir(), "SessionAudio.mp3");
+                    FileOutputStream fileOutput = new FileOutputStream(audioFile);
+                    fileOutput.write(arr);
+                    fileOutput.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Toast.makeText(RecordAudioActivity.this,"Audio saved to " + context.getFilesDir(),Toast.LENGTH_LONG).show();
+
             }
         });
 
+
+    }
+
+    public static byte[] readByte(InputStream is) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        byte[] buffer = new byte[0xFFFF];
+        for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
+            os.write(buffer, 0, len);
+        }
+
+        return os.toByteArray();
     }
 }
