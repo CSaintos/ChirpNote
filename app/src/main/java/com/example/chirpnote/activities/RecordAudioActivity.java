@@ -1,11 +1,14 @@
 package com.example.chirpnote.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -14,7 +17,9 @@ import com.example.chirpnote.AudioTrack;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import com.example.chirpnote.BuildConfig;
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
 
@@ -25,6 +30,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,6 +45,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     private ImageButton recordButton;
     private ImageButton playRecordedAudioButton;
     private ImageButton stopRecordedAudioButton;
+    private Button shareButton;
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
     Context context = this;
@@ -66,11 +74,13 @@ public class RecordAudioActivity extends AppCompatActivity {
         playRecordedAudioButton.setEnabled(false);
         stopRecordedAudioButton = findViewById(R.id.stopRecordedAudioButton);
         stopRecordedAudioButton.setEnabled(false);
+        shareButton = findViewById(R.id.testShareButton);
         waveformView = findViewById(R.id.waveformView);
         // Audio track
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
         recordButton.setColorFilter(Color.parseColor("#777777"));
+        File audioFile = new File(context.getFilesDir(), "SessionAudio.mp3");
 
 
 
@@ -153,7 +163,6 @@ public class RecordAudioActivity extends AppCompatActivity {
 
 
                     //file output stream
-                    File audioFile = new File(context.getFilesDir(), "SessionAudio.mp3");
                     FileOutputStream fileOutput = new FileOutputStream(audioFile);
                     fileOutput.write(arr);
                     fileOutput.close();
@@ -168,7 +177,18 @@ public class RecordAudioActivity extends AppCompatActivity {
             }
         });
 
-
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                Uri audioURI = FileProvider.getUriForFile(RecordAudioActivity.this, BuildConfig.APPLICATION_ID+ ".provider",audioFile);
+                intent.setType("*/*");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.putExtra(Intent.EXTRA_STREAM,audioURI);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(intent, "Share File"));
+            }
+        });
     }
 
     public static byte[] readByte(InputStream is) throws IOException {
