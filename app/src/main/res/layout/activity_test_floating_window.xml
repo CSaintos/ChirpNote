@@ -3,32 +3,137 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
+
+    <!--    <ImageButton-->
+<!--        android:id="@+id/buttonMaximize"-->
+<!--        android:layout_width="55dp"-->
+<!--        android:layout_height="238dp"-->
+<!--        android:background="@drawable/max_button"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.429"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.45" />-->
+
     <Button
         android:id="@+id/buttonMaximize"
-        android:layout_width="143dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="212dp"
-        android:text="MAXIMIZE"
+        android:layout_width="38dp"
+        android:layout_height="204dp"
+        android:background="@drawable/max_button"
+        android:rotation="0"
         android:textColor="@android:color/white"
         android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.032"
+        app:layout_constraintStart_toEndOf="@+id/key5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.227" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/key1"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button_whitekey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/noteC4Button"
-        android:layout_width="170dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="292dp"
+        android:id="@+id/key2"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="52dp"
         android:background="@drawable/button_whitekey"
-        android:text="C"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/key3"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/button_whitekey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/key4"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="148dp"
+        android:background="@drawable/button_whitekey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/key5"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="196dp"
+        android:background="@drawable/button_whitekey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/key6"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="244dp"
+        android:background="@drawable/button_whitekey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/key7"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="292dp"
+        android:background="@drawable/button_whitekey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/key8"
+        android:layout_width="100dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="340dp"
+        android:background="@drawable/button_whitekey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/noteC4Button"-->
+<!--        android:layout_width="170dp"-->
+<!--        android:layout_height="80dp"-->
+<!--        android:layout_marginTop="172dp"-->
+<!--        android:background="@drawable/button_whitekey"-->
+<!--        android:text="C"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.004"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

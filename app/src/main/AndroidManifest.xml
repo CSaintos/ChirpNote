@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.chirpnote" >
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -88,7 +89,9 @@
         <activity
             android:name=".activities.RecordAudioActivity"
             android:exported="true" />
-        <service android:name=".activities.FloatingWindowService"/>
+        <service
+            android:name=".activities.FloatingWindowService"
+            />
     </application>
 
 </manifest>
