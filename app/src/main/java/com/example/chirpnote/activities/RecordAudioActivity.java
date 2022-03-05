@@ -1,11 +1,15 @@
 package com.example.chirpnote.activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import com.example.chirpnote.AudioTrack;
 
 import androidx.annotation.Nullable;
@@ -14,6 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,6 +37,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     //layout items
     private ImageButton recordButton;
     private ImageButton playRecordedAudioButton;
+    private ImageButton stopRecordedAudioButton;
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
     Context context = this;
@@ -35,6 +48,8 @@ public class RecordAudioActivity extends AppCompatActivity {
     private WaveformView waveformView;
     //This timer is a timer initializer for the recording functionality of a waveform
     Timer ticker = new Timer();
+
+
 
 
     /***
@@ -49,10 +64,14 @@ public class RecordAudioActivity extends AppCompatActivity {
         recordButton = findViewById(R.id.recordAudioActivityButton);
         playRecordedAudioButton = findViewById(R.id.playRecordedAudioButton);
         playRecordedAudioButton.setEnabled(false);
+        stopRecordedAudioButton = findViewById(R.id.stopRecordedAudioButton);
+        stopRecordedAudioButton.setEnabled(false);
         waveformView = findViewById(R.id.waveformView);
         // Audio track
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
+        recordButton.setColorFilter(Color.parseColor("#777777"));
+
 
 
 
@@ -79,14 +98,17 @@ public class RecordAudioActivity extends AppCompatActivity {
 
                 if(!audio.isRecording()){
                     audio.startRecording();
+                    recordButton.setColorFilter(Color.parseColor("#994444"));
                     //timer logic
                     ticker = new Timer();
                     ticker.schedule(scheduleDraws,0,50);
 
 
                 } else {
+                    stopRecordedAudioButton.setEnabled(true);
                     audio.stopRecording();
                     timer.stop();
+                    recordButton.setColorFilter(Color.parseColor("#777777"));
                     //shut down the task so you can create onClick (Avoid taskAlreadyScheduled)
                     scheduleDraws.cancel();
                 }
@@ -111,7 +133,7 @@ public class RecordAudioActivity extends AppCompatActivity {
                     constructedMelody.play();
                     audio.play();*/
                 } else {
-                    audio.stop();
+                    audio.getmMediaRecorder().pause();
                     timer.stop();
                     /*realTimeMelody.stop();
                     constructedMelody.stop();
@@ -121,5 +143,41 @@ public class RecordAudioActivity extends AppCompatActivity {
             }
         });
 
+        stopRecordedAudioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //write to file
+                try {
+                    InputStream inputStream = new FileInputStream(filePath);
+                    byte arr[] = readByte(inputStream);
+
+
+                    //file output stream
+                    File audioFile = new File(context.getFilesDir(), "SessionAudio.mp3");
+                    FileOutputStream fileOutput = new FileOutputStream(audioFile);
+                    fileOutput.write(arr);
+                    fileOutput.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Toast.makeText(RecordAudioActivity.this,"Audio saved to " + context.getFilesDir(),Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+
+    }
+
+    public static byte[] readByte(InputStream is) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        byte[] buffer = new byte[0xFFFF];
+        for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
+            os.write(buffer, 0, len);
+        }
+
+        return os.toByteArray();
     }
 }

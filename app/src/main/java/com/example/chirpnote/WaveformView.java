@@ -84,7 +84,7 @@ public class WaveformView extends View {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        for (int i = 0; i < amplitudeSpikes.size();i++){
+        for (int i = 0; i < amplitudeSpikes.size()-1;i++){
             canvas.drawRoundRect(amplitudeSpikes.get(i),radius,radius,paint);
         }
     }
