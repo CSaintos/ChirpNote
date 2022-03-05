@@ -39,6 +39,16 @@ public class SmartKeyboardActivity extends AppCompatActivity {
 
         Session session = new Session("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
 
+
+//        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
+//        changeKeyButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                session
+//            }
+//        });
+
+
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
