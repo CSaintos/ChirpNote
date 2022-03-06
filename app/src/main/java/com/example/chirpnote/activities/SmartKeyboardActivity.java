@@ -41,35 +41,33 @@ public class SmartKeyboardActivity extends AppCompatActivity {
 //        Session session;
 
 
-
+        /** Allows the user to switch between keys whenever they want */
         Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
         changeKeyButton.setClickable(true);
-        changeKeyButton.setOnClickListener(new OnClickListener() {
+
+        changeKeyButton.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if (changeKeyButton.isSelected()) {
+            public void onClick(View v)
+            {
+                // if button is pressed, the key changes back to the what it was when screen opened.
+                if (changeKeyButton.isSelected())
+                {
                     changeKeyButton.setSelected(false);
 
                     session.setKey(new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR));
-
                     initializeKeys(session);
 
-
                     eventListener(pianoKeys);
-
                 }
                 else
                 {
                     changeKeyButton.setSelected(true);
 
                     session.setKey(new Key(Key.RootNote.C, Key.Type.MAJOR));
-
                     initializeKeys(session);
 
-
                     eventListener(pianoKeys);
-
-
                 }
             }
         });

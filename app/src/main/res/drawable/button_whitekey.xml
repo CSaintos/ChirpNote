@@ -8,8 +8,6 @@
                 android:color="#000000" />
             <solid
                 android:color="@color/teal_200" />
-
-
         </shape>
     </item>
 

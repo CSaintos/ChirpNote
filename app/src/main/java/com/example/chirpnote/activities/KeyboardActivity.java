@@ -43,14 +43,7 @@ public class KeyboardActivity extends AppCompatActivity {
 
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
-        // If the app is started again while the
-        // floating window service is running
-        // then the floating window service will stop
-        if (isMyServiceRunning()) {
-            // onDestroy() method in FloatingWindowService
-            // class will be called here
-            stopService(new Intent(KeyboardActivity.this, FloatingWindowService.class));
-        }
+
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
         Button playButton = (Button) findViewById(R.id.playButton);
@@ -136,8 +129,12 @@ public class KeyboardActivity extends AppCompatActivity {
 //        });
 
 
-
-
+        // If the app is started again while the floating window service is running
+        // then the floating window service will stop
+        if (isMyServiceRunning()) {
+            // onDestroy() method in FloatingWindowService, class will be called here
+            stopService(new Intent(KeyboardActivity.this, FloatingWindowService.class));
+        }
 
         // The Main Button that helps to minimize the app
         minimizeBtn.setOnClickListener(new View.OnClickListener() {

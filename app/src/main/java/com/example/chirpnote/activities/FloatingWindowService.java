@@ -71,7 +71,7 @@ public class FloatingWindowService extends Service
 //        floatView = (ViewGroup) inflater.inflate(R.layout.floating_layout, null);
         floatView = (ViewGroup) inflater.inflate(R.layout.activity_test_floating_window, null);
 
-        Session session = new Session("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
+        Session session = new Session("Session1", new Key(Key.RootNote.G, Key.Type.MAJOR), 120);
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
         pianoKeys = new ArrayList<>(); // List of notes
 

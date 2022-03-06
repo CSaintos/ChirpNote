@@ -13,10 +13,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.chirpnote.AudioTrack;
-import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
-import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.Session;
 
@@ -82,7 +79,7 @@ public class NewSessionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
-                Session session = new Session(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
+                Session session = new Session(setName.getText().toString(), new Key(Key.RootNote.C, Key.Type.MAJOR),
                                                 Integer.parseInt(setTempo.getText().toString()), basePath + "/melody.mid", basePath + "audioTrack.mp4");
                 intent.putExtra("session", session);
                 startActivity(intent);
