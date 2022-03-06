@@ -1,5 +1,6 @@
 package com.example.chirpnote.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,6 +35,7 @@ public class KeyboardActivity extends AppCompatActivity {
     private Button minimizeBtn;
     private AlertDialog dialog;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,10 @@ public class KeyboardActivity extends AppCompatActivity {
 //        pianoKeys.add(new MusicNote(62, (Button) findViewById(R.id.noteDButton), melody));
 //        pianoKeys.add(new MusicNote(64, (Button) findViewById(R.id.noteEButton), melody));
 
+
+
+
+
         pianoKeys.add(new MusicNote(60, (Button) findViewById(R.id.noteC4Button), melody));
         pianoKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteCSharp4Button), melody));
         pianoKeys.add(new MusicNote(62, (Button) findViewById(R.id.noteD4Button), melody));
@@ -78,6 +84,60 @@ public class KeyboardActivity extends AppCompatActivity {
         pianoKeys.add(new MusicNote(70, (Button) findViewById(R.id.noteASharp4Button), melody));
         pianoKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteB4Button), melody));
         pianoKeys.add(new MusicNote(72, (Button) findViewById(R.id.noteC5Button), melody));
+
+
+
+        Button noteSuggestButton = findViewById(R.id.noteSuggestion);
+        noteSuggestButton.setClickable(true);
+
+        noteSuggestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (noteSuggestButton.isSelected())
+                {
+                    noteSuggestButton.setSelected(false);
+                    for (int i = 0; i < pianoKeys.size(); i++)
+                    {
+                        pianoKeys.get(i).getButton().setSelected(false);
+                    }
+                }
+                else
+                {
+                    noteSuggestButton.setSelected(true);
+                    for (int i = 0; i < pianoKeys.size(); i++)
+                    {
+                        pianoKeys.get(i).getButton().setSelected(true);
+                    }
+                }
+            }
+        });
+
+//   prototype to above
+//        Button cButton = (Button) findViewById(R.id.noteC4Button);
+//        pianoKeys.add(new MusicNote(60, cButton, melody));
+//
+//        Button noteSuggestButton = findViewById(R.id.noteSuggestion);
+//        noteSuggestButton.setClickable(true);
+//
+//        noteSuggestButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (noteSuggestButton.isSelected())
+//                {
+//                    noteSuggestButton.setSelected(false);
+//                    cButton.setSelected(false);
+//                }
+//                else
+//                {
+//                    noteSuggestButton.setSelected(true);
+//                    cButton.setSelected(true);
+//                }
+//            }
+//        });
+
+
+
+
 
         // The Main Button that helps to minimize the app
         minimizeBtn.setOnClickListener(new View.OnClickListener() {

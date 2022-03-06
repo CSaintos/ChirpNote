@@ -38,6 +38,42 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
 
         Session session = new Session("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
+//        Session session;
+
+
+
+        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
+        changeKeyButton.setClickable(true);
+        changeKeyButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (changeKeyButton.isSelected()) {
+                    changeKeyButton.setSelected(false);
+
+                    session.setKey(new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR));
+
+                    initializeKeys(session);
+
+
+                    eventListener(pianoKeys);
+
+                }
+                else
+                {
+                    changeKeyButton.setSelected(true);
+
+                    session.setKey(new Key(Key.RootNote.C, Key.Type.MAJOR));
+
+                    initializeKeys(session);
+
+
+                    eventListener(pianoKeys);
+
+
+                }
+            }
+        });
+
 
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
@@ -93,6 +129,37 @@ public class SmartKeyboardActivity extends AppCompatActivity {
                     return true;
                 }
             });
+        }
+    }
+
+    private void eventListener(ArrayList<MusicNote> pianoKeys)
+    {
+        // Setup event listener for each piano key
+        for(MusicNote note : pianoKeys){
+            note.getButton().setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        note.play(midiDriver);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        note.stop(midiDriver);
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
+    private void initializeKeys(Session session)
+    {
+        pianoKeys = new ArrayList<>(); // List of MusicNotes
+        int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
+
+        View[] keys = new View[]{findViewById(R.id.key1), findViewById(R.id.key2), findViewById(R.id.key3), findViewById(R.id.key4),
+                findViewById(R.id.key5), findViewById(R.id.key6), findViewById(R.id.key7), findViewById(R.id.key8)};
+
+        for(int i = 0; i < keys.length; i++){
+            pianoKeys.add(new MusicNote(notes[i], (Button) keys[i], melody));
         }
     }
 

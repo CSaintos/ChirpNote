@@ -132,4 +132,6 @@ public class Session implements Serializable {
     public boolean isAudioRecorded(){
         return mAudioRecorded;
     }
+
+    public void setKey(Key key) {mKey = key;}
 }

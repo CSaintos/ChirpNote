@@ -3,6 +3,14 @@ package com.example.chirpnote;
 import java.io.Serializable;
 
 public class Key implements Serializable {
+    // sam's addition
+//    public enum ChordType {
+//        MAJOR,
+//        MINOR,
+//        DIMINISHED
+//    }
+    // end sam
+
     // Root note of the key
     public enum RootNote {
         C("C", 60),
@@ -113,4 +121,25 @@ public class Key implements Serializable {
         }
         return arr;
     }
+
+    // sam
+    /**
+     * Gets the types of chords found in a key
+     * @return all chord types in a key
+     */
+    public Chord.Type[] getKeyChordTypes()
+    {
+        Chord.Type[] keyChordTypes;
+
+        if (mType == Type.MAJOR)
+        {
+            keyChordTypes = new Chord.Type[]{Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.MINOR, Chord.Type.MAJOR, Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.DIMINISHED, Chord.Type.MAJOR};
+        }
+        else
+        {
+            keyChordTypes = new Chord.Type[]{Chord.Type.MINOR, Chord.Type.DIMINISHED, Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.MAJOR, Chord.Type.MAJOR, Chord.Type.DIMINISHED, Chord.Type.MINOR};
+        }
+        return keyChordTypes;
+    }
+    // end sam
 }

@@ -16,8 +16,10 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
+import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
+import com.example.chirpnote.Session;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
@@ -55,8 +57,7 @@ public class FloatingWindowService extends Service
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
 
-        midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
-        pianoKeys = new ArrayList<>(); // List of notes
+
 
         // To obtain a WindowManager of a different Display,
         // we need a Context for that display, so WINDOW_SERVICE is used
@@ -70,8 +71,20 @@ public class FloatingWindowService extends Service
 //        floatView = (ViewGroup) inflater.inflate(R.layout.floating_layout, null);
         floatView = (ViewGroup) inflater.inflate(R.layout.activity_test_floating_window, null);
 
-        //    pianoKeys.add(new MusicNote(60, (Button) findViewById(R.id.noteC4Button), melody));
-        pianoKeys.add(new MusicNote(60, (Button) floatView.findViewById(R.id.noteC4Button)));
+        Session session = new Session("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
+        midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
+        pianoKeys = new ArrayList<>(); // List of notes
+
+
+        int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
+
+        View[] keys = new View[]{floatView.findViewById(R.id.key1), floatView.findViewById(R.id.key2), floatView.findViewById(R.id.key3), floatView.findViewById(R.id.key4),
+                floatView.findViewById(R.id.key5), floatView.findViewById(R.id.key6), floatView.findViewById(R.id.key7), floatView.findViewById(R.id.key8)};
+
+        for(int i = 0; i < keys.length; i++){
+            pianoKeys.add(new MusicNote(notes[i], (Button) keys[i]));
+        }
+
 
         // Setup event listener for each piano key
         for(MusicNote note : pianoKeys){
@@ -117,7 +130,8 @@ public class FloatingWindowService extends Service
         // 5) Next parameter is Layout_Format. System chooses a format that supports
         // translucency by PixelFormat.TRANSLUCENT
         floatWindowLayoutParam = new WindowManager.LayoutParams(
-                (int) (width * (0.55f)),
+//                (int) (width * (0.55f)),
+                (int) (width * (0.35f)),
                 (int) (height * (0.58f)),
                 LAYOUT_TYPE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
