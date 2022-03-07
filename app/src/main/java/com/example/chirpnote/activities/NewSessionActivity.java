@@ -79,7 +79,7 @@ public class NewSessionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
-                Session session = new Session(setName.getText().toString(), new Key(Key.RootNote.C, Key.Type.MAJOR),
+                Session session = new Session(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
                                                 Integer.parseInt(setTempo.getText().toString()), basePath + "/melody.mid", basePath + "audioTrack.mp4");
                 intent.putExtra("session", session);
                 startActivity(intent);

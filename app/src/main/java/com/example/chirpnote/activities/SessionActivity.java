@@ -195,7 +195,7 @@ public class SessionActivity extends AppCompatActivity {
         System.out.println("\ninput Chord root value = " + inputChord.getRoot() + ", input chord type = " + inputChord.getType());
         System.out.println("index of input chord = " + indexOfInputChord);
         System.out.println("size of suggested chords list = " + listOfChords.size());
-        System.out.println("Expected suggest chord root values and types = 62 minor, 67 major, 71 diminished");
+        System.out.println("Expected suggest chord root values and types = 71 minor, 64 major, 68 diminished");
         System.out.println("Actual suggested chord root values and types = " + listOfChords.get(0).getRoot() + " " + listOfChords.get(0).getType() + ", " + listOfChords.get(1).getRoot() + " " + listOfChords.get(1).getType() + ", " + listOfChords.get(2).getRoot() + " " + listOfChords.get(2).getType());
 
 
