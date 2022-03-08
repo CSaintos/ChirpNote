@@ -3,14 +3,6 @@ package com.example.chirpnote;
 import java.io.Serializable;
 
 public class Key implements Serializable {
-    // sam's addition
-//    public enum ChordType {
-//        MAJOR,
-//        MINOR,
-//        DIMINISHED
-//    }
-    // end sam
-
     // Root note of the key
     public enum RootNote {
         C("C", 60),
@@ -65,6 +57,7 @@ public class Key implements Serializable {
     private RootNote mRootNote;
     private Type mType;
     private int[] mSteps;
+    private Chord.Type[] mChordTypes;
 
     /**
      * A Key
@@ -76,16 +69,22 @@ public class Key implements Serializable {
         mType = type;
         if(type == Type.MAJOR){
             mSteps = new int[]{0, 2, 2, 1, 2, 2, 2, 1};
-        } else if(type == Type.NATURAL_MINOR){
-            mSteps = new int[]{0, 2, 1, 2, 2, 1, 2, 2};
-        } else if(type == Type.HARMONIC_MINOR){
-            mSteps = new int[]{0, 2, 1, 2, 2, 1, 3, 1};
+            mChordTypes = new Chord.Type[]{Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.MINOR,
+                    Chord.Type.MAJOR, Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.DIMINISHED, Chord.Type.MAJOR};
+        } else {
+            if(type == Type.NATURAL_MINOR){
+                mSteps = new int[]{0, 2, 1, 2, 2, 1, 2, 2};
+            } else if(type == Type.HARMONIC_MINOR){
+                mSteps = new int[]{0, 2, 1, 2, 2, 1, 3, 1};
+            }
+            mChordTypes = new Chord.Type[]{Chord.Type.MINOR, Chord.Type.DIMINISHED, Chord.Type.MAJOR,
+                    Chord.Type.MINOR, Chord.Type.MAJOR, Chord.Type.MAJOR, Chord.Type.DIMINISHED, Chord.Type.MINOR};
         }
     }
 
     /**
-     * The key as a String
-     * @return A String representation of this key
+     * Gets a String representation of this Key
+     * @return This Key as a String
      */
     @Override
     public String toString(){
@@ -122,24 +121,11 @@ public class Key implements Serializable {
         return arr;
     }
 
-    // sam
     /**
-     * Gets the types of chords found in a key
-     * @return all chord types in a key
+     * Gets the types of chords found in this key
+     * @return All chord types in a key
      */
-    public Chord.Type[] getKeyChordTypes()
-    {
-        Chord.Type[] keyChordTypes;
-
-        if (mType == Type.MAJOR)
-        {
-            keyChordTypes = new Chord.Type[]{Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.MINOR, Chord.Type.MAJOR, Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.DIMINISHED, Chord.Type.MAJOR};
-        }
-        else
-        {
-            keyChordTypes = new Chord.Type[]{Chord.Type.MINOR, Chord.Type.DIMINISHED, Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.MAJOR, Chord.Type.MAJOR, Chord.Type.DIMINISHED, Chord.Type.MINOR};
-        }
-        return keyChordTypes;
+    public Chord.Type[] getChordTypes(){
+        return mChordTypes;
     }
-    // end sam
 }

@@ -287,13 +287,13 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Testing playback for chords
         chords = new ArrayList<>();
-        chords.add(new Chord(Chord.Type.MAJOR, 48, (Button) findViewById(R.id.chordCButton)));
-        chords.add(new Chord(Chord.Type.MINOR, 50, (Button) findViewById(R.id.chordDmButton)));
-        /*Chord cMajor = new Chord(Chord.Type.MAJOR, 48, (Button) findViewById(R.id.chordCButton));
+        chords.add(new Chord(Chord.RootNote.C, Chord.Type.MAJOR, (Button) findViewById(R.id.chordCButton)));
+        chords.add(new Chord(Chord.RootNote.D, Chord.Type.MINOR, (Button) findViewById(R.id.chordDmButton)));
+        /*Chord cMajor = new Chord(Chord.RootNote.C, Chord.Type.MAJOR, (Button) findViewById(R.id.chordCButton));
         cMajor.octaveUp();
         cMajor.setInversion(Chord.Inversion.FIRST);
         chords.add(cMajor);
-        Chord dMinor = new Chord(Chord.Type.MINOR, 50, (Button) findViewById(R.id.chordDmButton));
+        Chord dMinor = new Chord(Chord.RootNote.D, Chord.Type.MINOR, (Button) findViewById(R.id.chordDmButton));
         dMinor.octaveDown();
         dMinor.setInversion(Chord.Inversion.SECOND);
         chords.add(dMinor);*/

@@ -57,12 +57,14 @@ public class SessionActivity extends AppCompatActivity {
 
         keyChords = new ArrayList<>();
         currentKey = session.getKey(); // gets the key set when session was initialized
-        for (int i = 0; i < session.getKey().getScaleNotes().length; i++)
+        for (int i = 0; i < currentKey.getScaleNotes().length; i++)
         {
+            // TODO: Think of a better way to do this
+            int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
             /** arraylist of all chords that belong to the current key based on the type of chord
-             * it takes in the type of chord and the MIDI int value of the root of the chord
+             * it takes in the root note of the chord and type of chord
              */
-            keyChords.add(new Chord(currentKey.getKeyChordTypes()[i], currentKey.getScaleNotes()[i]));
+            keyChords.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i]));
         }
 
 
@@ -125,13 +127,13 @@ public class SessionActivity extends AppCompatActivity {
     // sam
 
     /**
-     * this function takes in the lastest chord in chosen by the user in the session and the set of
+     * This function takes in the latest chord chosen by the user in the session and the set of
      * all the chords found in the current key of session and returns a list of suggested chords
      * back to the user to help them make a choice
      *
-     * @param inputChord lastest chord in session
-     * @param keyChords list of all the chords found in the key
-     * @return list of suggested chords
+     * @param inputChord Latest chord in session
+     * @param keyChords List of all the chords found in the key
+     * @return List of suggested chords
      */
     private ArrayList<Chord> getSuggestedChords(Chord inputChord, ArrayList<Chord> keyChords)
     {
@@ -191,14 +193,12 @@ public class SessionActivity extends AppCompatActivity {
         }
 
         /** testing the output of getChordSuggestion() in the terminal */
-        System.out.println("key root name = " + currentKey.getRootNote().name() + ", key root value = " + currentKey.getRootNote().getMidiNum() + ", key type = " + currentKey.getType());
-        System.out.println("\ninput Chord root value = " + inputChord.getRoot() + ", input chord type = " + inputChord.getType());
-        System.out.println("index of input chord = " + indexOfInputChord);
-        System.out.println("size of suggested chords list = " + listOfChords.size());
-        System.out.println("Expected suggest chord root values and types = 71 minor, 64 major, 68 diminished");
-        System.out.println("Actual suggested chord root values and types = " + listOfChords.get(0).getRoot() + " " + listOfChords.get(0).getType() + ", " + listOfChords.get(1).getRoot() + " " + listOfChords.get(1).getType() + ", " + listOfChords.get(2).getRoot() + " " + listOfChords.get(2).getType());
-
-
+        System.out.println("Key name = " + currentKey);
+        System.out.println("Input Chord  = " + inputChord);
+        System.out.println("Index of input chord = " + indexOfInputChord);
+        System.out.println("Size of suggested chords list = " + listOfChords.size());
+        System.out.println("Expected suggested chords = B Minor, E Major, G# Diminished");
+        System.out.println("Actual suggested chords = " + listOfChords.get(0) + ", " + listOfChords.get(1) + ", " + listOfChords.get(2));
 
         return listOfChords;
     }

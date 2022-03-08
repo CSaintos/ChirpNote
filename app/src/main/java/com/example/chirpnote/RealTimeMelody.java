@@ -2,7 +2,6 @@ package com.example.chirpnote;
 
 import android.widget.Button;
 
-import com.example.midiFileLib.src.event.NoteOff;
 import com.example.midiFileLib.src.event.NoteOn;
 
 public class RealTimeMelody extends Melody {
@@ -51,7 +50,8 @@ public class RealTimeMelody extends Melody {
         if(!super.isRecording() || note == null){
             return false;
         }
-        mNoteTrack.insertEvent(new NoteOff(getCurrentTick(), CHANNEL, note.getNoteNumber(), 0));
+        // Using a NoteOn event with a velocity of 0, instead of a NoteOff event (essentially the same thing)
+        mNoteTrack.insertEvent(new NoteOn(getCurrentTick(), CHANNEL, note.getNoteNumber(), 0));
         return true;
     }
 

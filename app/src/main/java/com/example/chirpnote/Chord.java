@@ -5,11 +5,54 @@ import android.widget.Button;
 import java.util.ArrayList;
 
 public class Chord {
+    // Root note of the chord
+    public enum RootNote {
+        C("C", 48),
+        C_SHARP("C#", 49),
+        D("D", 50),
+        D_SHARP("D#", 51),
+        E("E", 52),
+        F("F", 53),
+        F_SHARP("F#", 54),
+        G("G", 55),
+        G_SHARP("G#", 56),
+        A("A", 57),
+        A_SHARP("A#", 58),
+        B("B", 59);
+
+        private String string;
+        private int midiNum;
+
+        RootNote(String str, int num){
+            string = str;
+            midiNum = num;
+        }
+
+        @Override
+        public String toString(){
+            return string;
+        }
+
+        public int getMidiNum(){
+            return midiNum;
+        }
+    }
     // Chord type
     public enum Type {
-        MAJOR,
-        MINOR,
-        DIMINISHED
+        MAJOR("Major"),
+        MINOR("Minor"),
+        DIMINISHED("Diminished");
+
+        private String string;
+
+        Type(String str){
+            string = str;
+        }
+
+        @Override
+        public String toString(){
+            return string;
+        }
     }
     // Chord inversion
     public enum Inversion {
@@ -18,6 +61,7 @@ public class Chord {
         SECOND,
     }
     private Type mType;
+    private RootNote mRootNote;
     private int mRoot;
     private int mOctave;
     private Inversion mInversion;
@@ -26,27 +70,29 @@ public class Chord {
 
     /**
      * A chord
+     * @param root The root note of this chord
      * @param chordType The type of chord this is
-     * @param root The MIDI number for the root note of this chord
      */
-    public Chord(Type chordType, int root){
+    public Chord(RootNote root, Type chordType){
         mNotes = new ArrayList<>();
         mType = chordType;
-        mRoot = root;
+        mRootNote = root;
+        mRoot = root.getMidiNum();
         buildChord();
         mButton = null;
     }
 
     /**
      * A chord that is played by a button on the UI
+     * @param root The root note of this chord
      * @param chordType The type of chord this is
-     * @param root The MIDI number for the root note of this chord
      * @param chordButton The button in the UI that should play this chord
      */
-    public Chord(Type chordType, int root, Button chordButton){
+    public Chord(RootNote root, Type chordType, Button chordButton){
         mNotes = new ArrayList<>();
         mType = chordType;
-        mRoot = root;
+        mRootNote = root;
+        mRoot = root.getMidiNum();
         buildChord();
         mButton = chordButton;
     }
@@ -218,5 +264,14 @@ public class Chord {
         for(MusicNote note : mNotes){
             note.stop();
         }
+    }
+
+    /**
+     * Gets a String representation of this Chord
+     * @return This Chord as a String
+     */
+    @Override
+    public String toString(){
+        return mRootNote + " " + mType;
     }
 }
