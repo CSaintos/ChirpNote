@@ -2,8 +2,6 @@ package com.example.chirpnote;
 
 import android.widget.Button;
 
-import org.billthefarmer.mididriver.MidiDriver;
-
 import java.util.ArrayList;
 
 public class Chord {
@@ -206,21 +204,19 @@ public class Chord {
 
     /**
      * Plays this chord
-     * @param midiDriver The MIDI driver to create MIDI events with
      */
-    public void play(MidiDriver midiDriver){
+    public void play(){
         for(MusicNote note : mNotes){
-            note.play(midiDriver);
+            note.play();
         }
     }
 
     /**
      * Stops this chord
-     * @param midiDriver The MIDI driver to create MIDI events with
      */
-    public void stop(MidiDriver midiDriver){
+    public void stop(){
         for(MusicNote note : mNotes){
-            note.stop(midiDriver);
+            note.stop();
         }
     }
 }

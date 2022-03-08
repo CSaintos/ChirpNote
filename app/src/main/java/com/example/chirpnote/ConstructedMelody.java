@@ -1,7 +1,7 @@
 package com.example.chirpnote;
 
-import com.example.chirpnote.midiLib.src.MidiFile;
-import com.example.chirpnote.midiLib.src.event.NoteOn;
+import com.example.midiFileLib.src.MidiFile;
+import com.example.midiFileLib.src.event.NoteOn;
 
 import java.io.File;
 import java.io.IOException;

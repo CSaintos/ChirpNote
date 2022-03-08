@@ -22,6 +22,7 @@ import com.example.chirpnote.R;
 import com.example.chirpnote.Session;
 
 import org.billthefarmer.mididriver.MidiDriver;
+import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
 
@@ -93,9 +94,9 @@ public class FloatingWindowService extends Service
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         startMidiDriverOnce();
-                        note.play(midiDriver);
+                        note.play();
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stop(midiDriver);
+                        note.stop();
                     }
                     return true;
                 }
@@ -249,6 +250,7 @@ public class FloatingWindowService extends Service
     private void startMidiDriverOnce(){
         if(!midiDriverOn){
             midiDriver.start();
+            midiDriver.setReverb(ReverbConstants.OFF);
             midiDriverOn = true;
         }
     }
@@ -257,8 +259,8 @@ public class FloatingWindowService extends Service
     // method is called in MainActivity
     @Override
     public void onDestroy() {
-        midiDriver.stop();
         super.onDestroy();
+        midiDriver.stop();
         stopSelf();
         // Window is removed from the screen
         windowManager.removeView(floatView);

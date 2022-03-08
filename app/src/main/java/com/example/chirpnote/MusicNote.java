@@ -9,6 +9,7 @@ public class MusicNote {
     private int mMidiNumber;
     private Button mButton;
     private RealTimeMelody mMelody;
+    private MidiDriver midiDriver = MidiDriver.getInstance();
     // The velocity is a default value for all music notes, as most Android device do not have
     // a pressure sensor in the display, so we have no way of obtaining the velocity for all devices
     public final int VELOCITY = 100;
@@ -84,9 +85,8 @@ public class MusicNote {
 
     /**
      * Plays this music note
-     * @param midiDriver The MIDI driver to create MIDI events with
      */
-    public void play(MidiDriver midiDriver){
+    public void play(){
         midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mMidiNumber, (byte) VELOCITY});
         if(mMelody != null){
             mMelody.writeNoteOn(this);
@@ -95,9 +95,8 @@ public class MusicNote {
 
     /**
      * Stops this music note
-     * @param midiDriver The MIDI driver to create MIDI events with
      */
-    public void stop(MidiDriver midiDriver){
+    public void stop(){
         midiDriver.write(new byte[]{MidiConstants.NOTE_OFF, (byte) mMidiNumber, (byte) 0x00});
         if(mMelody != null){
             mMelody.writeNoteOff(this);

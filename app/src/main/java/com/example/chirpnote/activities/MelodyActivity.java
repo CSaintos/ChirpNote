@@ -28,6 +28,7 @@ import com.example.chirpnote.Notation.NoteFont;
 import com.example.chirpnote.R;
 
 import org.billthefarmer.mididriver.MidiDriver;
+import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -332,7 +333,7 @@ public class MelodyActivity extends AppCompatActivity {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        pianoKeys[finalI].play(midiDriver);
+                        pianoKeys[finalI].play();
 
                         // FIXME this is still ugly
 
@@ -384,7 +385,7 @@ public class MelodyActivity extends AppCompatActivity {
                         displayText();
 
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        pianoKeys[finalI].stop(midiDriver);
+                        pianoKeys[finalI].stop();
                     }
                     return true;
                 }
@@ -510,6 +511,7 @@ public class MelodyActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         midiDriver.start();
+        midiDriver.setReverb(ReverbConstants.OFF);
     }
 
     @Override

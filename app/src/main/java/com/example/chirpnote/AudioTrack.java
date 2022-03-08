@@ -140,10 +140,10 @@ public class AudioTrack implements Track {
      */
     @Override
     public void startRecording() throws IllegalStateException {
-        if(mRecording){
+        if(isRecording()){
             throw new IllegalStateException("Cannot start the recording process when the audio track is already being recorded (stop recording first)");
         }
-        if(mMediaPlayer.isPlaying()){
+        if(isPlaying()){
             throw new IllegalStateException("Cannot start the recording process when the audio track is being played back (stop playback first)");
         }
         mRecording = true;
@@ -165,7 +165,7 @@ public class AudioTrack implements Track {
      */
     @Override
     public void stopRecording() throws IllegalStateException {
-        if(!mRecording){
+        if(!isRecording()){
             throw new IllegalStateException("Cannot stop the recording process if there is no active recording process (start recording first)");
         }
         mRecorded = true;
@@ -182,13 +182,13 @@ public class AudioTrack implements Track {
      */
     @Override
     public void play() throws IllegalStateException {
-        if(mRecording){
+        if(isRecording()){
             throw new IllegalStateException("Cannot play the audio track when there is an active recording process (stop recording first)");
         }
         if(!isRecorded()){
             throw new IllegalStateException("Cannot play the audio track if it has not been recorded yet (record it first)");
         }
-        if(mMediaPlayer.isPlaying()){
+        if(isPlaying()){
             throw new IllegalStateException("Cannot play the audio track if it is already being played (stop playback first)");
         }
         try {
@@ -214,10 +214,10 @@ public class AudioTrack implements Track {
      */
     @Override
     public void stop() throws IllegalStateException {
-        if(mRecording){
+        if(isRecording()){
             throw new IllegalStateException("Cannot stop the audio track when there is an active recording process (stop recording first)");
         }
-        if(!mMediaPlayer.isPlaying() ){
+        if(!isPlaying() ){
             throw new IllegalStateException("Cannot stop the audio track if it is not being played (start playback first)");
         }
         mMediaPlayer.stop();

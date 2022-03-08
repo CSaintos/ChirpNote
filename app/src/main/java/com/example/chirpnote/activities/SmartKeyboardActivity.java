@@ -17,6 +17,7 @@ import com.example.chirpnote.RealTimeMelody;
 import com.example.chirpnote.Session;
 
 import org.billthefarmer.mididriver.MidiDriver;
+import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
 
@@ -120,9 +121,9 @@ public class SmartKeyboardActivity extends AppCompatActivity {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.play(midiDriver);
+                        note.play();
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stop(midiDriver);
+                        note.stop();
                     }
                     return true;
                 }
@@ -138,9 +139,9 @@ public class SmartKeyboardActivity extends AppCompatActivity {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.play(midiDriver);
+                        note.play();
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stop(midiDriver);
+                        note.stop();
                     }
                     return true;
                 }
@@ -165,6 +166,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         midiDriver.start();
+        midiDriver.setReverb(ReverbConstants.OFF);
     }
 
     @Override

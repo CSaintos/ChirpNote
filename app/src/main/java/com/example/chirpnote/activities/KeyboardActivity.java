@@ -23,6 +23,7 @@ import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
 
 import org.billthefarmer.mididriver.MidiDriver;
+import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
 
@@ -52,17 +53,7 @@ public class KeyboardActivity extends AppCompatActivity {
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
-        //midiDriver.setVolume(25);  attempted to change the global volume of the midiDriver just to see if the volume of the keys played would change. They don't.
         pianoKeys = new ArrayList<>(); // List of notes
-        // You can also create a new MusicNote without a Melody if you just want to test the keyboard playback stuff
-        // For example: pianoKeys.add(new MusicNote(59, (Button) findViewById(R.id.noteBButton))
-//        pianoKeys.add(new MusicNote(60, (Button) findViewById(R.id.noteCButton), melody));
-//        pianoKeys.add(new MusicNote(62, (Button) findViewById(R.id.noteDButton), melody));
-//        pianoKeys.add(new MusicNote(64, (Button) findViewById(R.id.noteEButton), melody));
-
-
-
-
 
         pianoKeys.add(new MusicNote(60, (Button) findViewById(R.id.noteC4Button), melody));
         pianoKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteCSharp4Button), melody));
@@ -77,8 +68,6 @@ public class KeyboardActivity extends AppCompatActivity {
         pianoKeys.add(new MusicNote(70, (Button) findViewById(R.id.noteASharp4Button), melody));
         pianoKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteB4Button), melody));
         pianoKeys.add(new MusicNote(72, (Button) findViewById(R.id.noteC5Button), melody));
-
-
 
         Button noteSuggestButton = findViewById(R.id.noteSuggestion);
         noteSuggestButton.setClickable(true);
@@ -190,9 +179,9 @@ public class KeyboardActivity extends AppCompatActivity {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.play(midiDriver);
+                        note.play();
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stop(midiDriver);
+                        note.stop();
                     }
                     return true;
                 }
@@ -291,6 +280,7 @@ public class KeyboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         midiDriver.start();
+        midiDriver.setReverb(ReverbConstants.OFF);
     }
 
     @Override

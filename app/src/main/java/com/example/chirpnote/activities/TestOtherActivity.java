@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -30,6 +29,7 @@ import com.example.chirpnote.Session;
 import com.example.chirpnote.Track;
 
 import org.billthefarmer.mididriver.MidiDriver;
+import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +82,9 @@ public class TestOtherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_other);
 
+        // Initialize MIDI driver
+        midiDriver = MidiDriver.getInstance();
+
         // Request permission to record audio
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
@@ -106,8 +109,7 @@ public class TestOtherActivity extends AppCompatActivity {
         Button playButton = (Button) findViewById(R.id.testPlayButton);
         playButton.setEnabled(false);
 
-        Context context = this;
-        String basePath = context.getFilesDir().getPath();
+        String basePath = this.getFilesDir().getPath();
         Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/melody.mid", basePath + "/audioTrack.mp3");
 
@@ -122,9 +124,6 @@ public class TestOtherActivity extends AppCompatActivity {
         // Audio track
         filePath = basePath + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playButton);
-
-        // MIDI driver
-        midiDriver = MidiDriver.getInstance();
 
         // Music notes
         pianoKeys = new ArrayList<>();
@@ -142,12 +141,12 @@ public class TestOtherActivity extends AppCompatActivity {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.play(midiDriver);
+                        note.play();
                         if(constructingMelody && toggledDuration != null){
                             constructedMelody.addNote(note, toggledDuration, session.mNextMelodyTick);
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stop(midiDriver);
+                        note.stop();
                     }
                     return true;
                 }
@@ -204,6 +203,7 @@ public class TestOtherActivity extends AppCompatActivity {
                 for(ToggleButton toggle : noteDurations.values()){
                     toggle.setEnabled(constructingMelody);
                 }
+                restButton.setEnabled(constructingMelody);
             }
         });
 
@@ -298,17 +298,17 @@ public class TestOtherActivity extends AppCompatActivity {
         dMinor.setInversion(Chord.Inversion.SECOND);
         chords.add(dMinor);*/
 
-        // Setup event listener for each piano key
+        // Setup event listener for each chord button
         for(Chord chord : chords){
             chord.getButton().setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        chord.play(midiDriver);
+                        chord.play();
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        chord.stop(midiDriver);
+                        chord.stop();
                     }
-                    return false;
+                    return true;
                 }
             });
         }
@@ -318,6 +318,7 @@ public class TestOtherActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         midiDriver.start();
+        midiDriver.setReverb(ReverbConstants.OFF);
     }
 
     @Override
