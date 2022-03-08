@@ -7,6 +7,8 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,11 +25,13 @@ import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.ConstructedMelody.NoteDuration;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
+import com.example.chirpnote.Percussion;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
 import com.example.chirpnote.Session;
 import com.example.chirpnote.Track;
 
+import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
 
@@ -312,6 +316,25 @@ public class TestOtherActivity extends AppCompatActivity {
                 }
             });
         }
+
+        // Testing percussion playback
+        Button rockMediaButton = (Button) findViewById(R.id.testRockMediaButton);
+        rockMediaButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MediaPlayer rockPlayer = MediaPlayer.create(v.getContext(), R.raw.rock_drums);
+                rockPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                rockPlayer.start();
+            }
+        });
+        Percussion percussion = new Percussion(this);
+        Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
+        rockMidiButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                percussion.playRock();
+            }
+        });
     }
 
     @Override
@@ -319,6 +342,8 @@ public class TestOtherActivity extends AppCompatActivity {
         super.onResume();
         midiDriver.start();
         midiDriver.setReverb(ReverbConstants.OFF);
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) 127});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 90});
     }
 
     @Override
