@@ -33,6 +33,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -80,7 +84,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
         recordButton.setColorFilter(Color.parseColor("#777777"));
-        File audioFile = new File(context.getFilesDir(), "SessionAudio.mp3");
+        File audioFile = new File(context.getFilesDir(), "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
 
 
 
@@ -152,7 +156,9 @@ public class RecordAudioActivity extends AppCompatActivity {
                 playing = !playing;
             }
         });
-
+        /*
+         The listener for the save button
+        */
         stopRecordedAudioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,6 +183,9 @@ public class RecordAudioActivity extends AppCompatActivity {
             }
         });
 
+        /*
+        The listener for the share button intent
+         */
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,6 +200,12 @@ public class RecordAudioActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method represents reading in the bytes of a file and is used for transferring file containers
+     * @param is input stream of the original file
+     * @return the data in bytes
+     * @throws IOException
+     */
     public static byte[] readByte(InputStream is) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         byte[] buffer = new byte[0xFFFF];
