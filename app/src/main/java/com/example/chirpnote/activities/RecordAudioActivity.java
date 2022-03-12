@@ -84,7 +84,9 @@ public class RecordAudioActivity extends AppCompatActivity {
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
         recordButton.setColorFilter(Color.parseColor("#777777"));
-        File audioFile = new File(context.getFilesDir(), "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
+        File audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
+
+
 
 
 
@@ -178,8 +180,8 @@ public class RecordAudioActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                Toast.makeText(RecordAudioActivity.this,"Audio saved to " + context.getFilesDir(),Toast.LENGTH_LONG).show();
-
+                Toast.makeText(RecordAudioActivity.this,"Audio saved to " + audioFile.getPath(),Toast.LENGTH_LONG).show();
+                System.out.println(audioFile.getPath());
             }
         });
 
