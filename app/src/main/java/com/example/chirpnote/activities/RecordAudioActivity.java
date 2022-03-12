@@ -60,6 +60,9 @@ public class RecordAudioActivity extends AppCompatActivity {
     private WaveformView waveformView;
     //This timer is a timer initializer for the recording functionality of a waveform
     Timer ticker = new Timer();
+    //audio file container
+    File audioFile = null;
+
 
 
 
@@ -81,10 +84,10 @@ public class RecordAudioActivity extends AppCompatActivity {
         shareButton = findViewById(R.id.testShareButton);
         waveformView = findViewById(R.id.waveformView);
         // Audio track
+        audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
         recordButton.setColorFilter(Color.parseColor("#777777"));
-        File audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
 
 
 
@@ -171,6 +174,7 @@ public class RecordAudioActivity extends AppCompatActivity {
 
 
                     //file output stream
+                    audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
                     FileOutputStream fileOutput = new FileOutputStream(audioFile);
                     fileOutput.write(arr);
                     fileOutput.close();
