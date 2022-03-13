@@ -1,24 +1,34 @@
 package com.example.chirpnote.activities;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.provider.DocumentsContract;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import com.anggrayudi.storage.*;
 
+import com.anggrayudi.storage.file.DocumentFileCompat;
+import com.anggrayudi.storage.file.DocumentFileUtils;
 import com.example.chirpnote.AudioTrack;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.example.chirpnote.BuildConfig;
 import com.example.chirpnote.R;
@@ -45,7 +55,6 @@ import java.util.TimerTask;
  * This class represents recording audio from the user's microphone. It will provide certain monitoring elements such as the current chord and waveform representataion of intensity of amplitude.
  */
 public class RecordAudioActivity extends AppCompatActivity {
-
     //layout items
     private ImageButton recordButton;
     private ImageButton playRecordedAudioButton;
@@ -64,6 +73,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     Timer ticker = new Timer();
     //audio file container
     File audioFile = null;
+    String filePath;
 
 
 
@@ -88,7 +98,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         exportButton = findViewById(R.id.exportButton);
         // Audio track
         audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
-        String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
+        filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
         recordButton.setColorFilter(Color.parseColor("#777777"));
 
@@ -97,6 +107,8 @@ public class RecordAudioActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
 
 
         // Event listener for record audio button (to record audio from the device's microphone)
@@ -212,11 +224,42 @@ public class RecordAudioActivity extends AppCompatActivity {
     exportButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            startActivityForResult(intent,2);
+
+
+
 
         }
     });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2){
+            Uri uriTree = data.getData();
+            DocumentFile pathFile = DocumentFileCompat.fromUri(this,uriTree);
+            File convertPathFile = DocumentFileUtils.toRawFile(pathFile,context);
+            try {
+                ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                InputStream inputStream = new FileInputStream(audioFile.getPath());
+                byte arr[] = readByte(inputStream);
+                //file output stream
+                System.out.println(convertPathFile.getPath());
+                audioFile = new File(convertPathFile.getPath(), "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
+                audioFile.createNewFile();
+                FileOutputStream fileOutput = new FileOutputStream(audioFile);
+                fileOutput.write(arr);
+                fileOutput.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
     /**
      * This method represents reading in the bytes of a file and is used for transferring file containers

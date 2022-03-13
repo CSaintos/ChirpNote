@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MANAGE_MEDIA"/>
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,9 @@
         android:label="Chirpnote"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ChirpNote" >
+        android:theme="@style/Theme.ChirpNote"
+        android:requestLegacyExternalStorage="true"
+        >
 
         <provider
             android:name="androidx.core.content.FileProvider"
