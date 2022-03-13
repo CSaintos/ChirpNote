@@ -30,50 +30,39 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/percussionStyleScrollView"
         android:layout_width="116dp"
         android:layout_height="270dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/scrollView3"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="381dp">
+        android:layout_marginBottom="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/percussionPatternScrollView"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
+            android:id="@+id/percussionStyleLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ToggleButton
-                android:id="@+id/percussiontogglebutton1"
+            <RadioGroup
+                android:id="@+id/percussionStyleGroup"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="togglebutton" />
+                android:layout_height="match_parent">
 
-            <ToggleButton
-                android:id="@+id/toggleButton5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ToggleButton" />
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rock" />
 
-            <ToggleButton
-                android:id="@+id/toggleButton4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ToggleButton" />
-
-            <ToggleButton
-                android:id="@+id/toggleButton3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ToggleButton" />
-
-            <ToggleButton
-                android:id="@+id/toggleButton2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ToggleButton" />
-
+                <RadioButton
+                    android:id="@+id/radioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pop" />
+            </RadioGroup>
         </LinearLayout>
     </ScrollView>
 
@@ -84,34 +73,36 @@
         android:layout_marginBottom="2dp"
         android:text="style"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-        app:layout_constraintStart_toStartOf="@+id/scrollView2" />
+        app:layout_constraintBottom_toTopOf="@+id/percussionStyleScrollView"
+        app:layout_constraintEnd_toEndOf="@+id/percussionStyleScrollView"
+        app:layout_constraintStart_toStartOf="@+id/percussionStyleScrollView" />
 
     <ScrollView
-        android:id="@+id/scrollView3"
+        android:id="@+id/percussionPatternScrollView"
         android:layout_width="116dp"
         android:layout_height="270dp"
         android:layout_marginStart="20dp"
-        app:layout_constraintStart_toEndOf="@+id/scrollView2"
-        tools:layout_editor_absoluteY="379dp">
+        android:layout_marginBottom="82dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/percussionStyleScrollView">
 
         <LinearLayout
+            android:id="@+id/percussionPatternLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ToggleButton
-                android:id="@+id/toggleButton7"
+            <RadioGroup
+                android:id="@+id/percussionPatternGroup"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ToggleButton" />
+                android:layout_height="match_parent" >
 
-            <ToggleButton
-                android:id="@+id/toggleButton6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ToggleButton" />
+                <RadioButton
+                    android:id="@+id/radioButton4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pattern_1" />
+            </RadioGroup>
         </LinearLayout>
     </ScrollView>
 
@@ -122,8 +113,8 @@
         android:layout_marginBottom="3dp"
         android:text="pattern"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView3"
-        app:layout_constraintStart_toStartOf="@+id/scrollView3" />
+        app:layout_constraintBottom_toTopOf="@+id/percussionPatternScrollView"
+        app:layout_constraintEnd_toEndOf="@+id/percussionPatternScrollView"
+        app:layout_constraintStart_toStartOf="@+id/percussionPatternScrollView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

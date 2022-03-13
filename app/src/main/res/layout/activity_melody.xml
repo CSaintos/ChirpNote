@@ -549,4 +549,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/melodynavright" />
 
+    <Button
+        android:id="@+id/melodyPlayButton"
+        android:layout_width="62dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginEnd="17dp"
+        android:text="Play"
+        android:translationY="-21dp"
+        app:layout_constraintBottom_toTopOf="@+id/melodynoteCsharpbutton"
+        app:layout_constraintEnd_toStartOf="@+id/melodynavleft"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

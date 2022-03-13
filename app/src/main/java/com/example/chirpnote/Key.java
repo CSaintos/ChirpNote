@@ -3,6 +3,7 @@ package com.example.chirpnote;
 import java.io.Serializable;
 
 public class Key implements Serializable {
+
     // Root note of the key
     public enum RootNote {
         C("C", 60),
@@ -20,6 +21,11 @@ public class Key implements Serializable {
 
         private String string;
         private int midiNum;
+
+        RootNote(RootNote rn) {
+            this.string = rn.string;
+            this.midiNum = rn.midiNum;
+        }
 
         RootNote(String str, int num){
             string = str;

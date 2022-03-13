@@ -25,7 +25,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         // For testing only; these will be removed eventually
         Button testKeyboardButton = (Button) findViewById(R.id.testKeyboardButton);
         Button testOtherButton = (Button) findViewById(R.id.testOtherButton);
-        Button testMelodyActButton = (Button) findViewById(R.id.testMelodyActButton);
+        Button testMelodyButton = (Button) findViewById(R.id.testMelodyButton);
+        Button testPercussionButton = (Button) findViewById(R.id.testPercussionButton);
 
         // create my button here, link it button in xml
         Button testSmartKeyboardButton = (Button) findViewById(R.id.testSmartKeyboardButton);
@@ -94,10 +95,18 @@ public class HomeScreenActivity extends AppCompatActivity {
         });
 
         // Button to Melody Activity (for testing)
-        testMelodyActButton.setOnClickListener(new View.OnClickListener() {
+        testMelodyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeScreenActivity.this, MelodyActivity.class));
+            }
+        });
+
+        // Button to Percussion Activity (for testing)
+        testPercussionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeScreenActivity.this, PercussionActivity.class));
             }
         });
 
