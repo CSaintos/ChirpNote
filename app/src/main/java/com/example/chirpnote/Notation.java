@@ -60,6 +60,13 @@ public class Notation {
         public static final EnumSet<Syntax> REST = EnumSet.range(REST_WHOLE, REST_32ND);
         public static final EnumSet<Syntax> ACCIDENTAL = EnumSet.range(ACCIDENTAL_FLAT, ACCIDENTAL_SHARP);
         public static final EnumSet<Syntax> MISC = EnumSet.of(AUGMENTATION_DOT);
+        // Syntax notation durations
+        public static final EnumSet<Syntax> WHOLE = EnumSet.of(NOTE_WHOLE, REST_WHOLE);
+        public static final EnumSet<Syntax> HALF = EnumSet.of(NOTE_HALF_UP, NOTE_HALF_DOWN, REST_HALF);
+        public static final EnumSet<Syntax> QUARTER = EnumSet.of(NOTE_QUARTER_UP, NOTE_QUARTER_DOWN, REST_QUARTER);
+        public static final EnumSet<Syntax> EIGHTH = EnumSet.of(NOTE_8TH_UP, NOTE_8TH_DOWN, REST_8TH);
+        public static final EnumSet<Syntax> SIXTEENTH = EnumSet.of(NOTE_16TH_UP, NOTE_16TH_DOWN, REST_16TH);
+        public static final EnumSet<Syntax> THIRTY_SECOND = EnumSet.of(NOTE_32ND_UP, NOTE_32ND_DOWN, REST_32ND);
 
         public String unicode;
 
@@ -98,6 +105,69 @@ public class Notation {
         }
         public NoteFont(NoteFont nf) {
             this(nf.symbol, nf.prefix, nf.suffix, nf.lineNum, nf.color);
+        }
+    }
+
+    /**
+     *
+     */
+    public class MusicFontAdapter {
+        private MusicNote mn;
+        private ConstructedMelody.NoteDuration nd;
+
+        public MusicFontAdapter(NoteFont nf) {
+            int noteNumber = 60;
+
+            if (Syntax.WHOLE.contains(nf.symbol)) {
+                nd = ConstructedMelody.NoteDuration.WHOLE_NOTE;
+            } else if (Syntax.HALF.contains(nf.symbol)) {
+                nd = ConstructedMelody.NoteDuration.HALF_NOTE;
+            } else if (Syntax.QUARTER.contains(nf.symbol)) {
+                nd = ConstructedMelody.NoteDuration.QUARTER_NOTE;
+            } else if (Syntax.EIGHTH.contains(nf.symbol)) {
+                nd = ConstructedMelody.NoteDuration.EIGHTH_NOTE;
+            } else if (Syntax.SIXTEENTH.contains(nf.symbol)) {
+                nd = ConstructedMelody.NoteDuration.SIXTEENTH_NOTE;
+            } else if (Syntax.THIRTY_SECOND.contains(nf.symbol)) {
+                nd = ConstructedMelody.NoteDuration.THIRTY_SECOND_NOTE;
+            }
+
+            switch (nf.lineNum) {
+                case 1:
+                    noteNumber = 60;
+                    break;
+                case 2:
+                    noteNumber = 62;
+                    break;
+                case 3:
+                    noteNumber = 64;
+                    break;
+                case 4:
+                    noteNumber = 65;
+                    break;
+                case 5:
+                    noteNumber = 67;
+                    break;
+                case 6:
+                    noteNumber = 69;
+                    break;
+                case 7:
+                    noteNumber = 71;
+                    break;
+            }
+            if (nf.prefix == Syntax.ACCIDENTAL_SHARP) {
+                noteNumber++;
+            }
+
+            mn = new MusicNote(noteNumber);
+        }
+
+        public MusicNote getMusicNote() {
+            return mn;
+        }
+
+        public ConstructedMelody.NoteDuration getNoteDuration() {
+            return nd;
         }
     }
 

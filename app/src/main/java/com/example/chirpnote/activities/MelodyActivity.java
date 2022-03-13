@@ -22,10 +22,13 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 //import com.example.chirpnote.Notation.Syntax;
+import com.example.chirpnote.ConstructedMelody;
+import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.Notation;
 import com.example.chirpnote.Notation.NoteFont;
 import com.example.chirpnote.R;
+import com.example.chirpnote.Session;
 
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -46,6 +49,7 @@ public class MelodyActivity extends AppCompatActivity {
     private Button leftButton;
     private Button rightButton;
     private Button restButton;
+    private Button playButton;
     private Button navLeftButton;
     private Button navRightButton;
     private Button octUpButton;
@@ -59,6 +63,9 @@ public class MelodyActivity extends AppCompatActivity {
     private NoteFont currentNote;
     private NoteFont currentDuration;
     private MidiDriver midiDriver;
+    private Session session;
+    private Key key;
+    private int octNum;
     private boolean wasNext;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -71,11 +78,19 @@ public class MelodyActivity extends AppCompatActivity {
         itr = noteList.listIterator();
         midiDriver = MidiDriver.getInstance();
 
+        // TODO: get key from Session Activity
+        key = new Key(Key.RootNote.C, Key.Type.MAJOR);
+        octNum = 4;
+
+        // TODO: get session from Session Activity
+        session = new Session("Default", key, 140);
+
         // Initialize buttons
         backButton = (Button) findViewById(R.id.melodybackbutton);
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
         rightButton = (Button) findViewById(R.id.melodyrightbutton);
         restButton = (Button) findViewById(R.id.melodyrestbutton);
+        playButton = (Button) findViewById(R.id.melodyPlayButton);
         navLeftButton = (Button) findViewById(R.id.melodynavleft);
         navRightButton = (Button) findViewById(R.id.melodynavright);
         octUpButton = (Button) findViewById(R.id.melodyoctupbutton);
@@ -208,6 +223,16 @@ public class MelodyActivity extends AppCompatActivity {
         });
 
         /**
+         *
+         */
+        playButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toConstructedMelody();
+            }
+        });
+
+        /**
          * Navigate to the left note
          */
         navLeftButton.setOnClickListener(new OnClickListener() {
@@ -273,14 +298,20 @@ public class MelodyActivity extends AppCompatActivity {
         octDownButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Octave", "Down");
+                if (octNum > 3) {
+                    octNum--;
+                }
+                displayOctaveText();
             }
         });
 
         octUpButton.setOnClickListener(new OnClickListener() {
            @Override
            public void onClick(View v) {
-                Log.d("Octave", "Up");
+               if (octNum < 5) {
+                   octNum++;
+               }
+               displayOctaveText();
            }
         });
 
@@ -321,7 +352,7 @@ public class MelodyActivity extends AppCompatActivity {
         initStaffText();
         //initClefText();
         initNoteText();
-        initOctaveText();
+        displayOctaveText();
 
 
         // Setup listeners for each piano key
@@ -400,7 +431,7 @@ public class MelodyActivity extends AppCompatActivity {
     Initializes the display text with the staff and adds a temporary
     element into noteList
      */
-    void initStaffText() {
+    private void initStaffText() {
         SpannableStringBuilder ssb = new SpannableStringBuilder();
 
         ssb.append(Syntax.BARLINE_SINGLE.unicode);
@@ -412,7 +443,7 @@ public class MelodyActivity extends AppCompatActivity {
         melodyText.setText(ssb);
     }
 
-    void initClefText() {
+    private void initClefText() {
         // FIXME ? this might need to be implemented differently later
         SpannableString clef = new SpannableString(Syntax.G_CLEF.unicode);
         clef.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, clef.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -427,7 +458,7 @@ public class MelodyActivity extends AppCompatActivity {
         // FIXME ? end of fixme
     }
 
-    void initNoteText() {
+    private void initNoteText() {
         // Default noteLength and noteLengthButton
         noteLengthButtons[0].toggle(); // set Whole Note not length button
         currentDuration = notation.new NoteFont(Syntax.NOTE_WHOLE, -1);
@@ -444,18 +475,15 @@ public class MelodyActivity extends AppCompatActivity {
         Log.d("DKGRAY", Integer.toString(Color.DKGRAY));
     }
 
-    void initOctaveText() {
-        String keyStr = "C";
-        int octNum = 4;
-
-        Spannable octave = new SpannableString(keyStr + Integer.toString(octNum));
+    private void displayOctaveText() {
+        Spannable octave = new SpannableString(key.getRootNote().toString() + Integer.toString(octNum));
         octaveText.setText(octave);
     }
 
     /**
     Displays text from the noteList in the order given.
      */
-    void displayText() {
+    private void displayText() {
         StringBuffer[] sb = new StringBuffer[staffLines.length];
         SpannableStringBuilder[] ssb = new SpannableStringBuilder[staffLines.length];
         // Initialize string buffers
@@ -505,6 +533,28 @@ public class MelodyActivity extends AppCompatActivity {
             //ssb[i].setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, ssb[i].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             staffLines[i].setText(ssb[i]);
         }
+    }
+
+    private void toConstructedMelody() {
+        ConstructedMelody constructedMelody = new ConstructedMelody(session);
+        int position = 0;
+
+        for (ListIterator<NoteFont> itr2 = noteList.listIterator(); itr2.hasNext();) {
+            NoteFont nf = itr2.next();
+
+            Notation.MusicFontAdapter mfAdapter = notation.new MusicFontAdapter(nf);
+            if (Notation.Syntax.REST.contains(nf.symbol)) {
+                constructedMelody.addRest(mfAdapter.getNoteDuration(), position);
+            } else if (Notation.Syntax.NOTE.contains(nf.symbol)) {
+                constructedMelody.addNote(mfAdapter.getMusicNote(), mfAdapter.getNoteDuration(), position);
+            }
+
+            position++;
+        }
+        constructedMelody.startRecording();
+        constructedMelody.stopRecording();
+
+        constructedMelody.play();
     }
 
     @Override
