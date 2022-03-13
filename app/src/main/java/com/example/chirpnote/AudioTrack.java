@@ -33,7 +33,7 @@ public class AudioTrack implements Track {
      * @param filePath The path to store the file (of the audio recording) at
      * @param playButton The button used to start playback of the audio track
      */
-    public AudioTrack(String filePath, Button playButton){
+    public AudioTrack(String filePath, Button playButton) throws IOException {
         mRecording = false;
         mRecorded = false;
 
@@ -41,6 +41,7 @@ public class AudioTrack implements Track {
         mFilePath = filePath;
 
         mMediaPlayer = new MediaPlayer();
+
         mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -150,7 +151,10 @@ public class AudioTrack implements Track {
         mMediaRecorder.setAudioSource(AudioSource.MIC);
         mMediaRecorder.setOutputFormat(OutputFormat.MPEG_4);
         mMediaRecorder.setOutputFile(mFilePath);
-        mMediaRecorder.setAudioEncoder(AudioEncoder.DEFAULT);
+        mMediaRecorder.setAudioEncoder(AudioEncoder.AAC);
+        //audio quality
+        mMediaRecorder.setAudioSamplingRate(96000);
+        mMediaRecorder.setAudioEncodingBitRate(128000);
         try {
             mMediaRecorder.prepare();
         } catch (IOException e) {

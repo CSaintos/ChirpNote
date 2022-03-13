@@ -35,6 +35,7 @@ import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -127,7 +128,11 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Audio track
         filePath = basePath + "/audioTrack.mp3";
-        audio = new AudioTrack(filePath, playButton);
+        try {
+            audio = new AudioTrack(filePath, playButton);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Music notes
         pianoKeys = new ArrayList<>();

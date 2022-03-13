@@ -3,6 +3,7 @@ package com.example.chirpnote.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,6 +51,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     private ImageButton playRecordedAudioButton;
     private ImageButton stopRecordedAudioButton;
     private Button shareButton;
+    private Button exportButton;
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
     Context context = this;
@@ -83,15 +85,18 @@ public class RecordAudioActivity extends AppCompatActivity {
         stopRecordedAudioButton.setEnabled(false);
         shareButton = findViewById(R.id.testShareButton);
         waveformView = findViewById(R.id.waveformView);
+        exportButton = findViewById(R.id.exportButton);
         // Audio track
         audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
         String filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
         recordButton.setColorFilter(Color.parseColor("#777777"));
 
-
-
-
+        try {
+            audio.getmMediaRecorder().prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         // Event listener for record audio button (to record audio from the device's microphone)
@@ -204,7 +209,14 @@ public class RecordAudioActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(intent, "Share File"));
             }
         });
+    exportButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    });
     }
+
 
     /**
      * This method represents reading in the bytes of a file and is used for transferring file containers
