@@ -18,9 +18,11 @@ import android.widget.Button;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
+import com.example.chirpnote.Session;
 
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -31,6 +33,10 @@ public class KeyboardActivity extends AppCompatActivity {
 
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
+    private ArrayList<MusicNote> sharps;
+    private ArrayList<MusicNote> flats;
+    private ArrayList<MusicNote> sharpKeys;
+    private ArrayList<MusicNote> flatKeys;
     RealTimeMelody melody;
 
     private Button minimizeBtn;
@@ -44,6 +50,8 @@ public class KeyboardActivity extends AppCompatActivity {
 
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
+        Session session = new Session("SessionFreePlay", new Key(Key.RootNote.G, Key.Type.MAJOR), 120);
+        Key sessionKey = session.getKey();
 
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
@@ -69,6 +77,33 @@ public class KeyboardActivity extends AppCompatActivity {
         pianoKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteB4Button), melody));
         pianoKeys.add(new MusicNote(72, (Button) findViewById(R.id.noteC5Button), melody));
 
+        sharps = new ArrayList<>();
+        flats = new ArrayList<>();
+        sharpsList();
+        flatsList();
+
+//        sharpKeys = new ArrayList<>();
+//        sharpKeys.add(new MusicNote(66, (Button) findViewById(R.id.noteF4Button), melody)); // these keys get deactivated
+//        sharpKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteC4Button), melody));
+//        sharpKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteC5Button), melody));
+//        sharpKeys.add(new MusicNote(68, (Button) findViewById(R.id.noteG4Button), melody));
+//        sharpKeys.add(new MusicNote(63, (Button) findViewById(R.id.noteD4Button), melody));
+//        sharpKeys.add(new MusicNote(70, (Button) findViewById(R.id.noteA4Button), melody));
+//        sharpKeys.add(new MusicNote(64, (Button) findViewById(R.id.noteE4Button), melody));
+//        sharpKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteB4Button), melody));
+
+//        flatKeys = new ArrayList<>();
+//        flatKeys.add(new MusicNote(70, (Button) findViewById(R.id.noteB4Button), melody)); // these keys get deactivated
+//        flatKeys.add(new MusicNote(63, (Button) findViewById(R.id.noteE4Button), melody));
+//        flatKeys.add(new MusicNote(68, (Button) findViewById(R.id.noteA4Button), melody));
+//        flatKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteD4Button), melody));
+//        flatKeys.add(new MusicNote(66, (Button) findViewById(R.id.noteG4Button), melody));
+//        flatKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteC4Button), melody));
+//        flatKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteC5Button), melody));
+//        flatKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteF4Button), melody));
+
+
+
         Button noteSuggestButton = findViewById(R.id.noteSuggestion);
         noteSuggestButton.setClickable(true);
 
@@ -82,6 +117,10 @@ public class KeyboardActivity extends AppCompatActivity {
                     {
                         pianoKeys.get(i).getButton().setSelected(false);
                     }
+
+
+
+
                 }
                 else
                 {
@@ -89,6 +128,24 @@ public class KeyboardActivity extends AppCompatActivity {
                     for (int i = 0; i < pianoKeys.size(); i++)
                     {
                         pianoKeys.get(i).getButton().setSelected(true);
+                    }
+
+                    String typeOfAccidental = sessionKey.getKeyAccidentals()[0];
+                    int numOfAccidentals = Integer.parseInt(sessionKey.getKeyAccidentals()[1]);
+
+                    if (typeOfAccidental.equals("sharp"))
+                    {
+                        for (int i = 0; i < numOfAccidentals; i++)
+                        {
+                            sharps.get(i).getButton().setSelected(false);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < numOfAccidentals; i++)
+                        {
+                            flats.get(i).getButton().setSelected(false);
+                        }
                     }
                 }
             }
@@ -187,6 +244,41 @@ public class KeyboardActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void sharpkeyList()
+    {
+
+    }
+    private void flatKeyList()
+    {
+
+    }
+
+    private void sharpsList()
+    {
+        sharps.add(new MusicNote(66, (Button) findViewById(R.id.noteF4Button), melody)); // these keys get deactivated
+        sharps.add(new MusicNote(61, (Button) findViewById(R.id.noteC4Button), melody));
+        sharps.add(new MusicNote(61, (Button) findViewById(R.id.noteC5Button), melody));
+        sharps.add(new MusicNote(68, (Button) findViewById(R.id.noteG4Button), melody));
+        sharps.add(new MusicNote(63, (Button) findViewById(R.id.noteD4Button), melody));
+        sharps.add(new MusicNote(70, (Button) findViewById(R.id.noteA4Button), melody));
+        sharps.add(new MusicNote(64, (Button) findViewById(R.id.noteE4Button), melody));
+        sharps.add(new MusicNote(71, (Button) findViewById(R.id.noteB4Button), melody));
+
+    }
+
+    private void flatsList()
+    {
+        flats.add(new MusicNote(70, (Button) findViewById(R.id.noteB4Button), melody)); // these keys get deactivated
+        flats.add(new MusicNote(63, (Button) findViewById(R.id.noteE4Button), melody));
+        flats.add(new MusicNote(68, (Button) findViewById(R.id.noteA4Button), melody));
+        flats.add(new MusicNote(61, (Button) findViewById(R.id.noteD4Button), melody));
+        flats.add(new MusicNote(66, (Button) findViewById(R.id.noteG4Button), melody));
+        flats.add(new MusicNote(71, (Button) findViewById(R.id.noteC4Button), melody));
+        flats.add(new MusicNote(71, (Button) findViewById(R.id.noteC5Button), melody));
+        flats.add(new MusicNote(71, (Button) findViewById(R.id.noteF4Button), melody));
+
     }
 
     private boolean isMyServiceRunning() {
