@@ -72,6 +72,7 @@ public class WaveformView extends View {
             float right = left + width;
             float bottom = top + amps.get(i);
             amplitudeSpikes.add(new RectF(left,top,right,bottom));
+
         }
         //invalidate needed for changing drawing elements
         invalidate();
@@ -82,10 +83,11 @@ public class WaveformView extends View {
      * @param canvas the canvas of the view
      */
     @Override
-    public void draw(Canvas canvas) {
-        super.draw(canvas);
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
         for (int i = 0; i < amplitudeSpikes.size()-1;i++){
             canvas.drawRoundRect(amplitudeSpikes.get(i),radius,radius,paint);
+
         }
     }
 }
