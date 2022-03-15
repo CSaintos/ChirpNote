@@ -39,7 +39,6 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
 
         Session session = new Session("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
-//        Session session;
 
 
         /** Allows the user to switch between keys whenever they want */
