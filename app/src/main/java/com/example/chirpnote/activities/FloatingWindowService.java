@@ -132,8 +132,8 @@ public class FloatingWindowService extends Service
         // translucency by PixelFormat.TRANSLUCENT
         floatWindowLayoutParam = new WindowManager.LayoutParams(
 //                (int) (width * (0.55f)),
-                (int) (width * (0.35f)),
-                (int) (height * (0.58f)),
+                (int) (width * (0.95f)),
+                (int) (height * (0.25f)),
                 LAYOUT_TYPE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
