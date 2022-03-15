@@ -1,35 +1,27 @@
 package com.example.chirpnote.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.MediaRecorder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Handler;
 import android.os.SystemClock;
-import android.provider.DocumentsContract;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import com.anggrayudi.storage.*;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.anggrayudi.storage.file.DocumentFileCompat;
 import com.anggrayudi.storage.file.DocumentFileUtils;
 import com.example.chirpnote.AudioTrack;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
-import androidx.documentfile.provider.DocumentFile;
-
 import com.example.chirpnote.BuildConfig;
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
@@ -41,12 +33,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -101,7 +87,15 @@ public class RecordAudioActivity extends AppCompatActivity {
         filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = new AudioTrack(filePath, playRecordedAudioButton);
         recordButton.setColorFilter(Color.parseColor("#777777"));
-
+        //timer logic
+        Handler handler = new Handler();
+        final Runnable runnableCode = new Runnable() {
+            public void run() {
+                waveformView.insertAmplitude((float) (audio.getmMediaRecorder().getMaxAmplitude()));
+                handler.postDelayed(this,20);
+            }
+        };
+        //audio setup
         try {
             audio.getmMediaRecorder().prepare();
         } catch (IOException e) {
@@ -122,31 +116,24 @@ public class RecordAudioActivity extends AppCompatActivity {
                 timer.setBase(SystemClock.elapsedRealtime());
                 timer.start();
 
+
                 playRecordedAudioButton.setEnabled(audio.isRecording());
 
-                //Create the task at every onclick as it gets discarded after every recording and has to be recreated
-                TimerTask scheduleDraws = new TimerTask() {
-                    @Override
-                    public void run() {
-                        waveformView.insertAmplitude((float) (audio.getmMediaRecorder().getMaxAmplitude()));
-                    }
-                };
+
 
                 if(!audio.isRecording()){
                     audio.startRecording();
                     recordButton.setColorFilter(Color.parseColor("#994444"));
-                    //timer logic
-                    ticker = new Timer();
-                    ticker.schedule(scheduleDraws,0,50);
-
-
+                    //run
+                    runnableCode.run();
                 } else {
                     stopRecordedAudioButton.setEnabled(true);
                     audio.stopRecording();
                     timer.stop();
                     recordButton.setColorFilter(Color.parseColor("#777777"));
                     //shut down the task so you can create onClick (Avoid taskAlreadyScheduled)
-                    scheduleDraws.cancel();
+                    handler.removeCallbacks(runnableCode);
+                    handler.removeCallbacksAndMessages(null);
                 }
             }
         });
@@ -242,11 +229,11 @@ public class RecordAudioActivity extends AppCompatActivity {
             DocumentFile pathFile = DocumentFileCompat.fromUri(this,uriTree);
             File convertPathFile = DocumentFileUtils.toRawFile(pathFile,context);
             try {
-                ContextWrapper cw = new ContextWrapper(getApplicationContext());
                 InputStream inputStream = new FileInputStream(audioFile.getPath());
                 byte arr[] = readByte(inputStream);
                 //file output stream
                 System.out.println(convertPathFile.getPath());
+                Toast.makeText(RecordAudioActivity.this,"Writing to " + convertPathFile.getPath(),Toast.LENGTH_LONG).show();
                 audioFile = new File(convertPathFile.getPath(), "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
                 audioFile.createNewFile();
                 FileOutputStream fileOutput = new FileOutputStream(audioFile);
