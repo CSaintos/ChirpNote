@@ -193,6 +193,11 @@ public class SessionActivity extends AppCompatActivity {
         }
 
         /** testing the output of getChordSuggestion() in the terminal */
+        for (int i = 0; i < currentKey.getScaleNotes().length; i++)
+        {
+            int chord = i + 1;
+            System.out.println("chord " + chord + ": " + currentKey.getScaleNotes()[i] );
+        }
         System.out.println("Key name = " + currentKey);
         System.out.println("Input Chord  = " + inputChord);
         System.out.println("Index of input chord = " + indexOfInputChord);

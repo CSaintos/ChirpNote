@@ -38,6 +38,8 @@ public class KeyboardActivity extends AppCompatActivity {
     private ArrayList<MusicNote> sharpKeys;
     private ArrayList<MusicNote> flatKeys;
     RealTimeMelody melody;
+    private Key currentKey;
+    private ArrayList<MusicNote> keyButtons;
 
     private Button minimizeBtn;
     private AlertDialog dialog;
@@ -50,8 +52,7 @@ public class KeyboardActivity extends AppCompatActivity {
 
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
-        Session session = new Session("SessionFreePlay", new Key(Key.RootNote.G, Key.Type.MAJOR), 120);
-        Key sessionKey = session.getKey();
+        Session session = new Session("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
 
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
@@ -63,44 +64,30 @@ public class KeyboardActivity extends AppCompatActivity {
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
         pianoKeys = new ArrayList<>(); // List of notes
 
-        pianoKeys.add(new MusicNote(60, (Button) findViewById(R.id.noteC4Button), melody));
-        pianoKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteCSharp4Button), melody));
-        pianoKeys.add(new MusicNote(62, (Button) findViewById(R.id.noteD4Button), melody));
-        pianoKeys.add(new MusicNote(63, (Button) findViewById(R.id.noteDSharp4Button), melody));
-        pianoKeys.add(new MusicNote(64, (Button) findViewById(R.id.noteE4Button), melody));
-        pianoKeys.add(new MusicNote(65, (Button) findViewById(R.id.noteF4Button), melody));
-        pianoKeys.add(new MusicNote(66, (Button) findViewById(R.id.noteFSharp4Button), melody));
-        pianoKeys.add(new MusicNote(67, (Button) findViewById(R.id.noteG4Button), melody));
-        pianoKeys.add(new MusicNote(68, (Button) findViewById(R.id.noteGSharp4Button), melody));
-        pianoKeys.add(new MusicNote(69, (Button) findViewById(R.id.noteA4Button), melody));
-        pianoKeys.add(new MusicNote(70, (Button) findViewById(R.id.noteASharp4Button), melody));
-        pianoKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteB4Button), melody));
-        pianoKeys.add(new MusicNote(72, (Button) findViewById(R.id.noteC5Button), melody));
+        pianoKeys = getPianoKeys();
+
+        keyButtons = new ArrayList<>();
+        currentKey = session.getKey(); // gets the key set when session was initialized
+        for (int i = 0; i < currentKey.getScaleNotes().length; i++)
+        {
+            // TODO: Think of a better way to do this
+            int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
+            if (keyButtons.contains(pianoKeys.get(0)))
+            {
+                keyButtons.add(pianoKeys.get(12)); // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
+            }
+            /** arraylist of all chords that belong to the current key based on the type of chord
+             * it takes in the root note of the chord and type of chord
+             */
+//            keyButtons.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i]));
+            keyButtons.add(pianoKeys.get(rootIdx));
+            System.out.println("Piano Key = " + keyButtons.get(i).getNoteNumber());
+        }
 
         sharps = new ArrayList<>();
         flats = new ArrayList<>();
         sharpsList();
         flatsList();
-
-//        sharpKeys = new ArrayList<>();
-//        sharpKeys.add(new MusicNote(66, (Button) findViewById(R.id.noteF4Button), melody)); // these keys get deactivated
-//        sharpKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteC4Button), melody));
-//        sharpKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteC5Button), melody));
-//        sharpKeys.add(new MusicNote(68, (Button) findViewById(R.id.noteG4Button), melody));
-//        sharpKeys.add(new MusicNote(63, (Button) findViewById(R.id.noteD4Button), melody));
-//        sharpKeys.add(new MusicNote(70, (Button) findViewById(R.id.noteA4Button), melody));
-//        sharpKeys.add(new MusicNote(64, (Button) findViewById(R.id.noteE4Button), melody));
-//        sharpKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteB4Button), melody));
-
-//        flatKeys = new ArrayList<>();
-//        flatKeys.add(new MusicNote(70, (Button) findViewById(R.id.noteB4Button), melody)); // these keys get deactivated
-//        flatKeys.add(new MusicNote(63, (Button) findViewById(R.id.noteE4Button), melody));
-//        flatKeys.add(new MusicNote(68, (Button) findViewById(R.id.noteA4Button), melody));
-//        flatKeys.add(new MusicNote(61, (Button) findViewById(R.id.noteD4Button), melody));
-//        flatKeys.add(new MusicNote(66, (Button) findViewById(R.id.noteG4Button), melody));
-//        flatKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteC4Button), melody));
-//        flatKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteC5Button), melody));
-//        flatKeys.add(new MusicNote(71, (Button) findViewById(R.id.noteF4Button), melody));
 
 
 
@@ -113,9 +100,10 @@ public class KeyboardActivity extends AppCompatActivity {
                 if (noteSuggestButton.isSelected())
                 {
                     noteSuggestButton.setSelected(false);
-                    for (int i = 0; i < pianoKeys.size(); i++)
+                    for (int i = 0; i < keyButtons.size(); i++)
                     {
-                        pianoKeys.get(i).getButton().setSelected(false);
+//                        pianoKeys.get(i).getButton().setSelected(false);
+                        keyButtons.get(i).getButton().setSelected(false);
                     }
 
 
@@ -125,54 +113,19 @@ public class KeyboardActivity extends AppCompatActivity {
                 else
                 {
                     noteSuggestButton.setSelected(true);
-                    for (int i = 0; i < pianoKeys.size(); i++)
+                    for (int i = 0; i < keyButtons.size(); i++)
                     {
-                        pianoKeys.get(i).getButton().setSelected(true);
+//                        pianoKeys.get(i).getButton().setSelected(true);
+                        keyButtons.get(i).getButton().setSelected(true);
                     }
 
-                    String typeOfAccidental = sessionKey.getKeyAccidentals()[0];
-                    int numOfAccidentals = Integer.parseInt(sessionKey.getKeyAccidentals()[1]);
 
-                    if (typeOfAccidental.equals("sharp"))
-                    {
-                        for (int i = 0; i < numOfAccidentals; i++)
-                        {
-                            sharps.get(i).getButton().setSelected(false);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < numOfAccidentals; i++)
-                        {
-                            flats.get(i).getButton().setSelected(false);
-                        }
-                    }
+
                 }
             }
         });
 
-//   prototype to above
-//        Button cButton = (Button) findViewById(R.id.noteC4Button);
-//        pianoKeys.add(new MusicNote(60, cButton, melody));
-//
-//        Button noteSuggestButton = findViewById(R.id.noteSuggestion);
-//        noteSuggestButton.setClickable(true);
-//
-//        noteSuggestButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (noteSuggestButton.isSelected())
-//                {
-//                    noteSuggestButton.setSelected(false);
-//                    cButton.setSelected(false);
-//                }
-//                else
-//                {
-//                    noteSuggestButton.setSelected(true);
-//                    cButton.setSelected(true);
-//                }
-//            }
-//        });
+
 
 
         // If the app is started again while the floating window service is running
@@ -246,14 +199,28 @@ public class KeyboardActivity extends AppCompatActivity {
         }
     }
 
-    private void sharpkeyList()
+    private ArrayList<MusicNote> getPianoKeys()
     {
+        ArrayList<MusicNote> keys = new ArrayList<>();
 
-    }
-    private void flatKeyList()
-    {
+        keys.add(new MusicNote(60, (Button) findViewById(R.id.noteC4Button), melody));
+        keys.add(new MusicNote(61, (Button) findViewById(R.id.noteCSharp4Button), melody));
+        keys.add(new MusicNote(62, (Button) findViewById(R.id.noteD4Button), melody));
+        keys.add(new MusicNote(63, (Button) findViewById(R.id.noteDSharp4Button), melody));
+        keys.add(new MusicNote(64, (Button) findViewById(R.id.noteE4Button), melody));
+        keys.add(new MusicNote(65, (Button) findViewById(R.id.noteF4Button), melody));
+        keys.add(new MusicNote(66, (Button) findViewById(R.id.noteFSharp4Button), melody));
+        keys.add(new MusicNote(67, (Button) findViewById(R.id.noteG4Button), melody));
+        keys.add(new MusicNote(68, (Button) findViewById(R.id.noteGSharp4Button), melody));
+        keys.add(new MusicNote(69, (Button) findViewById(R.id.noteA4Button), melody));
+        keys.add(new MusicNote(70, (Button) findViewById(R.id.noteASharp4Button), melody));
+        keys.add(new MusicNote(71, (Button) findViewById(R.id.noteB4Button), melody));
+        keys.add(new MusicNote(72, (Button) findViewById(R.id.noteC5Button), melody));
 
+        return keys;
     }
+
+
 
     private void sharpsList()
     {
