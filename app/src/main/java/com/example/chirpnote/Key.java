@@ -8,22 +8,22 @@ public class Key implements Serializable {
     public enum RootNote {
         C("C", 60),
         C_SHARP("C#", 61),
-        D_FLAT("Db", 61),
+//        D_FLAT("Db", 61),
         D("D", 62),
         D_SHARP("D#", 63),
-        E_FLAT("Eb", 63),
+//        E_FLAT("Eb", 63),
         E("E", 64),
         F("F", 65),
         F_SHARP("F#", 66),
-        G_FLAT("Gb", 66),
+//        G_FLAT("Gb", 66),
         G("G", 67),
         G_SHARP("G#", 68),
-        A_FLAT("Ab", 68),
+//        A_FLAT("Ab", 68),
         A("A", 69),
         A_SHARP("A#", 70),
-        B_FLAT("Bb", 70),
-        B("B", 71),
-        C_FLAT("Cb", 71);
+//        B_FLAT("Bb", 70),
+        B("B", 71);
+//        C_FLAT("Cb", 71);
 
         private String string;
         private int midiNum;
@@ -142,209 +142,211 @@ public class Key implements Serializable {
         return mChordTypes;
     }
 
-    public String[] getKeyAccidentals()
-    {
-        String[] keyAccidentals = new String[2];
-        if (mType == Type.MAJOR)
-        {
-            if ( (mRootNote.name() == RootNote.G.name()) || (mRootNote.name() == RootNote.F.name()) )
-            {
-                if (mRootNote.name() == RootNote.G.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "1";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.D.name()) || (mRootNote.name() == RootNote.B_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.D.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "2";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.A.name()) || (mRootNote.name() == RootNote.E_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.A.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "3";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.E.name()) || (mRootNote.name() == RootNote.A_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.E.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "4";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.B.name()) || (mRootNote.name() == RootNote.D_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.B.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "5";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.F_SHARP.name()) || (mRootNote.name() == RootNote.G_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.F_SHARP.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "6";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.C_SHARP.name()) || (mRootNote.name() == RootNote.C_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.C_SHARP.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "7";
-                return keyAccidentals;
-            }
-            else
-            {
-                keyAccidentals[0] = "neutral";
-                keyAccidentals[1] = "0";
-                return keyAccidentals;
-            }
-        }
-        else if (mType == Type.MINOR)
-        {
-            if ( (mRootNote.name() == RootNote.E.name()) || (mRootNote.name() == RootNote.D.name()) )
-            {
-                if (mRootNote.name() == RootNote.E.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "1";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.B.name()) || (mRootNote.name() == RootNote.G.name()) )
-            {
-                if (mRootNote.name() == RootNote.B.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "2";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.F_SHARP.name()) || (mRootNote.name() == RootNote.C.name()) )
-            {
-                if (mRootNote.name() == RootNote.F_SHARP.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "3";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.C_SHARP.name()) || (mRootNote.name() == RootNote.F.name()) )
-            {
-                if (mRootNote.name() == RootNote.C_SHARP.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "4";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.G_SHARP.name()) || (mRootNote.name() == RootNote.B_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.G_SHARP.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "5";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.D_SHARP.name()) || (mRootNote.name() == RootNote.E_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.D_SHARP.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "6";
-                return keyAccidentals;
-            }
-            else if ( (mRootNote.name() == RootNote.A_SHARP.name()) || (mRootNote.name() == RootNote.A_FLAT.name()) )
-            {
-                if (mRootNote.name() == RootNote.A_SHARP.name())
-                {
-                    keyAccidentals[0] = "sharp";
-                }
-                else
-                {
-                    keyAccidentals[0] = "flat";
-                }
-                keyAccidentals[1] = "7";
-                return keyAccidentals;
-            }
-            else
-            {
-                keyAccidentals[0] = "neutral";
-                keyAccidentals[1] = "0";
-                return keyAccidentals;
-            }
-        }
-        return keyAccidentals;
-    }
+//    public int[] getNoteIndex()
+
+//    public String[] getKeyAccidentals()
+//    {
+//        String[] keyAccidentals = new String[2];
+//        if (mType == Type.MAJOR)
+//        {
+//            if ( (mRootNote.name() == RootNote.G.name()) || (mRootNote.name() == RootNote.F.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.G.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "1";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.D.name()) || (mRootNote.name() == RootNote.B_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.D.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "2";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.A.name()) || (mRootNote.name() == RootNote.E_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.A.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "3";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.E.name()) || (mRootNote.name() == RootNote.A_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.E.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "4";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.B.name()) || (mRootNote.name() == RootNote.D_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.B.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "5";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.F_SHARP.name()) || (mRootNote.name() == RootNote.G_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.F_SHARP.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "6";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.C_SHARP.name()) || (mRootNote.name() == RootNote.C_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.C_SHARP.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "7";
+//                return keyAccidentals;
+//            }
+//            else
+//            {
+//                keyAccidentals[0] = "neutral";
+//                keyAccidentals[1] = "0";
+//                return keyAccidentals;
+//            }
+//        }
+//        else if (mType == Type.MINOR)
+//        {
+//            if ( (mRootNote.name() == RootNote.E.name()) || (mRootNote.name() == RootNote.D.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.E.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "1";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.B.name()) || (mRootNote.name() == RootNote.G.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.B.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "2";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.F_SHARP.name()) || (mRootNote.name() == RootNote.C.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.F_SHARP.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "3";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.C_SHARP.name()) || (mRootNote.name() == RootNote.F.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.C_SHARP.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "4";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.G_SHARP.name()) || (mRootNote.name() == RootNote.B_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.G_SHARP.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "5";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.D_SHARP.name()) || (mRootNote.name() == RootNote.E_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.D_SHARP.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "6";
+//                return keyAccidentals;
+//            }
+//            else if ( (mRootNote.name() == RootNote.A_SHARP.name()) || (mRootNote.name() == RootNote.A_FLAT.name()) )
+//            {
+//                if (mRootNote.name() == RootNote.A_SHARP.name())
+//                {
+//                    keyAccidentals[0] = "sharp";
+//                }
+//                else
+//                {
+//                    keyAccidentals[0] = "flat";
+//                }
+//                keyAccidentals[1] = "7";
+//                return keyAccidentals;
+//            }
+//            else
+//            {
+//                keyAccidentals[0] = "neutral";
+//                keyAccidentals[1] = "0";
+//                return keyAccidentals;
+//            }
+//        }
+//        return keyAccidentals;
+//    }
 }
