@@ -13,13 +13,15 @@ public class Session implements Serializable {
     private Key mKey;
     private int mTempo;
     public List<String> mChords;
-    private String mMelodyPath;
+    private String mConstructedMelodyPath;
+    private String mRealTimeMelodyPath;
     public List<String> mMelodyElements;
     public int mNextMelodyTick;
     private String mAudioPath;
 
     // States
-    private boolean mMelodyRecorded;
+    private boolean mConstructedMelodyRecorded;
+    private boolean mRealTimeMelodyRecorded;
     private boolean mAudioRecorded;
 
     /**
@@ -43,10 +45,11 @@ public class Session implements Serializable {
      * @param name The name of this session
      * @param key The key of this session
      * @param tempo The tempo of this session
-     * @param melodyPath The file path to store the melody at
+     * @param constructedMelodyPath The file path to store the constructed melody at
+     * @param realTimeMelodyPath The file path to store the real time melody at
      * @param audioPath The file path to store the audio at
      */
-    public Session(String name, Key key, int tempo, String melodyPath, String audioPath){
+    public Session(String name, Key key, int tempo, String constructedMelodyPath, String realTimeMelodyPath, String audioPath){
         mName = name;
         mKey = key;
         if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
@@ -55,8 +58,10 @@ public class Session implements Serializable {
             mTempo = 120;
         }
         mChords = new ArrayList<>();
-        mMelodyPath = melodyPath;
-        mMelodyRecorded = false;
+        mConstructedMelodyPath = constructedMelodyPath;
+        mRealTimeMelodyPath = realTimeMelodyPath;
+        mConstructedMelodyRecorded = false;
+        mRealTimeMelodyRecorded = false;
         mMelodyElements = new ArrayList<>();
         mNextMelodyTick = 0;
         mAudioPath = audioPath;
@@ -88,26 +93,41 @@ public class Session implements Serializable {
     }
 
     /**
-     * Gets the file path where the melody is stored
-     * @return The file path of the MIDI file for the melody
+     * Gets the file path where the constructed melody is stored
+     * @return The file path of the MIDI file for the constructed melody
      */
-    public String getMelodyPath(){
-        return mMelodyPath;
+    public String getConstructedMelodyPath(){
+        return mConstructedMelodyPath;
+    }
+
+    /**
+     * Gets the file path where the real time melody is stored
+     * @return The file path of the MIDI file for the real time melody
+     */
+    public String getRealTimeMelodyPath(){
+        return mRealTimeMelodyPath;
     }
 
     /**
      * Gets the file path where the audio track is stored
-     * @return The file path of the mp4 file for the audio track
+     * @return The file path of the mp3 file for the audio track
      */
     public String getAudioPath(){
         return mAudioPath;
     }
 
     /**
-     * Call after a melody has been recorded for this session
+     * Call after a constructed melody has been recorded for this session
      */
-    public void setMelodyRecorded(){
-        mMelodyRecorded = true;
+    public void setConstructedMelodyRecorded(){
+        mConstructedMelodyRecorded = true;
+    }
+
+    /**
+     * Call after a real time melody has been recorded for this session
+     */
+    public void setRealTimeMelodyRecorded(){
+        mRealTimeMelodyRecorded = true;
     }
 
     /**
@@ -118,11 +138,19 @@ public class Session implements Serializable {
     }
 
     /**
-     * Gets whether or not this session's melody has been recorded
-     * @return True if the session's melody has been recorded
+     * Gets whether or not this session's constructed melody has been recorded
+     * @return True if the session's constructed melody has been recorded
      */
-    public boolean isMelodyRecorded(){
-        return mMelodyRecorded;
+    public boolean isConstructedMelodyRecorded(){
+        return mConstructedMelodyRecorded;
+    }
+
+    /**
+     * Gets whether or not this session's real time melody has been recorded
+     * @return True if the session's real time melody has been recorded
+     */
+    public boolean isRealTimeMelodyRecorded(){
+        return mRealTimeMelodyRecorded;
     }
 
     /**
