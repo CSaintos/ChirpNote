@@ -7,8 +7,11 @@ import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
+import com.example.midiFileLib.src.event.NoteOff;
+import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.event.meta.Tempo;
 import com.example.midiFileLib.src.event.meta.TimeSignature;
+import com.example.midiFileLib.src.util.MidiProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,13 +71,14 @@ abstract class Melody implements Track {
     /**
      * A MIDI melody track
      * @param session The session this melody is a part of
+     * @param filePath The file path to store the melody at
      */
-    public Melody(Session session){
+    public Melody(Session session, String filePath){
         mRecording = false;
         mPlaying = false;
 
         mSession = session;
-        mFilePath = session.getMelodyPath();
+        mFilePath = filePath;
 
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
@@ -115,7 +119,7 @@ abstract class Melody implements Track {
      * @return True if the melody has been recorded
      */
     public boolean isRecorded(){
-        return mSession == null ? mRecorded : mSession.isMelodyRecorded();
+        return mRecorded;
     }
 
     /**
@@ -177,9 +181,6 @@ abstract class Melody implements Track {
             System.err.println(e);
         }
         mRecording = false;
-        if(mSession != null) {
-            mSession.setMelodyRecorded();
-        }
     }
 
     /**

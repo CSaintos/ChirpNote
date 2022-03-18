@@ -116,20 +116,19 @@ public class TestOtherActivity extends AppCompatActivity {
 
         String basePath = this.getFilesDir().getPath();
         Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                basePath + "/melody.mid", basePath + "/audioTrack.mp3");
+                basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
 
         // Real time melody
-        String filePath = basePath + "/realTimeMelody.mid";
-        realTimeMelody = new RealTimeMelody(120, filePath, playButton);
+        realTimeMelody = new RealTimeMelody(session);
+        realTimeMelody.setPlayButton(playButton);
 
         // Constructed melody
         constructedMelody = new ConstructedMelody(session);
         constructedMelody.setPlayButton(playButton);
 
         // Audio track
-        filePath = basePath + "/audioTrack.mp3";
         try {
-            audio = new AudioTrack(filePath, playButton);
+            audio = new AudioTrack(basePath + "/audioTrack.mp3", playButton);
         } catch (IOException e) {
             e.printStackTrace();
         }
