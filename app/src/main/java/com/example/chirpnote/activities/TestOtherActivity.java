@@ -59,6 +59,8 @@ public class TestOtherActivity extends AppCompatActivity {
     private AudioTrack audio;
     // Which track was most recently recorded
     private Track lastTrack;
+    // A Percussion object to play percussion tracks/beats
+    private Percussion percussion;
     // State of playback
     private boolean playing = false;
     // A list of chords
@@ -331,7 +333,7 @@ public class TestOtherActivity extends AppCompatActivity {
                 rockPlayer.start();
             }
         });
-        Percussion percussion = new Percussion(this);
+        percussion = new Percussion(session, this);
         Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
         rockMidiButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -346,8 +348,11 @@ public class TestOtherActivity extends AppCompatActivity {
         super.onResume();
         midiDriver.start();
         midiDriver.setReverb(ReverbConstants.OFF);
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 1, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 2, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 3, (byte) 0x07, (byte) 80});
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) 127});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 90});
     }
 
     @Override
