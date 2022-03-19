@@ -81,7 +81,6 @@ public class KeyboardActivity extends AppCompatActivity {
              */
 //            keyButtons.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i]));
             keyButtons.add(pianoKeys.get(rootIdx));
-            System.out.println("Piano Key = " + keyButtons.get(i).getNoteNumber());
         }
 
         sharps = new ArrayList<>();
@@ -105,9 +104,6 @@ public class KeyboardActivity extends AppCompatActivity {
 //                        pianoKeys.get(i).getButton().setSelected(false);
                         keyButtons.get(i).getButton().setSelected(false);
                     }
-
-
-
 
                 }
                 else
