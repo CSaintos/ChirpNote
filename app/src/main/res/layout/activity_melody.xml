@@ -385,6 +385,20 @@
         app:layout_constraintEnd_toStartOf="@+id/melodynoteAbutton"
         app:layout_constraintStart_toEndOf="@+id/melodynoteFbutton" />
 
+    <Button
+        android:id="@+id/noteSuggestion"
+        android:layout_width="70dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="528dp"
+        android:background="@color/purple_500"
+        android:text="Note Suggestion"
+        android:textColor="@android:color/white"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.994"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/melodynoteAbutton"
         android:layout_width="50dp"
