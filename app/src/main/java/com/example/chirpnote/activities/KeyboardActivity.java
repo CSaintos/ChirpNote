@@ -83,10 +83,7 @@ public class KeyboardActivity extends AppCompatActivity {
             keyButtons.add(pianoKeys.get(rootIdx));
         }
 
-        sharps = new ArrayList<>();
-        flats = new ArrayList<>();
-        sharpsList();
-        flatsList();
+
 
 
 

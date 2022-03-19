@@ -2,8 +2,6 @@ package com.example.chirpnote.activities;
 
 import static com.example.chirpnote.Notation.Syntax;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,13 +13,14 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-//import com.example.chirpnote.Notation.Syntax;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
@@ -36,6 +35,8 @@ import org.billthefarmer.mididriver.ReverbConstants;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
+
+//import com.example.chirpnote.Notation.Syntax;
 
 public class MelodyActivity extends AppCompatActivity {
 
@@ -67,6 +68,10 @@ public class MelodyActivity extends AppCompatActivity {
     private int octNum;
     private boolean wasNext;
 
+    private Key currentKey;
+    private ArrayList<MusicNote> keyButtons;
+    private ArrayList<MusicNote> pianoKeys2;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +83,7 @@ public class MelodyActivity extends AppCompatActivity {
         midiDriver = MidiDriver.getInstance();
 
         // TODO: get key from Session Activity
-        key = new Key(Key.RootNote.C, Key.Type.MAJOR);
+        key = new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR);
         octNum = 4;
 
         // TODO: get session from Session Activity
@@ -110,6 +115,44 @@ public class MelodyActivity extends AppCompatActivity {
                 new MusicNote(70, (Button) findViewById(R.id.melodynoteAsharpbutton)),
                 new MusicNote(71, (Button) findViewById(R.id.melodynoteBbutton))
         };
+
+        pianoKeys2 = getPianoKeys();
+        keyButtons = new ArrayList<>();
+        currentKey = session.getKey(); // gets the key set when session was initialized
+        for (int i = 0; i < currentKey.getScaleNotes().length-1; i++)
+        {
+            // TODO: Think of a better way to do this
+            int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
+            /** arraylist of all chords that belong to the current key based on the type of chord
+             * it takes in the root note of the chord and type of chord
+             */
+            keyButtons.add(pianoKeys2.get(rootIdx));
+        }
+
+        Button noteSuggestButton = findViewById(R.id.noteSuggestion);
+        noteSuggestButton.setClickable(true);
+
+        noteSuggestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (noteSuggestButton.isSelected())
+                {
+                    noteSuggestButton.setSelected(false);
+                    for (int i = 0; i < keyButtons.size(); i++)
+                    {
+                        keyButtons.get(i).getButton().setSelected(false);
+                    }
+                }
+                else
+                {
+                    noteSuggestButton.setSelected(true);
+                    for (int i = 0; i < keyButtons.size(); i++)
+                    {
+                        keyButtons.get(i).getButton().setSelected(true);
+                    }
+                }
+            }
+        });
 
         // Initialize text views
         melodyText = (TextView) findViewById(R.id.stafftextview);
@@ -567,5 +610,25 @@ public class MelodyActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         midiDriver.stop();
+    }
+
+    private ArrayList<MusicNote> getPianoKeys()
+    {
+        ArrayList<MusicNote> keys = new ArrayList<>();
+
+        keys.add(new MusicNote(60, (Button) findViewById(R.id.melodynoteCbutton)));
+        keys.add(new MusicNote(61, (Button) findViewById(R.id.melodynoteCsharpbutton)));
+        keys.add(new MusicNote(62, (Button) findViewById(R.id.melodynoteDbutton)));
+        keys.add(new MusicNote(63, (Button) findViewById(R.id.melodynoteDsharpbutton)));
+        keys.add(new MusicNote(64, (Button) findViewById(R.id.melodynoteEbutton)));
+        keys.add(new MusicNote(65, (Button) findViewById(R.id.melodynoteFbutton)));
+        keys.add(new MusicNote(66, (Button) findViewById(R.id.melodynoteFsharpbutton)));
+        keys.add(new MusicNote(67, (Button) findViewById(R.id.melodynoteGbutton)));
+        keys.add(new MusicNote(68, (Button) findViewById(R.id.melodynoteGsharpbutton)));
+        keys.add(new MusicNote(69, (Button) findViewById(R.id.melodynoteAbutton)));
+        keys.add(new MusicNote(70, (Button) findViewById(R.id.melodynoteAsharpbutton)));
+        keys.add(new MusicNote(71, (Button) findViewById(R.id.melodynoteBbutton)));
+
+        return keys;
     }
 }
