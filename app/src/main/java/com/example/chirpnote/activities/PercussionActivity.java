@@ -102,7 +102,8 @@ public class PercussionActivity extends AppCompatActivity {
         MediaPlayer rockPlayer = MediaPlayer.create(this, R.raw.rock_drums);
         rockPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-        Percussion percussion = new Percussion(this);
+        // FIXME: Include session in params
+        //Percussion percussion = new Percussion(this);
         // End of percussion code
 
         // Create Radio button(s)
@@ -119,7 +120,7 @@ public class PercussionActivity extends AppCompatActivity {
                     cb.setBackground(getDrawable(R.drawable.radio_selected));
                     // Test rock playback
                     rockPlayer.start();
-                    percussion.playRock();
+                    //percussion.playRock();
                 } else {
                     cb.setBackground(getDrawable(R.drawable.radio_normal));
                 }

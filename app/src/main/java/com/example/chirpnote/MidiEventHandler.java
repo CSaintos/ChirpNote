@@ -4,6 +4,7 @@ import com.example.midiFileLib.src.event.MidiEvent;
 import com.example.midiFileLib.src.event.NoteOff;
 import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.util.MidiEventListener;
+import com.example.midiFileLib.src.util.MidiProcessor;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
@@ -26,15 +27,15 @@ public class MidiEventHandler implements MidiEventListener {
     }
 
     @Override
-    public void onEvent(MidiEvent event, long ms){
+    public void onEvent(MidiEvent event){
         if(event instanceof NoteOn){
             NoteOn noteEvent = (NoteOn) event;
             midiDriver.write(new byte[]{(byte) (MidiConstants.NOTE_ON + noteEvent.getChannel()),
                     (byte) noteEvent.getNoteValue(), (byte) noteEvent.getVelocity()});
         } else if(event instanceof NoteOff){
             NoteOff noteEvent = (NoteOff) event;
-            midiDriver.write(new byte[]{(byte) (MidiConstants.NOTE_OFF + noteEvent.getChannel()),
-                    (byte) noteEvent.getNoteValue(), (byte) noteEvent.getVelocity()});
+            midiDriver.write(new byte[]{(byte) (MidiConstants.NOTE_ON + noteEvent.getChannel()),
+                    (byte) noteEvent.getNoteValue(), (byte) 0});
         }
     }
 

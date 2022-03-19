@@ -6,7 +6,7 @@ public interface MidiEventListener
 {
     public void onStart(boolean fromBeginning);
 
-    public void onEvent(MidiEvent event, long ms);
+    public void onEvent(MidiEvent event);
 
     public void onStop(boolean finished);
 }
