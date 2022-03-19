@@ -6,13 +6,16 @@ apply plugin: 'realm-android'
 
 android {
     compileSdk 31
-
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
     defaultConfig {
         applicationId "com.example.chirpnote"
         minSdk 24
         targetSdk 31
         versionCode 1
         versionName "1.0"
+        multiDexEnabled = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -49,5 +52,9 @@ dependencies {
     implementation 'com.github.billthefarmer:mididriver:v1.24'
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.anggrayudi:storage:1.1.0'
-
+// Google Drive
+    implementation "com.google.android.gms:play-services-auth:20.1.0"
+    implementation 'com.google.apis:google-api-services-drive:v3-rev20211107-1.32.1'
+    implementation 'com.google.api-client:google-api-client-android:1.33.0'
+    implementation 'com.google.http-client:google-http-client-android:1.41.4'
 }
