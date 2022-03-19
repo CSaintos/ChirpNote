@@ -264,7 +264,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="512dp"
         android:layout_marginEnd="13dp"
-        android:text="Media"
+        android:text="Play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -274,7 +274,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="576dp"
         android:layout_marginEnd="13dp"
-        android:text="MIDI"
+        android:text="Play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

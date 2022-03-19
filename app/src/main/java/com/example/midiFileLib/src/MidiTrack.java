@@ -309,6 +309,26 @@ public class MidiTrack
         return true;
     }
 
+    public boolean removeFirstEvent(){
+        Iterator<MidiEvent> it = mEvents.iterator();
+        MidiEvent curr, next = null;
+
+        if(it.hasNext()){
+            curr = it.next();
+            if(it.hasNext()){
+                next = it.next();
+            }
+        } else {
+            return false;
+        }
+
+        if(next != null){
+            next.setDelta(next.getTick());
+        }
+
+        return mEvents.remove(curr);
+    }
+
     private boolean noteEventsEqual(NoteOn a, NoteOn b){
         return a.getTick() == b.getTick() && a.getNoteValue() == b.getNoteValue() && a.getVelocity() == b.getVelocity();
     }

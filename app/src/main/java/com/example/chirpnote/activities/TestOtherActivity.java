@@ -25,7 +25,7 @@ import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.ConstructedMelody.NoteDuration;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
-import com.example.chirpnote.Percussion;
+import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
 import com.example.chirpnote.Session;
@@ -59,8 +59,10 @@ public class TestOtherActivity extends AppCompatActivity {
     private AudioTrack audio;
     // Which track was most recently recorded
     private Track lastTrack;
-    // State of playback
-    private boolean playing = false;
+    // A Percussion object to play percussion tracks/beats
+    private PercussionTrack rockPercussion;
+    // Media player to play percussion
+    private MediaPlayer rockPlayer;
     // A list of chords
     private ArrayList<Chord> chords;
 
@@ -116,20 +118,19 @@ public class TestOtherActivity extends AppCompatActivity {
 
         String basePath = this.getFilesDir().getPath();
         Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                basePath + "/melody.mid", basePath + "/audioTrack.mp3");
+                basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
 
         // Real time melody
-        String filePath = basePath + "/realTimeMelody.mid";
-        realTimeMelody = new RealTimeMelody(120, filePath, playButton);
+        realTimeMelody = new RealTimeMelody(session);
+        realTimeMelody.setPlayButton(playButton);
 
         // Constructed melody
         constructedMelody = new ConstructedMelody(session);
         constructedMelody.setPlayButton(playButton);
 
         // Audio track
-        filePath = basePath + "/audioTrack.mp3";
         try {
-            audio = new AudioTrack(filePath, playButton);
+            audio = new AudioTrack(basePath + "/audioTrack.mp3", playButton);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -266,7 +267,6 @@ public class TestOtherActivity extends AppCompatActivity {
         playButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if(!playing){
                 if(!lastTrack.isPlaying()){
                     playButton.setText("Stop");
                     lastTrack.play();
@@ -280,7 +280,6 @@ public class TestOtherActivity extends AppCompatActivity {
                     constructedMelody.stop();
                     audio.stop();*/
                 }
-                playing = !playing;
             }
         });
 
@@ -327,17 +326,29 @@ public class TestOtherActivity extends AppCompatActivity {
         rockMediaButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaPlayer rockPlayer = MediaPlayer.create(v.getContext(), R.raw.rock_drums);
-                rockPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                rockPlayer.start();
+                if(!rockPlayer.isPlaying()) {
+                    rockPlayer = MediaPlayer.create(v.getContext(), R.raw.rock_drums);
+                    rockPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    rockPlayer.start();
+                    rockMediaButton.setText("Stop");
+                } else {
+                    rockPlayer.stop();
+                    rockMediaButton.setText("Play");
+                }
             }
         });
-        Percussion percussion = new Percussion(this);
         Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
+        rockPercussion = new PercussionTrack("rock", session, this, R.raw.rock_drums, rockMidiButton);
         rockMidiButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                percussion.playRock();
+                if(!rockPercussion.isPlaying()) {
+                    rockPercussion.play();
+                    rockMidiButton.setText("Stop");
+                } else {
+                    rockPercussion.stop();
+                    rockMidiButton.setText("Play");
+                }
             }
         });
     }
@@ -347,8 +358,11 @@ public class TestOtherActivity extends AppCompatActivity {
         super.onResume();
         midiDriver.start();
         midiDriver.setReverb(ReverbConstants.OFF);
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 1, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 2, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 3, (byte) 0x07, (byte) 80});
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) 127});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 90});
     }
 
     @Override

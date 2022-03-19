@@ -25,7 +25,7 @@ public class ConstructedMelody extends Melody {
      * @param session The session this melody is a part of
      */
     public ConstructedMelody(Session session){
-        super(session);
+        super(session, session.getConstructedMelodyPath());
 
         // Possible note durations when building a melody
         mNoteDurations = new HashMap<>();
@@ -271,6 +271,9 @@ public class ConstructedMelody extends Melody {
         // We only want this behavior for a real time melody, so only do this once for a constructed melody
         if(!isRecorded()){
             super.stopRecording();
+            if(mSession != null) {
+                mSession.setConstructedMelodyRecorded();
+            }
         }
     }
 }
