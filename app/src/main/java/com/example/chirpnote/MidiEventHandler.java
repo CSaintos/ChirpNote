@@ -1,20 +1,30 @@
 package com.example.chirpnote;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Button;
+
 import com.example.midiFileLib.src.event.MidiEvent;
 import com.example.midiFileLib.src.event.NoteOff;
 import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.util.MidiEventListener;
-import com.example.midiFileLib.src.util.MidiProcessor;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
 
 public class MidiEventHandler implements MidiEventListener {
     private String mLabel;
+    private Button mPlayButton;
     MidiDriver midiDriver = MidiDriver.getInstance();
 
     public MidiEventHandler(String label){
         mLabel = label;
+        mPlayButton = null;
+    }
+
+    public MidiEventHandler(String label, Button playButton){
+        mLabel = label;
+        mPlayButton = playButton;
     }
 
     @Override
@@ -43,6 +53,14 @@ public class MidiEventHandler implements MidiEventListener {
     public void onStop(boolean finished){
         if(finished){
             System.out.println(mLabel + " Finished!");
+            if(mPlayButton != null) {
+                new Handler(Looper.getMainLooper()).post(new Runnable(){
+                    @Override
+                    public void run() {
+                        mPlayButton.setText("Play");
+                    }
+                });
+            }
         } else {
             System.out.println(mLabel + " paused");
         }

@@ -21,7 +21,6 @@ abstract class Melody implements Track {
     // States
     private boolean mRecording;
     private boolean mRecorded;
-    private boolean mPlaying;
 
     // For recording the melody
     public final int RESOLUTION = 960;
@@ -32,7 +31,8 @@ abstract class Melody implements Track {
     protected String mFilePath;
 
     // For playback
-    private MediaPlayer mMediaPlayer;
+    private MidiProcessor mMidiProcessor;
+    private MidiEventHandler mMidiEventHandler;
     private Button mPlayButton;
 
     protected Session mSession;
@@ -46,25 +46,10 @@ abstract class Melody implements Track {
     public Melody(int tempo, String filePath, Button playButton){
         mRecording = false;
         mRecorded = false;
-        mPlaying = false;
 
         mBPM = tempo;
         mFilePath = filePath;
 
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.start();
-            }
-        });
-        mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.stop();
-                mPlayButton.setText("Play");
-            }
-        });
         mPlayButton = playButton;
     }
 
@@ -75,25 +60,9 @@ abstract class Melody implements Track {
      */
     public Melody(Session session, String filePath){
         mRecording = false;
-        mPlaying = false;
 
         mSession = session;
         mFilePath = filePath;
-
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.start();
-            }
-        });
-        mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.stop();
-                mPlayButton.setText("Play");
-            }
-        });
     }
 
     /**
@@ -102,7 +71,7 @@ abstract class Melody implements Track {
      */
     @Override
     public boolean isPlaying(){
-        return mMediaPlayer.isPlaying();
+        return mMidiProcessor != null && mMidiProcessor.isRunning();
     }
 
     /**
@@ -173,10 +142,10 @@ abstract class Melody implements Track {
         tracks.add(mNoteTrack);
 
         // Write tracks to MIDI file
-        MidiFile midi = new MidiFile(RESOLUTION, tracks);
+        MidiFile midiFile = new MidiFile(RESOLUTION, tracks);
         mOutput = new File(mFilePath);
         try {
-            midi.writeToFile(mOutput);
+            midiFile.writeToFile(mOutput);
         } catch(IOException e) {
             System.err.println(e);
         }
@@ -198,14 +167,16 @@ abstract class Melody implements Track {
         if(isPlaying()){
             throw new IllegalStateException("Cannot play the melody if it is already being played (stop playback first)");
         }
-        mPlaying = true;
+        MidiFile midiFile = null;
         try {
-            mMediaPlayer.reset();
-            mMediaPlayer.setDataSource(mFilePath);
-            mMediaPlayer.prepareAsync();
+            midiFile = new MidiFile(new File(mFilePath));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mMidiEventHandler = new MidiEventHandler("MelodyPlayback", mPlayButton);
+        mMidiProcessor = new MidiProcessor(midiFile);
+        mMidiProcessor.registerEventListener(mMidiEventHandler, NoteOn.class);
+        mMidiProcessor.start();
     }
 
     /**
@@ -220,8 +191,7 @@ abstract class Melody implements Track {
         if(!isPlaying()){
             throw new IllegalStateException("Cannot stop the melody if it is not being played (start playback first)");
         }
-        mPlaying = false;
-        mMediaPlayer.stop();
+        mMidiProcessor.reset();
     }
 
     /**
