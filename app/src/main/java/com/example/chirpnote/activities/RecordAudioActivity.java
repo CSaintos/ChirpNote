@@ -1,5 +1,6 @@
 package com.example.chirpnote.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -14,6 +15,8 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -23,8 +26,22 @@ import com.anggrayudi.storage.file.DocumentFileCompat;
 import com.anggrayudi.storage.file.DocumentFileUtils;
 import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.BuildConfig;
+import com.example.chirpnote.DriveServiceHelper;
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,6 +51,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,6 +78,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     //audio file container
     File audioFile = null;
     String filePath;
+    DriveServiceHelper driveServiceHelper;
 
 
 
@@ -101,7 +120,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        requestSignIn();
 
 
 
@@ -208,44 +227,17 @@ public class RecordAudioActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(intent, "Share File"));
             }
         });
-    exportButton.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-            startActivityForResult(intent,2);
-
-
-
-
-        }
-    });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2){
-            Uri uriTree = data.getData();
-            DocumentFile pathFile = DocumentFileCompat.fromUri(this,uriTree);
-            File convertPathFile = DocumentFileUtils.toRawFile(pathFile,context);
-            try {
-                InputStream inputStream = new FileInputStream(audioFile.getPath());
-                byte arr[] = readByte(inputStream);
-                //file output stream
-                System.out.println(convertPathFile.getPath());
-                Toast.makeText(RecordAudioActivity.this,"Writing to " + convertPathFile.getPath(),Toast.LENGTH_LONG).show();
-                audioFile = new File(convertPathFile.getPath(), "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
-                audioFile.createNewFile();
-                FileOutputStream fileOutput = new FileOutputStream(audioFile);
-                fileOutput.write(arr);
-                fileOutput.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
+//    exportButton.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            System.out.println("find this");
+//
+//
+//
+//
+//
+//        }
+//    });
     }
 
     /**
@@ -262,5 +254,73 @@ public class RecordAudioActivity extends AppCompatActivity {
         }
 
         return os.toByteArray();
+    }
+    private void requestSignIn(){
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
+                .build();
+        GoogleSignInClient client = GoogleSignIn.getClient(this,signInOptions);
+        startActivityForResult(client.getSignInIntent(),400);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(resultCode)
+        {
+            case 400:
+                if(resultCode == RESULT_OK){
+                    handleSignInIntent(data);
+                }
+                break;
+        }
+
+    }
+    private void handleSignInIntent(Intent data){
+        GoogleSignIn.getSignedInAccountFromIntent(data).addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
+            @Override
+            public void onSuccess(GoogleSignInAccount googleSignInAccount) {
+                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(RecordAudioActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
+                credential.setSelectedAccount(googleSignInAccount.getAccount());
+                Drive googleDriveService = new Drive.Builder(
+                        AndroidHttp.newCompatibleTransport(),
+                        new GsonFactory(),
+                        credential)
+                        .setApplicationName("Record Audio")
+                        .build();
+                driveServiceHelper = new DriveServiceHelper(googleDriveService);
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+    }
+    public void uploadToDrive(View view){
+        ProgressDialog progressDialog = new ProgressDialog(RecordAudioActivity.this);
+        progressDialog.setTitle("Uploading to Drive");
+        progressDialog.setMessage("Uploading...");
+        progressDialog.show();
+
+        driveServiceHelper.createFileMp3(audioFile.getPath()).addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                progressDialog.dismiss();
+                Toast.makeText(RecordAudioActivity.this,"Uploaded", Toast.LENGTH_SHORT).show();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(RecordAudioActivity.this,"Check API", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
