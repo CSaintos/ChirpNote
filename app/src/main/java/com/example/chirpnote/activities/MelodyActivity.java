@@ -41,7 +41,6 @@ public class MelodyActivity extends AppCompatActivity {
 
     private Notation notation = new Notation();
 
-    //private Button[] keyButtons;
     private TextView[] staffLines;
     private RadioButton[] noteLengthButtons;
     private MusicNote[] pianoKeys;
@@ -247,7 +246,7 @@ public class MelodyActivity extends AppCompatActivity {
                         wasNext = true;
                     } else {
                         currentNote = notation.new NoteFont(itr.next()); // Due to calling previous in if statement. Returns current node
-                        currentNote = notation.new NoteFont(itr.next()); // Returns next node uuhhh
+                        currentNote = notation.new NoteFont(itr.next()); // Returns next node
                         currentNote.color = Color.DKGRAY;
                         itr.set(notation.new NoteFont(currentNote));
                         currentNote = notation.new NoteFont(itr.previous()); // Returns current node...
