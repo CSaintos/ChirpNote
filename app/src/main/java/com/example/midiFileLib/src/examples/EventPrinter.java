@@ -35,7 +35,7 @@ public class EventPrinter implements MidiEventListener
     }
 
     @Override
-    public void onEvent(MidiEvent event, long ms)
+    public void onEvent(MidiEvent event)
     {
         System.out.println(mLabel + " received event: " + event);
     }

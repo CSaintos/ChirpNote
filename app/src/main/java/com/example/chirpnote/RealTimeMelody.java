@@ -18,10 +18,26 @@ public class RealTimeMelody extends Melody {
         super(tempo, filePath, playButton);
     }
 
+    /**
+     * A MIDI melody which is recorded in real time on the UI keyboard
+     * @param session The session this melody is a part of
+     */
+    public RealTimeMelody(Session session){
+        super(session, session.getRealTimeMelodyPath());
+    }
+
     @Override
     public void startRecording() throws IllegalStateException {
         super.startRecording();
         mRecordingStartTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void stopRecording() throws IllegalStateException {
+        super.stopRecording();
+        if(mSession != null) {
+            mSession.setRealTimeMelodyRecorded();
+        }
     }
 
     /**
@@ -32,7 +48,7 @@ public class RealTimeMelody extends Melody {
      * @return False if melody is not being recorded yet (cannot add a note if there is no active recording process)
      */
     public boolean writeNoteOn(MusicNote note){
-        if(!super.isRecording() || note == null){
+        if(!isRecording() || note == null){
             return false;
         }
         mNoteTrack.insertEvent(new NoteOn(getCurrentTick(), CHANNEL, note.getNoteNumber(), note.VELOCITY));
@@ -47,7 +63,7 @@ public class RealTimeMelody extends Melody {
      * @return False if melody is not being recorded, or if the given note is null
      */
     public boolean writeNoteOff(MusicNote note){
-        if(!super.isRecording() || note == null){
+        if(!isRecording() || note == null){
             return false;
         }
         // Using a NoteOn event with a velocity of 0, instead of a NoteOff event (essentially the same thing)

@@ -13,7 +13,7 @@ import com.example.midiFileLib.src.event.meta.TimeSignature;
 
 public class MidiProcessor
 {
-    private static final int PROCESS_RATE_MS = 8;
+    //private static final int PROCESS_RATE_MS = 8;
 
     private HashMap<Class<? extends MidiEvent>, List<MidiEventListener>> mEventsToListeners;
     private HashMap<MidiEventListener, List<Class<? extends MidiEvent>>> mListenersToEvents;
@@ -21,7 +21,6 @@ public class MidiProcessor
     private MidiFile mMidiFile;
     private boolean mRunning;
     private double mTicksElapsed;
-    private long mMsElapsed;
 
     private int mMPQN;
     private int mPPQ;
@@ -70,7 +69,6 @@ public class MidiProcessor
 
         mRunning = false;
         mTicksElapsed = 0;
-        mMsElapsed = 0;
 
         mMetronome.setTimeSignature(new TimeSignature());
 
@@ -230,7 +228,7 @@ public class MidiProcessor
 
         for(MidiEventListener mel : listeners)
         {
-            mel.onEvent(event, mMsElapsed);
+            mel.onEvent(event);
         }
     }
 
@@ -249,7 +247,7 @@ public class MidiProcessor
             long now = System.currentTimeMillis();
             long msElapsed = now - lastMs;
 
-            if(msElapsed < PROCESS_RATE_MS)
+            /*if(msElapsed < PROCESS_RATE_MS)
             {
                 try
                 {
@@ -259,7 +257,7 @@ public class MidiProcessor
                 {
                 }
                 continue;
-            }
+            }*/
 
             double ticksElapsed = MidiUtil.msToTicks(msElapsed, mMPQN, mPPQ);
 
@@ -274,7 +272,6 @@ public class MidiProcessor
             }
 
             lastMs = now;
-            mMsElapsed += msElapsed;
             mTicksElapsed += ticksElapsed;
 
             boolean more = false;
