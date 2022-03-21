@@ -118,7 +118,7 @@ public class TestOtherActivity extends AppCompatActivity {
 
         String basePath = this.getFilesDir().getPath();
         Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
+                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
 
         // Real time melody
         realTimeMelody = new RealTimeMelody(session);
@@ -295,15 +295,17 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Testing playback for chords
         chords = new ArrayList<>();
-        chords.add(new Chord(Chord.RootNote.C, Chord.Type.MAJOR, (Button) findViewById(R.id.chordCButton)));
-        chords.add(new Chord(Chord.RootNote.D, Chord.Type.MINOR, (Button) findViewById(R.id.chordDmButton)));
-        /*Chord cMajor = new Chord(Chord.RootNote.C, Chord.Type.MAJOR, (Button) findViewById(R.id.chordCButton));
+        chords.add(new Chord(Chord.RootNote.C, Chord.Type.MAJOR, session.getTempo(), (Button) findViewById(R.id.chordCButton)));
+        chords.add(new Chord(Chord.RootNote.D, Chord.Type.MINOR, session.getTempo(), (Button) findViewById(R.id.chordDmButton)));
+        /*Chord cMajor = new Chord(Chord.RootNote.C, Chord.Type.MAJOR, 80, (Button) findViewById(R.id.chordCButton));
         cMajor.octaveUp();
         cMajor.setInversion(Chord.Inversion.FIRST);
+        cMajor.setAlteration(1);
         chords.add(cMajor);
-        Chord dMinor = new Chord(Chord.RootNote.D, Chord.Type.MINOR, (Button) findViewById(R.id.chordDmButton));
+        Chord dMinor = new Chord(Chord.RootNote.D, Chord.Type.MINOR, 165, (Button) findViewById(R.id.chordDmButton));
         dMinor.octaveDown();
         dMinor.setInversion(Chord.Inversion.SECOND);
+        dMinor.setAlteration(2);
         chords.add(dMinor);*/
 
         // Setup event listener for each chord button

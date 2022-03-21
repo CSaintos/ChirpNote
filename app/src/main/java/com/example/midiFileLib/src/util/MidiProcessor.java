@@ -25,7 +25,7 @@ public class MidiProcessor
     private int mMPQN;
     private int mPPQ;
 
-    private MetronomeTick mMetronome;
+    //private MetronomeTick mMetronome;
     private MidiTrackEventQueue[] mEventQueues;
 
     public MidiProcessor(MidiFile input)
@@ -39,7 +39,7 @@ public class MidiProcessor
         mEventsToListeners = new HashMap<Class<? extends MidiEvent>, List<MidiEventListener>>();
         mListenersToEvents = new HashMap<MidiEventListener, List<Class<? extends MidiEvent>>>();
 
-        mMetronome = new MetronomeTick(new TimeSignature(), mPPQ);
+        //mMetronome = new MetronomeTick(new TimeSignature(), mPPQ);
 
         this.reset();
     }
@@ -70,7 +70,7 @@ public class MidiProcessor
         mRunning = false;
         mTicksElapsed = 0;
 
-        mMetronome.setTimeSignature(new TimeSignature());
+        //mMetronome.setTimeSignature(new TimeSignature());
 
         List<MidiTrack> tracks = mMidiFile.getTracks();
 
@@ -203,13 +203,13 @@ public class MidiProcessor
         else if(event.getClass().equals(TimeSignature.class))
         {
 
-            boolean shouldDispatch = mMetronome.getBeatNumber() != 1;
+            /*boolean shouldDispatch = mMetronome.getBeatNumber() != 1;
             mMetronome.setTimeSignature((TimeSignature) event);
 
             if(shouldDispatch)
             {
                 dispatch(mMetronome);
-            }
+            }*/
         }
 
         this.sendOnEventForClass(event, event.getClass());
@@ -266,10 +266,10 @@ public class MidiProcessor
                 continue;
             }
 
-            if(mMetronome.update(ticksElapsed))
+            /*if(mMetronome.update(ticksElapsed))
             {
                 dispatch(mMetronome);
-            }
+            }*/
 
             lastMs = now;
             mTicksElapsed += ticksElapsed;
