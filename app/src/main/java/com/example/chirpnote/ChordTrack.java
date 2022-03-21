@@ -1,0 +1,308 @@
+package com.example.chirpnote;
+
+import android.widget.Button;
+
+import com.example.midiFileLib.src.MidiFile;
+import com.example.midiFileLib.src.MidiTrack;
+import com.example.midiFileLib.src.event.NoteOn;
+import com.example.midiFileLib.src.event.meta.Tempo;
+import com.example.midiFileLib.src.event.meta.TimeSignature;
+import com.example.midiFileLib.src.util.MidiProcessor;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class ChordTrack implements Track {
+    // States
+    private boolean mRecording;
+
+    // For recording the melody
+    public final int RESOLUTION = 960;
+    private MidiTrack mTempoTrack;
+    protected MidiTrack mNoteTrack;
+    private String mFilePath;
+
+    // For playback
+    private MidiProcessor mMidiProcessor;
+    private MidiEventHandler mMidiEventHandler;
+
+    private Session mSession;
+    private final int CHANNEL = 1;
+    private HashMap<String, Chord.RootNote> noteEncodingMap;
+
+    /**
+     * A Chord track
+     * @param session The session this chord track is a part of
+     */
+    public ChordTrack(Session session){
+        mRecording = false;
+        mSession = session;
+        mFilePath = session.getChordsPath();
+        mMidiEventHandler = new MidiEventHandler("ChordPlayback");
+
+        noteEncodingMap = new HashMap<>();
+        noteEncodingMap.put("Cn", Chord.RootNote.C);
+        noteEncodingMap.put("Cs", Chord.RootNote.C_SHARP);
+        noteEncodingMap.put("Dn", Chord.RootNote.D);
+        noteEncodingMap.put("Ds", Chord.RootNote.D_SHARP);
+        noteEncodingMap.put("En", Chord.RootNote.E);
+        noteEncodingMap.put("Fn", Chord.RootNote.F);
+        noteEncodingMap.put("Fs", Chord.RootNote.F_SHARP);
+        noteEncodingMap.put("Gn", Chord.RootNote.G);
+        noteEncodingMap.put("Gs", Chord.RootNote.G_SHARP);
+        noteEncodingMap.put("An", Chord.RootNote.A);
+        noteEncodingMap.put("As", Chord.RootNote.A_SHARP);
+        noteEncodingMap.put("Bn", Chord.RootNote.B);
+    }
+
+    /**
+     * Gets whether or not this chord track is currently being played back
+     * @return True if the chord track is being played
+     */
+    @Override
+    public boolean isPlaying(){
+        return mMidiProcessor != null && mMidiProcessor.isRunning();
+    }
+
+    /**
+     * Gets whether or not this chord track is currently being recorded
+     * @return True if the chord track is being recorded
+     */
+    @Override
+    public boolean isRecording(){
+        return mRecording;
+    }
+
+    /**
+     * Gets whether or not this chord track has been recorded
+     * @return True if the chord track has been recorded
+     */
+    public boolean isRecorded(){
+        return mSession.areChordsRecorded();
+    }
+
+    /**
+     * Starts the recording process for this chord track
+     * @exception IllegalStateException if the recording process cannot be started
+     */
+    @Override
+    public void startRecording() throws IllegalStateException {
+        if(isRecording()){
+            throw new IllegalStateException("Cannot start the recording process when the chord track is already being recorded");
+        }
+        if(isPlaying()){
+            throw new IllegalStateException("Cannot start the recording process when the chord track is being played back");
+        }
+        if(isRecorded()) {
+            // Do not start the recording process more than once, as this will overwrite the entire chord track
+            // We only want this behavior for a RealTimeMelody
+            return;
+        }
+        mRecording = true;
+
+        // Setup MIDI tracks
+        mTempoTrack = new MidiTrack();
+        mNoteTrack = new MidiTrack();
+
+        TimeSignature ts = new TimeSignature();
+        ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION);
+        mTempoTrack.insertEvent(ts);
+
+        // Tempo setup
+        Tempo tempo = new Tempo();
+        tempo.setBpm(mSession.getTempo());
+        mTempoTrack.insertEvent(tempo);
+
+        // Stop the recording to write the MIDI file instantly (to add chords, we will edit the MIDI file)
+        stopRecording();
+    }
+
+    /**
+     * Stops the recording process for this chord track
+     * @exception IllegalStateException if the recording process cannot be stopped
+     */
+    @Override
+    public void stopRecording() throws IllegalStateException {
+        if(!isRecording()){
+            throw new IllegalStateException("Cannot stop the recording process if there is no active recording process (start recording first)");
+        }
+        ArrayList<MidiTrack> tracks = new ArrayList<>();
+        tracks.add(mTempoTrack);
+        tracks.add(mNoteTrack);
+
+        // Write tracks to MIDI file
+        MidiFile midiFile = new MidiFile(RESOLUTION, tracks);
+        try {
+            midiFile.writeToFile(new File(mFilePath));
+        } catch(IOException e) {
+            System.err.println(e);
+        }
+        mRecording = false;
+        mSession.setChordsRecorded();
+    }
+
+    /**
+     * Adds a chord to this track at the given position
+     * @param chord The chord to add
+     * @param position The position in the track to add the chord (replaces the existing chord at this position)
+     */
+    public void addChord(Chord chord, int position){
+        if(chord == null){
+            throw new NullPointerException("Cannot add a null Chord to the chord track");
+        }
+        // Recording process is stopped right after it is started for a ChordTrack,
+        // so we check if the chord track has been recorded, and not if the recording process is active
+        if(!isRecorded()){
+            throw new IllegalStateException("Cannot add a chord to the track if the recording process has not been started");
+        }
+
+        // Read existing MIDI file
+        MidiFile midiFile = null;
+        File output = new File(mFilePath);
+        try {
+            midiFile = new MidiFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Add chord
+        if(position < mSession.mChords.size()){
+            // Add to the middle of the track
+            int startTick = RESOLUTION * 4 * position;
+            // Remove the old chord
+            Chord oldChord = decodeChord(mSession.mChords.get(position));
+            int[][] noteOnEvents = oldChord.getNoteEvents();
+            for(int i = 0; i < noteOnEvents.length; i++){
+                NoteOn event = new NoteOn(startTick + noteOnEvents[i][1], CHANNEL, noteOnEvents[i][0], noteOnEvents[i][2]);
+                midiFile.getTracks().get(1).removeNoteEvent(event);
+            }
+            // Add the new chord
+            noteOnEvents = chord.getNoteEvents();
+            for(int i = 0; i < noteOnEvents.length; i++){
+                NoteOn event = new NoteOn(startTick + noteOnEvents[i][1], CHANNEL, noteOnEvents[i][0], noteOnEvents[i][2]);
+                midiFile.getTracks().get(1).insertEvent(event);
+            }
+            mSession.mChords.set(position, encodeChord(chord));
+        } else {
+            // Add to the end of the track
+            int startTick = RESOLUTION * 4 * mSession.mChords.size();
+            int[][] noteOnEvents = chord.getNoteEvents();
+            for (int i = 0; i < noteOnEvents.length; i++) {
+                NoteOn event = new NoteOn(startTick + noteOnEvents[i][1], CHANNEL, noteOnEvents[i][0], noteOnEvents[i][2]);
+                midiFile.getTracks().get(1).insertEvent(event);
+            }
+            mSession.mChords.add(encodeChord(chord));
+        }
+
+        // Write changes to MIDI file
+        try {
+            midiFile.writeToFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    The string encoding for chords is defined as follows:
+	char 0-1: index of the root note of the chord in the Chord.RootNote enum (01 = C_SHARP)
+	char 2: index of the chord type in the Chord.Type enum (0 = MAJOR)
+	char 3: index of the chord inversion in the Chord.Inversion enum (0 = ROOT)
+	char 4: chord octave number
+	char 4: chord alteration number
+	*/
+
+    /**
+     * Encodes the given chord as a String
+     * @param chord The chord to encode
+     * @return The chord encoding
+     */
+    private String encodeChord(Chord chord){
+        return padNumber(chord.getRootNote().ordinal()) + chord.getType().ordinal()
+                + chord.getInversion().ordinal() + chord.getOctave() + chord.getAlteration();
+    }
+
+    /**
+     * Adds leading zeroes to the given number
+     * @param num The number to pad
+     * @return The padded number as a String
+     */
+    private String padNumber(int num){
+        if(num < 10) return "0" + num;
+        return "" + num;
+    }
+
+    /**
+     * Decodes the given chord encoding
+     * @param encodedChord The String encoding of a chord to decode
+     * @return The decoded chord
+     */
+    public Chord decodeChord(String encodedChord){
+        int rootIdx = removeLeadingZeroes(encodedChord.substring(0, 2));
+        int typeIdx = Character.getNumericValue(encodedChord.charAt(2));
+        int invIdx = Character.getNumericValue(encodedChord.charAt(3));
+        int octave = Character.getNumericValue(encodedChord.charAt(4));
+        int alteration = Character.getNumericValue(encodedChord.charAt(5));
+        Chord chord = new Chord(Chord.RootNote.values()[rootIdx], Chord.Type.values()[typeIdx], mSession.getTempo());
+        chord.setInversion(Chord.Inversion.values()[invIdx]);
+        while(chord.getOctave() < octave){
+            chord.octaveUp();
+        }
+        while(chord.getOctave() > octave){
+            chord.octaveDown();
+        }
+        chord.setAlteration(alteration);
+        return chord;
+    }
+
+    /**
+     * Removes any leading zeroes from the given String
+     * @param str The String to remove leading zeroes from
+     * @return The trimmed String as an Integer
+     */
+    private int removeLeadingZeroes(String str){
+        return Integer.parseInt(str.replaceFirst("^0+(?!$)", ""));
+    }
+
+    /**
+     * Plays back this chord track
+     * @exception IllegalStateException if the chord track cannot be played
+     */
+    @Override
+    public void play() throws IllegalStateException {
+        if(isRecording()){
+            throw new IllegalStateException("Cannot play the chord track when there is an active recording process (stop recording first)");
+        }
+        if(!isRecorded()){
+            throw new IllegalStateException("Cannot play the chord track if it has not been recorded yet (record it first)");
+        }
+        if(isPlaying()){
+            throw new IllegalStateException("Cannot play the chord track if it is already being played (stop playback first)");
+        }
+        MidiFile midiFile = null;
+        try {
+            midiFile = new MidiFile(new File(mFilePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mMidiProcessor = new MidiProcessor(midiFile);
+        mMidiProcessor.registerEventListener(mMidiEventHandler, NoteOn.class);
+        mMidiProcessor.start();
+    }
+
+    /**
+     * Stops playback of this chord track
+     * @exception IllegalStateException if the chord track cannot be stopped
+     */
+    @Override
+    public void stop() throws IllegalStateException {
+        if(isRecording()){
+            throw new IllegalStateException("Cannot stop the chord track when there is an active recording process (stop recording first)");
+        }
+        if(!isPlaying()){
+            throw new IllegalStateException("Cannot stop the chord track if it is not being played (start playback first)");
+        }
+        mMidiProcessor.reset();
+    }
+}
