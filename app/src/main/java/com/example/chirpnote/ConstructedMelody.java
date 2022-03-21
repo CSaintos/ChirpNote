@@ -18,7 +18,7 @@ public class ConstructedMelody extends Melody {
         THIRTY_SECOND_NOTE,
     }
     private HashMap<NoteDuration, Integer> mNoteDurations;
-    private final int CHANNEL = 1;
+    private final int CHANNEL = 2;
 
     /**
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
@@ -251,6 +251,11 @@ public class ConstructedMelody extends Melody {
      */
     private String encodeRest(NoteDuration duration, int tick){
         return "128" + "000" + getDurationIdx(duration) + tick;
+    }
+
+    @Override
+    public boolean isRecorded(){
+        return mSession.isConstructedMelodyRecorded();
     }
 
     @Override

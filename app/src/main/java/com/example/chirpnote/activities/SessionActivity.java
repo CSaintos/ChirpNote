@@ -64,7 +64,7 @@ public class SessionActivity extends AppCompatActivity {
             /** arraylist of all chords that belong to the current key based on the type of chord
              * it takes in the root note of the chord and type of chord
              */
-            keyChords.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i]));
+            keyChords.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i], session.getTempo()));
         }
 
 

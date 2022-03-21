@@ -2,7 +2,11 @@ package com.example.chirpnote;
 
 import android.widget.Button;
 
+import org.billthefarmer.mididriver.MidiConstants;
+import org.billthefarmer.mididriver.MidiDriver;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Chord {
     // Root note of the chord
@@ -64,37 +68,56 @@ public class Chord {
     private RootNote mRootNote;
     private int mRoot;
     private int mOctave;
+    private int mAlteration;
     private Inversion mInversion;
     private ArrayList<MusicNote> mNotes;
+    private ArrayList<int[]> mNoteEvents;
+    private boolean mPlaying;
+    private int mTempo;
+    private final int RESOLUTION = 960;
     private Button mButton;
+    private MidiDriver midiDriver = MidiDriver.getInstance();
+
+    // NoteOn events for playback of chord alterations
+    private ArrayList<int[]> alteration0Events = new ArrayList<>();
+    private ArrayList<int[]> alteration1Events = new ArrayList<>();
+    private ArrayList<int[]> alteration2Events = new ArrayList<>();
 
     /**
      * A chord
      * @param root The root note of this chord
      * @param chordType The type of chord this is
+     * @param tempo The tempo at which to play this chord
      */
-    public Chord(RootNote root, Type chordType){
+    public Chord(RootNote root, Type chordType, int tempo){
         mNotes = new ArrayList<>();
+        mNoteEvents = new ArrayList<>();
         mType = chordType;
         mRootNote = root;
         mRoot = root.getMidiNum();
         buildChord();
+        mTempo = tempo;
         mButton = null;
+        mPlaying = false;
     }
 
     /**
      * A chord that is played by a button on the UI
      * @param root The root note of this chord
      * @param chordType The type of chord this is
+     * @param tempo The tempo at which to play this chord
      * @param chordButton The button in the UI that should play this chord
      */
-    public Chord(RootNote root, Type chordType, Button chordButton){
+    public Chord(RootNote root, Type chordType, int tempo, Button chordButton){
         mNotes = new ArrayList<>();
+        mNoteEvents = new ArrayList<>();
         mType = chordType;
         mRootNote = root;
         mRoot = root.getMidiNum();
         buildChord();
+        mTempo = tempo;
         mButton = chordButton;
+        mPlaying = false;
     }
 
     /**
@@ -126,6 +149,39 @@ public class Chord {
         } else if(72 <= mRoot && mRoot < 84){
             mOctave = 5;
         }
+        mAlteration = 0;
+        // The NoteOn events to fire when playing the chord
+        // {note index in mNotes, MIDI tick of event, velocity of NoteOn (velocity of 0 for NoteOff)}
+        alteration0Events.add(new int[]{0, 0, MusicNote.VELOCITY});
+        alteration0Events.add(new int[]{1, 0, MusicNote.VELOCITY});
+        alteration0Events.add(new int[]{2, 0, MusicNote.VELOCITY});
+        alteration0Events.add(new int[]{0, RESOLUTION * 4, 0});
+        alteration0Events.add(new int[]{1, RESOLUTION * 4, 0});
+        alteration0Events.add(new int[]{2, RESOLUTION * 4, 0});
+
+        alteration1Events.add(new int[]{1, 0, MusicNote.VELOCITY});
+        alteration1Events.add(new int[]{2, 0, MusicNote.VELOCITY});
+        alteration1Events.add(new int[]{1, RESOLUTION, 0});
+        alteration1Events.add(new int[]{2, RESOLUTION, 0});
+        alteration1Events.add(new int[]{0, RESOLUTION, MusicNote.VELOCITY});
+        alteration1Events.add(new int[]{0, RESOLUTION * 2, 0});
+        alteration1Events.add(new int[]{1, RESOLUTION * 2, MusicNote.VELOCITY});
+        alteration1Events.add(new int[]{2, RESOLUTION * 2, MusicNote.VELOCITY});
+        alteration1Events.add(new int[]{1, RESOLUTION * 3, 0});
+        alteration1Events.add(new int[]{2, RESOLUTION * 3, 0});
+        alteration1Events.add(new int[]{0, RESOLUTION * 3, MusicNote.VELOCITY});
+        alteration1Events.add(new int[]{0, RESOLUTION * 4, 0});
+
+        alteration2Events.add(new int[]{0, 0, MusicNote.VELOCITY});
+        alteration2Events.add(new int[]{0, RESOLUTION, 0});
+        alteration2Events.add(new int[]{1, RESOLUTION, MusicNote.VELOCITY});
+        alteration2Events.add(new int[]{1, RESOLUTION * 2, 0});
+        alteration2Events.add(new int[]{2, RESOLUTION * 2, MusicNote.VELOCITY});
+        alteration2Events.add(new int[]{2, RESOLUTION * 3, 0});
+        alteration2Events.add(new int[]{1, RESOLUTION * 3, MusicNote.VELOCITY});
+        alteration2Events.add(new int[]{1, RESOLUTION * 4, 0});
+
+        mNoteEvents = alteration0Events;
     }
 
     /**
@@ -221,48 +277,120 @@ public class Chord {
 
     /**
      * Sets the inversion for this chord
-     * @param newInv The new inversion for this chord
+     * @param newInv The inversion to set this chord to
      */
     public void setInversion(Inversion newInv){
-        if(newInv == Inversion.ROOT){
-            if(mInversion == Inversion.FIRST){
-                mNotes.get(0).octaveDown();
-            } else if(mInversion == Inversion.SECOND){
-                mNotes.get(0).octaveDown();
-                mNotes.get(1).octaveDown();
-            }
-        } else if(newInv == Inversion.FIRST){
-            if(mInversion == Inversion.ROOT){
-                mNotes.get(0).octaveUp();
-            } else if(mInversion == Inversion.SECOND){
-                mNotes.get(1).octaveDown();
-            }
-        } else if(newInv == Inversion.SECOND){
-            if(mInversion == Inversion.ROOT){
-                mNotes.get(0).octaveUp();
-                mNotes.get(1).octaveUp();
-            } else if(mInversion == Inversion.FIRST){
-                mNotes.get(1).octaveUp();
-            }
+        ArrayList<MusicNote> temp = new ArrayList<>();
+        switch(newInv){
+            case ROOT:
+                if(mInversion == Inversion.FIRST){
+                    temp.add(mNotes.get(2));
+                    temp.add(mNotes.get(0));
+                    temp.add(mNotes.get(1));
+                    temp.get(0).octaveDown();
+                } else if(mInversion == Inversion.SECOND){
+                    temp.add(mNotes.get(1));
+                    temp.add(mNotes.get(2));
+                    temp.add(mNotes.get(0));
+                    temp.get(1).octaveDown();
+                    temp.get(2).octaveDown();
+                }
+                mNotes = temp;
+                mInversion = newInv;
+                break;
+            case FIRST:
+                if(mInversion == Inversion.ROOT){
+                    temp.add(mNotes.get(1));
+                    temp.add(mNotes.get(2));
+                    temp.add(mNotes.get(0));
+                    temp.get(2).octaveUp();
+                } else if(mInversion == Inversion.SECOND){
+                    temp.add(mNotes.get(2));
+                    temp.add(mNotes.get(0));
+                    temp.add(mNotes.get(1));
+                    temp.get(0).octaveDown();
+                }
+                mNotes = temp;
+                mInversion = newInv;
+                break;
+            case SECOND:
+                if(mInversion == Inversion.ROOT){
+                    temp.add(mNotes.get(2));
+                    temp.add(mNotes.get(0));
+                    temp.add(mNotes.get(1));
+                    temp.get(1).octaveUp();
+                    temp.get(2).octaveUp();
+                } else if(mInversion == Inversion.FIRST){
+                    temp.add(mNotes.get(1));
+                    temp.add(mNotes.get(2));
+                    temp.add(mNotes.get(0));
+                    temp.get(2).octaveUp();
+                }
+                mNotes = temp;
+                mInversion = newInv;
+                break;
         }
-        mInversion = newInv;
+    }
+
+    /**
+     * Sets the alteration for this chord
+     * @param alt The alteration number to set this chord to
+     */
+    public void setAlteration(int alt){
+        switch(alt){
+            case 1:
+                mNoteEvents = alteration1Events;
+                mAlteration = alt;
+                break;
+            case 2:
+                mNoteEvents = alteration2Events;
+                mAlteration = alt;
+                break;
+            default:
+                mNoteEvents = alteration0Events;
+                mAlteration = 0;
+        }
     }
 
     /**
      * Plays this chord
      */
     public void play(){
-        for(MusicNote note : mNotes){
-            note.play();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Iterator<int[]> it = mNoteEvents.iterator();
+                long start = System.currentTimeMillis();
+                mPlaying = true;
+                int[] noteEvent = it.next();
+                while(it.hasNext() && mPlaying){
+                    if(noteEvent[1] > getRelativeTick(start)){
+                        continue;
+                    }
+                    midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mNotes.get(noteEvent[0]).getNoteNumber(), (byte) noteEvent[2]});
+                    noteEvent = it.next();
+                }
+                // Handle the last note event
+                while(noteEvent[1] > getRelativeTick(start)){
+                    continue;
+                }
+                midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mNotes.get(noteEvent[0]).getNoteNumber(), (byte) noteEvent[2]});
+                mPlaying = false;
+            }
+        }).start();
+    }
+
+    private long getRelativeTick(long start){
+        return (System.currentTimeMillis() - start) * mTempo  * RESOLUTION / 60000;
     }
 
     /**
      * Stops this chord
      */
     public void stop(){
+        mPlaying = false;
         for(MusicNote note : mNotes){
-            note.stop();
+            midiDriver.write(new byte[]{MidiConstants.NOTE_OFF, (byte) note.getNoteNumber(), (byte) note.VELOCITY});
         }
     }
 

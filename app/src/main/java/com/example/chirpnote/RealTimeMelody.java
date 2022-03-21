@@ -5,7 +5,7 @@ import android.widget.Button;
 import com.example.midiFileLib.src.event.NoteOn;
 
 public class RealTimeMelody extends Melody {
-    private final int CHANNEL = 0;
+    private final int CHANNEL = 3;
     private long mRecordingStartTime;
 
     /**
@@ -72,6 +72,6 @@ public class RealTimeMelody extends Melody {
     }
 
     private long getCurrentTick(){
-        return (System.currentTimeMillis() - mRecordingStartTime) * super.getTempo()  * super.RESOLUTION / 60000;
+        return (System.currentTimeMillis() - mRecordingStartTime) * getTempo()  * RESOLUTION / 60000;
     }
 }
