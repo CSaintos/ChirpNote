@@ -23,7 +23,6 @@ abstract class Melody implements Track {
     private int mBPM;
     private MidiTrack mTempoTrack;
     protected MidiTrack mNoteTrack;
-    private File mOutput;
     protected String mFilePath;
 
     // For playback
@@ -138,9 +137,8 @@ abstract class Melody implements Track {
 
         // Write tracks to MIDI file
         MidiFile midiFile = new MidiFile(RESOLUTION, tracks);
-        mOutput = new File(mFilePath);
         try {
-            midiFile.writeToFile(mOutput);
+            midiFile.writeToFile(new File(mFilePath));
         } catch(IOException e) {
             System.err.println(e);
         }

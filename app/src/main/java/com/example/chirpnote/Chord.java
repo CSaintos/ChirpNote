@@ -149,9 +149,8 @@ public class Chord {
         } else if(72 <= mRoot && mRoot < 84){
             mOctave = 5;
         }
-        mAlteration = 0;
         // The NoteOn events to fire when playing the chord
-        // {note index in mNotes, MIDI tick of event, velocity of NoteOn (velocity of 0 for NoteOff)}
+        // [note index in mNotes, MIDI tick of event, velocity of NoteOn (velocity of 0 for NoteOff)]
         alteration0Events.add(new int[]{0, 0, MusicNote.VELOCITY});
         alteration0Events.add(new int[]{1, 0, MusicNote.VELOCITY});
         alteration0Events.add(new int[]{2, 0, MusicNote.VELOCITY});
@@ -181,6 +180,7 @@ public class Chord {
         alteration2Events.add(new int[]{1, RESOLUTION * 3, MusicNote.VELOCITY});
         alteration2Events.add(new int[]{1, RESOLUTION * 4, 0});
 
+        mAlteration = 0;
         mNoteEvents = alteration0Events;
     }
 
@@ -193,16 +193,24 @@ public class Chord {
     }
 
     /**
-     * Gets the root note of this chord
+     * Gets the MIDI number of the root note of this chord
      * @return The MIDI number of the root note
      */
-    public int getRoot(){
+    public int getRootNumber(){
         return mRoot;
     }
 
     /**
+     * Gets the root note of this chord
+     * @return The root note
+     */
+    public RootNote getRootNote(){
+        return mRootNote;
+    }
+
+    /**
      * Gets the octave this chord is at
-     * @return An integer representing the octave this chord is at.
+     * @return An int from 1-5 representing the octave this chord is at.
      * The octave is determined by the root note of the chord.
      * A chord in octave 1 has a root note in the range [C1, C2).
      * A chord in octave 5 has a root note in the range [C5, C6).
@@ -217,6 +225,14 @@ public class Chord {
      */
     public Inversion getInversion(){
         return mInversion;
+    }
+
+    /**
+     * Gets the alteration this chord is in
+     * @return The chord alteration
+     */
+    public int getAlteration(){
+        return mAlteration;
     }
 
     /**
@@ -241,6 +257,21 @@ public class Chord {
             notes[i] = mNotes.get(i);
         }
         return notes;
+    }
+
+    /**
+     * Gets the NoteOn events used to playback this chord
+     * @return An array of events, with each event in the following format:
+     *          [note number, MIDI tick, velocity]
+     */
+    public int[][] getNoteEvents(){
+        int[][] events = new int[mNoteEvents.size()][];
+        for(int i = 0; i < mNoteEvents.size(); i++){
+            int[] temp = mNoteEvents.get(i);
+            System.out.println(mNotes.size());
+            events[i] = new int[]{mNotes.get(temp[0]).getNoteNumber(), temp[1], temp[2]};
+        }
+        return events;
     }
 
     /**
@@ -288,14 +319,15 @@ public class Chord {
                     temp.add(mNotes.get(0));
                     temp.add(mNotes.get(1));
                     temp.get(0).octaveDown();
+                    mNotes = temp;
                 } else if(mInversion == Inversion.SECOND){
                     temp.add(mNotes.get(1));
                     temp.add(mNotes.get(2));
                     temp.add(mNotes.get(0));
                     temp.get(1).octaveDown();
                     temp.get(2).octaveDown();
+                    mNotes = temp;
                 }
-                mNotes = temp;
                 mInversion = newInv;
                 break;
             case FIRST:
@@ -304,13 +336,14 @@ public class Chord {
                     temp.add(mNotes.get(2));
                     temp.add(mNotes.get(0));
                     temp.get(2).octaveUp();
+                    mNotes = temp;
                 } else if(mInversion == Inversion.SECOND){
                     temp.add(mNotes.get(2));
                     temp.add(mNotes.get(0));
                     temp.add(mNotes.get(1));
                     temp.get(0).octaveDown();
+                    mNotes = temp;
                 }
-                mNotes = temp;
                 mInversion = newInv;
                 break;
             case SECOND:
@@ -320,13 +353,14 @@ public class Chord {
                     temp.add(mNotes.get(1));
                     temp.get(1).octaveUp();
                     temp.get(2).octaveUp();
+                    mNotes = temp;
                 } else if(mInversion == Inversion.FIRST){
                     temp.add(mNotes.get(1));
                     temp.add(mNotes.get(2));
                     temp.add(mNotes.get(0));
                     temp.get(2).octaveUp();
+                    mNotes = temp;
                 }
-                mNotes = temp;
                 mInversion = newInv;
                 break;
         }

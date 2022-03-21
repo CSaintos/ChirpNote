@@ -57,8 +57,9 @@ public class ConstructedMelody extends Melody {
 
         // Read existing MIDI file
         MidiFile midiFile = null;
+        File output = new File(mFilePath);
         try {
-            midiFile = new MidiFile(new File(mFilePath));
+            midiFile = new MidiFile(output);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -80,7 +81,7 @@ public class ConstructedMelody extends Melody {
 
         // Write changes to MIDI file
         try {
-            midiFile.writeToFile(new File(mFilePath));
+            midiFile.writeToFile(output);
         } catch (IOException e) {
             e.printStackTrace();
         }
