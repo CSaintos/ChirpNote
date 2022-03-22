@@ -330,7 +330,8 @@ public class MidiTrack
     }
 
     private boolean noteEventsEqual(NoteOn a, NoteOn b){
-        return a.getTick() == b.getTick() && a.getNoteValue() == b.getNoteValue() && a.getVelocity() == b.getVelocity();
+        return a.getTick() == b.getTick() && a.getChannel() == b.getChannel() &&
+                a.getNoteValue() == b.getNoteValue() && a.getVelocity() == b.getVelocity();
     }
 
     public void closeTrack()

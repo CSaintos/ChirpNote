@@ -1,13 +1,9 @@
 package com.example.chirpnote;
 
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnPreparedListener;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
-import com.example.midiFileLib.src.event.NoteOff;
 import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.event.meta.Tempo;
 import com.example.midiFileLib.src.event.meta.TimeSignature;
@@ -27,7 +23,6 @@ abstract class Melody implements Track {
     private int mBPM;
     private MidiTrack mTempoTrack;
     protected MidiTrack mNoteTrack;
-    private File mOutput;
     protected String mFilePath;
 
     // For playback
@@ -60,7 +55,6 @@ abstract class Melody implements Track {
      */
     public Melody(Session session, String filePath){
         mRecording = false;
-
         mSession = session;
         mFilePath = filePath;
     }
@@ -143,9 +137,8 @@ abstract class Melody implements Track {
 
         // Write tracks to MIDI file
         MidiFile midiFile = new MidiFile(RESOLUTION, tracks);
-        mOutput = new File(mFilePath);
         try {
-            midiFile.writeToFile(mOutput);
+            midiFile.writeToFile(new File(mFilePath));
         } catch(IOException e) {
             System.err.println(e);
         }

@@ -21,6 +21,7 @@ import android.widget.ToggleButton;
 
 import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.Chord;
+import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.ConstructedMelody.NoteDuration;
 import com.example.chirpnote.Key;
@@ -57,6 +58,8 @@ public class TestOtherActivity extends AppCompatActivity {
     private boolean constructingMelody = false;
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
+    // A chord track that is recorded (constructed) by adding chords one at a time
+    private ChordTrack chordTrack;
     // Which track was most recently recorded
     private Track lastTrack;
     // A Percussion object to play percussion tracks/beats
@@ -118,7 +121,7 @@ public class TestOtherActivity extends AppCompatActivity {
 
         String basePath = this.getFilesDir().getPath();
         Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
+                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
 
         // Real time melody
         realTimeMelody = new RealTimeMelody(session);
@@ -295,16 +298,21 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Testing playback for chords
         chords = new ArrayList<>();
-        chords.add(new Chord(Chord.RootNote.C, Chord.Type.MAJOR, (Button) findViewById(R.id.chordCButton)));
-        chords.add(new Chord(Chord.RootNote.D, Chord.Type.MINOR, (Button) findViewById(R.id.chordDmButton)));
-        /*Chord cMajor = new Chord(Chord.RootNote.C, Chord.Type.MAJOR, (Button) findViewById(R.id.chordCButton));
+        chords.add(new Chord(Chord.RootNote.C, Chord.Type.MAJOR, session.getTempo(), (Button) findViewById(R.id.chordCButton)));
+        chords.add(new Chord(Chord.RootNote.D, Chord.Type.MINOR, session.getTempo(), (Button) findViewById(R.id.chordDmButton)));
+        /*Chord cMajor = new Chord(Chord.RootNote.C, Chord.Type.MAJOR, session.getTempo(), (Button) findViewById(R.id.chordCButton));
         cMajor.octaveUp();
         cMajor.setInversion(Chord.Inversion.FIRST);
+        cMajor.setAlteration(2);
         chords.add(cMajor);
-        Chord dMinor = new Chord(Chord.RootNote.D, Chord.Type.MINOR, (Button) findViewById(R.id.chordDmButton));
+        Chord dMinor = new Chord(Chord.RootNote.D, Chord.Type.MINOR, session.getTempo(), (Button) findViewById(R.id.chordDmButton));
         dMinor.octaveDown();
         dMinor.setInversion(Chord.Inversion.SECOND);
+        dMinor.setAlteration(1);
         chords.add(dMinor);*/
+
+        chordTrack = new ChordTrack(session);
+        chordTrack.startRecording();
 
         // Setup event listener for each chord button
         for(Chord chord : chords){
@@ -313,6 +321,8 @@ public class TestOtherActivity extends AppCompatActivity {
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         chord.play();
+                        chordTrack.addChord(chord, session.mChords.size());
+                        lastTrack = chordTrack;
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         chord.stop();
                     }
@@ -338,7 +348,7 @@ public class TestOtherActivity extends AppCompatActivity {
             }
         });
         Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
-        rockPercussion = new PercussionTrack("rock", session, this, R.raw.rock_drums, rockMidiButton);
+        rockPercussion = new PercussionTrack(PercussionTrack.Style.ROCK, session, this, rockMidiButton);
         rockMidiButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

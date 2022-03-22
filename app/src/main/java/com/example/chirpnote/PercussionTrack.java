@@ -16,6 +16,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class PercussionTrack {
+    // Style of percussion
+    public enum Style {
+        POP("Pop", R.raw.pop_drums),
+        ROCK("Rock", R.raw.rock_drums);
+
+        private String string;
+        private int rawResource;
+
+        Style(String s, int r){
+            string = s;
+            rawResource = r;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+    }
     private String mFilePath;
 
     // For playback
@@ -24,16 +42,15 @@ public class PercussionTrack {
 
     /**
      * A Percussion track
-     * @param label A label for this Percussion track
+     * @param style The style of this percussion track
      * @param session The session to play this Percussion track on
      * @param context The context from the activity (pass "this")
-     * @param rawResource The MIDI file containing this Percussion track (eg. R.raw.rock_drums)
      */
-    public PercussionTrack(String label, Session session, Context context, int rawResource, Button playButton){
-        mMidiEventHandler = new MidiEventHandler(label, playButton);
+    public PercussionTrack(Style style, Session session, Context context, Button playButton){
+        mMidiEventHandler = new MidiEventHandler(style.toString(), playButton);
         try{
-            InputStream inputStream = context.getResources().openRawResource(rawResource);
-            File tempFile = File.createTempFile("temp", label);
+            InputStream inputStream = context.getApplicationContext().getResources().openRawResource(style.rawResource);
+            File tempFile = File.createTempFile("temp", style.toString());
             mFilePath = tempFile.getPath();
             copyFile(inputStream, new FileOutputStream(tempFile));
 

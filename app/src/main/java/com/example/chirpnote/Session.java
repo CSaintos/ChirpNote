@@ -9,17 +9,24 @@ public class Session implements Serializable {
     public final static int MIN_TEMPO = 20;
     public final static int MAX_TEMPO = 240;
 
+    // Resolution of MIDI tracks
+    public final int RESOLUTION = 960;
+
     private String mName;
     private Key mKey;
     private int mTempo;
+    private String mMidiPath;
     public List<String> mChords;
+    private String mChordsPath;
     private String mConstructedMelodyPath;
     private String mRealTimeMelodyPath;
     public List<String> mMelodyElements;
     public int mNextMelodyTick;
     private String mAudioPath;
+    private int mPercussionTrack;
 
     // States
+    private boolean mChordsRecorded;
     private boolean mConstructedMelodyRecorded;
     private boolean mRealTimeMelodyRecorded;
     private boolean mAudioRecorded;
@@ -45,11 +52,12 @@ public class Session implements Serializable {
      * @param name The name of this session
      * @param key The key of this session
      * @param tempo The tempo of this session
+     * @param chordsPath The file path to store the chords at
      * @param constructedMelodyPath The file path to store the constructed melody at
      * @param realTimeMelodyPath The file path to store the real time melody at
      * @param audioPath The file path to store the audio at
      */
-    public Session(String name, Key key, int tempo, String constructedMelodyPath, String realTimeMelodyPath, String audioPath){
+    public Session(String name, Key key, int tempo, String chordsPath, String constructedMelodyPath, String realTimeMelodyPath, String audioPath){
         mName = name;
         mKey = key;
         if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
@@ -58,6 +66,8 @@ public class Session implements Serializable {
             mTempo = 120;
         }
         mChords = new ArrayList<>();
+        mChordsPath = chordsPath;
+        mChordsRecorded = false;
         mConstructedMelodyPath = constructedMelodyPath;
         mRealTimeMelodyPath = realTimeMelodyPath;
         mConstructedMelodyRecorded = false;
@@ -66,6 +76,7 @@ public class Session implements Serializable {
         mNextMelodyTick = 0;
         mAudioPath = audioPath;
         mAudioRecorded = false;
+        mPercussionTrack = -1;
     }
 
     /**
@@ -93,6 +104,22 @@ public class Session implements Serializable {
     }
 
     /**
+     * Gets the file path where the MIDI tracks are stored
+     * @return The file path of the MIDI file for the chords, constructed melody, and real time melody
+     */
+    public String getMidiPath(){
+        return mMidiPath;
+    }
+
+    /**
+     * Gets the file path where the chords are stored
+     * @return The file path of the MIDI file for the chords
+     */
+    public String getChordsPath(){
+        return mChordsPath;
+    }
+
+    /**
      * Gets the file path where the constructed melody is stored
      * @return The file path of the MIDI file for the constructed melody
      */
@@ -117,6 +144,13 @@ public class Session implements Serializable {
     }
 
     /**
+     * Call after a chords has been recorded (inserted) for this session
+     */
+    public void setChordsRecorded(){
+        mChordsRecorded = true;
+    }
+
+    /**
      * Call after a constructed melody has been recorded for this session
      */
     public void setConstructedMelodyRecorded(){
@@ -135,6 +169,14 @@ public class Session implements Serializable {
      */
     public void setAudioRecorded(){
         mAudioRecorded = true;
+    }
+
+    /**
+     * Gets whether or not this session's chord track has been recorded
+     * @return True if the session's chord track has been recorded
+     */
+    public boolean areChordsRecorded(){
+        return mChordsRecorded;
     }
 
     /**
@@ -162,4 +204,12 @@ public class Session implements Serializable {
     }
 
     public void setKey(Key key) {mKey = key;}
+
+    /**
+     * Sets this session's percussion track
+     * @param percussion The percussion track this session is using
+     */
+    public void setPercussionTrack(PercussionTrack.Style percussion){
+        mPercussionTrack = percussion.ordinal();
+    }
 }
