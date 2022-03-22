@@ -44,7 +44,7 @@ public class MelodyActivity extends AppCompatActivity {
 
     private TextView[] staffLines;
     private RadioButton[] noteLengthButtons;
-    private MusicNote[] pianoKeys;
+    //private MusicNote[] pianoKeys;
     private Button backButton;
     private Button leftButton;
     private Button rightButton;
@@ -101,7 +101,7 @@ public class MelodyActivity extends AppCompatActivity {
         octDownButton = (Button) findViewById(R.id.melodyoctdownbutton);
 
         // Initialize the keyboard buttons
-        pianoKeys = new MusicNote[] {
+        /*pianoKeys = new MusicNote[] {
                 new MusicNote(60, (Button) findViewById(R.id.melodynoteCbutton)),
                 new MusicNote(61, (Button) findViewById(R.id.melodynoteCsharpbutton)),
                 new MusicNote(62, (Button) findViewById(R.id.melodynoteDbutton)),
@@ -114,7 +114,7 @@ public class MelodyActivity extends AppCompatActivity {
                 new MusicNote(69, (Button) findViewById(R.id.melodynoteAbutton)),
                 new MusicNote(70, (Button) findViewById(R.id.melodynoteAsharpbutton)),
                 new MusicNote(71, (Button) findViewById(R.id.melodynoteBbutton))
-        };
+        };*/
 
         pianoKeys2 = getPianoKeys();
         keyButtons = new ArrayList<>();
@@ -399,14 +399,14 @@ public class MelodyActivity extends AppCompatActivity {
 
         // Setup listeners for each piano key
         // Attaches each key to a specifc line on the staff
-        for (int i = 0; i < pianoKeys.length; i++) {
+        for (int i = 0; i < pianoKeys2.size(); i++) {
             int finalI = i;
 
-            pianoKeys[finalI].getButton().setOnTouchListener(new OnTouchListener(){
+            pianoKeys2.get(finalI).getButton().setOnTouchListener(new OnTouchListener(){
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        pianoKeys[finalI].play();
+                        pianoKeys2.get(finalI).play();
 
                         // FIXME this is still ugly
 
@@ -458,7 +458,7 @@ public class MelodyActivity extends AppCompatActivity {
                         displayText();
 
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        pianoKeys[finalI].stop();
+                        pianoKeys2.get(finalI).stop();
                     }
                     return true;
                 }
@@ -579,6 +579,7 @@ public class MelodyActivity extends AppCompatActivity {
 
     private void toConstructedMelody() {
         ConstructedMelody constructedMelody = new ConstructedMelody(session);
+        constructedMelody.startRecording();
         int position = 0;
 
         for (ListIterator<NoteFont> itr2 = noteList.listIterator(); itr2.hasNext();) {
@@ -593,8 +594,7 @@ public class MelodyActivity extends AppCompatActivity {
 
             position++;
         }
-        constructedMelody.startRecording();
-        constructedMelody.stopRecording();
+        //constructedMelody.stopRecording();
 
         constructedMelody.play();
     }
