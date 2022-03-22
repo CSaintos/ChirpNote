@@ -9,9 +9,13 @@ public class Session implements Serializable {
     public final static int MIN_TEMPO = 20;
     public final static int MAX_TEMPO = 240;
 
+    // Resolution of MIDI tracks
+    public final int RESOLUTION = 960;
+
     private String mName;
     private Key mKey;
     private int mTempo;
+    private String mMidiPath;
     public List<String> mChords;
     private String mChordsPath;
     private String mConstructedMelodyPath;
@@ -19,6 +23,7 @@ public class Session implements Serializable {
     public List<String> mMelodyElements;
     public int mNextMelodyTick;
     private String mAudioPath;
+    private int mPercussionTrack;
 
     // States
     private boolean mChordsRecorded;
@@ -71,6 +76,7 @@ public class Session implements Serializable {
         mNextMelodyTick = 0;
         mAudioPath = audioPath;
         mAudioRecorded = false;
+        mPercussionTrack = -1;
     }
 
     /**
@@ -95,6 +101,14 @@ public class Session implements Serializable {
      */
     public int getTempo(){
         return mTempo;
+    }
+
+    /**
+     * Gets the file path where the MIDI tracks are stored
+     * @return The file path of the MIDI file for the chords, constructed melody, and real time melody
+     */
+    public String getMidiPath(){
+        return mMidiPath;
     }
 
     /**
@@ -190,4 +204,12 @@ public class Session implements Serializable {
     }
 
     public void setKey(Key key) {mKey = key;}
+
+    /**
+     * Sets this session's percussion track
+     * @param percussion The percussion track this session is using
+     */
+    public void setPercussionTrack(PercussionTrack.Style percussion){
+        mPercussionTrack = percussion.ordinal();
+    }
 }
