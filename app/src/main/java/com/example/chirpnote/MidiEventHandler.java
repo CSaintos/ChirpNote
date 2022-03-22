@@ -14,16 +14,34 @@ import org.billthefarmer.mididriver.MidiDriver;
 
 public class MidiEventHandler implements MidiEventListener {
     private String mLabel;
+    private int mChannel;
     private Button mPlayButton;
     MidiDriver midiDriver = MidiDriver.getInstance();
 
+    /**
+     * Handles MIDI Events dispatched by the MIDI Processor
+     * @param label The identifying label for this handler
+     */
     public MidiEventHandler(String label){
         mLabel = label;
+        mChannel = -1;
+        mPlayButton = null;
+    }
+
+    /**
+     * Handles MIDI Events dispatched by the MIDI Processor
+     * @param label The identifying label for this handler
+     * @param channel The MIDI channel whose events should be handled
+     */
+    public MidiEventHandler(String label, int channel){
+        mLabel = label;
+        mChannel = channel;
         mPlayButton = null;
     }
 
     public MidiEventHandler(String label, Button playButton){
         mLabel = label;
+        mChannel = -1;
         mPlayButton = playButton;
     }
 
@@ -38,20 +56,58 @@ public class MidiEventHandler implements MidiEventListener {
 
     @Override
     public void onEvent(MidiEvent event){
-        if(event instanceof NoteOn){
-            NoteOn noteEvent = (NoteOn) event;
-            midiDriver.write(new byte[]{(byte) (MidiConstants.NOTE_ON + noteEvent.getChannel()),
-                    (byte) noteEvent.getNoteValue(), (byte) noteEvent.getVelocity()});
-        } else if(event instanceof NoteOff){
-            NoteOff noteEvent = (NoteOff) event;
-            midiDriver.write(new byte[]{(byte) (MidiConstants.NOTE_ON + noteEvent.getChannel()),
-                    (byte) noteEvent.getNoteValue(), (byte) 0});
+        if(mChannel == -1){
+            if(event instanceof NoteOn){
+                sendNoteOnEvent((NoteOn) event);
+            } else if(event instanceof NoteOff){
+                sendNoteOffEvent((NoteOff) event);
+            }
+        } else {
+            if (event instanceof NoteOn) {
+                NoteOn noteEvent = (NoteOn) event;
+                if(noteEvent.getChannel() == mChannel){
+                    sendNoteOnEvent(noteEvent);
+                }
+            } else if (event instanceof NoteOff) {
+                NoteOff noteEvent = (NoteOff) event;
+                if(noteEvent.getChannel() == mChannel){
+                    sendNoteOffEvent(noteEvent);
+                }
+            }
         }
+    }
+
+    /**
+     * Sends a NoteOn event to the MIDI driver
+     * @param event The event to send
+     */
+    private void sendNoteOnEvent(NoteOn event){
+        midiDriver.write(new byte[]{(byte) (MidiConstants.NOTE_ON + event.getChannel()),
+                (byte) event.getNoteValue(), (byte) event.getVelocity()});
+    }
+
+    /**
+     * Sends a NoteOff event to the MIDI driver
+     * @param event The event to send
+     */
+    private void sendNoteOffEvent(NoteOff event){
+        // NoteOn event with velocity of 0 is equivalent to a NoteOff event
+        midiDriver.write(new byte[]{(byte) (MidiConstants.NOTE_ON + event.getChannel()),
+                (byte) event.getNoteValue(), (byte) 0});
     }
 
     @Override
     public void onStop(boolean finished){
-        if(finished){
+        System.out.println(mLabel + " Finished!");
+        if(mPlayButton != null) {
+            new Handler(Looper.getMainLooper()).post(new Runnable(){
+                @Override
+                public void run() {
+                    mPlayButton.setText("Play");
+                }
+            });
+        }
+        /*if(finished){
             System.out.println(mLabel + " Finished!");
             if(mPlayButton != null) {
                 new Handler(Looper.getMainLooper()).post(new Runnable(){
@@ -63,6 +119,6 @@ public class MidiEventHandler implements MidiEventListener {
             }
         } else {
             System.out.println(mLabel + " paused");
-        }
+        }*/
     }
 }
