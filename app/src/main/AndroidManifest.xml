@@ -91,6 +91,9 @@
             android:name=".activities.SmartKeyboardActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.InsertChordsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.StartUpActivity"
             android:exported="true" >
             <intent-filter>

@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Song"
+        android:text="Verse"
         android:textSize="15sp"
         android:layout_margin="15dp"
         android:textColor="@color/black"></TextView>
@@ -24,6 +24,7 @@
         android:orientation="vertical"></LinearLayout>
 
     <Button
+        android:id="@+id/button_add_row"
         android:background="@drawable/round_blue"
         android:layout_width="70dp"
         android:layout_height="30dp"
@@ -35,6 +36,21 @@
         android:paddingRight="5dp"
         android:drawableLeft="@drawable/ic_add"
         android:layout_marginLeft="15dp"></Button>
+
+<!--    CONTINUE HERE https://youtu.be/DETCfQ_EOXo?t=108-->
+<!--    <Button-->
+<!--        android:id="@+id/button_add_row"-->
+<!--        android:background="@drawable/round_blue"-->
+<!--        android:layout_width="70dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:text="Row"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:paddingLeft="5dp"-->
+<!--        android:paddingRight="5dp"-->
+<!--        android:drawableLeft="@drawable/ic_add"-->
+<!--        android:layout_marginLeft="15dp"></Button>-->
 
 
 
