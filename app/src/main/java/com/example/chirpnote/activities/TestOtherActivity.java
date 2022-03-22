@@ -348,7 +348,7 @@ public class TestOtherActivity extends AppCompatActivity {
             }
         });
         Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
-        rockPercussion = new PercussionTrack("rock", session, this, R.raw.rock_drums, rockMidiButton);
+        rockPercussion = new PercussionTrack(PercussionTrack.Style.ROCK, session, this, rockMidiButton);
         rockMidiButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

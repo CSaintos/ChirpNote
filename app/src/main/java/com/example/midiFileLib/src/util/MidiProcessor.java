@@ -200,20 +200,20 @@ public class MidiProcessor
         {
             mMPQN = ((Tempo) event).getMpqn();
         }
-        else if(event.getClass().equals(TimeSignature.class))
+        /*else if(event.getClass().equals(TimeSignature.class))
         {
 
-            /*boolean shouldDispatch = mMetronome.getBeatNumber() != 1;
+            boolean shouldDispatch = mMetronome.getBeatNumber() != 1;
             mMetronome.setTimeSignature((TimeSignature) event);
 
             if(shouldDispatch)
             {
                 dispatch(mMetronome);
-            }*/
-        }
+            }
+        }*/
 
         this.sendOnEventForClass(event, event.getClass());
-        this.sendOnEventForClass(event, MidiEvent.class);
+        //this.sendOnEventForClass(event, MidiEvent.class);
     }
 
     private void sendOnEventForClass(MidiEvent event, Class<? extends MidiEvent> eventClass)

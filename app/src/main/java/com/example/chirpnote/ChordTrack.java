@@ -1,7 +1,5 @@
 package com.example.chirpnote;
 
-import android.widget.Button;
-
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
 import com.example.midiFileLib.src.event.NoteOn;
@@ -12,7 +10,6 @@ import com.example.midiFileLib.src.util.MidiProcessor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ChordTrack implements Track {
     // States
@@ -30,7 +27,6 @@ public class ChordTrack implements Track {
 
     private Session mSession;
     private final int CHANNEL = 1;
-    private HashMap<String, Chord.RootNote> noteEncodingMap;
 
     /**
      * A Chord track
@@ -41,20 +37,6 @@ public class ChordTrack implements Track {
         mSession = session;
         mFilePath = session.getChordsPath();
         mMidiEventHandler = new MidiEventHandler("ChordPlayback");
-
-        noteEncodingMap = new HashMap<>();
-        noteEncodingMap.put("Cn", Chord.RootNote.C);
-        noteEncodingMap.put("Cs", Chord.RootNote.C_SHARP);
-        noteEncodingMap.put("Dn", Chord.RootNote.D);
-        noteEncodingMap.put("Ds", Chord.RootNote.D_SHARP);
-        noteEncodingMap.put("En", Chord.RootNote.E);
-        noteEncodingMap.put("Fn", Chord.RootNote.F);
-        noteEncodingMap.put("Fs", Chord.RootNote.F_SHARP);
-        noteEncodingMap.put("Gn", Chord.RootNote.G);
-        noteEncodingMap.put("Gs", Chord.RootNote.G_SHARP);
-        noteEncodingMap.put("An", Chord.RootNote.A);
-        noteEncodingMap.put("As", Chord.RootNote.A_SHARP);
-        noteEncodingMap.put("Bn", Chord.RootNote.B);
     }
 
     /**
