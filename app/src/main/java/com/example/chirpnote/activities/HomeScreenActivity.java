@@ -30,6 +30,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         // create my button here, link it button in xml
         Button testSmartKeyboardButton = (Button) findViewById(R.id.testSmartKeyboardButton);
+        Button testInsertChordsButton = (Button) findViewById(R.id.testInsertChords);
 
 
         //new session button function
@@ -110,11 +111,19 @@ public class HomeScreenActivity extends AppCompatActivity {
             }
         });
 
-        // Button to Melody Activity (for testing)
+        // Button to Smart Keyboard (for testing)
         testSmartKeyboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeScreenActivity.this, SmartKeyboardActivity.class));
+            }
+        });
+
+        // Button to Insert Chords (for testing)
+        testInsertChordsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeScreenActivity.this, InsertChordsActivity.class));
             }
         });
 
