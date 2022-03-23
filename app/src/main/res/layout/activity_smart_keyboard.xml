@@ -94,6 +94,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <Spinner
+        android:id="@+id/spinner_key_name"
+        android:layout_width="165dp"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.972"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.185" />
+
+    <Spinner
+        android:id="@+id/spinner_key_type"
+        android:layout_width="165dp"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.306" />
+
     <Button
         android:id="@+id/recordButton"
         android:layout_width="118dp"
@@ -128,6 +151,10 @@
         app:layout_constraintHorizontal_bias="0.91"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/key5" />
+
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
