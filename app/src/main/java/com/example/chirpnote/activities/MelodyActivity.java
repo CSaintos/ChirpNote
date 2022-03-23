@@ -36,8 +36,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-//import com.example.chirpnote.Notation.Syntax;
-
 public class MelodyActivity extends AppCompatActivity {
 
     private Notation notation = new Notation();
