@@ -147,4 +147,9 @@
             android:layout_height="match_parent" />
     </TableLayout>
 
+    <RadioGroup
+        android:id="@+id/percussionChordGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
