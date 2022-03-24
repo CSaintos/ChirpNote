@@ -74,4 +74,48 @@ public class RealTimeMelody extends Melody {
     private long getCurrentTick(){
         return (System.currentTimeMillis() - mRecordingStartTime) * getTempo()  * RESOLUTION / 60000;
     }
+    
+    /**
+    * Quantize each note in this melody to the nearest sixteenth note
+    * @exception IllegalStateException if the melody cannot be quantized
+    */
+    public void quantize() throws IllegalStateException {
+        // Only quantize if melody is constructed using a session
+        if(mSession == null){
+            return;
+        }
+        if(!isRecorded()){
+            throw new IllegalStateException("Cannot quantize the melody if it has not been recorded yet (record it first)");
+        }
+        // Read existing MIDI file
+        MidiFile midiFile = null;
+        File output = new File(mFilePath);
+        try {
+            midiFile = new MidiFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // Quantize melody
+        /*
+        -Initialize HashMap to store how much a NoteOn event has shifted by, to be able to update the corresponding NoteOff event later
+        -Iterate through events in the midiFile
+            -Only look for NoteOn and NoteOff events (on this same CHANNEL)
+            -If we hit a NoteOn event
+                -Check if the event needs to be re-positioned (quantized), using some quantization technique/algorithm
+                    -If it does need to be re-positioned, do so by updating the tick and delta fields
+                    -Add to HashMap (map.put(noteNumber, amountChangedInTicks))
+            -If we hit a NoteOff event
+                -Get the delta for the corresponding NoteOn event from the HashMap (map.get(noteNumber))
+                -Update the NoteOff event by that delta (same process as for NoteOn)
+                -Remove this event from the HashMap
+        */
+        
+        // Write changes to MIDI file
+        try {
+            midiFile.writeToFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
