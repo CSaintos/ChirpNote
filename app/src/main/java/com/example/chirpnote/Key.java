@@ -38,6 +38,18 @@ public class Key implements Serializable {
             midiNum = num;
         }
 
+        public static RootNote returnRootNote(String str)
+        {
+            for (RootNote note : RootNote.values())
+            {
+                if (note.string.equals(str))
+                {
+                    return note;
+                }
+            }
+            return null;
+        }
+
         @Override
         public String toString(){
             return string;

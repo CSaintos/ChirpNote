@@ -70,7 +70,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 keyNameChoice = parent.getItemAtPosition(position).toString();
 //                Toast.makeText(getApplicationContext(), keyNameChoice, Toast.LENGTH_LONG).show();
-                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
+//                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -85,7 +85,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 keyTypeChoice = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -115,25 +115,21 @@ public class SmartKeyboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                // if button is pressed, the key changes back to the what it was when screen opened.
-                if (changeKeyButton.isSelected())
+                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
                 {
-                    changeKeyButton.setSelected(false);
-
-                    session.setKey(new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR));
-                    initializeKeys(session);
-
-                    eventListener(pianoKeys);
+                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
                 }
                 else
                 {
-                    changeKeyButton.setSelected(true);
+                    Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
+                    Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
 
-                    session.setKey(new Key(Key.RootNote.C, Key.Type.MAJOR));
+                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
+
+                    session.setKey(new Key(newRootNote, newKeyType));
                     initializeKeys(session);
-
-                    eventListener(pianoKeys);
                 }
+                eventListener(pianoKeys);
             }
         });
 
