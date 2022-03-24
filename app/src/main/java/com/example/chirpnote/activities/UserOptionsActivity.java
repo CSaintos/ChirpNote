@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.chirpnote.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class UserOptionsActivity extends AppCompatActivity {
 
@@ -20,7 +21,7 @@ public class UserOptionsActivity extends AppCompatActivity {
         Button changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
         Button changeUsernameButton = (Button) findViewById(R.id.changeUsernameButton);
         Button changeEmailButton = (Button) findViewById(R.id.changeEmailButton);
-        Button backButton1= (Button) findViewById(R.id.backButton1);
+        FloatingActionButton backButton1 = findViewById(R.id.backButton1);
 
         changeNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
