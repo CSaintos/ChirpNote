@@ -36,15 +36,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-//import com.example.chirpnote.Notation.Syntax;
-
 public class MelodyActivity extends AppCompatActivity {
 
     private Notation notation = new Notation();
 
     private TextView[] staffLines;
     private RadioButton[] noteLengthButtons;
-    //private MusicNote[] pianoKeys;
     private Button backButton;
     private Button leftButton;
     private Button rightButton;
@@ -78,6 +75,10 @@ public class MelodyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_melody);
 
+        // BRANDON
+        //ConstructedMelody consMelody2 = new ConstructedMelody(session);
+        //consMelody2.startRecording();
+        // BRANDON
         noteList = new LinkedList<>();
         itr = noteList.listIterator();
         midiDriver = MidiDriver.getInstance();
@@ -87,7 +88,11 @@ public class MelodyActivity extends AppCompatActivity {
         octNum = 4;
 
         // TODO: get session from Session Activity
-        session = new Session("Default", key, 140);
+        //session = new Session("Default", key, 140);
+
+        String basePath = this.getFilesDir().getPath();
+        session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
 
         // Initialize buttons
         backButton = (Button) findViewById(R.id.melodybackbutton);

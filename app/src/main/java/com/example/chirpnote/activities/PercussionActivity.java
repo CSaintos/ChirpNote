@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import com.example.chirpnote.R;
 
@@ -25,8 +27,11 @@ public class PercussionActivity extends AppCompatActivity {
 
     private ArrayList<ArrayList<RadioButton>> patternList;
     private ArrayList<RadioButton> styleList;
+    private ArrayList<TableRow> tableRows;
     private String[] styles;
 
+    private TableLayout tableLayout;
+    private RadioGroup chordGroup;
     private RadioGroup styleGroup;
     private RadioGroup patternGroup;
     private Button backButton;
@@ -42,18 +47,26 @@ public class PercussionActivity extends AppCompatActivity {
         // Initialize MIDI driver
         midiDriver = MidiDriver.getInstance();
 
+        tableRows = new ArrayList<>();
         patternList = new ArrayList<>();
         styleList = new ArrayList<>();
         styles = new String[]{"Pop", "Rock"};
 
+        chordGroup = findViewById(R.id.percussionChordGroup);
         styleGroup = findViewById(R.id.percussionStyleGroup);
         patternGroup = findViewById(R.id.percussionPatternGroup);
         backButton = (Button) findViewById(R.id.percussionbackbutton);
+        tableLayout = findViewById(R.id.percussionTableLayout);
+        for (int i = 0; i < tableLayout.getChildCount(); i++) {
+            tableRows.add((TableRow) tableLayout.getChildAt(i));
+        }
 
+        chordGroup.removeAllViews();
         styleGroup.removeAllViews();
         patternGroup.removeAllViews();
 
         initStyles();
+        displayChords();
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +137,34 @@ public class PercussionActivity extends AppCompatActivity {
 
         // Add radio button to radio group
         patternGroup.addView(rb);
+    }
+
+    void displayChords() {
+        int chordCount = 0;
+        for (TableRow row : tableRows) {
+            row.removeAllViews();
+            for (int i = 0; i < 4; i++) {
+                RadioButton rb = new RadioButton(this);
+                rb.setText(("Chord " + chordCount));
+                rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
+                rb.setBackground(getDrawable(R.drawable.radio_normal));
+
+                // Set chord radio button listener
+                rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
+                        if (isChecked) {
+                            cb.setBackground(getDrawable(R.drawable.radio_selected));
+                        } else {
+                            cb.setBackground(getDrawable(R.drawable.radio_normal));
+                        }
+                    }
+                });
+
+                //chordGroup.addView(rb);
+                row.addView(rb);
+            }
+        }
     }
 
     @Override
