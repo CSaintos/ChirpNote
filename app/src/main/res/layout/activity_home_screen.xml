@@ -19,16 +19,29 @@
         app:strokeColor="#FBFBFB" />
 
     <Button
-        android:id="@+id/musicTheoryButton"
+        android:id="@+id/userOpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="250dp"
         android:width="140dp"
         android:height="60dp"
-        android:text="Music Theory Info"
+        android:text="User Options"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/musicTheoryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="120dp"
+        android:width="140dp"
+        android:height="60dp"
+        android:text="Music Theory Info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView2"
@@ -47,7 +60,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:text="Home Screen"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +88,7 @@
         android:width="140dp"
         android:height="60dp"
         android:text="Load Session"
-        app:layout_constraintBottom_toTopOf="@+id/musicTheoryButton"
+        app:layout_constraintBottom_toTopOf="@+id/userOpButton"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
@@ -103,7 +116,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="139dp"
-        android:layout_marginTop="50dp"
         android:layout_marginEnd="134dp"
         android:text="test melody"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,15 +127,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="13dp"
         android:layout_marginEnd="21dp"
         android:layout_marginBottom="11dp"
         android:text="test percussion"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/testOtherButton"
-        app:layout_constraintHorizontal_bias="0.906"
         app:layout_constraintStart_toEndOf="@+id/testKeyboardButton"
-        app:layout_constraintTop_toBottomOf="@+id/testMelodyButton"
-        app:layout_constraintVertical_bias="0.247" />
+        app:layout_constraintTop_toBottomOf="@+id/testMelodyButton" />
 
     <Button
         android:id="@+id/testSmartKeyboardButton"
