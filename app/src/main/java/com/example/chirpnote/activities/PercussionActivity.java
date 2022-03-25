@@ -35,6 +35,8 @@ public class PercussionActivity extends AppCompatActivity {
     private RadioGroup styleGroup;
     private RadioGroup patternGroup;
     private Button backButton;
+    private Button leftButton;
+    private Button rightButton;
 
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
@@ -56,6 +58,8 @@ public class PercussionActivity extends AppCompatActivity {
         styleGroup = findViewById(R.id.percussionStyleGroup);
         patternGroup = findViewById(R.id.percussionPatternGroup);
         backButton = (Button) findViewById(R.id.percussionbackbutton);
+        leftButton = (Button) findViewById(R.id.percussionLeftButton);
+        rightButton = (Button) findViewById(R.id.percussionRightButton);
         tableLayout = findViewById(R.id.percussionTableLayout);
         for (int i = 0; i < tableLayout.getChildCount(); i++) {
             tableRows.add((TableRow) tableLayout.getChildAt(i));
@@ -66,13 +70,27 @@ public class PercussionActivity extends AppCompatActivity {
         patternGroup.removeAllViews();
 
         initStyles();
-        displayChords();
+        //displayChords();
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //startActivity(new Intent(PercussionActivity.this, SessionActivity.class));
                 startActivity(new Intent(PercussionActivity.this, HomeScreenActivity.class));
+            }
+        });
+
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -143,8 +161,9 @@ public class PercussionActivity extends AppCompatActivity {
         int chordCount = 0;
         for (TableRow row : tableRows) {
             row.removeAllViews();
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 3; i++) {
                 RadioButton rb = new RadioButton(this);
+                rb.setLayoutParams(row.getLayoutParams());
                 rb.setText(("Chord " + chordCount));
                 rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
                 rb.setBackground(getDrawable(R.drawable.radio_normal));
@@ -160,7 +179,7 @@ public class PercussionActivity extends AppCompatActivity {
                         }
                     }
                 });
-
+                chordCount++;
                 //chordGroup.addView(rb);
                 row.addView(rb);
             }
