@@ -15,10 +15,11 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="Theme.ChirpNote.NoActionBar">
+    <?comment
+    <style name="Theme.ChirpNote">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-    </style>
+    </style>?>
 
     <style name="Theme.ChirpNote.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
