@@ -124,10 +124,10 @@ public class SmartKeyboardActivity extends AppCompatActivity {
                     Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
                     Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
 
-                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
-
                     session.setKey(new Key(newRootNote, newKeyType));
                     initializeKeys(session);
+
+                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
                 }
                 eventListener(pianoKeys);
             }
