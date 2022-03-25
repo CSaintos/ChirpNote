@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp"
     android:orientation="vertical"
     tools:context=".activities.InsertChordsActivity">
 
@@ -37,19 +38,18 @@
         android:drawableLeft="@drawable/ic_add"
         android:layout_marginLeft="15dp"></Button>
 
-<!--    CONTINUE HERE https://youtu.be/DETCfQ_EOXo?t=108-->
 <!--    <Button-->
-<!--        android:id="@+id/button_add_row"-->
+<!--        android:id="@+id/button_submit_list"-->
 <!--        android:background="@drawable/round_blue"-->
-<!--        android:layout_width="70dp"-->
+<!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="30dp"-->
-<!--        android:text="Row"-->
+<!--        android:text="Submit List"-->
+<!--        android:layout_marginRight="15dp"-->
 <!--        android:layout_marginTop="10dp"-->
 <!--        android:textColor="@color/white"-->
 <!--        android:textAllCaps="false"-->
 <!--        android:paddingLeft="5dp"-->
 <!--        android:paddingRight="5dp"-->
-<!--        android:drawableLeft="@drawable/ic_add"-->
 <!--        android:layout_marginLeft="15dp"></Button>-->
 
 
