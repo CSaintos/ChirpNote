@@ -43,9 +43,9 @@ public class ConstructedMelody extends Melody {
      * @param duration The note duration
      * @param position The position in the melody to add the note (replaces existing notes/rests at this position)
      * @exception NullPointerException if the given note is null
-     * @exception IllegalStateException if the note cannot be added
+     * @exception IllegalStateException if the note cannot be added to the melody at this time
      */
-    public void addNote(MusicNote note, NoteDuration duration, int position) throws  NullPointerException, IllegalStateException {
+    public void addNote(MusicNote note, NoteDuration duration, int position) throws NullPointerException, IllegalStateException {
         if(note == null){
             throw new NullPointerException("Cannot add a null MusicNote to the melody");
         }
@@ -91,7 +91,7 @@ public class ConstructedMelody extends Melody {
      * Adds a rest to this melody with the given duration
      * @param duration The rest duration
      * @param position The position in the melody to add the rest (replaces existing notes/rests at this position)
-     * @exception IllegalStateException if the rest cannot be added
+     * @exception IllegalStateException if the rest cannot be added to the melody at this time
      */
     public void addRest(NoteDuration duration, int position) throws IllegalStateException {
         // Recording process is stopped right after it is started for a ConstructedMelody,

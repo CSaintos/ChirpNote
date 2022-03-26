@@ -115,7 +115,7 @@ public class PercussionTrack {
 
     /**
      * Plays this percussion track
-     * @exception IllegalStateException if the percussion track cannot be played
+     * @exception IllegalStateException if the percussion track cannot be played at this time
      */
     public void play() throws IllegalStateException {
         if(isPlaying()){
@@ -135,7 +135,7 @@ public class PercussionTrack {
 
     /**
      * Stops this percussion track
-     * @exception IllegalStateException if the percussion track cannot be stopped
+     * @exception IllegalStateException if the percussion track cannot be stopped at this time
      */
     public void stop() throws IllegalStateException {
         if(!isPlaying()){
