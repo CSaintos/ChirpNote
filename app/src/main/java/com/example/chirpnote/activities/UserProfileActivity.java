@@ -24,6 +24,9 @@ public class UserProfileActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
          /*
         TextView displayCurrentName = (TextView) findViewById(R.id.currentNameText);
         displayCurrentName.setText(name);

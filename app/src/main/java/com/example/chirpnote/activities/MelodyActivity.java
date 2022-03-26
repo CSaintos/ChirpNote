@@ -172,7 +172,7 @@ public class MelodyActivity extends AppCompatActivity {
             keyButtons.add(pianoKeys2.get(rootIdx));
         }
 
-        Button noteSuggestButton = findViewById(R.id.noteSuggestion);
+        //Button noteSuggestButton = findViewById(R.id.noteSuggestion);
         noteSuggestButton.setClickable(true);
 
         noteSuggestButton.setOnClickListener(new View.OnClickListener() {

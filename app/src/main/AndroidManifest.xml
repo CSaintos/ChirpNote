@@ -59,6 +59,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.UserProfileActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MusicTheoryInfoActivity"
@@ -81,6 +82,7 @@
         <activity
             android:name=".activities.KeyboardActivity"
             android:exported="false"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SetKeyFromSongActivity"
