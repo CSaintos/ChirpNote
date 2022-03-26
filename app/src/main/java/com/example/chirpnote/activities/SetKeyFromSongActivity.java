@@ -1,5 +1,6 @@
 package com.example.chirpnote.activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.KeyEvent;
@@ -72,13 +73,18 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                 searchButton.setText("Searching");
                 EditText query = (EditText) findViewById(R.id.editSongQuery);
                 String songQueryString = query.getText().toString();
+                ProgressDialog progressDialog = new ProgressDialog(SetKeyFromSongActivity.this);
+                progressDialog.setTitle("GetSongBPM Search");
+                progressDialog.setMessage("Searching...");
+                progressDialog.show();
                 //Thread for API Call
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            songArrayList.addAll(songData(songQueryString));
 
+                            songArrayList.addAll(songData(songQueryString));
+                            progressDialog.dismiss();
                             //update the ListView
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -91,6 +97,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                                     else {
                                         searchButton.setText("Click for New Search");
                                     }
+                                    progressDialog.dismiss();
                                 }
                             });
                         } catch (IOException e) {
