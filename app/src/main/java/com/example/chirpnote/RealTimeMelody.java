@@ -127,15 +127,15 @@ public class RealTimeMelody extends Melody {
         /*
         Logic for getting the values that are multiples of eight notes
          */
-        ArrayList<Long> valuesForEigths = new ArrayList<>();
+        ArrayList<Long> valuesForNoteType = new ArrayList<>();
         Long NOTETICK = (long) 960;
         Long valueToAdd = NOTETICK;
-        valuesForEigths.add(valueToAdd);
+        valuesForNoteType.add(valueToAdd);
         while (valueToAdd < track.getLengthInTicks()){
             valueToAdd = valueToAdd + NOTETICK;
-            valuesForEigths.add(valueToAdd);
+            valuesForNoteType.add(valueToAdd);
         }
-        System.out.println(valuesForEigths.toString());
+        System.out.println(valuesForNoteType.toString());
 
         Iterator<MidiEvent> it = track.getEvents().iterator();
         MidiEvent prev = null, next = it.hasNext() ? it.next() : null, curr;
@@ -161,15 +161,15 @@ public class RealTimeMelody extends Melody {
                         long value = 0;
                         long differenceValue = 0;
                         value = curr.getTick();
-                        for (int i = 0;i < valuesForEigths.size();i++){
-                            for (int j = 1;j < valuesForEigths.size();j++){
-                                if (valuesForEigths.get(j) != null){
-                                    if (value > valuesForEigths.get(i) && value < valuesForEigths.get(j)){
+                        for (int i = 0;i < valuesForNoteType.size();i++){
+                            for (int j = 1;j < valuesForNoteType.size();j++){
+                                if (valuesForNoteType.get(j) != null){
+                                    if (value > valuesForNoteType.get(i) && value < valuesForNoteType.get(j)){
                                         Long originalValue = value;
 //                                        System.out.println(curr.getTick());
-//                                        curr.setTick(valuesForEigths.get(i));
+//                                        curr.setTick(valuesForNoteType.get(i));
 //                                        System.out.println("new:" + curr.getTick());
-                                        differenceValue = valuesForEigths.get(i) - value;
+                                        differenceValue = valuesForNoteType.get(i) - value;
                                     }
                                 }
                                 else{
