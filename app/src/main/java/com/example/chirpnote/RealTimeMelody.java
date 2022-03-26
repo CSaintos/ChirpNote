@@ -85,7 +85,7 @@ public class RealTimeMelody extends Melody {
     
     /**
     * Quantize each note in this melody to the nearest sixteenth note
-    * @exception IllegalStateException if the melody cannot be quantized
+    * @exception IllegalStateException if the melody cannot be quantized at this time
     */
     public void quantize() throws IllegalStateException {
         // Only quantize if melody is constructed using a session
