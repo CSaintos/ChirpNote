@@ -109,6 +109,9 @@
         <activity
             android:name=".activities.RecordAudioActivity"
             android:exported="true" />
+        <activity android:name=".activities.DirectoryPopActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ChirpNote.PopUpDir"/>
         <service
             android:name=".activities.FloatingWindowService"
             />

@@ -291,6 +291,7 @@ public class TestOtherActivity extends AppCompatActivity {
         setKeyTestButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                realTimeMelody.quantize();
                 Intent intent = new Intent(TestOtherActivity.this, SetKeyFromSongActivity.class);
                 startActivity(intent);
             }

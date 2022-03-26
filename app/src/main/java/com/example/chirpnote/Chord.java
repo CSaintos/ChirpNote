@@ -268,7 +268,6 @@ public class Chord {
         int[][] events = new int[mNoteEvents.size()][];
         for(int i = 0; i < mNoteEvents.size(); i++){
             int[] temp = mNoteEvents.get(i);
-            System.out.println(mNotes.size());
             events[i] = new int[]{mNotes.get(temp[0]).getNoteNumber(), temp[1], temp[2]};
         }
         return events;

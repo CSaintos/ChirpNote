@@ -137,7 +137,7 @@ public class AudioTrack implements Track {
 
     /**
      * Starts the recording process for this audio track
-     * @exception IllegalStateException if the recording process cannot be started
+     * @exception IllegalStateException if the recording process cannot be started at this time
      */
     @Override
     public void startRecording() throws IllegalStateException {
@@ -165,7 +165,7 @@ public class AudioTrack implements Track {
 
     /**
      * Stops the recording process for this audio track
-     * @exception IllegalStateException if the recording process cannot be stopped
+     * @exception IllegalStateException if the recording process cannot be stopped at this time
      */
     @Override
     public void stopRecording() throws IllegalStateException {
@@ -182,7 +182,7 @@ public class AudioTrack implements Track {
 
     /**
      * Plays back this audio track
-     * @exception IllegalStateException if the audio track cannot be played
+     * @exception IllegalStateException if the audio track cannot be played at this time
      */
     @Override
     public void play() throws IllegalStateException {
@@ -214,7 +214,7 @@ public class AudioTrack implements Track {
 
     /**
      * Stops playback of this audio track
-     * @exception IllegalStateException if the audio track cannot be stopped
+     * @exception IllegalStateException if the audio track cannot be stopped at this time
      */
     @Override
     public void stop() throws IllegalStateException {

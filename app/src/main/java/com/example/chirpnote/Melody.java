@@ -95,7 +95,7 @@ abstract class Melody implements Track {
 
     /**
      * Starts the recording process for this MIDI melody
-     * @exception IllegalStateException if the recording process cannot be started
+     * @exception IllegalStateException if the recording process cannot be started at this time
      */
     @Override
     public void startRecording() throws IllegalStateException {
@@ -123,7 +123,7 @@ abstract class Melody implements Track {
 
     /**
      * Stops the recording process for this MIDI melody
-     * @exception IllegalStateException if the recording process cannot be stopped
+     * @exception IllegalStateException if the recording process cannot be stopped at this time
      */
     @Override
     public void stopRecording() throws IllegalStateException {
@@ -147,7 +147,7 @@ abstract class Melody implements Track {
 
     /**
      * Plays back this melody
-     * @exception IllegalStateException if the melody cannot be played
+     * @exception IllegalStateException if the melody cannot be played at this time
      */
     @Override
     public void play() throws IllegalStateException {
@@ -174,7 +174,7 @@ abstract class Melody implements Track {
 
     /**
      * Stops playback of this melody
-     * @exception IllegalStateException if the melody cannot be stopped
+     * @exception IllegalStateException if the melody cannot be stopped at this time
      */
     @Override
     public void stop() throws IllegalStateException {

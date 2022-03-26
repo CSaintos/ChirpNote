@@ -23,6 +23,10 @@ public abstract class MidiEvent implements Comparable<MidiEvent>
         return mTick;
     }
 
+    public void setTick(long tick){
+        mTick = tick;
+    }
+
     public long getDelta()
     {
         return mDelta.getValue();

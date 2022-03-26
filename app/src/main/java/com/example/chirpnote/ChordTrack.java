@@ -129,8 +129,10 @@ public class ChordTrack implements Track {
      * Adds a chord to this track at the given position
      * @param chord The chord to add
      * @param position The position in the track to add the chord (replaces the existing chord at this position)
+     * @exception NullPointerException if the given chord is null
+     * @exception IllegalStateException if the chord cannot be added to the track at this time
      */
-    public void addChord(Chord chord, int position){
+    public void addChord(Chord chord, int position) throws NullPointerException, IllegalStateException {
         if(chord == null){
             throw new NullPointerException("Cannot add a null Chord to the chord track");
         }
