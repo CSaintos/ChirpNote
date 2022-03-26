@@ -24,4 +24,8 @@
     <style name="Theme.ChirpNote.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.ChirpNote.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.ChirpNote.PopUpDir">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 </resources>
