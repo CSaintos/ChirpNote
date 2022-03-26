@@ -3,32 +3,34 @@ package com.example.chirpnote.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.example.chirpnote.BuildConfig;
 import com.example.chirpnote.R;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class DirectoryPopActivity extends Activity {
     ArrayList<String> dirAudioArrayList = new ArrayList<>();
     Context context = this;
-
+    MediaPlayer mMediaPlayer = new MediaPlayer();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +65,11 @@ public class DirectoryPopActivity extends Activity {
                                 return true;
                             case R.id.item_preview_audio:
                                 System.out.println(exportFile.getName());
+//                                try {
+//                                    previewAudio(exportFile);
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
                                 return true;
                             default:
                                 return false;
@@ -75,6 +82,11 @@ public class DirectoryPopActivity extends Activity {
         });
 
     }
+
+    private void previewAudio(File exportFile) throws IOException {
+        //method for previewing audio
+    }
+
     public void traverseAndAdd (File dir) {
         if (dir.exists()) {
             File[] files = dir.listFiles();
