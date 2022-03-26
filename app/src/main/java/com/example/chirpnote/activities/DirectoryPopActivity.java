@@ -1,15 +1,23 @@
 package com.example.chirpnote.activities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.chirpnote.BuildConfig;
 import com.example.chirpnote.R;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -17,6 +25,7 @@ import java.util.ArrayList;
 
 public class DirectoryPopActivity extends Activity {
     ArrayList<String> dirAudioArrayList = new ArrayList<>();
+    Context context = this;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +46,14 @@ public class DirectoryPopActivity extends Activity {
         adapter.notifyDataSetChanged();
         getWindow().setLayout((int)(width * 0.85),(int) (height * 0.85));
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                File exportFile = new File(dir + "/" + dirAudioArrayList.get(position));
+                shareFile(exportFile);
+            }
+        });
+
     }
     public void traverseAndAdd (File dir) {
         if (dir.exists()) {
@@ -53,6 +70,15 @@ public class DirectoryPopActivity extends Activity {
                 }
             }
         }
+    }
+    public void shareFile(File sharedFile){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        Uri audioURI = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+ ".provider",sharedFile);
+        intent.setType("*/*");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(Intent.EXTRA_STREAM,audioURI);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(Intent.createChooser(intent, "Share File:"));
     }
 
 
