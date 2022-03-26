@@ -3,10 +3,14 @@ package com.example.chirpnote;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
+import com.example.midiFileLib.src.MidiTrack;
+import com.example.midiFileLib.src.event.MidiEvent;
 import com.example.midiFileLib.src.event.NoteOn;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class RealTimeMelody extends Melody {
     private final int CHANNEL = 3;
@@ -102,19 +106,67 @@ public class RealTimeMelody extends Melody {
         
         // Quantize melody
         /*
-        -Initialize HashMap to store how much a NoteOn event has shifted by, to be able to update the corresponding NoteOff event later
+        NOTE: A NoteOn event with a velocity of 0 is used to turn off notes, instead of a NoteOff event
+        -Initialize HashMap to store how much a NoteOn event has shifted by, to be able to update the event that turns off this note later
         -Iterate through events in the midiFile
-            -Only look for NoteOn and NoteOff events (on this same CHANNEL)
-            -If we hit a NoteOn event
+            -Only look for NoteOn events on this same CHANNEL
+            -If we hit a NoteOn event with velocity 0 (used to turn off a note)
+                -Get the delta for the earlier NoteOn event from the HashMap (noteMap.get(noteNumber))
+                -Update the current event by that delta (by updating tick and delta fields)
+                -Remove the event from the HashMap
+            -If we hit a NoteOn event with any other velocity
                 -Check if the event needs to be re-positioned (quantized), using some quantization technique/algorithm
                     -If it does need to be re-positioned, do so by updating the tick and delta fields
                     -Add to HashMap (map.put(noteNumber, amountChangedInTicks))
-            -If we hit a NoteOff event
-                -Get the delta for the corresponding NoteOn event from the HashMap (map.get(noteNumber))
-                -Update the NoteOff event by that delta (same process as for NoteOn)
-                -Remove this event from the HashMap
         */
-        
+        HashMap<Integer, Integer> noteMap = new HashMap<>(); // {note MIDI number : amount shifted, in ticks (negative if shifted backwards)}
+        MidiTrack track = midiFile.getTracks().get(1);
+        Iterator<MidiEvent> it = track.getEvents().iterator();
+        MidiEvent prev = null, next = it.hasNext() ? it.next() : null, curr;
+        while(next != null){
+            curr = next;
+            next = it.hasNext() ? it.next() : null;
+            if(curr instanceof NoteOn) {
+                NoteOn noteEvent = (NoteOn) curr;
+                if(noteEvent.getChannel() == CHANNEL) {
+                    if(noteEvent.getVelocity() == 0 && noteMap.get(noteEvent.getNoteValue()) != null) {
+                        curr.setTick(curr.getTick() + noteMap.get(noteEvent.getNoteValue()));
+                        if(prev != null) {
+                            curr.setDelta(curr.getTick() - prev.getTick());
+                        } else {
+                            curr.setDelta(curr.getTick());
+                        }
+                        if(next != null){
+                            next.setDelta(next.getTick() - curr.getTick());
+                        }
+                        noteMap.remove(noteEvent.getNoteValue());
+                    } else {
+                        // TODO: Compute how much the event needs to be quantized (how many ticks to move it up or down)
+                        /*
+                        noteEvent is the current event you want to check
+                        To get the note MIDI number, noteEvent.getNoteValue()
+                        To get the tick the event happens at, noteEvent.getTick()
+                         */
+                        int tickDelta = RESOLUTION * 4;
+                        // ^set tickDelta to how much to move the current event by (negative int if it needs to be moved back)
+                        // Currently just moving everything forward by one measure (RESOLUTION is how many ticks per beat, 4 beats in one measure)
+                        if(tickDelta != 0) {
+                            curr.setTick(curr.getTick() + tickDelta);
+                            if(prev != null) {
+                                curr.setDelta(curr.getTick() - prev.getTick());
+                            } else {
+                                curr.setDelta(curr.getTick());
+                            }
+                            if(next != null){
+                                next.setDelta(next.getTick() - curr.getTick());
+                            }
+                            noteMap.put(noteEvent.getNoteValue(), tickDelta);
+                        }
+                    }
+                }
+            }
+            prev = curr;
+        }
         // Write changes to MIDI file
         try {
             midiFile.writeToFile(output);

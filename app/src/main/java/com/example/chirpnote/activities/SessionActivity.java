@@ -86,7 +86,6 @@ public class SessionActivity extends AppCompatActivity {
                         ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
                 melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)),
                         ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
-                melody.stopRecording();
                 generateMelodyButton.setText("Melody generated!");
                 session.setConstructedMelodyRecorded();
                 if(audio.isRecorded()){

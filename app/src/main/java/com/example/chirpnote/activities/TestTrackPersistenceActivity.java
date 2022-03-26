@@ -13,7 +13,12 @@ import com.example.chirpnote.R;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Session;
 
+import org.billthefarmer.mididriver.MidiConstants;
+import org.billthefarmer.mididriver.MidiDriver;
+import org.billthefarmer.mididriver.ReverbConstants;
+
 public class TestTrackPersistenceActivity extends AppCompatActivity {
+    MidiDriver midiDriver = MidiDriver.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,5 +69,23 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        midiDriver.start();
+        midiDriver.setReverb(ReverbConstants.OFF);
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 1, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 2, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 3, (byte) 0x07, (byte) 80});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) 127});
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        midiDriver.stop();
     }
 }
