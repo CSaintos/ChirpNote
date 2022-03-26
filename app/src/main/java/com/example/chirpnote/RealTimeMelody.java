@@ -1,5 +1,6 @@
 package com.example.chirpnote;
 
+import android.os.Environment;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
@@ -9,6 +10,7 @@ import com.example.midiFileLib.src.event.NoteOn;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -121,6 +123,20 @@ public class RealTimeMelody extends Melody {
         */
         HashMap<Integer, Integer> noteMap = new HashMap<>(); // {note MIDI number : amount shifted, in ticks (negative if shifted backwards)}
         MidiTrack track = midiFile.getTracks().get(1);
+
+        /*
+        Logic for getting the values that are multiples of eight notes
+         */
+        ArrayList<Long> valuesForEigths = new ArrayList<>();
+        Long NOTETICK = (long) 960;
+        Long valueToAdd = NOTETICK;
+        valuesForEigths.add(valueToAdd);
+        while (valueToAdd < track.getLengthInTicks()){
+            valueToAdd = valueToAdd + NOTETICK;
+            valuesForEigths.add(valueToAdd);
+        }
+        System.out.println(valuesForEigths.toString());
+
         Iterator<MidiEvent> it = track.getEvents().iterator();
         MidiEvent prev = null, next = it.hasNext() ? it.next() : null, curr;
         while(next != null){
@@ -142,12 +158,33 @@ public class RealTimeMelody extends Melody {
                         noteMap.remove(noteEvent.getNoteValue());
                     } else {
                         // TODO: Compute how much the event needs to be quantized (how many ticks to move it up or down)
+                        long value = 0;
+                        long differenceValue = 0;
+                        value = curr.getTick();
+                        for (int i = 0;i < valuesForEigths.size();i++){
+                            for (int j = 1;j < valuesForEigths.size();j++){
+                                if (valuesForEigths.get(j) != null){
+                                    if (value > valuesForEigths.get(i) && value < valuesForEigths.get(j)){
+                                        Long originalValue = value;
+//                                        System.out.println(curr.getTick());
+//                                        curr.setTick(valuesForEigths.get(i));
+//                                        System.out.println("new:" + curr.getTick());
+                                        differenceValue = valuesForEigths.get(i) - value;
+                                    }
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                        }
+
                         /*
                         noteEvent is the current event you want to check
                         To get the note MIDI number, noteEvent.getNoteValue()
                         To get the tick the event happens at, noteEvent.getTick()
                          */
                         int tickDelta = RESOLUTION * 4;
+                        tickDelta = (int) differenceValue;
                         // ^set tickDelta to how much to move the current event by (negative int if it needs to be moved back)
                         // Currently just moving everything forward by one measure (RESOLUTION is how many ticks per beat, 4 beats in one measure)
                         if(tickDelta != 0) {
