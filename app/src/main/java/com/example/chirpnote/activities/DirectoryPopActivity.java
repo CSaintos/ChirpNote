@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.chirpnote.BuildConfig;
@@ -50,7 +52,25 @@ public class DirectoryPopActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 File exportFile = new File(dir + "/" + dirAudioArrayList.get(position));
-                shareFile(exportFile);
+                PopupMenu popupMenu = new PopupMenu(context,view);
+                popupMenu.getMenuInflater().inflate(R.menu.audio_directory_popup_menu,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.item_share:
+                                shareFile(exportFile);
+                                return true;
+                            case R.id.item_preview_audio:
+                                System.out.println(exportFile.getName());
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
+
             }
         });
 
