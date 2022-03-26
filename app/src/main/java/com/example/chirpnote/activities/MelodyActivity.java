@@ -159,6 +159,44 @@ public class MelodyActivity extends AppCompatActivity {
             }
         });
 
+        pianoKeys2 = getPianoKeys();
+        keyButtons = new ArrayList<>();
+        currentKey = session.getKey(); // gets the key set when session was initialized
+        for (int i = 0; i < currentKey.getScaleNotes().length-1; i++)
+        {
+            // TODO: Think of a better way to do this
+            int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
+            /** arraylist of all chords that belong to the current key based on the type of chord
+             * it takes in the root note of the chord and type of chord
+             */
+            keyButtons.add(pianoKeys2.get(rootIdx));
+        }
+
+        //Button noteSuggestButton = findViewById(R.id.noteSuggestion);
+        noteSuggestButton.setClickable(true);
+
+        noteSuggestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (noteSuggestButton.isSelected())
+                {
+                    noteSuggestButton.setSelected(false);
+                    for (int i = 0; i < keyButtons.size(); i++)
+                    {
+                        keyButtons.get(i).getButton().setSelected(false);
+                    }
+                }
+                else
+                {
+                    noteSuggestButton.setSelected(true);
+                    for (int i = 0; i < keyButtons.size(); i++)
+                    {
+                        keyButtons.get(i).getButton().setSelected(true);
+                    }
+                }
+            }
+        });
+
         // Initialize text views
         melodyText = (TextView) findViewById(R.id.stafftextview);
         gclefText = (TextView) findViewById(R.id.gcleftextview);

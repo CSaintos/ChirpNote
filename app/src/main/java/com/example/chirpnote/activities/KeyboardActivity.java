@@ -49,6 +49,7 @@ public class KeyboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keyboard);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
