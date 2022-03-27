@@ -53,6 +53,7 @@ public class NewSessionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_session);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tempoInvalid = (TextView) findViewById(R.id.tempoInvalidText);
 

@@ -74,6 +74,7 @@ public class MelodyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_melody);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // BRANDON
         //ConstructedMelody consMelody2 = new ConstructedMelody(session);

@@ -27,6 +27,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_chords);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         layoutList = findViewById(R.id.layout_list);
         buttonAdd = findViewById(R.id.button_add_row);
