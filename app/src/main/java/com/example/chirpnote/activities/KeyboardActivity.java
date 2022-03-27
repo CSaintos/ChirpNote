@@ -141,10 +141,10 @@ public class KeyboardActivity extends AppCompatActivity {
                     {
                         // TODO: Think of a better way to do this
                         int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
-                        if (keyButtons.contains(pianoKeys.get(0)))
+                        if (keyButtons.contains(pianoKeys.get(0))) // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
                         {
 //
-                            keyButtons.add(pianoKeys.get(12)); // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
+                            keyButtons.add(pianoKeys.get(12));
                         }
                         /** arraylist of all chords that belong to the current key based on the type of chord
                          * it takes in the root note of the chord and type of chord
