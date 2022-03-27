@@ -7,30 +7,63 @@
     tools:context=".activities.KeyboardActivity">
 
     <Button
-        android:id="@+id/buttonMinimize"
-        android:layout_width="143dp"
+        android:id="@+id/changeKeyButton"
+        android:layout_width="120dp"
         android:layout_height="53dp"
+        android:text="change Key"
+        app:layout_constraintBottom_toTopOf="@+id/noteFSharp4Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.728"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/noteDSharp4Button" />
+
+    <Spinner
+        android:id="@+id/spinner_key_name"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.582"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button"
+        app:layout_constraintVertical_bias="0.148" />
+
+    <Spinner
+        android:id="@+id/spinner_key_type"
+        android:layout_width="87dp"
+        android:layout_height="59dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.895"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button"
+        app:layout_constraintVertical_bias="0.147" />
+
+    <Button
+        android:id="@+id/buttonMinimize"
+        android:layout_width="83dp"
+        android:layout_height="49dp"
         android:layout_marginTop="24dp"
+        android:backgroundTint="@color/purple_500"
         android:text="MINIMIZE"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.813"
+        app:layout_constraintHorizontal_bias="0.57"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:backgroundTint="@color/purple_500"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/noteSuggestion"
-        android:layout_width="143dp"
+        android:layout_width="86dp"
         android:layout_height="53dp"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="24dp"
         android:background="@color/purple_500"
-        android:text="Note Suggestion"
+        android:text="Note\nSuggestion"
         android:textColor="@android:color/white"
         android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.764"
+        app:layout_constraintHorizontal_bias="0.895"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -200,27 +233,27 @@
         app:layout_constraintTop_toBottomOf="@+id/noteG4Button"
         app:layout_constraintVertical_bias="0.608" />
 
-    <Button
-        android:id="@+id/recordButton"
-        android:layout_width="118dp"
-        android:layout_height="48dp"
-        android:text="Rec"
-        app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.641"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noteB4Button"
-        app:layout_constraintVertical_bias="1.0" />
+<!--    <Button-->
+<!--        android:id="@+id/recordButton"-->
+<!--        android:layout_width="118dp"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:text="Rec"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.634"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/noteB4Button"-->
+<!--        app:layout_constraintVertical_bias="1.0" />-->
 
-    <Button
-        android:id="@+id/playButton"
-        android:layout_width="79dp"
-        android:layout_height="46dp"
-        android:text="Play"
-        app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.951"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/noteC5Button"
-        app:layout_constraintVertical_bias="1.0" />
+<!--    <Button-->
+<!--        android:id="@+id/playButton"-->
+<!--        android:layout_width="79dp"-->
+<!--        android:layout_height="46dp"-->
+<!--        android:text="Play"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.951"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/noteC5Button"-->
+<!--        app:layout_constraintVertical_bias="1.0" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

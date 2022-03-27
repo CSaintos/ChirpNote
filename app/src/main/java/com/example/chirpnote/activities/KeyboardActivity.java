@@ -11,9 +11,12 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +31,7 @@ import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class KeyboardActivity extends AppCompatActivity {
 
@@ -44,17 +48,25 @@ public class KeyboardActivity extends AppCompatActivity {
     private Button minimizeBtn;
     private AlertDialog dialog;
 
+    List<String> keyTypeList = new ArrayList<>();
+    List<String> keyNameList = new ArrayList<>();
+    String keyNameChoice;
+    String keyTypeChoice;
+
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keyboard);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
         Session session = new Session("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
 
+        initializeKeyNameList(session);
+        initializeKeyTypeList(session);
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
         Button playButton = (Button) findViewById(R.id.playButton);
@@ -68,24 +80,84 @@ public class KeyboardActivity extends AppCompatActivity {
         pianoKeys = getPianoKeys();
 
         keyButtons = new ArrayList<>();
-        currentKey = session.getKey(); // gets the key set when session was initialized
-        for (int i = 0; i < currentKey.getScaleNotes().length; i++)
-        {
-            // TODO: Think of a better way to do this
-            int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
-            if (keyButtons.contains(pianoKeys.get(0)))
-            {
-                keyButtons.add(pianoKeys.get(12)); // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
+
+
+        // set user input key name and type to new key in session
+        Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
+        ArrayAdapter keyNameAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyNameList);
+        keyNameSpinner.setAdapter(keyNameAdapter);
+        keyNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                keyNameChoice = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(getApplicationContext(), keyNameChoice, Toast.LENGTH_LONG).show();
+//                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
             }
-            /** arraylist of all chords that belong to the current key based on the type of chord
-             * it takes in the root note of the chord and type of chord
-             */
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        Spinner keyTypeSpinner = findViewById(R.id.spinner_key_type);
+        ArrayAdapter keyTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyTypeList);
+        keyTypeSpinner.setAdapter(keyTypeAdapter);
+        keyTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                keyTypeChoice = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        /** Allows the user to switch between keys whenever they want */
+        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
+        changeKeyButton.setClickable(true);
+
+        changeKeyButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
+                {
+                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
+                    Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
+
+                    session.setKey(new Key(newRootNote, newKeyType));
+//                    initializeKeys(session);
+                    keyButtons = new ArrayList<>();
+                    currentKey = session.getKey(); // gets the key set when session was initialized
+                    for (int i = 0; i < currentKey.getScaleNotes().length; i++)
+                    {
+                        // TODO: Think of a better way to do this
+                        int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
+                        if (keyButtons.contains(pianoKeys.get(0)))
+                        {
+//
+                            keyButtons.add(pianoKeys.get(12)); // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
+                        }
+                        /** arraylist of all chords that belong to the current key based on the type of chord
+                         * it takes in the root note of the chord and type of chord
+                         */
 //            keyButtons.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i]));
-            keyButtons.add(pianoKeys.get(rootIdx));
-        }
+                        keyButtons.add(pianoKeys.get(rootIdx));
+                    }
 
-
-
+                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
+                }
+//                eventListener(pianoKeys);
+            }
+        });
 
 
         Button noteSuggestButton = findViewById(R.id.noteSuggestion);
@@ -149,33 +221,33 @@ public class KeyboardActivity extends AppCompatActivity {
             }
         });
 
-        // Event listener for record button (to record melody)
-        recordButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!melody.isRecording()){
-                    recordButton.setText("End recording");
-                    melody.startRecording();
-                } else {
-                    recordButton.setText("Record");
-                    melody.stopRecording();
-                }
-            }
-        });
+//        // Event listener for record button (to record melody)
+//        recordButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(!melody.isRecording()){
+//                    recordButton.setText("End recording");
+//                    melody.startRecording();
+//                } else {
+//                    recordButton.setText("Record");
+//                    melody.stopRecording();
+//                }
+//            }
+//        });
 
         // Event listener for play button (to play recorded melody)
-        playButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!melody.isPlaying()){
-                    playButton.setText("Stop");
-                    melody.play();
-                } else {
-                    playButton.setText("Play");
-                    melody.stop();
-                }
-            }
-        });
+//        playButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(!melody.isPlaying()){
+//                    playButton.setText("Stop");
+//                    melody.play();
+//                } else {
+//                    playButton.setText("Play");
+//                    melody.stop();
+//                }
+//            }
+//        });
 
         // Setup event listener for each piano key
         for(MusicNote note : pianoKeys){
@@ -327,6 +399,24 @@ public class KeyboardActivity extends AppCompatActivity {
         } else {
             return true;
         }
+    }
+
+    private void initializeKeyNameList(Session session)
+    {
+        keyNameList.add("Key Name");
+        for (int i = 0; i < Key.RootNote.values().length; i++)
+        {
+            //System.out.println("===============PASS===================");
+            keyNameList.add(Key.RootNote.values()[i].toString());
+            //System.out.println(temp.get(i));
+        }
+    }
+
+    private void initializeKeyTypeList(Session session)
+    {
+        keyTypeList.add("Key Type");
+        keyTypeList.add("Major");
+        keyTypeList.add("Minor");
     }
 
     @Override
