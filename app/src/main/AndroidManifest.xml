@@ -53,9 +53,11 @@
             android:exported="false" />
         <activity
             android:name=".activities.TestOtherActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="true" />
         <activity
             android:name=".activities.PercussionActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.UserProfileActivity"
@@ -69,15 +71,18 @@
             android:exported="false" />
         <activity
             android:name=".activities.LoadSessionActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.NewSessionActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MelodyActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.KeyboardActivity"
@@ -89,9 +94,11 @@
             android:exported="true" />
         <activity
             android:name=".activities.SmartKeyboardActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.InsertChordsActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.StartUpActivity"

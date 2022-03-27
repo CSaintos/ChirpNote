@@ -91,6 +91,7 @@ public class TestOtherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_other);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initialize MIDI driver
         midiDriver = MidiDriver.getInstance();

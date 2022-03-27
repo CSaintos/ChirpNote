@@ -1,6 +1,7 @@
 package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.transition.FragmentTransitionSupport;
 
 import android.os.Bundle;
 
@@ -12,5 +13,6 @@ public class LoadSessionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_session);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

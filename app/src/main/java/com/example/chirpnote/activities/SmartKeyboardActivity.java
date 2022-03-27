@@ -44,6 +44,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_keyboard);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Session session = new Session("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
 
