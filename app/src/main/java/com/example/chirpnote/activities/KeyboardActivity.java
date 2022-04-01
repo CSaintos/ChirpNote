@@ -42,16 +42,17 @@ public class KeyboardActivity extends AppCompatActivity {
     private ArrayList<MusicNote> sharpKeys;
     private ArrayList<MusicNote> flatKeys;
     RealTimeMelody melody;
-    private Key currentKey;
+
     private ArrayList<MusicNote> keyButtons;
 
     private Button minimizeBtn;
     private AlertDialog dialog;
 
-    List<String> keyTypeList = new ArrayList<>();
-    List<String> keyNameList = new ArrayList<>();
-    String keyNameChoice;
-    String keyTypeChoice;
+    private List<String> keyTypeList = new ArrayList<>();
+    private List<String> keyNameList = new ArrayList<>();
+    private String keyNameChoice;
+    private String keyTypeChoice;
+    private Key currentKey;
 
     @SuppressLint("ResourceType")
     @Override

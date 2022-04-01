@@ -11,6 +11,7 @@
         android:id="@+id/measure1"
         android:layout_width="50dp"
         android:layout_height="40dp"
+        android:textAllCaps="false"
         android:layout_marginLeft="70dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/round_grey"
@@ -20,6 +21,7 @@
         android:id="@+id/measure2"
         android:layout_width="50dp"
         android:layout_height="40dp"
+        android:textAllCaps="false"
         android:layout_marginRight="15dp"
         android:background="@drawable/round_grey"
         ></Button>
@@ -28,6 +30,7 @@
         android:id="@+id/measure3"
         android:layout_width="50dp"
         android:layout_height="40dp"
+        android:textAllCaps="false"
         android:layout_marginRight="15dp"
         android:background="@drawable/round_grey"
         ></Button>
@@ -36,6 +39,7 @@
         android:id="@+id/measure4"
         android:layout_width="50dp"
         android:layout_height="40dp"
+        android:textAllCaps="false"
         android:layout_marginRight="15dp"
         android:background="@drawable/round_grey"
         ></Button>

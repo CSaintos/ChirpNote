@@ -8,22 +8,16 @@ public class Key implements Serializable {
     public enum RootNote {
         C("C", 60),
         C_SHARP("C#", 61),
-//        D_FLAT("Db", 61),
         D("D", 62),
         D_SHARP("D#", 63),
-//        E_FLAT("Eb", 63),
         E("E", 64),
         F("F", 65),
         F_SHARP("F#", 66),
-//        G_FLAT("Gb", 66),
         G("G", 67),
         G_SHARP("G#", 68),
-//        A_FLAT("Ab", 68),
         A("A", 69),
         A_SHARP("A#", 70),
-//        B_FLAT("Bb", 70),
         B("B", 71);
-//        C_FLAT("Cb", 71);
 
         private String string;
         private int midiNum;
@@ -83,6 +77,7 @@ public class Key implements Serializable {
     private Type mType;
     private int[] mSteps;
     private Chord.Type[] mChordTypes;
+    private String[] mRomanType;
 
     /**
      * A Key
@@ -96,6 +91,7 @@ public class Key implements Serializable {
             mSteps = new int[]{0, 2, 2, 1, 2, 2, 2, 1};
             mChordTypes = new Chord.Type[]{Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.MINOR,
                     Chord.Type.MAJOR, Chord.Type.MAJOR, Chord.Type.MINOR, Chord.Type.DIMINISHED, Chord.Type.MAJOR};
+            mRomanType = new String[]{"I","ii","iii","IV","V","vi","vii*"};
         } else {
             if(type == Type.NATURAL_MINOR){
                 mSteps = new int[]{0, 2, 1, 2, 2, 1, 2, 2};
@@ -104,6 +100,7 @@ public class Key implements Serializable {
             }
             mChordTypes = new Chord.Type[]{Chord.Type.MINOR, Chord.Type.DIMINISHED, Chord.Type.MAJOR,
                     Chord.Type.MINOR, Chord.Type.MAJOR, Chord.Type.MAJOR, Chord.Type.DIMINISHED, Chord.Type.MINOR};
+            mRomanType = new String[]{"i","ii*","III","iv","V","VI","vii*"};
         }
     }
 
@@ -153,6 +150,8 @@ public class Key implements Serializable {
     public Chord.Type[] getChordTypes(){
         return mChordTypes;
     }
+
+    public String[] getRomanTypes() { return mRomanType; }
 
 //    public int[] getNoteIndex()
 
