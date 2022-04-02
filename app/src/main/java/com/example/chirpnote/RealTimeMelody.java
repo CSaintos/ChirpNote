@@ -86,10 +86,11 @@ public class RealTimeMelody extends Melody {
     }
     
     /**
-    * Quantize each note in this melody to the nearest sixteenth note
+    * Quantize each note in this melody to the nearest note based on user selection. 4/8/16
+    * @param notetick the notetick value selected to quantize
     * @exception IllegalStateException if the melody cannot be quantized at this time
     */
-    public void quantize() throws IllegalStateException {
+    public void quantize(Long notetick) throws IllegalStateException {
         // Only quantize if melody is constructed using a session
         if(mSession == null){
             return;
@@ -128,11 +129,10 @@ public class RealTimeMelody extends Melody {
         Logic for getting the values that are multiples of eight notes
          */
         ArrayList<Long> valuesForNoteType = new ArrayList<>();
-        Long NOTETICK = (long) 960;
-        Long valueToAdd = NOTETICK;
+        Long valueToAdd = notetick;
         valuesForNoteType.add(valueToAdd);
         while (valueToAdd < track.getLengthInTicks()){
-            valueToAdd = valueToAdd + NOTETICK;
+            valueToAdd = valueToAdd + notetick;
             valuesForNoteType.add(valueToAdd);
         }
         System.out.println(valuesForNoteType.toString());
