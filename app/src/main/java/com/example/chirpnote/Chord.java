@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Chord {
+
+
     // Root note of the chord
     public enum RootNote {
         C("C", 48),
@@ -82,6 +84,15 @@ public class Chord {
     private ArrayList<int[]> alteration0Events = new ArrayList<>();
     private ArrayList<int[]> alteration1Events = new ArrayList<>();
     private ArrayList<int[]> alteration2Events = new ArrayList<>();
+
+    public Chord()
+    {
+
+    }
+
+    public Chord(Button viewById) {
+        this.mButton = viewById;
+    }
 
     /**
      * A chord
@@ -268,7 +279,6 @@ public class Chord {
         int[][] events = new int[mNoteEvents.size()][];
         for(int i = 0; i < mNoteEvents.size(); i++){
             int[] temp = mNoteEvents.get(i);
-            System.out.println(mNotes.size());
             events[i] = new int[]{mNotes.get(temp[0]).getNoteNumber(), temp[1], temp[2]};
         }
         return events;
@@ -280,6 +290,11 @@ public class Chord {
      */
     public Button getButton(){
         return mButton;
+    }
+
+    public void setButton(Button button)
+    {
+        this.mButton = button;
     }
 
     /**

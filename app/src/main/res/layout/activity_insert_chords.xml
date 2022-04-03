@@ -11,18 +11,147 @@
 
 
     <TextView
+        android:id="@+id/ActivityTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Session Editing"
+        android:textSize="20dp"
+        android:layout_marginTop="30dp"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/ChordSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Session Chords"
+        android:textSize="15dp"
+        android:layout_marginTop="30dp"
+        android:textAlignment="center"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <Button
+            android:id="@+id/roman1"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_grey"
+            android:text="I"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.116"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.49"></Button>
+
+        <Button
+            android:id="@+id/roman3"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_grey"
+            android:text="iii"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.36"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.145"></Button>
+
+        <Button
+            android:id="@+id/roman6"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_grey"
+            android:text="vi"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.36"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.854"></Button>
+
+        <Button
+            android:id="@+id/roman2"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_grey"
+            android:text="ii"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.603"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.854"></Button>
+
+        <Button
+            android:id="@+id/roman4"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_grey"
+            android:text="IV"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.603"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.145"></Button>
+
+        <Button
+            android:id="@+id/roman7"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_grey"
+            android:text="vii*"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.847"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.854"></Button>
+
+        <Button
+            android:id="@+id/roman5"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_grey"
+            android:text="V"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.847"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.145"></Button>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Verse"
+        android:text="Song"
         android:textSize="15sp"
         android:layout_margin="15dp"
         android:textColor="@color/black"></TextView>
 
-    <LinearLayout
-        android:id="@+id/layout_list"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+        android:layout_height="200dp">
+
+        <LinearLayout
+            android:id="@+id/layout_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/button_add_row"
@@ -38,7 +167,48 @@
         android:drawableLeft="@drawable/ic_add"
         android:layout_marginLeft="15dp"></Button>
 
-<!--    <Button-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="126dp">
+
+        <Spinner
+            android:id="@+id/spinner_key_name"
+            android:layout_width="125dp"
+            android:layout_height="52dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.989"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Spinner
+            android:id="@+id/spinner_key_type"
+            android:layout_width="125dp"
+            android:layout_height="52dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.552"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/changeKeyButton"
+            android:layout_width="120dp"
+            android:layout_height="53dp"
+            android:text="change Key"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.783"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.78" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--    <Button-->
 <!--        android:id="@+id/button_submit_list"-->
 <!--        android:background="@drawable/round_blue"-->
 <!--        android:layout_width="match_parent"-->

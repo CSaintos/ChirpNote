@@ -1,38 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.chirpnote">
+    package="com.example.chirpnote" >
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.MANAGE_MEDIA" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_MEDIA"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Chirpnote"
-        android:preserveLegacyExternalStorage="true"
-        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ChirpNote">
-        <activity
-            android:name=".activities.ExportActivity"
-            android:exported="false" />
+        android:theme="@style/Theme.ChirpNote"
+        android:requestLegacyExternalStorage="true"
+        >
 
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.chirpnote.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"></meta-data>
         </provider>
 
         <activity
@@ -58,12 +53,15 @@
             android:exported="false" />
         <activity
             android:name=".activities.TestOtherActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="true" />
         <activity
             android:name=".activities.PercussionActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.UserProfileActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MusicTheoryInfoActivity"
@@ -73,31 +71,38 @@
             android:exported="false" />
         <activity
             android:name=".activities.LoadSessionActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.NewSessionActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MelodyActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.KeyboardActivity"
-            android:exported="false" /> <!-- android:screenOrientation="portrait"/> -->
+            android:exported="false"
+            android:parentActivityName=".activities.HomeScreenActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SetKeyFromSongActivity"
             android:exported="true" />
         <activity
             android:name=".activities.SmartKeyboardActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.InsertChordsActivity"
+            android:parentActivityName=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.StartUpActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -111,8 +116,12 @@
         <activity
             android:name=".activities.RecordAudioActivity"
             android:exported="true" />
-
-        <service android:name=".activities.FloatingWindowService" />
+        <activity android:name=".activities.DirectoryPopActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ChirpNote.PopUpDir"/>
+        <service
+            android:name=".activities.FloatingWindowService"
+            />
     </application>
 
 </manifest>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Quarter" android:id="@+id/quantize_quarter" />
+    <item android:title="Eighth" android:id="@+id/quantize_eigth"/>
+    <item android:title="16th" android:id="@+id/quantize_sixteenth"/>
+</menu>

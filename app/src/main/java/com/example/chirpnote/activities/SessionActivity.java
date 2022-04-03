@@ -53,7 +53,7 @@ public class SessionActivity extends AppCompatActivity {
 
 
         // Sam's section
-        Button chordSuggestion = (Button) findViewById(R.id.chordSuggestionButton);
+
 
         keyChords = new ArrayList<>();
         currentKey = session.getKey(); // gets the key set when session was initialized
@@ -71,7 +71,26 @@ public class SessionActivity extends AppCompatActivity {
         suggestedChords = new ArrayList<>();
         Chord inputChord = keyChords.get(3); // arbitrary chord choice to test chord suggestion
         suggestedChords = getSuggestedChords(inputChord, keyChords);
+
+
+        Button chordSuggestion = (Button) findViewById(R.id.chordSuggestionButton);
+        chordSuggestion.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String listOfSuggestedChords = "";
+                ((TextView) findViewById(R.id.inputChord)).setText("Input Chord: " + inputChord);
+                for (int i = 0; i < suggestedChords.size(); i++)
+                {
+                    listOfSuggestedChords = listOfSuggestedChords + suggestedChords.get(i) + " ";
+                }
+                ((TextView) findViewById(R.id.chordSuggestion_list)).setText("Suggested Chords: " + listOfSuggestedChords);
+
+
+            }
+        });
         // end of Sam's section
+
+
 
 
         generateMelodyButton.setOnClickListener(new OnClickListener() {
@@ -86,7 +105,6 @@ public class SessionActivity extends AppCompatActivity {
                         ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
                 melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)),
                         ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
-                melody.stopRecording();
                 generateMelodyButton.setText("Melody generated!");
                 session.setConstructedMelodyRecorded();
                 if(audio.isRecorded()){

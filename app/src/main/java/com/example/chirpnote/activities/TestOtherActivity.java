@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +19,8 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.chirpnote.AudioTrack;
@@ -91,6 +95,7 @@ public class TestOtherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_other);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initialize MIDI driver
         midiDriver = MidiDriver.getInstance();
@@ -293,6 +298,38 @@ public class TestOtherActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TestOtherActivity.this, SetKeyFromSongActivity.class);
                 startActivity(intent);
+            }
+        });
+        // Touch this button to quantize the melody by preset options
+        Button quantizeButton = (Button) findViewById(R.id.testQuantizeButton);
+        quantizeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(TestOtherActivity.this,v);
+                popupMenu.getMenuInflater().inflate(R.menu.quantize_popup_menu,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.quantize_quarter:
+                                realTimeMelody.quantize((long) 960);
+                                Toast.makeText(TestOtherActivity.this,"Quantized Melody 1/4ths", Toast.LENGTH_SHORT).show();
+                                return true;
+                            case R.id.quantize_eigth:
+                                realTimeMelody.quantize((long) 480);
+                                Toast.makeText(TestOtherActivity.this,"Quantized Melody 1/8ths", Toast.LENGTH_SHORT).show();
+
+                                return true;
+                            case R.id.quantize_sixteenth:
+                                realTimeMelody.quantize((long) 240);
+                                Toast.makeText(TestOtherActivity.this,"Quantized Melody 1/16ths", Toast.LENGTH_SHORT).show();
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
             }
         });
 

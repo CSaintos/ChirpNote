@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/appTheme"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        android:title="App Theme"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item android:id="@+id/subitem1"
+                android:title="Dark Mode"/>
+            <item android:id="@+id/subitem2"
+                android:title="Light Mode"/>
+            <item android:id="@+id/subitem3"
+                android:title="Use System Preference"/>
+        </menu>
+    </item>
+
+</menu>

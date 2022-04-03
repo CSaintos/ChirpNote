@@ -32,18 +32,20 @@ public class SmartKeyboardActivity extends AppCompatActivity {
     private ArrayList<MusicNote> pianoKeys;
     RealTimeMelody melody;
     private Spinner keyTypeSpinner;
-    String keyNameChoice;
-    String keyTypeChoice;
+    private String keyNameChoice;
+    private String keyTypeChoice;
 
-    Button changeKeyNameSpinner;
+    private Button changeKeyNameSpinner;
 
-    List<String> keyTypeList = new ArrayList<>();
-    List<String> keyNameList = new ArrayList<>();
+    private List<String> keyTypeList = new ArrayList<>();
+    private List<String> keyNameList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_keyboard);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
         Session session = new Session("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
 

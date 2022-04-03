@@ -15,11 +15,12 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        getSupportActionBar().hide();
 
         Button newSessionButton = (Button) findViewById(R.id.newSessionButton);
         Button loadSessionButton = (Button) findViewById(R.id.loadSessionButton);
         Button profileButton = (Button) findViewById(R.id.profileButton);
-        Button userOpButton = (Button) findViewById(R.id.userOpButton);
+        // Button userOpButton = (Button) findViewById(R.id.userOpButton); removed button and moved to profile
         Button musicTheoryButton = (Button) findViewById(R.id.musicTheoryButton);
 
         // For testing only; these will be removed eventually
@@ -59,14 +60,14 @@ public class HomeScreenActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //user options button function
+        /*user options button function -> MOVED TO PROFILE
         userOpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, UserOptionsActivity.class);
                 startActivity(intent);
             }
-        });
+        }); */
 
         //music theory info button function
         musicTheoryButton.setOnClickListener(new View.OnClickListener() {

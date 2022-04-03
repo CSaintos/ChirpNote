@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
+import android.icu.text.AlphabeticIndex;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -65,6 +66,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     private ImageButton stopRecordedAudioButton;
     private Button shareButton;
     private Button exportButton;
+    private Button directoryButton;
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
     Context context = this;
@@ -93,6 +95,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record_audio);
         super.onCreate(savedInstanceState);
         timer = findViewById(R.id.recordTimer);
+        directoryButton = findViewById(R.id.directoryShowButton);
         recordButton = findViewById(R.id.recordAudioActivityButton);
         playRecordedAudioButton = findViewById(R.id.playRecordedAudioButton);
         playRecordedAudioButton.setEnabled(false);
@@ -238,6 +241,12 @@ public class RecordAudioActivity extends AppCompatActivity {
 //
 //        }
 //    });
+        directoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RecordAudioActivity.this,DirectoryPopActivity.class));
+            }
+        });
     }
 
     /**
@@ -278,10 +287,12 @@ public class RecordAudioActivity extends AppCompatActivity {
 
     }
     private void handleSignInIntent(Intent data){
-        GoogleSignIn.getSignedInAccountFromIntent(data).addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
+        GoogleSignIn.getSignedInAccountFromIntent(data)
+                .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
             @Override
             public void onSuccess(GoogleSignInAccount googleSignInAccount) {
-                GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(RecordAudioActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
+                GoogleAccountCredential credential = GoogleAccountCredential.
+                        usingOAuth2(RecordAudioActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
                 credential.setSelectedAccount(googleSignInAccount.getAccount());
                 Drive googleDriveService = new Drive.Builder(
                         AndroidHttp.newCompatibleTransport(),
@@ -306,8 +317,8 @@ public class RecordAudioActivity extends AppCompatActivity {
         progressDialog.setTitle("Uploading to Drive");
         progressDialog.setMessage("Uploading...");
         progressDialog.show();
-
-        driveServiceHelper.createFileMp3(audioFile.getPath()).addOnSuccessListener(new OnSuccessListener<String>() {
+        String fileP = "/storage/emulated/0/mp3.mp3";
+        driveServiceHelper.createFileMp3(fileP).addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String s) {
                 progressDialog.dismiss();

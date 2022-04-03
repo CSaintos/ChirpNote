@@ -45,6 +45,7 @@ public class PercussionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_percussion);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initialize MIDI driver
         midiDriver = MidiDriver.getInstance();
