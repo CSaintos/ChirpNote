@@ -27,10 +27,10 @@ public class PercussionActivity extends AppCompatActivity {
 
     private ArrayList<ArrayList<RadioButton>> patternList;
     private ArrayList<RadioButton> styleList;
-    private ArrayList<TableRow> tableRows;
+    //private ArrayList<TableRow> tableRows;
     private String[] styles;
 
-    private TableLayout tableLayout;
+    //private TableLayout tableLayout;
     private RadioGroup chordGroup;
     private RadioGroup styleGroup;
     private RadioGroup patternGroup;
@@ -49,7 +49,7 @@ public class PercussionActivity extends AppCompatActivity {
         // Initialize MIDI driver
         midiDriver = MidiDriver.getInstance();
 
-        tableRows = new ArrayList<>();
+        //tableRows = new ArrayList<>();
         patternList = new ArrayList<>();
         styleList = new ArrayList<>();
         styles = new String[]{"Pop", "Rock"};
@@ -60,10 +60,11 @@ public class PercussionActivity extends AppCompatActivity {
         backButton = (Button) findViewById(R.id.percussionbackbutton);
         leftButton = (Button) findViewById(R.id.percussionLeftButton);
         rightButton = (Button) findViewById(R.id.percussionRightButton);
+        /*
         tableLayout = findViewById(R.id.percussionTableLayout);
         for (int i = 0; i < tableLayout.getChildCount(); i++) {
             tableRows.add((TableRow) tableLayout.getChildAt(i));
-        }
+        }*/
 
         chordGroup.removeAllViews();
         styleGroup.removeAllViews();
@@ -157,6 +158,7 @@ public class PercussionActivity extends AppCompatActivity {
         patternGroup.addView(rb);
     }
 
+    /*
     void displayChords() {
         int chordCount = 0;
         for (TableRow row : tableRows) {
@@ -184,7 +186,7 @@ public class PercussionActivity extends AppCompatActivity {
                 row.addView(rb);
             }
         }
-    }
+    }*/
 
     @Override
     protected void onResume() {

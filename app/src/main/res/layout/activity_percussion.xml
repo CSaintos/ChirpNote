@@ -10,9 +10,14 @@
         android:id="@+id/percussionRightButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="3dp"
         android:text="R"
-        tools:layout_editor_absoluteX="233dp"
-        tools:layout_editor_absoluteY="69dp" />
+        app:layout_constraintBottom_toTopOf="@+id/percussionChordScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/percussionLeftButton"
+        app:layout_constraintTop_toBottomOf="@+id/PercussionTextView" />
 
     <Button
         android:id="@+id/percussionbackbutton"
@@ -125,64 +130,6 @@
         app:layout_constraintEnd_toEndOf="@+id/percussionPatternScrollView"
         app:layout_constraintStart_toStartOf="@+id/percussionPatternScrollView" />
 
-    <TableLayout
-        android:id="@+id/percussionTableLayout"
-        android:layout_width="409dp"
-        android:layout_height="165dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/percussionpatterntextview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PercussionTextView">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RadioButton
-                android:id="@+id/radioButton7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RadioButton" />
-
-            <RadioButton
-                android:id="@+id/radioButton6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RadioButton" />
-
-            <RadioButton
-                android:id="@+id/radioButton5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RadioButton" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RadioButton
-                android:id="@+id/radioButton8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RadioButton" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
-
     <RadioGroup
         android:id="@+id/percussionChordGroup"
         android:layout_width="wrap_content"
@@ -192,8 +139,33 @@
         android:id="@+id/percussionLeftButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="1dp"
         android:text="L"
-        tools:layout_editor_absoluteX="136dp"
-        tools:layout_editor_absoluteY="69dp" />
+        app:layout_constraintBottom_toTopOf="@+id/percussionChordScrollView"
+        app:layout_constraintEnd_toStartOf="@+id/percussionRightButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PercussionTextView" />
+
+    <ScrollView
+        android:id="@+id/percussionChordScrollView"
+        android:layout_width="409dp"
+        android:layout_height="244dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="47dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/percussionpatterntextview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PercussionTextView">
+
+        <LinearLayout
+            android:id="@+id/percussionChordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
