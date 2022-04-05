@@ -111,6 +111,20 @@ public class Chord {
         mButton = null;
         mPlaying = false;
     }
+    /**
+     * copy constructor
+     */
+    public Chord(Chord c){
+        mNotes = c.mNotes;
+        mNoteEvents = c.mNoteEvents;
+        mType = c.mType;
+        mRootNote = c.mRootNote;
+        mRoot = c.mRoot;
+        buildChord();
+        mTempo = c.mTempo;
+        mButton = c.mButton; // we dont want to give it access to the same button where the session chord is at
+        mPlaying = c.mPlaying;
+    }
 
     /**
      * A chord that is played by a button on the UI
