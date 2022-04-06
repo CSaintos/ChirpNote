@@ -186,8 +186,6 @@ public class KeyboardActivity extends AppCompatActivity {
                         keyButtons.get(i).getButton().setSelected(true);
                     }
 
-
-
                 }
             }
         });
