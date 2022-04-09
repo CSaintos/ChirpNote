@@ -18,10 +18,15 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 
 import com.example.chirpnote.BuildConfig;
+import com.example.chirpnote.ExportHelper;
 import com.example.chirpnote.R;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.util.Zip4jUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +66,8 @@ public class DirectoryPopActivity extends Activity {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()){
                             case R.id.item_share:
-                                shareFile(exportFile);
+                                ExportHelper eh = new ExportHelper();
+                                eh.shareFile(DirectoryPopActivity.this,exportFile);
                                 return true;
                             case R.id.item_preview_audio:
                                 System.out.println(exportFile.getName());
@@ -70,6 +76,7 @@ public class DirectoryPopActivity extends Activity {
 //                                } catch (IOException e) {
 //                                    e.printStackTrace();
 //                                }
+
                                 return true;
                             default:
                                 return false;
@@ -102,15 +109,6 @@ public class DirectoryPopActivity extends Activity {
                 }
             }
         }
-    }
-    public void shareFile(File sharedFile){
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        Uri audioURI = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+ ".provider",sharedFile);
-        intent.setType("*/*");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.putExtra(Intent.EXTRA_STREAM,audioURI);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(Intent.createChooser(intent, "Share File:"));
     }
 
 
