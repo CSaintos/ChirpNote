@@ -82,6 +82,7 @@ public class Notation {
         public Syntax symbol;
         public Syntax prefix;
         public Syntax suffix;
+        public int noteLength;
         public int lineNum;
         public int color;
 
@@ -91,20 +92,22 @@ public class Notation {
             prefix = Syntax.EMPTY;
             suffix = Syntax.EMPTY;
             lineNum = -1;
+            noteLength = -1;
         }
         public NoteFont(Syntax symbol, int lineNum) {
             this();
             this.symbol = symbol;
             this.lineNum = lineNum;
         }
-        public NoteFont(Syntax symbol, Syntax prefix, Syntax suffix, int lineNum, int color) {
+        public NoteFont(Syntax symbol, Syntax prefix, Syntax suffix, int noteLength, int lineNum, int color) {
             this(symbol, lineNum);
             this.prefix = prefix;
             this.suffix = suffix;
+            this.noteLength = noteLength;
             this.color = color;
         }
         public NoteFont(NoteFont nf) {
-            this(nf.symbol, nf.prefix, nf.suffix, nf.lineNum, nf.color);
+            this(nf.symbol, nf.prefix, nf.suffix, nf.noteLength, nf.lineNum, nf.color);
         }
     }
 

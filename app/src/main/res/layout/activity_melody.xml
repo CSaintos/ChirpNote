@@ -66,27 +66,15 @@
         app:layout_constraintEnd_toEndOf="@+id/melodynoteGbutton"
         app:layout_constraintStart_toEndOf="@+id/melodynoteEbutton" />
 
-    <Button
-        android:id="@+id/melodybackbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/RecordMelodyTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="34dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="139dp"
         android:text="Record Melody"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/melodybackbutton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
