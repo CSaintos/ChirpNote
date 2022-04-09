@@ -42,7 +42,7 @@ public class MelodyActivity extends AppCompatActivity {
 
     private TextView[] staffLines;
     private RadioButton[] noteLengthButtons;
-    private Button backButton;
+    //private Button backButton;
     private Button leftButton;
     private Button rightButton;
     private Button restButton;
@@ -57,17 +57,20 @@ public class MelodyActivity extends AppCompatActivity {
 
     private LinkedList<NoteFont> noteList;
     private ListIterator<NoteFont> itr;
-    private NoteFont currentNote;
-    private NoteFont currentDuration;
+    private NoteFont currentNote; // can store any symbol
+    private NoteFont currentDuration; // only stores rest length
     private MidiDriver midiDriver;
     private Session session;
     private Key key;
     private int octNum;
     private boolean wasNext;
 
-    private Key currentKey;
+    //private Key currentKey;
     private ArrayList<MusicNote> keyButtons;
-    private ArrayList<MusicNote> pianoKeys2;
+    private ArrayList<MusicNote> pianoKeys;
+
+    private int barLength;
+    private int maxBarLength;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -84,19 +87,23 @@ public class MelodyActivity extends AppCompatActivity {
         itr = noteList.listIterator();
         midiDriver = MidiDriver.getInstance();
 
+        barLength = 0;
+        maxBarLength = 32;
+
         // TODO: get key from Session Activity
-        key = new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR);
+        key = new Key(Key.RootNote.C, Key.Type.MAJOR);
         octNum = 4;
 
         // TODO: get session from Session Activity
         //session = new Session("Default", key, 140);
 
         String basePath = this.getFilesDir().getPath();
-        session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
+        session = new Session("Name", key, 120,
+                basePath + "/chords.mid", basePath + "/cMelody.mid",
+                basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
 
         // Initialize buttons
-        backButton = (Button) findViewById(R.id.melodybackbutton);
+        //backButton = (Button) findViewById(R.id.melodybackbutton);
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
         rightButton = (Button) findViewById(R.id.melodyrightbutton);
         restButton = (Button) findViewById(R.id.melodyrestbutton);
@@ -106,33 +113,20 @@ public class MelodyActivity extends AppCompatActivity {
         octUpButton = (Button) findViewById(R.id.melodyoctupbutton);
         octDownButton = (Button) findViewById(R.id.melodyoctdownbutton);
 
-        // Initialize the keyboard buttons
-        /*pianoKeys = new MusicNote[] {
-                new MusicNote(60, (Button) findViewById(R.id.melodynoteCbutton)),
-                new MusicNote(61, (Button) findViewById(R.id.melodynoteCsharpbutton)),
-                new MusicNote(62, (Button) findViewById(R.id.melodynoteDbutton)),
-                new MusicNote(63, (Button) findViewById(R.id.melodynoteDsharpbutton)),
-                new MusicNote(64, (Button) findViewById(R.id.melodynoteEbutton)),
-                new MusicNote(65, (Button) findViewById(R.id.melodynoteFbutton)),
-                new MusicNote(66, (Button) findViewById(R.id.melodynoteFsharpbutton)),
-                new MusicNote(67, (Button) findViewById(R.id.melodynoteGbutton)),
-                new MusicNote(68, (Button) findViewById(R.id.melodynoteGsharpbutton)),
-                new MusicNote(69, (Button) findViewById(R.id.melodynoteAbutton)),
-                new MusicNote(70, (Button) findViewById(R.id.melodynoteAsharpbutton)),
-                new MusicNote(71, (Button) findViewById(R.id.melodynoteBbutton))
-        };*/
+        // Initialize piano keys
+        pianoKeys = getPianoKeys();
 
-        pianoKeys2 = getPianoKeys();
+        // Initialize note suggestions?
         keyButtons = new ArrayList<>();
-        currentKey = session.getKey(); // gets the key set when session was initialized
-        for (int i = 0; i < currentKey.getScaleNotes().length-1; i++)
+        //currentKey = session.getKey(); // gets the key set when session was initialized
+        for (int i = 0; i < /*currentKey*/key.getScaleNotes().length-1; i++)
         {
             // TODO: Think of a better way to do this
-            int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
+            int rootIdx = (/*currentKey*/key.getScaleNotes()[i] - 60) % 12;
             /** arraylist of all chords that belong to the current key based on the type of chord
              * it takes in the root note of the chord and type of chord
              */
-            keyButtons.add(pianoKeys2.get(rootIdx));
+            keyButtons.add(pianoKeys.get(rootIdx));
         }
 
         Button noteSuggestButton = findViewById(R.id.noteSuggestion);
@@ -160,17 +154,18 @@ public class MelodyActivity extends AppCompatActivity {
             }
         });
 
-        pianoKeys2 = getPianoKeys();
+        /*
+        // FIXME this whole section of commented code is simply repeated... unless it has a purpose, it will get deleted
+        pianoKeys = getPianoKeys();
         keyButtons = new ArrayList<>();
         currentKey = session.getKey(); // gets the key set when session was initialized
         for (int i = 0; i < currentKey.getScaleNotes().length-1; i++)
         {
             // TODO: Think of a better way to do this
             int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
-            /** arraylist of all chords that belong to the current key based on the type of chord
-             * it takes in the root note of the chord and type of chord
-             */
-            keyButtons.add(pianoKeys2.get(rootIdx));
+            // arraylist of all chords that belong to the current key based on the type of chord
+            // it takes in the root note of the chord and type of chord
+            keyButtons.add(pianoKeys.get(rootIdx));
         }
 
         //Button noteSuggestButton = findViewById(R.id.noteSuggestion);
@@ -196,13 +191,12 @@ public class MelodyActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
+        });*/
 
         // Initialize text views
         melodyText = (TextView) findViewById(R.id.stafftextview);
         gclefText = (TextView) findViewById(R.id.gcleftextview);
         octaveText = (TextView) findViewById(R.id.melodyoctindicator);
-
 
         // Initialize all staff line text views
         staffLines = new TextView[] {
@@ -233,9 +227,7 @@ public class MelodyActivity extends AppCompatActivity {
                 (RadioButton) findViewById(R.id.melody32ndradiobutton)
         };
 
-        /**
-         * Go back to the previous activity
-         */
+        /*
         backButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,7 +235,7 @@ public class MelodyActivity extends AppCompatActivity {
                 // Temp activity to go back to
                 startActivity(new Intent(MelodyActivity.this, HomeScreenActivity.class));
             }
-        });
+        });*/
 
         leftButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -267,42 +259,35 @@ public class MelodyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                switch (currentDuration.symbol) {
-                    case NOTE_WHOLE:
-                        currentNote.symbol = Syntax.REST_WHOLE;
-                        currentNote.lineNum = 9;
-                        break;
-                    case NOTE_HALF_UP: case NOTE_HALF_DOWN:
-                        currentNote.symbol = Syntax.REST_HALF;
-                        currentNote.lineNum = 7;
-                        break;
-                    case NOTE_QUARTER_UP: case NOTE_QUARTER_DOWN:
-                        currentNote.symbol = Syntax.REST_QUARTER;
-                        currentNote.lineNum = 7;
-                        break;
-                    case NOTE_8TH_UP: case NOTE_8TH_DOWN:
-                        currentNote.symbol = Syntax.REST_8TH;
-                        currentNote.lineNum = 7;
-                        break;
-                    case NOTE_16TH_UP: case NOTE_16TH_DOWN:
-                        currentNote.symbol = Syntax.REST_16TH;
-                        currentNote.lineNum = 7;
-                        break;
-                    case NOTE_32ND_UP: case NOTE_32ND_DOWN:
-                        currentNote.symbol = Syntax.REST_32ND;
-                        currentNote.lineNum = 7;
-                        break;
+                NoteFont replacedSymbol = notation.new NoteFont(currentNote);
+
+                // Set rest symbol
+                currentNote.symbol = currentDuration.symbol;
+
+                // Set noteLength
+                currentNote.noteLength = 0;
+
+                // Locate vertical line staff position
+                if (currentDuration.symbol == Syntax.REST_WHOLE) {
+                    currentNote.lineNum = 9;
+                } else {
+                    currentNote.lineNum = 7;
                 }
 
+                // remove accidentals
                 currentNote.prefix = Syntax.EMPTY;
                 currentNote.suffix = Syntax.EMPTY;
 
-                itr.set(notation.new NoteFont(currentNote));
-
-                //if (itr.hasPrevious()) currentNote = notation.new NoteFont(itr.previous());
-                //wasNext = false; // must set after every call to itr position
-                // Double check the rest
-                Log.d("NoteList", currentNote.symbol.toString());
+                Log.d("BarLength, before", Integer.toString(barLength));
+                // apply note constraint
+                int tempBarLength = barLength - replacedSymbol.noteLength + currentNote.noteLength;
+                if (tempBarLength <= maxBarLength) {
+                    barLength = tempBarLength;
+                    itr.set(notation.new NoteFont(currentNote));
+                } else {
+                    currentNote = replacedSymbol;
+                }
+                Log.d("BarLength, after", Integer.toString(barLength));
 
                 displayText();
             }
@@ -341,7 +326,7 @@ public class MelodyActivity extends AppCompatActivity {
                         wasNext = false;
                         currentNote.color = Color.BLUE;
                         itr.set(notation.new NoteFont(currentNote));
-                        Log.d("NoteList pre", currentNote.symbol.toString());
+                        //Log.d("NoteList pre", currentNote.symbol.toString());
                     }
                 }
                 displayText();
@@ -363,8 +348,8 @@ public class MelodyActivity extends AppCompatActivity {
                     // set the last returned node to this node
                     itr.set(notation.new NoteFont(currentNote));
                     if (!itr.hasNext()) {
-                        Log.d("Iterator", "the next node is null");
-                        currentNote = notation.new NoteFont(currentNote.symbol, Syntax.EMPTY, Syntax.EMPTY, -1, Color.BLUE);
+                        //Log.d("Iterator", "the next node is null");
+                        currentNote = notation.new NoteFont(currentNote.symbol, Syntax.EMPTY, Syntax.EMPTY, 0, -1, Color.BLUE);
                         itr.add(notation.new NoteFont(currentNote));
                         currentNote = notation.new NoteFont(itr.previous());
                         wasNext = false;
@@ -386,8 +371,13 @@ public class MelodyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (octNum > 3) {
                     octNum--;
+
+                    for (MusicNote mn : pianoKeys) {
+                        mn.octaveDown();
+                    }
+
+                    displayOctaveText();
                 }
-                displayOctaveText();
             }
         });
 
@@ -396,8 +386,13 @@ public class MelodyActivity extends AppCompatActivity {
            public void onClick(View v) {
                if (octNum < 5) {
                    octNum++;
+
+                   for (MusicNote mn : pianoKeys) {
+                       mn.octaveUp();
+                   }
+
+                   displayOctaveText();
                }
-               displayOctaveText();
            }
         });
 
@@ -412,22 +407,28 @@ public class MelodyActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     switch (finalI) {
                         case 0:
-                            currentDuration.symbol = Syntax.NOTE_WHOLE;
+                            currentDuration.symbol = Syntax.REST_WHOLE;
+                            currentDuration.noteLength = 32;
                             break;
                         case 1:
-                            currentDuration.symbol = Syntax.NOTE_HALF_UP;
+                            currentDuration.symbol = Syntax.REST_HALF;
+                            currentDuration.noteLength = 16;
                             break;
                         case 2:
-                            currentDuration.symbol = Syntax.NOTE_QUARTER_UP;
+                            currentDuration.symbol = Syntax.REST_QUARTER;
+                            currentDuration.noteLength = 8;
                             break;
                         case 3:
-                            currentDuration.symbol = Syntax.NOTE_8TH_UP;
+                            currentDuration.symbol = Syntax.REST_8TH;
+                            currentDuration.noteLength = 4;
                             break;
                         case 4:
-                            currentDuration.symbol = Syntax.NOTE_16TH_UP;
+                            currentDuration.symbol = Syntax.REST_16TH;
+                            currentDuration.noteLength = 2;
                             break;
                         case 5:
-                            currentDuration.symbol = Syntax.NOTE_32ND_UP;
+                            currentDuration.symbol = Syntax.REST_32ND;
+                            currentDuration.noteLength = 1;
                             break;
                     }
                 }
@@ -443,17 +444,43 @@ public class MelodyActivity extends AppCompatActivity {
 
         // Setup listeners for each piano key
         // Attaches each key to a specifc line on the staff
-        for (int i = 0; i < pianoKeys2.size(); i++) {
+        for (int i = 0; i < pianoKeys.size(); i++) {
             int finalI = i;
 
-            pianoKeys2.get(finalI).getButton().setOnTouchListener(new OnTouchListener(){
+            pianoKeys.get(finalI).getButton().setOnTouchListener(new OnTouchListener(){
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        pianoKeys2.get(finalI).play();
+                        pianoKeys.get(finalI).play();
 
-                        // FIXME this is still ugly
+                        NoteFont replacedSymbol = notation.new NoteFont(currentNote);
 
+                        // FIXME check duration - it assumes note tail
+                        switch (currentDuration.symbol) {
+                            case REST_WHOLE:
+                                currentNote.symbol = Syntax.NOTE_WHOLE;
+                                break;
+                            case REST_HALF:
+                                currentNote.symbol = Syntax.NOTE_HALF_UP;
+                                break;
+                            case REST_QUARTER:
+                                currentNote.symbol = Syntax.NOTE_QUARTER_UP;
+                                break;
+                            case REST_8TH:
+                                currentNote.symbol = Syntax.NOTE_8TH_UP;
+                                break;
+                            case REST_16TH:
+                                currentNote.symbol = Syntax.NOTE_16TH_UP;
+                                break;
+                            case REST_32ND:
+                                currentNote.symbol = Syntax.NOTE_32ND_UP;
+                                break;
+                        }
+
+                        // Apply noteLength
+                        currentNote.noteLength = currentDuration.noteLength;
+
+                        // FIXME check "pitch"
                         switch (finalI) {
                             case 0: case 1:
                                 currentNote.lineNum = 1;
@@ -478,6 +505,7 @@ public class MelodyActivity extends AppCompatActivity {
                                 break;
                         }
 
+                        // Check for accidental
                         switch (finalI) {
                             case 0: case 2: case 4: case 5: case 7: case 9: case 11:
                                 currentNote.prefix = Syntax.EMPTY;
@@ -489,20 +517,24 @@ public class MelodyActivity extends AppCompatActivity {
                                 break;
                         }
 
-                        currentNote.symbol = currentDuration.symbol;
-                        // FIXME end of fixme
+                        Log.d("BarLength, before", Integer.toString(barLength));
+                        // note length constraint checking
+                        int tempBarLength = barLength + currentDuration.noteLength - replacedSymbol.noteLength;
+                        if (tempBarLength <= maxBarLength) {
+                            barLength = tempBarLength;
+                            itr.set(notation.new NoteFont(currentNote)); // set the last returned note to the currentNote
+                        } else {
+                            currentNote = replacedSymbol;
+                        }
+                        Log.d("BarLength, after", Integer.toString(barLength));
 
-                        // Was .add
-                        itr.set(notation.new NoteFont(currentNote)); // set the last returned note to the currentNote
-
-                        //if (itr.hasPrevious()) currentNote = notation.new NoteFont(itr.previous());
                         // Double check the note
-                        Log.d("NoteList", currentNote.symbol.toString() + " " + Integer.toString(currentNote.lineNum));
+                        //Log.d("NoteList", currentNote.symbol.toString() + " " + Integer.toString(currentNote.lineNum));
 
                         displayText();
 
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        pianoKeys2.get(finalI).stop();
+                        pianoKeys.get(finalI).stop();
                     }
                     return true;
                 }
@@ -547,18 +579,20 @@ public class MelodyActivity extends AppCompatActivity {
     private void initNoteText() {
         // Default noteLength and noteLengthButton
         noteLengthButtons[0].toggle(); // set Whole Note not length button
-        currentDuration = notation.new NoteFont(Syntax.NOTE_WHOLE, -1);
-        currentNote = notation.new NoteFont(currentDuration.symbol, 5);
+        currentDuration = notation.new NoteFont(Syntax.REST_WHOLE, -1);
+        currentNote = notation.new NoteFont(currentDuration.symbol, 9);
         currentNote.color = Color.BLUE;
+        currentDuration.noteLength = 32;
+        currentNote.noteLength = 0;
+        barLength = 0;
         // Add default note to staff
         itr.add(notation.new NoteFont(currentNote));
         // Check that the note added is the currentNote
         if (itr.hasPrevious()) currentNote = notation.new NoteFont(itr.previous());
-        //if (itr.hasPrevious()) currentNote = notation.new NoteFont(itr.previous());
         wasNext = false;
-        Log.d("NoteList", currentNote.symbol.toString() + " " + Integer.toString(currentNote.lineNum));
-        Log.d("BLUE", Integer.toString(Color.BLUE));
-        Log.d("DKGRAY", Integer.toString(Color.DKGRAY));
+        //Log.d("NoteList", currentNote.symbol.toString() + " " + Integer.toString(currentNote.lineNum));
+        //Log.d("BLUE", Integer.toString(Color.BLUE));
+        //Log.d("DKGRAY", Integer.toString(Color.DKGRAY));
     }
 
     private void displayOctaveText() {
@@ -621,6 +655,9 @@ public class MelodyActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Temporary method to construct melody
+     */
     private void toConstructedMelody() {
         ConstructedMelody constructedMelody = new ConstructedMelody(session);
         constructedMelody.startRecording();
@@ -638,9 +675,9 @@ public class MelodyActivity extends AppCompatActivity {
 
             position++;
         }
-        //constructedMelody.stopRecording();
 
         constructedMelody.play();
+        constructedMelody.stopRecording();
     }
 
     @Override
@@ -675,4 +712,19 @@ public class MelodyActivity extends AppCompatActivity {
 
         return keys;
     }
+
+    /**
+     * Logic for adding notes with note constraint
+     *
+     * Let staff be blank, by default, there should be a whole rest, and the note length is 0
+     * 1. We add a whole note, the whole rest is replaced by the whole note, and the note length turns 32 - maxed
+     *  1. Say we choose a different whole note, the note length remains the same,
+     *  and the note changes to the new note.
+     *  2. Say we choose a half note and insert it, the whole note switches over to that half note, the second half
+     *  of the bar is a half rest, the note length is now 16.
+     *  3. If we choose a quarter note, it is followed by quarter rest and a half rest, note length is 8.
+     *  4. Eigth note, followed by a eigth rest, quarter rest, and half rest. Note length = 4.
+     *  5. Sixteength note, followed by a sixteength rest, eight rest, quarter rest, and half rest. Note length = 2.
+     *  6. So on so forth for 32nd.
+     */
 }
