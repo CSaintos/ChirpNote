@@ -20,7 +20,7 @@ public class ExportHelper {
      * Zips a session and its contents using Zip4j
      * @param directoryToZip The directory to zip
      */
-    public void zipSession(File directoryToZip){
+    public static void zipSession(File directoryToZip){
         try {
             //TODO change static session.zip to the session + session tracking indicator.zip so we maintain consistency
             new ZipFile(Environment.getDataDirectory() + "/session.zip").addFolder(directoryToZip);
@@ -34,7 +34,7 @@ public class ExportHelper {
      * @param context the activity context
      * @param sharedFile the file to be shared
      */
-    public void shareFile(Context context,File sharedFile){
+    public static void shareFile(Context context,File sharedFile){
         Intent intent = new Intent(Intent.ACTION_SEND);
         Uri audioURI = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+ ".provider",sharedFile);
         intent.setType("*/*");
@@ -43,7 +43,13 @@ public class ExportHelper {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(Intent.createChooser(intent, "Share File:"));
     }
-    public void exportToDrive(Context context, File sharedFile) {
+
+    /**
+     * Export to drive
+     * @param context the activity context
+     * @param sharedFile the file to be exported
+     */
+    public static void exportToDrive(Context context, File sharedFile) {
         boolean found = false;
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("*/*");

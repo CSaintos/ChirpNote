@@ -66,8 +66,7 @@ public class DirectoryPopActivity extends Activity {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()){
                             case R.id.item_share:
-                                ExportHelper eh = new ExportHelper();
-                                eh.shareFile(DirectoryPopActivity.this,exportFile);
+                                ExportHelper.shareFile(DirectoryPopActivity.this,exportFile);
                                 return true;
                             case R.id.item_preview_audio:
                                 System.out.println(exportFile.getName());

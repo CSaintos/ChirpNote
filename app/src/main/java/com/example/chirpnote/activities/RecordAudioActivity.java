@@ -28,6 +28,7 @@ import com.anggrayudi.storage.file.DocumentFileUtils;
 import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.BuildConfig;
 import com.example.chirpnote.DriveServiceHelper;
+import com.example.chirpnote.ExportHelper;
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -221,13 +222,7 @@ public class RecordAudioActivity extends AppCompatActivity {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                Uri audioURI = FileProvider.getUriForFile(RecordAudioActivity.this, BuildConfig.APPLICATION_ID+ ".provider",audioFile);
-                intent.setType("*/*");
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.putExtra(Intent.EXTRA_STREAM,audioURI);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(Intent.createChooser(intent, "Share File"));
+                ExportHelper.shareFile(context,audioFile);
             }
         });
 //    exportButton.setOnClickListener(new View.OnClickListener() {
@@ -313,25 +308,26 @@ public class RecordAudioActivity extends AppCompatActivity {
 
     }
     public void uploadToDrive(View view){
-        ProgressDialog progressDialog = new ProgressDialog(RecordAudioActivity.this);
-        progressDialog.setTitle("Uploading to Drive");
-        progressDialog.setMessage("Uploading...");
-        progressDialog.show();
-        String fileP = "/storage/emulated/0/mp3.mp3";
-        driveServiceHelper.createFileMp3(fileP).addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String s) {
-                progressDialog.dismiss();
-                Toast.makeText(RecordAudioActivity.this,"Uploaded", Toast.LENGTH_SHORT).show();
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
-                Toast.makeText(RecordAudioActivity.this,"Check API", Toast.LENGTH_SHORT).show();
-            }
-        });
+        ExportHelper.exportToDrive(context,audioFile);
+//        ProgressDialog progressDialog = new ProgressDialog(RecordAudioActivity.this);
+//        progressDialog.setTitle("Uploading to Drive");
+//        progressDialog.setMessage("Uploading...");
+//        progressDialog.show();
+//        String fileP = "/storage/emulated/0/mp3.mp3";
+//        driveServiceHelper.createFileMp3(fileP).addOnSuccessListener(new OnSuccessListener<String>() {
+//            @Override
+//            public void onSuccess(String s) {
+//                progressDialog.dismiss();
+//                Toast.makeText(RecordAudioActivity.this,"Uploaded", Toast.LENGTH_SHORT).show();
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                progressDialog.dismiss();
+//                Toast.makeText(RecordAudioActivity.this,"Check API", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
     }
 }

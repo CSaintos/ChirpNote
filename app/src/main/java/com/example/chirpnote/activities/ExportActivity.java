@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import com.example.chirpnote.R;
 
-public class ExportActivity extends AppCompatActivity {
+public  class ExportActivity extends AppCompatActivity {
 
     private Button backButton;
     private Button toMP3;
