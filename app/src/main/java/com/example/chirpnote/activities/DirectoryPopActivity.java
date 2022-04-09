@@ -23,6 +23,10 @@ import com.example.chirpnote.R;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.util.Zip4jUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,6 +74,12 @@ public class DirectoryPopActivity extends Activity {
 //                                } catch (IOException e) {
 //                                    e.printStackTrace();
 //                                }
+                                try {
+                                    new ZipFile(getFilesDir() + "/audio.zip").addFolder(new File(getFilesDir() + "/Session/"));
+                                } catch (ZipException e) {
+                                    e.printStackTrace();
+                                }
+
                                 return true;
                             default:
                                 return false;

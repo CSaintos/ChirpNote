@@ -57,4 +57,7 @@ dependencies {
     implementation 'com.google.apis:google-api-services-drive:v3-rev20211107-1.32.1'
     implementation 'com.google.api-client:google-api-client-android:1.33.0'
     implementation 'com.google.http-client:google-http-client-android:1.41.4'
+    //zip management
+    implementation 'net.lingala.zip4j:zip4j:2.10.0'
+
 }
