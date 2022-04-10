@@ -45,9 +45,45 @@ public class PercussionTrack {
      * @param style The style of this percussion track
      * @param session The session to play this Percussion track on
      * @param context The context from the activity (pass "this")
+     * @param playButton The button used to play this track
      */
     public PercussionTrack(Style style, Session session, Context context, Button playButton){
         mMidiEventHandler = new MidiEventHandler(style.toString(), playButton);
+        try{
+            InputStream inputStream = context.getApplicationContext().getResources().openRawResource(style.rawResource);
+            File tempFile = File.createTempFile("temp", style.toString());
+            mFilePath = tempFile.getPath();
+            copyFile(inputStream, new FileOutputStream(tempFile));
+
+            // Set tempo to session tempo
+            MidiFile midiFile = null;
+            try {
+                midiFile = new MidiFile(tempFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Tempo tempo = new Tempo();
+            tempo.setBpm(session.getTempo());
+            midiFile.getTracks().get(0).insertEvent(tempo);
+            try {
+                midiFile.writeToFile(tempFile);
+            } catch(IOException e) {
+                System.err.println(e);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Can't create temp file ", e);
+        }
+    }
+
+    /**
+     * A Percussion track
+     * @param style The style of this percussion track
+     * @param session The session to play this Percussion track on
+     * @param context The context from the activity (pass "this")
+     */
+    public PercussionTrack(Style style, Session session, Context context){
+        mMidiEventHandler = new MidiEventHandler(style.toString());
         try{
             InputStream inputStream = context.getApplicationContext().getResources().openRawResource(style.rawResource);
             File tempFile = File.createTempFile("temp", style.toString());

@@ -23,7 +23,8 @@ public class Mixer {
     public ConstructedMelody constructedMelody;
     public RealTimeMelody realTimeMelody;
     public AudioTrack audioTrack;
-    public PercussionTrack percussionTrack;
+    public PercussionTrack[] percussionTracks;
+    private int mPercussionTrack;
 
     // For writing the MIDI file
     private MidiTrack mTempoTrack;
@@ -44,7 +45,12 @@ public class Mixer {
         realTimeMelody = new RealTimeMelody(session);
         audioTrack = new AudioTrack(session);
 
-        // TODO: Setup percussion stuff
+        PercussionTrack.Style[] styles = PercussionTrack.Style.values();
+        percussionTracks = new PercussionTrack[styles.length];
+        for(int i = 0; i < percussionTracks.length; i++){
+            percussionTracks[i] = new PercussionTrack(styles[i], session, context);
+        }
+        mPercussionTrack = 0;
 
         // Prepare MIDI file for MIDI tracks
         mTempoTrack = new MidiTrack();
@@ -73,9 +79,15 @@ public class Mixer {
         }
         mSession.setChordsRecorded();
         mSession.setConstructedMelodyRecorded();
-        mSession.setRealTimeMelodyRecorded();
     }
 
+    /**
+     * Gets Mixer used to manage all track volumes and playback in the given Session
+     * @param session The session whose tracks this mixer will control
+     * @param context The context from the activity (pass "this")
+     * @param playButton The button in the activity used to start/stop playback
+     * @return The mixer
+     */
     public static Mixer getInstance(Session session, Context context, Button playButton){
         if(mixerInstances.get(session) == null){
             mixerInstances.put(session, new Mixer(session, context));
@@ -85,6 +97,11 @@ public class Mixer {
         return mixer;
     }
 
+    /**
+     * Gets if a mixer exists yet for this session
+     * @param session The session to check
+     * @return True if a mixer exists
+     */
     public static boolean mixerExists(Session session){
         return mixerInstances.get(session) != null;
     }

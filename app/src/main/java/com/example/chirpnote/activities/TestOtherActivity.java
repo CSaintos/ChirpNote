@@ -374,7 +374,7 @@ public class TestOtherActivity extends AppCompatActivity {
         rockMediaButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!rockPlayer.isPlaying()) {
+                if(rockPlayer == null) {
                     rockPlayer = MediaPlayer.create(v.getContext(), R.raw.rock_drums);
                     rockPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     rockPlayer.start();
