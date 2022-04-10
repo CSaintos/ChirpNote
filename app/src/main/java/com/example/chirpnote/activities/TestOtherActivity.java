@@ -29,6 +29,7 @@ import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.ConstructedMelody.NoteDuration;
 import com.example.chirpnote.Key;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
@@ -126,15 +127,18 @@ public class TestOtherActivity extends AppCompatActivity {
 
         String basePath = this.getFilesDir().getPath();
         Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
+                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
+        Mixer mixer = Mixer.getInstance(session, this, playButton);
 
         // Real time melody
-        realTimeMelody = new RealTimeMelody(session);
-        realTimeMelody.setPlayButton(playButton);
+        /*realTimeMelody = new RealTimeMelody(session);
+        realTimeMelody.setPlayButton(playButton);*/
+        realTimeMelody = mixer.realTimeMelody;
 
         // Constructed melody
-        constructedMelody = new ConstructedMelody(session);
-        constructedMelody.setPlayButton(playButton);
+        /*constructedMelody = new ConstructedMelody(session);
+        constructedMelody.setPlayButton(playButton);*/
+        constructedMelody = mixer.constructedMelody;
 
         // Audio track
         try {
@@ -276,17 +280,13 @@ public class TestOtherActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!lastTrack.isPlaying()){
-                    playButton.setText("Stop");
-                    lastTrack.play();
-                    /*realTimeMelody.play();
-                    constructedMelody.play();
-                    audio.play();*/
+                    mixer.playTracks();
+                    /*playButton.setText("Stop");
+                    lastTrack.play();*/
                 } else {
-                    playButton.setText("Play");
-                    lastTrack.stop();
-                    /*realTimeMelody.stop();
-                    constructedMelody.stop();
-                    audio.stop();*/
+                    mixer.stopTracks();
+                    /*playButton.setText("Play");
+                    lastTrack.stop();*/
                 }
             }
         });
@@ -348,8 +348,9 @@ public class TestOtherActivity extends AppCompatActivity {
         dMinor.setAlteration(1);
         chords.add(dMinor);*/
 
-        chordTrack = new ChordTrack(session);
-        chordTrack.startRecording();
+        /*chordTrack = new ChordTrack(session);
+        chordTrack.startRecording();*/
+        chordTrack = mixer.chordTrack;
 
         // Setup event listener for each chord button
         for(Chord chord : chords){

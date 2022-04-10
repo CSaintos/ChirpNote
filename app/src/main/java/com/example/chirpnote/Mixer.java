@@ -34,9 +34,9 @@ public class Mixer {
     private MidiProcessor mMidiProcessor;
     private Button mPlayButton;
 
-    private Mixer(Session session, Context context, Button playButton){
+    private Mixer(Session session, Context context){
         mSession = session;
-        mMidiEventHandler = new MidiEventHandler("MidiPlayback", playButton);
+        mMidiEventHandler = new MidiEventHandler("MidiPlayback", mPlayButton);
 
         // Initialize tracks
         chordTrack = new ChordTrack(session);
@@ -71,15 +71,22 @@ public class Mixer {
         } catch(IOException e) {
             System.err.println(e);
         }
+        mSession.setChordsRecorded();
+        mSession.setConstructedMelodyRecorded();
+        mSession.setRealTimeMelodyRecorded();
     }
 
     public static Mixer getInstance(Session session, Context context, Button playButton){
         if(mixerInstances.get(session) == null){
-            mixerInstances.put(session, new Mixer(session, context, playButton));
+            mixerInstances.put(session, new Mixer(session, context));
         }
         Mixer mixer = mixerInstances.get(session);
         mixer.setPlayButton(playButton);
         return mixer;
+    }
+
+    public static boolean mixerExists(Session session){
+        return mixerInstances.get(session) != null;
     }
 
     /**
@@ -117,7 +124,9 @@ public class Mixer {
         mMidiProcessor = new MidiProcessor(midiFile);
         mMidiProcessor.registerEventListener(mMidiEventHandler, NoteOn.class);
         mMidiProcessor.start();
-        audioTrack.play();
+        if(audioTrack.isRecorded()) {
+            audioTrack.play();
+        }
     }
 
     /**
@@ -129,6 +138,8 @@ public class Mixer {
             throw new IllegalStateException("Cannot stop tracks if they are not being played (start playback first)");
         }
         mMidiProcessor.reset();
-        audioTrack.stop();
+        if(audioTrack.isPlaying()) {
+            audioTrack.stop();
+        }
     }
 }

@@ -329,6 +329,25 @@ public class MidiTrack
         return mEvents.remove(curr);
     }
 
+    public boolean removeChannel(int channel) {
+        Iterator<MidiEvent> it = mEvents.iterator();
+        MidiEvent prev = null, curr = null, next = null;
+        while(it.hasNext()){
+            next = it.next();
+            if(curr instanceof NoteOn && ((NoteOn) curr).getChannel() == channel){
+                mEvents.remove(curr);
+                if (prev != null) {
+                    next.setDelta(next.getTick() - prev.getTick());
+                } else {
+                    next.setDelta(next.getTick());
+                }
+            }
+            prev = curr;
+            curr = next;
+        }
+        return true;
+    }
+
     private boolean noteEventsEqual(NoteOn a, NoteOn b){
         return a.getTick() == b.getTick() && a.getChannel() == b.getChannel() &&
                 a.getNoteValue() == b.getNoteValue() && a.getVelocity() == b.getVelocity();

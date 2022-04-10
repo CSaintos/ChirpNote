@@ -17,6 +17,8 @@ import java.util.Iterator;
 public class RealTimeMelody extends Melody {
     private final int CHANNEL = 3;
     private long mRecordingStartTime;
+    private MidiFile tempMidiFile;
+    private File tempOutput;
 
     /**
      * A MIDI melody which is recorded in real time on the UI keyboard
@@ -33,21 +35,49 @@ public class RealTimeMelody extends Melody {
      * @param session The session this melody is a part of
      */
     public RealTimeMelody(Session session){
-        super(session, session.getRealTimeMelodyPath());
+        super(session, session.getMidiPath());
     }
 
     @Override
     public void startRecording() throws IllegalStateException {
-        super.startRecording();
+        if(Mixer.mixerExists(mSession)){
+            tempMidiFile = null;
+            tempOutput = new File(mFilePath);
+            try {
+                tempMidiFile = new MidiFile(tempOutput);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mNoteTrack = tempMidiFile.getTracks().get(1);
+            mNoteTrack.removeChannel(CHANNEL);
+            mRecording = true;
+        } else {
+            super.startRecording();
+        }
         mRecordingStartTime = System.currentTimeMillis();
     }
 
     @Override
     public void stopRecording() throws IllegalStateException {
-        super.stopRecording();
+        if(Mixer.mixerExists(mSession)){
+            mRecording = false;
+            try {
+                tempMidiFile.writeToFile(tempOutput);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mSession.setRealTimeMelodyRecorded();
+        } else {
+            super.stopRecording();
+        }
         if(mSession != null) {
             mSession.setRealTimeMelodyRecorded();
         }
+    }
+
+    @Override
+    public boolean isRecorded(){
+        return mSession != null ? mSession.isRealTimeMelodyRecorded() : super.isRecorded();
     }
 
     /**
@@ -135,7 +165,7 @@ public class RealTimeMelody extends Melody {
             valueToAdd = valueToAdd + notetick;
             valuesForNoteType.add(valueToAdd);
         }
-        System.out.println(valuesForNoteType.toString());
+        System.out.println(valuesForNoteType);
 
         Iterator<MidiEvent> it = track.getEvents().iterator();
         MidiEvent prev = null, next = it.hasNext() ? it.next() : null, curr;
@@ -183,8 +213,7 @@ public class RealTimeMelody extends Melody {
                         To get the note MIDI number, noteEvent.getNoteValue()
                         To get the tick the event happens at, noteEvent.getTick()
                          */
-                        int tickDelta = RESOLUTION * 4;
-                        tickDelta = (int) differenceValue;
+                        int tickDelta = (int) differenceValue;
                         // ^set tickDelta to how much to move the current event by (negative int if it needs to be moved back)
                         // Currently just moving everything forward by one measure (RESOLUTION is how many ticks per beat, 4 beats in one measure)
                         if(tickDelta != 0) {

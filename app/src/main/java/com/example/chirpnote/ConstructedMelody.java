@@ -25,7 +25,7 @@ public class ConstructedMelody extends Melody {
      * @param session The session this melody is a part of
      */
     public ConstructedMelody(Session session){
-        super(session, session.getConstructedMelodyPath());
+        super(session, session.getMidiPath());
 
         // Possible note durations when building a melody
         mNoteDurations = new HashMap<>();
@@ -260,6 +260,10 @@ public class ConstructedMelody extends Melody {
     }
 
     @Override
+    /**
+     * Prepares the MIDI file to begin constructing this melody
+     * Note: Do not call this method if this melody was obtained from a Mixer instance
+     */
     public void startRecording() throws IllegalStateException {
         // Starting the recording process overwrites the previously recorded melody
         // We only want this behavior for a real time melody, so only do this once for a constructed melody
