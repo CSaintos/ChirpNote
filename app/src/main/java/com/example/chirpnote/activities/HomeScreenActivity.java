@@ -9,13 +9,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chirpnote.R;
 
+import io.realm.mongodb.App;
+import io.realm.mongodb.AppConfiguration;
+
 public class HomeScreenActivity extends AppCompatActivity {
+
+    App app;
+    String appID = "chirpnote-jwrci";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         getSupportActionBar().hide();
+
+        app = new App(new AppConfiguration.Builder(appID).build());
+        /*if(app.currentUser() != null){
+            Toast.makeText(HomeScreenActivity.this, app.currentUser().getId(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(HomeScreenActivity.this, "None", Toast.LENGTH_LONG).show();
+        }*/
 
         Button newSessionButton = (Button) findViewById(R.id.newSessionButton);
         Button loadSessionButton = (Button) findViewById(R.id.loadSessionButton);
