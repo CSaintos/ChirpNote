@@ -6,9 +6,11 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.util.Log;
@@ -27,6 +29,7 @@ import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class PercussionActivity extends AppCompatActivity {
@@ -143,11 +146,16 @@ public class PercussionActivity extends AppCompatActivity {
         int patternNum = 1;
 
         // Percussion code here... FIXME
-        MediaPlayer rockPlayer = MediaPlayer.create(this, R.raw.rock_drums);
-        rockPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        // FIXME: Include session in params
-        //Percussion percussion = new Percussion(this);
+        AssetFileDescriptor afd;
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            afd = this.getAssets().openFd("pop_drums.mid");
+            mediaPlayer.setDataSource(afd.getFileDescriptor());
+            mediaPlayer.prepare();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        } catch (Exception e) {
+            Log.d("AssetFileDescriptor", "Unable to open file");
+        }
         // End of percussion code
 
         // Create Radio button(s)
@@ -163,7 +171,7 @@ public class PercussionActivity extends AppCompatActivity {
                 if (isChecked) {
                     cb.setBackground(getDrawable(R.drawable.radio_selected));
                     // Test rock playback
-                    rockPlayer.start();
+                    mediaPlayer.start();
                     //percussion.playRock();
                 } else {
                     cb.setBackground(getDrawable(R.drawable.radio_normal));
