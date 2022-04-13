@@ -46,25 +46,17 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
     //    private Button[] sessionChords;
     private Chord[] sessionChords = new Chord[7]; // holds the 7 diatonic chords for the session
-    private Chord currentChord; // gets updated when user wnats to add a chord to a measure
+    private Chord currentChord; // gets updated when user wants to add a chord to a measure
 
 
     // A chord track that is recorded (constructed) by adding chords one at a time
     private ChordTrack chordTrack;
-    // Which track was most recently recorded
-    private Track lastTrack;
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
     // Used to request permission to RECORD_AUDIO
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
-    // A melody that is recorded in real time by playing the keyboard
-    private RealTimeMelody realTimeMelody;
-    // A melody that is recorded (constructed) by adding notes one at a time
-    private ConstructedMelody constructedMelody;
-    // An audio track that is recorded with the device's microphone
-    private AudioTrack audio;
 
 
 
@@ -546,8 +538,6 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         modifyMeasure(chord);
                         chord.play();
-//                        chordTrack.addChord(chord, session.mChords.size());
-//                        lastTrack = chordTrack;
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         chord.stop();
                     }
