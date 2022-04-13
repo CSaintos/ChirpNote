@@ -99,8 +99,7 @@ public class MelodyActivity extends AppCompatActivity {
 
         String basePath = this.getFilesDir().getPath();
         session = new Session("Name", key, 120,
-                basePath + "/chords.mid", basePath + "/cMelody.mid",
-                basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
+                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
 
         // Initialize buttons
         //backButton = (Button) findViewById(R.id.melodybackbutton);

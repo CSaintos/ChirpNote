@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 abstract class Melody implements Track {
     // States
-    private boolean mRecording;
+    protected boolean mRecording;
     private boolean mRecorded;
 
     // For recording the melody

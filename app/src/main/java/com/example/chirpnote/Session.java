@@ -17,9 +17,6 @@ public class Session implements Serializable {
     private int mTempo;
     private String mMidiPath;
     public List<String> mChords;
-    private String mChordsPath;
-    private String mConstructedMelodyPath;
-    private String mRealTimeMelodyPath;
     public List<String> mMelodyElements;
     public int mNextMelodyTick;
     private String mAudioPath;
@@ -52,12 +49,10 @@ public class Session implements Serializable {
      * @param name The name of this session
      * @param key The key of this session
      * @param tempo The tempo of this session
-     * @param chordsPath The file path to store the chords at
-     * @param constructedMelodyPath The file path to store the constructed melody at
-     * @param realTimeMelodyPath The file path to store the real time melody at
+     * @param midiPath The file path to store the MIDI tracks at
      * @param audioPath The file path to store the audio at
      */
-    public Session(String name, Key key, int tempo, String chordsPath, String constructedMelodyPath, String realTimeMelodyPath, String audioPath){
+    public Session(String name, Key key, int tempo, String midiPath, String audioPath){
         mName = name;
         mKey = key;
         if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
@@ -65,11 +60,9 @@ public class Session implements Serializable {
         } else {
             mTempo = 120;
         }
+        mMidiPath = midiPath;
         mChords = new ArrayList<>();
-        mChordsPath = chordsPath;
         mChordsRecorded = false;
-        mConstructedMelodyPath = constructedMelodyPath;
-        mRealTimeMelodyPath = realTimeMelodyPath;
         mConstructedMelodyRecorded = false;
         mRealTimeMelodyRecorded = false;
         mMelodyElements = new ArrayList<>();
@@ -105,39 +98,15 @@ public class Session implements Serializable {
 
     /**
      * Gets the file path where the MIDI tracks are stored
-     * @return The file path of the MIDI file for the chords, constructed melody, and real time melody
+     * @return The path of the MIDI file for the chords, constructed melody, and real time melody
      */
     public String getMidiPath(){
         return mMidiPath;
     }
 
     /**
-     * Gets the file path where the chords are stored
-     * @return The file path of the MIDI file for the chords
-     */
-    public String getChordsPath(){
-        return mChordsPath;
-    }
-
-    /**
-     * Gets the file path where the constructed melody is stored
-     * @return The file path of the MIDI file for the constructed melody
-     */
-    public String getConstructedMelodyPath(){
-        return mConstructedMelodyPath;
-    }
-
-    /**
-     * Gets the file path where the real time melody is stored
-     * @return The file path of the MIDI file for the real time melody
-     */
-    public String getRealTimeMelodyPath(){
-        return mRealTimeMelodyPath;
-    }
-
-    /**
      * Gets the file path where the audio track is stored
-     * @return The file path of the mp3 file for the audio track
+     * @return The path of the mp3 file for the audio track
      */
     public String getAudioPath(){
         return mAudioPath;

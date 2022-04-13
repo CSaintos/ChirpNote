@@ -35,7 +35,7 @@ public class ChordTrack implements Track {
     public ChordTrack(Session session){
         mRecording = false;
         mSession = session;
-        mFilePath = session.getChordsPath();
+        mFilePath = session.getMidiPath();
         mMidiEventHandler = new MidiEventHandler("ChordPlayback");
     }
 
@@ -67,6 +67,7 @@ public class ChordTrack implements Track {
 
     /**
      * Starts the recording process for this chord track
+     * Note: Do not call this method if this chord track was obtained from a Mixer instance
      * @exception IllegalStateException if the recording process cannot be started
      */
     @Override

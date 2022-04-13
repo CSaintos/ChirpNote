@@ -2,5 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Share" android:id="@+id/item_share" />
-    <item android:title="Preview" android:id="@+id/item_preview_audio"/>
+    <item android:title="Export to Drive" android:id="@+id/item_export_drive" />
+    <item android:title="Preview Audio" android:id="@+id/item_preview_audio"/>
 </menu>

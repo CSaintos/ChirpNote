@@ -1,24 +1,20 @@
 package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chirpnote.R;
 
 import org.w3c.dom.Document;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
@@ -46,14 +42,9 @@ public class LoginActivity extends AppCompatActivity {
         hideSystemBars();
 
         app = new App(new AppConfiguration.Builder(appID).build());
-        //startActivity(new Intent(LoginActivity.this,SignUpActivity.class)); // not ready to implement this yet.
-
-        AtomicReference<io.realm.mongodb.User> user = new AtomicReference<>();
 
         mUsername = (EditText) findViewById(R.id.editTextUsername);
         mPassword = (EditText) findViewById(R.id.editTextPassword);
-        TextView auth = (TextView) findViewById(R.id.authTextView);
-        TextView test = (TextView) findViewById(R.id.testingTextView);
         Button loginButton = (Button) findViewById(R.id.loginButton);
         Button signUpButton = (Button) findViewById(R.id.signUpButton);
         Button bypassLoginButton = (Button) findViewById(R.id.bypassLoginButton);
@@ -67,10 +58,9 @@ public class LoginActivity extends AppCompatActivity {
                         Credentials.customFunction(new org.bson.Document("username", username).append("password", password));
                 app.loginAsync(customFunctionCredentials, it -> {
                     if (it.isSuccess()) {
-                        auth.setText("Login succeeded!");
-                        auth.setTextColor(Color.GREEN);
-                        /*user.set(app.currentUser());
-                        String partitionValue = "username";
+                        Toast.makeText(LoginActivity.this,"Login succeeded", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, HomeScreenActivity.class));
+                        /*String partitionValue = "username";
                         SyncConfiguration config = new SyncConfiguration.Builder(
                                 user.get(),
                                 partitionValue)
@@ -81,8 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                                 backgroundThreadRealm.where(com.example.chirpnote.User.class).equalTo("_id", user.get().getId()).findFirst();
                         test.setText("Chord suggestions: " + newUser.getChordSuggestions());*/
                     } else {
-                        auth.setText("Login failed...");
-                        auth.setTextColor(Color.RED);
+                        Toast.makeText(LoginActivity.this,"Login failed", Toast.LENGTH_LONG).show();
                     }
                 });
             }

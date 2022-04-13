@@ -77,6 +77,9 @@ public class DirectoryPopActivity extends Activity {
 //                                }
 
                                 return true;
+                            case R.id.item_export_drive:
+                                ExportHelper.exportToDrive(DirectoryPopActivity.this,exportFile);
+                                return true;
                             default:
                                 return false;
                         }
