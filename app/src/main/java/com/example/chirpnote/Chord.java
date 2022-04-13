@@ -463,6 +463,6 @@ public class Chord {
      */
     @Override
     public String toString(){
-        return mRootNote + " " + mType;
+        return mRootNote + " " + mType;// + "testing Chord toString()";
     }
 }
