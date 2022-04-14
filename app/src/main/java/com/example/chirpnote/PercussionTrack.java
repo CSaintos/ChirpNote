@@ -1,6 +1,7 @@
 package com.example.chirpnote;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
@@ -109,6 +110,36 @@ public class PercussionTrack {
         } catch (IOException e) {
             throw new RuntimeException("Can't create temp file ", e);
         }
+    }
+
+    /**
+     * A Percussion track
+     * @param path The path of this percussion track
+     * @param session The session to play this Percussion track on
+     * @param context The context from the activity (pass "this")
+     */
+    public PercussionTrack(String path, Session session, Context context, int placeholder) {
+        mMidiEventHandler = new MidiEventHandler(path);
+
+        try {
+            // get file
+            AssetFileDescriptor afd = context.getAssets().openFd(path);
+            InputStream inputStream = afd.createInputStream();
+            File tempFile = File.createTempFile("temp", "file");
+            mFilePath = tempFile.getPath();
+            copyFile(inputStream, new FileOutputStream(tempFile));
+
+            MidiFile midiFile = new MidiFile(tempFile);
+
+            // set tempo
+            Tempo tempo = new Tempo();
+            tempo.setBpm(session.getTempo());
+            midiFile.getTracks().get(0).insertEvent(tempo);
+            midiFile.writeToFile(tempFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
