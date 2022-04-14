@@ -21,6 +21,7 @@ public class Session implements Serializable {
     public int mNextMelodyTick;
     private String mAudioPath;
     private int mPercussionTrack;
+    public int[] mTrackVolumes;
 
     // States
     private boolean mChordsRecorded;
@@ -70,6 +71,7 @@ public class Session implements Serializable {
         mAudioPath = audioPath;
         mAudioRecorded = false;
         mPercussionTrack = -1;
+        mTrackVolumes = new int[]{80, 80, 80, 100, 127}; // Chords, constructedMelody, recordedMelody, audio, percussion
     }
 
     /**
