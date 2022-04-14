@@ -210,6 +210,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 if (areMeasuresFilled() == true || layoutList.getChildCount() == 0)
                 {
                     addRowOfMeasures();
+                    //addRowOfMeasures2();
                 }
                 else
                 {
@@ -218,6 +219,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
+                //chordTrack.play();
                 break;
 //            case R.id.chordSuggestionButton:
 //                chordSuggestion(session);
@@ -469,6 +471,49 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
     }
 
+    // The bottom three variables should be defined at the top of the file
+    private ArrayList<Chord[]> listOfChords = new ArrayList<>();
+    private ArrayList<Button[]> listOfButtons = new ArrayList<>();
+    private Chord selectedSessionChord = null;
+    // The top three variables should be defined at the top of the file
+
+    private void addRowOfMeasures2(){
+
+        View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
+        layoutList.addView(rowOfMeasures);
+        int rowIdx = layoutList.indexOfChild(rowOfMeasures);
+
+        ImageView imageClose = (ImageView) rowOfMeasures.findViewById(R.id.row_remove);
+        imageClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = layoutList.indexOfChild(rowOfMeasures);
+                removeRowOfMeasures(rowOfMeasures, index);
+            }
+        });
+
+        listOfChords.add(new Chord[4]);
+        listOfButtons.add(new Button[4]);
+        int[] buttonIds = new int[]{R.id.measure1, R.id.measure2, R.id.measure3, R.id.measure4};
+        for(int colIdx = 0; colIdx < 4; colIdx++){
+            int col = colIdx;
+            listOfButtons.get(rowIdx)[col] = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
+            listOfButtons.get(rowIdx)[col].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(selectedSessionChord != null){
+                        // Use copy constructor once it has been fixed
+                        // Chord newChord = new Chord(selectedSessionChord);
+                        Chord newChord = new Chord(selectedSessionChord.getRootNote(), selectedSessionChord.getType(), session.getTempo());
+                        listOfChords.get(rowIdx)[col] = newChord;
+                        chordTrack.addChord(newChord, (rowIdx * 4) + col);
+                        ((Button) v).setText(selectedSessionChord.getButton().getText());
+                    }
+                }
+            });
+        }
+    }
+
     private void removeRowOfMeasures(View view, int rowIndex)
     {
         listOfMeasures.remove(rowIndex);
@@ -537,6 +582,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         modifyMeasure(chord);
+                        //selectedSessionChord = chord;
                         chord.play();
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         chord.stop();
