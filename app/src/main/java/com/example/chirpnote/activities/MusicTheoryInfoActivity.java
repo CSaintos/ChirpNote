@@ -22,6 +22,7 @@ public class MusicTheoryInfoActivity extends AppCompatActivity implements View.O
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_theory_info);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         next = (Button) findViewById(R.id.next);

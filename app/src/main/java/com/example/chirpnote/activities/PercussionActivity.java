@@ -6,9 +6,11 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.util.Log;
@@ -21,12 +23,16 @@ import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import com.example.chirpnote.Key;
+import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
+import com.example.chirpnote.Session;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class PercussionActivity extends AppCompatActivity {
@@ -49,6 +55,9 @@ public class PercussionActivity extends AppCompatActivity {
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
 
+    private Session session;
+    private Key key;
+
     private int chordButtonId;
 
     @Override
@@ -60,11 +69,18 @@ public class PercussionActivity extends AppCompatActivity {
         // Initialize MIDI driver
         midiDriver = MidiDriver.getInstance();
 
+        // TODO: get session from session activity
+        key = new Key(Key.RootNote.C, Key.Type.MAJOR);
+        // Initialize session
+        String basePath = this.getFilesDir().getPath();
+        session = new Session("Name", key, 120,
+                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
+
         //tableRows = new ArrayList<>();
         patternList = new ArrayList<>();
         styleList = new ArrayList<>();
         chordButtons = new ArrayMap<>();
-        styles = new String[]{"Pop", "Rock"};
+        styles = new String[]{"pop", "rock"};
 
         chordGroup = findViewById(R.id.percussionChordGroup);
         styleGroup = findViewById(R.id.percussionStyleGroup);
@@ -140,39 +156,88 @@ public class PercussionActivity extends AppCompatActivity {
 
     void initPatterns(String style) {
         patternGroup.removeAllViews();
-        int patternNum = 1;
 
-        // Percussion code here... FIXME
-        MediaPlayer rockPlayer = MediaPlayer.create(this, R.raw.rock_drums);
-        rockPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        AssetFileDescriptor afd;
+        MediaPlayer mediaPlayer;
 
-        // FIXME: Include session in params
-        //Percussion percussion = new Percussion(this);
-        // End of percussion code
+        try {
+            String[] assetItems = this.getAssets().list("percussion/" + style);
+
+            for (String item : assetItems) { // for each pattern
+                String path = "percussion/" + style + "/" + item;
+
+                // TODO percussion track instead
+                PercussionTrack percussionTrack = new PercussionTrack(path, session, this, 0);
+
+                // get audio asset
+                mediaPlayer = new MediaPlayer();
+                Log.d("path", path);
+                afd = this.getAssets().openFd(path);
+                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                afd.close();
+                mediaPlayer.prepare();
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+                // Create Radio button
+                String name = item.replace(".mid", "");
+                RadioButton rb = new RadioButton(this);
+                rb.setText(name);
+                Log.d("asset", item);
+                rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
+                rb.setBackground(getDrawable(R.drawable.radio_normal));
+
+                // Set Radio Button Listener
+                MediaPlayer finalMediaPlayer = mediaPlayer;
+                rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                   @Override
+                   public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
+                       if (isChecked) {
+                           cb.setBackground(getDrawable(R.drawable.radio_selected));
+                           finalMediaPlayer.start();
+                       } else {
+                           cb.setBackground(getDrawable(R.drawable.radio_normal));
+                       }
+                   }
+                });
+
+                // add radio button to radio group
+                patternGroup.addView(rb);
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("AssetFileDescriptor", "Unable to open file");
+        }
 
         // Create Radio button(s)
+        /*
         RadioButton rb = new RadioButton(this);
         rb.setText(("Beat_" + patternNum));
         rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
         rb.setBackground(getDrawable(R.drawable.radio_normal));
+        */
 
         // Set Radio Button listener
+        /*
         rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
                 if (isChecked) {
                     cb.setBackground(getDrawable(R.drawable.radio_selected));
                     // Test rock playback
-                    rockPlayer.start();
+                    mediaPlayer.start();
                     //percussion.playRock();
                 } else {
                     cb.setBackground(getDrawable(R.drawable.radio_normal));
                 }
             }
         });
+         */
 
         // Add radio button to radio group
-        patternGroup.addView(rb);
+        //patternGroup.addView(rb);
     }
 
     void displayChords() {

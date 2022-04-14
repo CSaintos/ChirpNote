@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class RealTimeMelody extends Melody {
-    private final int CHANNEL = 3;
+    public final static int CHANNEL = 3;
     private long mRecordingStartTime;
     private MidiFile tempMidiFile;
     private File tempOutput;

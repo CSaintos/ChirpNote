@@ -26,7 +26,7 @@ public class ChordTrack implements Track {
     private MidiEventHandler mMidiEventHandler;
 
     private Session mSession;
-    private final int CHANNEL = 1;
+    public final static int CHANNEL = 1;
 
     /**
      * A Chord track

@@ -68,7 +68,7 @@ public class Chord {
     }
     private Type mType;
     private RootNote mRootNote;
-    private int mRoot;
+    private int mRootNum;
     private int mOctave;
     private int mAlteration;
     private Inversion mInversion;
@@ -105,7 +105,7 @@ public class Chord {
         mNoteEvents = new ArrayList<>();
         mType = chordType;
         mRootNote = root;
-        mRoot = root.getMidiNum();
+        mRootNum = root.getMidiNum();
         buildChord();
         mTempo = tempo;
         mButton = null;
@@ -115,15 +115,15 @@ public class Chord {
      * copy constructor
      */
     public Chord(Chord c){
-        mNotes = c.mNotes;
-        mNoteEvents = c.mNoteEvents;
-        mType = c.mType;
-        mRootNote = c.mRootNote;
-        mRoot = c.mRoot;
+        mNotes = new ArrayList<>();
+        mNoteEvents = new ArrayList<>();
+        mType = c.getType();
+        mRootNote = c.getRootNote();
+        mRootNum = c.getRootNumber();
         buildChord();
-        mTempo = c.mTempo;
-        mButton = c.mButton; // we dont want to give it access to the same button where the session chord is at
-        mPlaying = c.mPlaying;
+        mTempo = c.getTempo();
+        mButton = c.getButton(); // TODO: Change this assignment to null once ChordsActivity is refactored
+        mPlaying = false;
     }
 
     /**
@@ -138,7 +138,7 @@ public class Chord {
         mNoteEvents = new ArrayList<>();
         mType = chordType;
         mRootNote = root;
-        mRoot = root.getMidiNum();
+        mRootNum = root.getMidiNum();
         buildChord();
         mTempo = tempo;
         mButton = chordButton;
@@ -150,28 +150,28 @@ public class Chord {
      * Only call this once, from a constructor
      */
     private void buildChord(){
-        mNotes.add(new MusicNote(mRoot));
+        mNotes.add(new MusicNote(mRootNum));
         if(mType == Type.MAJOR){
-            mNotes.add(new MusicNote(mRoot + 4));
-            mNotes.add(new MusicNote(mRoot + 7));
+            mNotes.add(new MusicNote(mRootNum + 4));
+            mNotes.add(new MusicNote(mRootNum + 7));
         } else if(mType == Type.MINOR){
-            mNotes.add(new MusicNote(mRoot + 3));
-            mNotes.add(new MusicNote(mRoot + 7));
+            mNotes.add(new MusicNote(mRootNum + 3));
+            mNotes.add(new MusicNote(mRootNum + 7));
         } else if(mType == Type.DIMINISHED){
-            mNotes.add(new MusicNote(mRoot + 3));
-            mNotes.add(new MusicNote(mRoot + 6));
+            mNotes.add(new MusicNote(mRootNum + 3));
+            mNotes.add(new MusicNote(mRootNum + 6));
         }
         mInversion = Inversion.ROOT;
         // Octave 1: C1-C2, 2: C2-C3, 3: C3-C4, 4: C4-C5, 5: C5-C6
-        if(24 <= mRoot && mRoot < 36){
+        if(24 <= mRootNum && mRootNum < 36){
             mOctave = 1;
-        } else if(36 <= mRoot && mRoot < 48){
+        } else if(36 <= mRootNum && mRootNum < 48){
             mOctave = 2;
-        } else if(48 <= mRoot && mRoot < 60){
+        } else if(48 <= mRootNum && mRootNum < 60){
             mOctave = 3;
-        } else if(60 <= mRoot && mRoot < 72){
+        } else if(60 <= mRootNum && mRootNum < 72){
             mOctave = 4;
-        } else if(72 <= mRoot && mRoot < 84){
+        } else if(72 <= mRootNum && mRootNum < 84){
             mOctave = 5;
         }
         // The NoteOn events to fire when playing the chord
@@ -222,7 +222,7 @@ public class Chord {
      * @return The MIDI number of the root note
      */
     public int getRootNumber(){
-        return mRoot;
+        return mRootNum;
     }
 
     /**
@@ -231,6 +231,14 @@ public class Chord {
      */
     public RootNote getRootNote(){
         return mRootNote;
+    }
+
+    /**
+     * Gets the tempo at which this chord is played
+     * @return The tempo in bpm
+     */
+    public int getTempo(){
+        return mTempo;
     }
 
     /**
@@ -463,6 +471,6 @@ public class Chord {
      */
     @Override
     public String toString(){
-        return mRootNote + " " + mType;
+        return mRootNote + " " + mType;// + "testing Chord toString()";
     }
 }
