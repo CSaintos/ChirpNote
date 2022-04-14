@@ -10,6 +10,10 @@ import com.example.midiFileLib.src.event.meta.Tempo;
 import com.example.midiFileLib.src.event.meta.TimeSignature;
 import com.example.midiFileLib.src.util.MidiProcessor;
 
+import org.billthefarmer.mididriver.MidiConstants;
+import org.billthefarmer.mididriver.MidiDriver;
+import org.billthefarmer.mididriver.ReverbConstants;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ public class Mixer {
     private MidiTrack mNoteTrack;
 
     // For playback
+    private MidiDriver midiDriver = MidiDriver.getInstance();
     private MidiEventHandler mMidiEventHandler;
     private MidiProcessor mMidiProcessor;
     private Button mPlayButton;
@@ -79,6 +84,7 @@ public class Mixer {
         }
         mSession.setChordsRecorded();
         mSession.setConstructedMelodyRecorded();
+        syncSessionVolume();
     }
 
     /**
@@ -114,6 +120,51 @@ public class Mixer {
      */
     private void setPlayButton(Button playButton){
         mPlayButton = playButton;
+    }
+
+    private void syncSessionVolume(){
+        setChordVolume(mSession.mTrackVolumes[0]);
+        setConstructedMelodyVolume(mSession.mTrackVolumes[1]);
+        setRealTimeMelodyVolume(mSession.mTrackVolumes[2]);
+        setAudioVolume(mSession.mTrackVolumes[3]);
+        setPercussionVolume(mSession.mTrackVolumes[4]);
+    }
+
+    public void setChordVolume(int volume){
+        if(volume < 0 || volume > 127){
+            return;
+        }
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ChordTrack.CHANNEL, (byte) 0x07, (byte) volume});
+        mSession.mTrackVolumes[0] = volume;
+    }
+
+    public void setConstructedMelodyVolume(int volume){
+        if(volume < 0 || volume > 127){
+            return;
+        }
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ConstructedMelody.CHANNEL, (byte) 0x07, (byte) volume});
+        mSession.mTrackVolumes[1] = volume;
+    }
+
+    public void setRealTimeMelodyVolume(int volume){
+        if(volume < 0 || volume > 127){
+            return;
+        }
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + RealTimeMelody.CHANNEL, (byte) 0x07, (byte) volume});
+        mSession.mTrackVolumes[2] = volume;
+    }
+
+    public void setAudioVolume(int volume){
+        // TODO: Implement a way to set the audio volume
+        mSession.mTrackVolumes[3] = volume;
+    }
+
+    public void setPercussionVolume(int volume){
+        if(volume < 0 || volume > 127){
+            return;
+        }
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) volume});
+        mSession.mTrackVolumes[4] = volume;
     }
 
     /**

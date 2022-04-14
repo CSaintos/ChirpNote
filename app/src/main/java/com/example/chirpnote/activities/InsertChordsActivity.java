@@ -46,25 +46,17 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
     //    private Button[] sessionChords;
     private Chord[] sessionChords = new Chord[7]; // holds the 7 diatonic chords for the session
-    private Chord currentChord; // gets updated when user wnats to add a chord to a measure
+    private Chord currentChord; // gets updated when user wants to add a chord to a measure
 
 
     // A chord track that is recorded (constructed) by adding chords one at a time
     private ChordTrack chordTrack;
-    // Which track was most recently recorded
-    private Track lastTrack;
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
     // Used to request permission to RECORD_AUDIO
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
-    // A melody that is recorded in real time by playing the keyboard
-    private RealTimeMelody realTimeMelody;
-    // A melody that is recorded (constructed) by adding notes one at a time
-    private ConstructedMelody constructedMelody;
-    // An audio track that is recorded with the device's microphone
-    private AudioTrack audio;
 
 
 
@@ -218,6 +210,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 if (areMeasuresFilled() == true || layoutList.getChildCount() == 0)
                 {
                     addRowOfMeasures();
+                    //addRowOfMeasures2();
                 }
                 else
                 {
@@ -226,6 +219,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
+                //chordTrack.play();
                 break;
 //            case R.id.chordSuggestionButton:
 //                chordSuggestion(session);
@@ -477,6 +471,49 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
     }
 
+    // The bottom three variables should be defined at the top of the file
+    private ArrayList<Chord[]> listOfChords = new ArrayList<>();
+    private ArrayList<Button[]> listOfButtons = new ArrayList<>();
+    private Chord selectedSessionChord = null;
+    // The top three variables should be defined at the top of the file
+
+    private void addRowOfMeasures2(){
+
+        View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
+        layoutList.addView(rowOfMeasures);
+        int rowIdx = layoutList.indexOfChild(rowOfMeasures);
+
+        ImageView imageClose = (ImageView) rowOfMeasures.findViewById(R.id.row_remove);
+        imageClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = layoutList.indexOfChild(rowOfMeasures);
+                removeRowOfMeasures(rowOfMeasures, index);
+            }
+        });
+
+        listOfChords.add(new Chord[4]);
+        listOfButtons.add(new Button[4]);
+        int[] buttonIds = new int[]{R.id.measure1, R.id.measure2, R.id.measure3, R.id.measure4};
+        for(int colIdx = 0; colIdx < 4; colIdx++){
+            int col = colIdx;
+            listOfButtons.get(rowIdx)[col] = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
+            listOfButtons.get(rowIdx)[col].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(selectedSessionChord != null){
+                        // Use copy constructor once it has been fixed
+                        // Chord newChord = new Chord(selectedSessionChord);
+                        Chord newChord = new Chord(selectedSessionChord.getRootNote(), selectedSessionChord.getType(), session.getTempo());
+                        listOfChords.get(rowIdx)[col] = newChord;
+                        chordTrack.addChord(newChord, (rowIdx * 4) + col);
+                        ((Button) v).setText(selectedSessionChord.getButton().getText());
+                    }
+                }
+            });
+        }
+    }
+
     private void removeRowOfMeasures(View view, int rowIndex)
     {
         listOfMeasures.remove(rowIndex);
@@ -545,9 +582,8 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 public boolean onTouch(View v, MotionEvent event) {
                     if(event.getAction() == MotionEvent.ACTION_DOWN) {
                         modifyMeasure(chord);
+                        //selectedSessionChord = chord;
                         chord.play();
-//                        chordTrack.addChord(chord, session.mChords.size());
-//                        lastTrack = chordTrack;
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         chord.stop();
                     }

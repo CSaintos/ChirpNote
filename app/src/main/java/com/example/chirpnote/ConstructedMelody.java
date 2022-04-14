@@ -18,7 +18,7 @@ public class ConstructedMelody extends Melody {
         THIRTY_SECOND_NOTE,
     }
     private HashMap<NoteDuration, Integer> mNoteDurations;
-    private final int CHANNEL = 2;
+    public final static int CHANNEL = 2;
 
     /**
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
