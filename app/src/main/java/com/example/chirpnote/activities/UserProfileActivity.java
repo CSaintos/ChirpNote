@@ -62,6 +62,7 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.bringToFront();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -110,19 +111,21 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_home:
-                UserProfileActivity.redirectActivity(this, HomeScreenActivity.class);
+                redirectActivity(this, HomeScreenActivity.class);
                 //Toast.makeText(this, "Home Screen", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_profile:
-                //UserProfileActivity.redirectActivity(this, UserProfileActivity.class);
-                Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+                // Just close the drawer since we're already on this activity
+                drawer.closeDrawer(GravityCompat.START);
+                //redirectActivity(this, UserProfileActivity.class);
+                //Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_overview:
                 Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_melody:
-                //UserProfileActivity.redirectActivity(this, MelodyActivity.class);
-                Toast.makeText(this, "Melody", Toast.LENGTH_SHORT).show();
+                redirectActivity(this, MelodyActivity.class);
+                //Toast.makeText(this, "Melody", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
