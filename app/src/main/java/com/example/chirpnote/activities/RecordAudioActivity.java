@@ -6,6 +6,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.AlphabeticIndex;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -125,6 +126,12 @@ public class RecordAudioActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         requestSignIn();
+        audio.getmMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                timer.stop();
+            }
+        });
 
 
 
@@ -179,7 +186,7 @@ public class RecordAudioActivity extends AppCompatActivity {
                     constructedMelody.play();
                     audio.play();*/
                 } else {
-                    audio.getmMediaRecorder().pause();
+                    audio.stop();
                     timer.stop();
                     /*realTimeMelody.stop();
                     constructedMelody.stop();
