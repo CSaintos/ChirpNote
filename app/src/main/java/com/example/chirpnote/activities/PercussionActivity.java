@@ -40,13 +40,14 @@ import java.util.ArrayList;
 public class PercussionActivity extends AppCompatActivity {
 
     private ArrayMap<RadioButton, ArrayList<RadioButton>> chordButtons;
-    private ArrayList<String> storedList; // to supposedly store chord's patterns
+    private ArrayList<String[]> storedList; // to supposedly store chord's patterns
     private ArrayMap<String, ArrayList<PercussionTrack>> stylePatternMap;
 
     private LinearLayout chordLayout;
     private RadioGroup chordGroup;
     private RadioGroup styleGroup;
     private RadioGroup patternGroup;
+    private RadioButton currentPatternButton;
     private Button leftButton;
     private Button rightButton;
     private Button insertButton;
@@ -59,7 +60,11 @@ public class PercussionActivity extends AppCompatActivity {
     private Session session;
     private Key key;
 
+    private String selectedStyle;
+    private String selectedPattern;
+
     private int chordButtonId;
+    private int chordIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +110,10 @@ public class PercussionActivity extends AppCompatActivity {
         removeButton = findViewById(R.id.percussionRemove);
         indicator = findViewById(R.id.percussionIndicator);
 
-        // yes...idk
-        chordButtonId = 69;
+        // identify radio buttons
+        chordButtonId = 0;
+        // identify chords
+        chordIndex = 0;
 
         // reset views
         chordGroup.removeAllViews();
@@ -135,14 +142,39 @@ public class PercussionActivity extends AppCompatActivity {
         insertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (currentPatternButton != null && currentPatternButton.isChecked()) {
+                    for (int i = 0; i < chordButtons.size(); i++) {
+                        ArrayList<RadioButton> rbs = chordButtons.valueAt(i);
+                        for (RadioButton rb : rbs) {
+                            if (rb.isChecked()) {
+                                storedList.set((int)rb.getTag(R.id.chord_index), new String[] {selectedStyle, selectedPattern});
+                                //Log.d("Insert", "index: " + (int)rb.getTag(R.id.chord_index));
+                            }
+                        }
+                    }
 
+                    displayIndicator(selectedStyle, selectedPattern);
+                }
             }
         });
 
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                boolean removed = false;
+                for (int i = 0; i < chordButtons.size(); i++) {
+                    ArrayList<RadioButton> rbs = chordButtons.valueAt(i);
+                    for (RadioButton rb : rbs) {
+                        if (rb.isChecked()) {
+                            if (!removed) removed = true;
+                            storedList.set((int)rb.getTag(R.id.chord_index), new String[] {"null", "null"});
+                            //Log.d("Remove", "index: " + (int)rb.getTag(R.id.chord_index));
+                        }
+                    }
+                }
+                if (removed) {
+                    displayIndicator("null", "null");
+                }
             }
         });
     }
@@ -164,6 +196,11 @@ public class PercussionActivity extends AppCompatActivity {
                     if (isChecked) {
                         cb.setBackground(getDrawable(R.drawable.radio_selected));
                         initPatterns(style);
+
+                        if (currentPatternButton != null) {
+                            currentPatternButton.setChecked(false);
+                            currentPatternButton = null;
+                        }
                     } else {
                         cb.setBackground(getDrawable(R.drawable.radio_normal));
                     }
@@ -193,9 +230,12 @@ public class PercussionActivity extends AppCompatActivity {
                     if (isChecked) {
                         cb.setBackground(getDrawable(R.drawable.radio_selected));
                         pattern.play();
+                        currentPatternButton = rb;
+                        selectedStyle = style;
+                        selectedPattern = pattern.getLabel();
                     } else {
                         cb.setBackground(getDrawable(R.drawable.radio_normal));
-                        pattern.stop();
+                        if (pattern.isPlaying()) pattern.stop();
                     }
                 }
             });
@@ -203,62 +243,6 @@ public class PercussionActivity extends AppCompatActivity {
             // add radio button to radio group
             patternGroup.addView(rb);
         }
-
-        /*
-        AssetFileDescriptor afd;
-        MediaPlayer mediaPlayer;
-
-        try {
-            String[] assetItems = this.getAssets().list("percussion/" + style);
-
-            for (String item : assetItems) { // for each pattern
-                String path = "percussion/" + style + "/" + item;
-
-                // testing percussion track initialization
-                PercussionTrack percussionTrack = new PercussionTrack(item, path, session, this);
-
-                // get audio asset
-                mediaPlayer = new MediaPlayer();
-                Log.d("path", path);
-                afd = this.getAssets().openFd(path);
-                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                afd.close();
-                mediaPlayer.prepare();
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-                // Create Radio button
-                String name = item.replace(".mid", "");
-                RadioButton rb = new RadioButton(this);
-                rb.setText(name);
-                Log.d("asset", item);
-                rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
-                rb.setBackground(getDrawable(R.drawable.radio_normal));
-
-                // Set Radio Button Listener
-                MediaPlayer finalMediaPlayer = mediaPlayer;
-                rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                   @Override
-                   public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
-                       if (isChecked) {
-                           cb.setBackground(getDrawable(R.drawable.radio_selected));
-                           finalMediaPlayer.start();
-                       } else {
-                           cb.setBackground(getDrawable(R.drawable.radio_normal));
-                       }
-                   }
-                });
-
-                // add radio button to radio group
-                patternGroup.addView(rb);
-
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("AssetFileDescriptor", "Unable to open file");
-        }
-         */
     }
 
     void displayChords() {
@@ -284,6 +268,7 @@ public class PercussionActivity extends AppCompatActivity {
         rb.setId(chordButtonId);
         chordButtonId++;
 
+        /*
         rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
@@ -296,6 +281,52 @@ public class PercussionActivity extends AppCompatActivity {
                     }
                 } else {
 
+                }
+            }
+        });
+         */
+
+        rb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CompoundButton cb = (CompoundButton) v;
+
+                // set all buttons to false
+                for (int i = 0; i < chordButtons.size(); i++) {
+                    for (int j = 0; j < chordButtons.valueAt(i).size(); j++) {
+                        RadioButton temp = chordButtons.valueAt(i).get(j);
+                        temp.setChecked(false);
+                        temp.setBackground(getDrawable(R.drawable.radio_normal));
+                        //Log.d("RadioButton", (String) (temp.getId() + "turned off"));
+                    }
+                    chordButtons.keyAt(i).setChecked(false);
+                }
+
+                String[] indication = null;
+                boolean sameIndication = true;
+                // select row
+                cb.setChecked(true);
+                ArrayList<RadioButton> tempButtons = chordButtons.get(cb);
+                for (int i = 0; i < tempButtons.size(); i++) {
+                    RadioButton temp = tempButtons.get(i);
+                    temp.setChecked(true);
+                    temp.setBackground(getDrawable(R.drawable.radio_selected));
+
+                    String[] chordInd = storedList.get((int)temp.getTag(R.id.chord_index));
+                    if (indication == null) {
+                        indication = chordInd;
+                    } else {
+                        if (!indication[1].equals(chordInd[1])) {
+                            sameIndication = false;
+                        }
+                    }
+                }
+
+                // Display indicator for row
+                if (sameIndication) {
+                    displayIndicator(indication[0], indication[1]);
+                } else {
+                    displayIndicator("null", "null");
                 }
             }
         });
@@ -312,6 +343,8 @@ public class PercussionActivity extends AppCompatActivity {
             rb0.setText("I");
             rb0.setId(chordButtonId);
             chordButtonId++;
+            rb0.setTag(R.id.chord_index, chordIndex);
+            chordIndex++;
 
             rb0.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -320,6 +353,7 @@ public class PercussionActivity extends AppCompatActivity {
                     cb.setChecked(true);
                     cb.setBackground(getDrawable(R.drawable.radio_selected));
 
+                    // set all other buttons to false
                     for (int i = 0; i < chordButtons.size(); i++) {
                         for (int j = 0; j < chordButtons.valueAt(i).size(); j++) {
                             RadioButton temp = chordButtons.valueAt(i).get(j);
@@ -331,14 +365,27 @@ public class PercussionActivity extends AppCompatActivity {
                         }
                         chordButtons.keyAt(i).setChecked(false);
                     }
+
+
+                    // update displayIndicator
+                    int index = (int) rb0.getTag(R.id.chord_index);
+                    Log.d("Retrieve", "index: " + index);
+                    String[] indication = storedList.get(index);
+                    displayIndicator(indication[0], indication[1]);
                 }
             });
 
             chordButtons.get(rb).add(rb0);
             row.addView(rb0);
+
+            storedList.add(new String[] {"null", "null"});
         }
 
         chordLayout.addView(row);
+    }
+
+    void displayIndicator(String style, String pattern) {
+        indicator.setText("style\n" + style + "\npattern\n" + pattern);
     }
 
     @Override
