@@ -84,6 +84,12 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                         try {
 
                             songArrayList.addAll(songData(songQueryString));
+                            ArrayList<String> removelist = new ArrayList<>();
+                            for (String S: songArrayList){
+                                if (S.contains("Key: m")){
+                                    removelist.add(S);
+                                }}
+                            songArrayList.removeAll(removelist);
                             progressDialog.dismiss();
                             //update the ListView
                             runOnUiThread(new Runnable() {

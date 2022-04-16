@@ -212,6 +212,10 @@ public class AudioTrack implements Track {
         return mMediaRecorder;
     }
 
+    public MediaPlayer getmMediaPlayer(){
+        return mMediaPlayer;
+    }
+
     /**
      * Stops playback of this audio track
      * @exception IllegalStateException if the audio track cannot be stopped at this time
