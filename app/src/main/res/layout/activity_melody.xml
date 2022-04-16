@@ -1,567 +1,605 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MelodyActivity">
+    android:fitsSystemWindows="true"
+    android:outlineProvider="none"
+    tools:context=".activities.MelodyActivity"
+    tools:openDrawer="end">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteCsharpbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/button_blackkey"
-        android:text="C#"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteCbutton"
-        app:layout_constraintEnd_toEndOf="@+id/melodynoteDbutton"
-        app:layout_constraintStart_toStartOf="@+id/melodynoteCbutton" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteDsharpbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/button_blackkey"
-        android:text="D#"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteDbutton"
-        app:layout_constraintEnd_toEndOf="@+id/melodynoteEbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteCbutton" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/nav_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/design_default_color_primary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteGsharpbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/button_blackkey"
-        android:text="G#"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteGbutton"
-        app:layout_constraintEnd_toEndOf="@+id/melodynoteAbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteFbutton" />
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteAsharpbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/button_blackkey"
-        android:text="A#"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteAbutton"
-        app:layout_constraintEnd_toEndOf="@+id/melodynoteBbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteGbutton" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteFsharpbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/button_blackkey"
-        android:text="F#"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteFbutton"
-        app:layout_constraintEnd_toEndOf="@+id/melodynoteGbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteEbutton" />
-
-    <TextView
-        android:id="@+id/RecordMelodyTextView"
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="139dp"
-        android:text="Record Melody"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/navigation_drawer_menu" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/melodytextlayout"
-        android:layout_width="416dp"
-        android:layout_height="228dp"
-        android:layout_marginTop="100dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteCsharpbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/button_blackkey"
+            android:text="C#"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteCbutton"
+            app:layout_constraintEnd_toEndOf="@+id/melodynoteDbutton"
+            app:layout_constraintStart_toStartOf="@+id/melodynoteCbutton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteDsharpbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/button_blackkey"
+            android:text="D#"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteDbutton"
+            app:layout_constraintEnd_toEndOf="@+id/melodynoteEbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteCbutton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteGsharpbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/button_blackkey"
+            android:text="G#"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteGbutton"
+            app:layout_constraintEnd_toEndOf="@+id/melodynoteAbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteFbutton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteAsharpbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/button_blackkey"
+            android:text="A#"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteAbutton"
+            app:layout_constraintEnd_toEndOf="@+id/melodynoteBbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteGbutton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteFsharpbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/button_blackkey"
+            android:text="F#"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteFbutton"
+            app:layout_constraintEnd_toEndOf="@+id/melodynoteGbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteEbutton" />
 
         <TextView
-            android:id="@+id/stafftextview"
+            android:id="@+id/RecordMelodyTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="123dp"
-            android:layout_marginTop="39dp"
-            android:layout_marginEnd="122dp"
-            android:fontFamily="@font/bravura"
-            android:text="\uE030\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE030"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="139dp"
+            android:text="Record Melody"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/melodytextlayout"
+            android:layout_width="416dp"
+            android:layout_height="228dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/stafftextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="123dp"
+                android:layout_marginTop="39dp"
+                android:layout_marginEnd="122dp"
+                android:fontFamily="@font/bravura"
+                android:text="\uE030\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE014\uE030"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/spaceN1textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="77dp"
+                android:fontFamily="@font/bravura"
+                android:text="\uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/line0textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:fontFamily="@font/bravura"
+                android:text="     \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/space0textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="52dp"
+                android:fontFamily="@font/bravura"
+                android:text="          \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/line1textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="39dp"
+                android:fontFamily="@font/bravura"
+                android:text="               \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/space1textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="27dp"
+                android:fontFamily="@font/bravura"
+                android:text="                    \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/line2textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/bravura"
+                android:text="                         \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/gcleftextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/bravura"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/space2textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/bravura"
+                android:text="                              \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/line3textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/bravura"
+                android:text="                                   \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/space3textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="22dp"
+                android:fontFamily="@font/bravura"
+                android:text="                                        \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/line4textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="35dp"
+                android:fontFamily="@font/bravura"
+                android:text="                                             \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/space4textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="47dp"
+                android:fontFamily="@font/bravura"
+                android:text="                                                  \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/line5textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="60dp"
+                android:fontFamily="@font/bravura"
+                android:text="                                                       \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/space5textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="72dp"
+                android:fontFamily="@font/bravura"
+                android:text="                                                            \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/line6textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="85dp"
+                android:fontFamily="@font/bravura"
+                android:text="                                                                 \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/space6textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="97dp"
+                android:fontFamily="@font/bravura"
+                android:text="                                                                      \uE1DB"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/stafftextview"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/melodyleftbutton"
+            android:layout_width="52dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="138dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="30dp"
+            android:text="l"
+            app:layout_constraintEnd_toStartOf="@+id/melodyrightbutton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/RecordMelodyTextView" />
+
+        <Button
+            android:id="@+id/melodyrightbutton"
+            android:layout_width="52dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="139dp"
+            android:text="r"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/melodyleftbutton"
+            app:layout_constraintTop_toBottomOf="@+id/RecordMelodyTextView" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteCbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/button_whitekey"
+            android:text="C"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/melodynoteDbutton"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteDbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/button_whitekey"
+            android:text="D"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/melodynoteEbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteCbutton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteEbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/button_whitekey"
+            android:text="E"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/melodynoteFbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteDbutton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteFbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/button_whitekey"
+            android:text="F"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/melodynoteGbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteEbutton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteGbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/button_whitekey"
+            android:text="G"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/melodynoteAbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteFbutton" />
+
+        <Button
+            android:id="@+id/noteSuggestion"
+            android:layout_width="70dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="528dp"
+            android:background="@color/purple_500"
+            android:text="Note Suggestion"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.994"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/spaceN1textview"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteAbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/button_whitekey"
+            android:text="A"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/melodynoteBbutton"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteGbutton" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/melodynoteBbutton"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_marginEnd="55dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/button_whitekey"
+            android:text="B"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteAbutton" />
+
+        <RadioGroup
+            android:id="@+id/melodyradiogroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="77dp"
-            android:fontFamily="@font/bravura"
-            android:text="\uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="199dp"
+            android:layout_marginEnd="212dp"
+            android:orientation="horizontal"
+            android:translationY="-40dp"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteFsharpbutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/melodytextlayout">
+
+            <RadioButton
+                android:id="@+id/melodywholeradiobutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bravura"
+                android:text="Whole" />
+
+            <RadioButton
+                android:id="@+id/melodyhalfradiobutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bravura"
+                android:text="Half" />
+
+            <RadioButton
+                android:id="@+id/melody4thradiobutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/bravura"
+                android:text="Quarter" />
+
+            <RadioButton
+                android:id="@+id/melody8thradiobutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/bravura"
+                android:text="8th" />
+
+            <RadioButton
+                android:id="@+id/melody16thradiobutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/bravura"
+                android:text="16th" />
+
+            <RadioButton
+                android:id="@+id/melody32ndradiobutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/bravura"
+                android:text="32nd" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/melodyrestbutton"
+            android:layout_width="74dp"
+            android:layout_height="41dp"
+            android:layout_marginStart="158dp"
+            android:layout_marginEnd="159dp"
+            android:layout_marginBottom="21dp"
+            android:text="Rest"
+            android:translationY="-10dp"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteGsharpbutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
+
+        <Button
+            android:id="@+id/melodynavright"
+            android:layout_width="40dp"
+            android:layout_height="41dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="124dp"
+            android:layout_marginBottom="21dp"
+            android:text="r"
+            android:translationY="-10dp"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteAsharpbutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/melodyrestbutton"
+            app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
+
+        <Button
+            android:id="@+id/melodynavleft"
+            android:layout_width="40dp"
+            android:layout_height="41dp"
+            android:layout_marginStart="123dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="21dp"
+            android:text="l"
+            android:translationY="-15dp"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteFsharpbutton"
+            app:layout_constraintEnd_toStartOf="@+id/melodyrestbutton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
+
+        <Button
+            android:id="@+id/melodyoctupbutton"
+            android:layout_width="49dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="16dp"
+            android:text="U"
+            app:layout_constraintBottom_toTopOf="@+id/melodyoctdownbutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteAsharpbutton" />
+
+        <Button
+            android:id="@+id/melodyoctdownbutton"
+            android:layout_width="49dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="65dp"
+            android:text="D"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteBbutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/melodynoteAsharpbutton" />
 
         <TextView
-            android:id="@+id/line0textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
-            android:fontFamily="@font/bravura"
-            android:text="     \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/melodyoctindicator"
+            android:layout_width="45dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="63dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="11dp"
+            android:background="@drawable/text_background"
+            android:text="C4"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/melodyoctupbutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/melodynavright" />
 
-        <TextView
-            android:id="@+id/space0textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="52dp"
-            android:fontFamily="@font/bravura"
-            android:text="          \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/melodyPlayButton"
+            android:layout_width="62dp"
+            android:layout_height="41dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginEnd="17dp"
+            android:text="Play"
+            android:translationY="-21dp"
+            app:layout_constraintBottom_toTopOf="@+id/melodynoteCsharpbutton"
+            app:layout_constraintEnd_toStartOf="@+id/melodynavleft"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
 
-        <TextView
-            android:id="@+id/line1textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="39dp"
-            android:fontFamily="@font/bravura"
-            android:text="               \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/space1textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="27dp"
-            android:fontFamily="@font/bravura"
-            android:text="                    \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/line2textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:fontFamily="@font/bravura"
-            android:text="                         \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/gcleftextview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:fontFamily="@font/bravura"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/space2textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:fontFamily="@font/bravura"
-            android:text="                              \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/line3textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@font/bravura"
-            android:text="                                   \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/space3textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="22dp"
-            android:fontFamily="@font/bravura"
-            android:text="                                        \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/line4textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="35dp"
-            android:fontFamily="@font/bravura"
-            android:text="                                             \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/space4textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="47dp"
-            android:fontFamily="@font/bravura"
-            android:text="                                                  \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/line5textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="60dp"
-            android:fontFamily="@font/bravura"
-            android:text="                                                       \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/space5textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="72dp"
-            android:fontFamily="@font/bravura"
-            android:text="                                                            \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/line6textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="85dp"
-            android:fontFamily="@font/bravura"
-            android:text="                                                                 \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/space6textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="97dp"
-            android:fontFamily="@font/bravura"
-            android:text="                                                                      \uE1DB"
-            android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/stafftextview"
-            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/melodyleftbutton"
-        android:layout_width="52dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="138dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="30dp"
-        android:text="l"
-        app:layout_constraintEnd_toStartOf="@+id/melodyrightbutton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RecordMelodyTextView" />
-
-    <Button
-        android:id="@+id/melodyrightbutton"
-        android:layout_width="52dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="139dp"
-        android:text="r"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/melodyleftbutton"
-        app:layout_constraintTop_toBottomOf="@+id/RecordMelodyTextView" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteCbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/button_whitekey"
-        android:text="C"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/melodynoteDbutton"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteDbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/button_whitekey"
-        android:text="D"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/melodynoteEbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteCbutton" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteEbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/button_whitekey"
-        android:text="E"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/melodynoteFbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteDbutton" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteFbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/button_whitekey"
-        android:text="F"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/melodynoteGbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteEbutton" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteGbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/button_whitekey"
-        android:text="G"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/melodynoteAbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteFbutton" />
-
-    <Button
-        android:id="@+id/noteSuggestion"
-        android:layout_width="70dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="528dp"
-        android:background="@color/purple_500"
-        android:text="Note Suggestion"
-        android:textColor="@android:color/white"
-        android:textSize="11sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.994"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteAbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/button_whitekey"
-        android:text="A"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/melodynoteBbutton"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteGbutton" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/melodynoteBbutton"
-        android:layout_width="50dp"
-        android:layout_height="150dp"
-        android:layout_marginEnd="55dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/button_whitekey"
-        android:text="B"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteAbutton" />
-
-    <RadioGroup
-        android:id="@+id/melodyradiogroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="199dp"
-        android:layout_marginEnd="212dp"
-        android:orientation="horizontal"
-        android:translationY="-40dp"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteFsharpbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/melodytextlayout">
-
-        <RadioButton
-            android:id="@+id/melodywholeradiobutton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/bravura"
-            android:text="Whole" />
-
-        <RadioButton
-            android:id="@+id/melodyhalfradiobutton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/bravura"
-            android:text="Half" />
-
-        <RadioButton
-            android:id="@+id/melody4thradiobutton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/bravura"
-            android:text="Quarter" />
-
-        <RadioButton
-            android:id="@+id/melody8thradiobutton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/bravura"
-            android:text="8th" />
-
-        <RadioButton
-            android:id="@+id/melody16thradiobutton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/bravura"
-            android:text="16th" />
-
-        <RadioButton
-            android:id="@+id/melody32ndradiobutton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/bravura"
-            android:text="32nd" />
-
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/melodyrestbutton"
-        android:layout_width="74dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="158dp"
-        android:layout_marginEnd="159dp"
-        android:layout_marginBottom="21dp"
-        android:text="Rest"
-        android:translationY="-10dp"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteGsharpbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
-
-    <Button
-        android:id="@+id/melodynavright"
-        android:layout_width="40dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="124dp"
-        android:layout_marginBottom="21dp"
-        android:text="r"
-        android:translationY="-10dp"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteAsharpbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/melodyrestbutton"
-        app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
-
-    <Button
-        android:id="@+id/melodynavleft"
-        android:layout_width="40dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="123dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="21dp"
-        android:text="l"
-        android:translationY="-15dp"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteFsharpbutton"
-        app:layout_constraintEnd_toStartOf="@+id/melodyrestbutton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
-
-    <Button
-        android:id="@+id/melodyoctupbutton"
-        android:layout_width="49dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="16dp"
-        android:text="U"
-        app:layout_constraintBottom_toTopOf="@+id/melodyoctdownbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteAsharpbutton" />
-
-    <Button
-        android:id="@+id/melodyoctdownbutton"
-        android:layout_width="49dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="65dp"
-        android:text="D"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteBbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/melodynoteAsharpbutton" />
-
-    <TextView
-        android:id="@+id/melodyoctindicator"
-        android:layout_width="45dp"
-        android:layout_height="26dp"
-        android:layout_marginStart="63dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="11dp"
-        android:text="C4"
-        android:textAlignment="center"
-        android:background="@drawable/text_background"
-        app:layout_constraintBottom_toTopOf="@+id/melodyoctupbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/melodynavright" />
-
-    <Button
-        android:id="@+id/melodyPlayButton"
-        android:layout_width="62dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="17dp"
-        android:text="Play"
-        android:translationY="-21dp"
-        app:layout_constraintBottom_toTopOf="@+id/melodynoteCsharpbutton"
-        app:layout_constraintEnd_toStartOf="@+id/melodynavleft"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/melodyradiogroup" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

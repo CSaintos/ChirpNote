@@ -1,6 +1,7 @@
 package com.example.chirpnote.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -18,14 +20,20 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
 import com.example.chirpnote.Session;
+import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -33,7 +41,8 @@ import org.billthefarmer.mididriver.ReverbConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KeyboardActivity extends AppCompatActivity {
+public class KeyboardActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
@@ -54,14 +63,30 @@ public class KeyboardActivity extends AppCompatActivity {
     private String keyTypeChoice;
     private Key currentKey;
 
+    private DrawerLayout drawer;
+
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keyboard);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().hide();
+//      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().hide();
+        // navigation drawer
+        Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        setSupportActionBar(toolbar);
 
+        drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.bringToFront();
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        // keyboard code
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
         Session session = new Session("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
@@ -81,7 +106,6 @@ public class KeyboardActivity extends AppCompatActivity {
         pianoKeys = getPianoKeys();
 
         keyButtons = new ArrayList<>();
-
 
         // set user input key name and type to new key in session
         Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
@@ -429,5 +453,48 @@ public class KeyboardActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         midiDriver.stop();
+    }
+
+    //navigation drawer
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                redirectActivity(this, HomeScreenActivity.class);
+                break;
+            case R.id.nav_profile:
+                redirectActivity(this, UserProfileActivity.class);
+                break;
+            case R.id.nav_music_theory:
+                // Just close the drawer since we're already on this activity
+                redirectActivity(this, MusicTheoryInfoActivity.class);
+                break;
+            case R.id.nav_overview:
+                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_melody:
+                redirectActivity(this, MelodyActivity.class);
+                break;
+            case R.id.nav_chords:
+                redirectActivity(this, InsertChordsActivity.class);
+                break;
+            case R.id.nav_percussion:
+                redirectActivity(this, PercussionActivity.class);
+                break;
+            case R.id.nav_keyboard:
+                // Just close the drawer since we're already on this activity
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+            default:
+                break;
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private static void redirectActivity(Activity activity, Class aClass) {
+        Intent intent = new Intent(activity, aClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
     }
 }

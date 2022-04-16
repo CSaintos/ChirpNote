@@ -12,6 +12,10 @@
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_baseline_person_outline_24"
             android:title="Profile" />
+        <item
+            android:id="@+id/nav_music_theory"
+            android:icon="@drawable/ic_baseline_menu_book_24"
+            android:title="Music Theory" />
     </group>
 
     <item android:title="Session">
@@ -24,6 +28,18 @@
                 android:id="@+id/nav_melody"
                 android:icon="@drawable/ic_baseline_music_note_24"
                 android:title="Melody" />
+            <item
+                android:id="@+id/nav_chords"
+                android:icon="@drawable/ic_chord_icon"
+                android:title="Add Chords" />
+            <item
+                android:id="@+id/nav_percussion"
+                android:icon="@drawable/ic_drum_icon"
+                android:title="Percussion" />
+            <item
+                android:id="@+id/nav_keyboard"
+                android:icon="@drawable/ic_pianoicon"
+                android:title="Free Play" />
         </menu>
     </item>
 

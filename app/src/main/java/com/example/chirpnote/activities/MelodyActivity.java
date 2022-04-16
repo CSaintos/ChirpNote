@@ -3,6 +3,7 @@ package com.example.chirpnote.activities;
 import static com.example.chirpnote.Notation.Syntax;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,8 +20,14 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
@@ -28,6 +36,7 @@ import com.example.chirpnote.Notation;
 import com.example.chirpnote.Notation.NoteFont;
 import com.example.chirpnote.R;
 import com.example.chirpnote.Session;
+import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -36,7 +45,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-public class MelodyActivity extends AppCompatActivity {
+public class MelodyActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private Notation notation = new Notation();
 
@@ -71,12 +81,29 @@ public class MelodyActivity extends AppCompatActivity {
     private int barLength;
     private int maxBarLength;
 
+    // navigation drawer
+    private DrawerLayout drawer;
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_melody);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // navigation menu
+        Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.bringToFront();
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
         // BRANDON
         //ConstructedMelody consMelody2 = new ConstructedMelody(session);
@@ -713,4 +740,59 @@ public class MelodyActivity extends AppCompatActivity {
      *  5. Sixteength note, followed by a sixteength rest, eight rest, quarter rest, and half rest. Note length = 2.
      *  6. So on so forth for 32nd.
      */
+
+    // code for navigation drawer
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                redirectActivity(this, HomeScreenActivity.class);
+                break;
+            case R.id.nav_profile:
+                redirectActivity(this, UserProfileActivity.class);
+                break;
+            case R.id.nav_music_theory:
+                redirectActivity(this, MusicTheoryInfoActivity.class);
+                break;
+            case R.id.nav_overview:
+                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_melody:
+                // Just close the drawer since we're already on this activity
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.nav_chords:
+                redirectActivity(this, InsertChordsActivity.class);
+                break;
+            case R.id.nav_percussion:
+                redirectActivity(this, PercussionActivity.class);
+                break;
+            case R.id.nav_keyboard:
+                redirectActivity(this, KeyboardActivity.class);
+                break;
+            default:
+                break;
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    // method to activate intent
+    private static void redirectActivity(Activity activity, Class aClass) {
+
+        Intent intent = new Intent(activity, aClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
+    }
+
 }

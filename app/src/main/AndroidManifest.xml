@@ -67,6 +67,7 @@
         <activity
             android:name=".activities.MusicTheoryInfoActivity"
             android:parentActivityName=".activities.HomeScreenActivity"
+            android:theme="@style/Theme.ChirpNote.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activities.UserOptionsActivity"
@@ -85,11 +86,13 @@
         <activity
             android:name=".activities.MelodyActivity"
             android:parentActivityName=".activities.HomeScreenActivity"
+            android:theme="@style/Theme.ChirpNote.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activities.KeyboardActivity"
             android:exported="false"
             android:parentActivityName=".activities.HomeScreenActivity"
+            android:theme="@style/Theme.ChirpNote.NoActionBar"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SetKeyFromSongActivity"

@@ -40,7 +40,8 @@ import org.w3c.dom.Document;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class UserProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class UserProfileActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
     Activity context;
@@ -112,27 +113,34 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         switch (item.getItemId()) {
             case R.id.nav_home:
                 redirectActivity(this, HomeScreenActivity.class);
-                //Toast.makeText(this, "Home Screen", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_profile:
                 // Just close the drawer since we're already on this activity
                 drawer.closeDrawer(GravityCompat.START);
-                //redirectActivity(this, UserProfileActivity.class);
-                //Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_music_theory:
+                // Just close the drawer since we're already on this activity
+                redirectActivity(this, MusicTheoryInfoActivity.class);
                 break;
             case R.id.nav_overview:
                 Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_melody:
                 redirectActivity(this, MelodyActivity.class);
-                //Toast.makeText(this, "Melody", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_chords:
+                redirectActivity(this, InsertChordsActivity.class);
+                break;
+            case R.id.nav_percussion:
+                redirectActivity(this, PercussionActivity.class);
+                break;
+            case R.id.nav_keyboard:
+                redirectActivity(this, KeyboardActivity.class);
                 break;
             default:
                 break;
         }
-
         drawer.closeDrawer(GravityCompat.START);
-
         return true;
     }
 
@@ -144,6 +152,12 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         else {
             super.onBackPressed();
         }
+    }
+
+    private static void redirectActivity(Activity activity, Class aClass) {
+        Intent intent = new Intent(activity, aClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
     }
 
     @Override
@@ -196,10 +210,5 @@ public class UserProfileActivity extends AppCompatActivity implements Navigation
         return false;
     }
 
-    private static void redirectActivity(Activity activity, Class aClass) {
 
-        Intent intent = new Intent(activity, aClass);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
-    }
 }
