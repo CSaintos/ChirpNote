@@ -124,6 +124,9 @@
         <service
             android:name=".activities.FloatingWindowService"
             />
+        <activity
+            android:name=".activities.MixerActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
