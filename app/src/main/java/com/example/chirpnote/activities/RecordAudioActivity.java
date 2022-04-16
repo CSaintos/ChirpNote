@@ -39,6 +39,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.slider.Slider;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -69,6 +70,8 @@ public class RecordAudioActivity extends AppCompatActivity {
     private Button shareButton;
     private Button exportButton;
     private Button directoryButton;
+    private Slider volSlider;
+
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
     Context context = this;
@@ -96,6 +99,7 @@ public class RecordAudioActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_record_audio);
         super.onCreate(savedInstanceState);
+        volSlider = findViewById(R.id.volumeSlider);
         timer = findViewById(R.id.recordTimer);
         directoryButton = findViewById(R.id.directoryShowButton);
         recordButton = findViewById(R.id.recordAudioActivityButton);
@@ -130,6 +134,12 @@ public class RecordAudioActivity extends AppCompatActivity {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 timer.stop();
+            }
+        });
+        volSlider.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                audio.getmMediaPlayer().setVolume(value,value);
             }
         });
 
