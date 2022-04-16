@@ -42,7 +42,6 @@ public class MelodyActivity extends AppCompatActivity {
 
     private TextView[] staffLines;
     private RadioButton[] noteLengthButtons;
-    //private Button backButton;
     private Button leftButton;
     private Button rightButton;
     private Button restButton;
@@ -102,7 +101,6 @@ public class MelodyActivity extends AppCompatActivity {
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
 
         // Initialize buttons
-        //backButton = (Button) findViewById(R.id.melodybackbutton);
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
         rightButton = (Button) findViewById(R.id.melodyrightbutton);
         restButton = (Button) findViewById(R.id.melodyrestbutton);
@@ -226,16 +224,6 @@ public class MelodyActivity extends AppCompatActivity {
                 (RadioButton) findViewById(R.id.melody32ndradiobutton)
         };
 
-        /*
-        backButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(MelodyActivity.this, ChordsActivity.class));
-                // Temp activity to go back to
-                startActivity(new Intent(MelodyActivity.this, HomeScreenActivity.class));
-            }
-        });*/
-
         leftButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -340,7 +328,6 @@ public class MelodyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (itr.hasNext()) {
                     // returns the last edited node. the Next next will be null if this next is the last node
-                    //if (!wasNext) currentNote = notation.new NoteFont(itr.next()); // previous was called b4
                     currentNote = notation.new NoteFont(itr.next());
                     // Set currentNote.color to DKGRAY
                     currentNote.color = Color.DKGRAY;

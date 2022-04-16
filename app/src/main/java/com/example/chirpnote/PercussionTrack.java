@@ -114,12 +114,13 @@ public class PercussionTrack {
 
     /**
      * A Percussion track
+     * @param label the label of this percussion track
      * @param path The path of this percussion track
      * @param session The session to play this Percussion track on
      * @param context The context from the activity (pass "this")
      */
-    public PercussionTrack(String path, Session session, Context context, int placeholder) {
-        mMidiEventHandler = new MidiEventHandler(path);
+    public PercussionTrack(String label, String path, Session session, Context context) {
+        mMidiEventHandler = new MidiEventHandler(label);
 
         try {
             // get file
@@ -209,5 +210,9 @@ public class PercussionTrack {
             throw new IllegalStateException("Cannot stop the percussion track if it is not being played (start playback first)");
         }
         mMidiProcessor.reset();
+    }
+
+    public String getLabel() {
+        return mMidiEventHandler.getLabel();
     }
 }

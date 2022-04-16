@@ -22,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.example.chirpnote.Key;
 import com.example.chirpnote.PercussionTrack;
@@ -33,24 +34,24 @@ import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PercussionActivity extends AppCompatActivity {
 
     private ArrayMap<RadioButton, ArrayList<RadioButton>> chordButtons;
-    private ArrayList<ArrayList<RadioButton>> patternList;
-    private ArrayList<RadioButton> styleList;
-    //private ArrayList<TableRow> tableRows;
-    private String[] styles;
+    private ArrayList<String> storedList; // to supposedly store chord's patterns
+    private ArrayMap<String, ArrayList<PercussionTrack>> stylePatternMap;
 
-    //private TableLayout tableLayout;
     private LinearLayout chordLayout;
     private RadioGroup chordGroup;
     private RadioGroup styleGroup;
     private RadioGroup patternGroup;
-    //private Button backButton;
     private Button leftButton;
     private Button rightButton;
+    private Button insertButton;
+    private Button removeButton;
+    private TextView indicator;
 
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
@@ -76,43 +77,46 @@ public class PercussionActivity extends AppCompatActivity {
         session = new Session("Name", key, 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
 
-        //tableRows = new ArrayList<>();
-        patternList = new ArrayList<>();
-        styleList = new ArrayList<>();
+        storedList = new ArrayList<>();
         chordButtons = new ArrayMap<>();
-        styles = new String[]{"pop", "rock"};
+        stylePatternMap = new ArrayMap<>();
 
+        // Initialize stylePatternMap with tracks in assets folder
+        try {
+            String[] styles = this.getAssets().list("percussion");
+            for (String style : styles) {
+                stylePatternMap.put(style, new ArrayList<>());
+                String[] items = this.getAssets().list("percussion/" + style);
+                for (String item : items) {
+                    String path = "percussion/" + style + "/" + item;
+                    stylePatternMap.get(style).add(new PercussionTrack(item, path, session, this));
+                }
+            }
+        } catch (IOException e) { e.printStackTrace(); }
+
+        // Initialize views
         chordGroup = findViewById(R.id.percussionChordGroup);
         styleGroup = findViewById(R.id.percussionStyleGroup);
         patternGroup = findViewById(R.id.percussionPatternGroup);
-        //backButton = (Button) findViewById(R.id.percussionbackbutton);
         leftButton = (Button) findViewById(R.id.percussionLeftButton);
         rightButton = (Button) findViewById(R.id.percussionRightButton);
         chordLayout = (findViewById(R.id.percussionChordLayout));
+        insertButton = findViewById(R.id.percussionInsert);
+        removeButton = findViewById(R.id.percussionRemove);
+        indicator = findViewById(R.id.percussionIndicator);
 
+        // yes...idk
         chordButtonId = 69;
-        /*
-        tableLayout = findViewById(R.id.percussionTableLayout);
-        for (int i = 0; i < tableLayout.getChildCount(); i++) {
-            tableRows.add((TableRow) tableLayout.getChildAt(i));
-        }*/
 
+        // reset views
         chordGroup.removeAllViews();
         styleGroup.removeAllViews();
         patternGroup.removeAllViews();
         chordLayout.removeAllViews();
 
+        // Initialize chords and style scrollbar
         initStyles();
         displayChords();
-
-        /*
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(PercussionActivity.this, SessionActivity.class));
-                startActivity(new Intent(PercussionActivity.this, HomeScreenActivity.class));
-            }
-        });*/
 
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,14 +131,30 @@ public class PercussionActivity extends AppCompatActivity {
 
             }
         });
+
+        insertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     void initStyles() {
 
-        for (String str : styles) {
-            RadioButton rb = new RadioButton(this);
+        for (int i = 0; i < stylePatternMap.size(); i++) {
+            String style = stylePatternMap.keyAt(i);
+            RadioButton rb = new RadioButton(this); // in the future, set all views, and then simply enable/disable them.
+            // Increases performance by trading processing for memory
             rb.setLayoutParams(styleGroup.getLayoutParams());
-            rb.setText(str);
+            rb.setText(style);
             rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
             rb.setBackground(getDrawable(R.drawable.radio_normal));
 
@@ -143,7 +163,7 @@ public class PercussionActivity extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
                     if (isChecked) {
                         cb.setBackground(getDrawable(R.drawable.radio_selected));
-                        initPatterns(str);
+                        initPatterns(style);
                     } else {
                         cb.setBackground(getDrawable(R.drawable.radio_normal));
                     }
@@ -156,7 +176,35 @@ public class PercussionActivity extends AppCompatActivity {
 
     void initPatterns(String style) {
         patternGroup.removeAllViews();
+        ArrayList<PercussionTrack> patterns = stylePatternMap.get(style);
 
+        for (PercussionTrack pattern : patterns) {
+            // Create pattern radio button
+            String name = pattern.getLabel().replace(".mid", ""); // returns copy of label
+            RadioButton rb = new RadioButton(this);
+            rb.setText(name);
+            rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
+            rb.setBackground(getDrawable(R.drawable.radio_normal));
+
+            // Set button's listener
+            rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
+                    if (isChecked) {
+                        cb.setBackground(getDrawable(R.drawable.radio_selected));
+                        pattern.play();
+                    } else {
+                        cb.setBackground(getDrawable(R.drawable.radio_normal));
+                        pattern.stop();
+                    }
+                }
+            });
+
+            // add radio button to radio group
+            patternGroup.addView(rb);
+        }
+
+        /*
         AssetFileDescriptor afd;
         MediaPlayer mediaPlayer;
 
@@ -166,8 +214,8 @@ public class PercussionActivity extends AppCompatActivity {
             for (String item : assetItems) { // for each pattern
                 String path = "percussion/" + style + "/" + item;
 
-                // TODO percussion track instead
-                PercussionTrack percussionTrack = new PercussionTrack(path, session, this, 0);
+                // testing percussion track initialization
+                PercussionTrack percussionTrack = new PercussionTrack(item, path, session, this);
 
                 // get audio asset
                 mediaPlayer = new MediaPlayer();
@@ -210,34 +258,7 @@ public class PercussionActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d("AssetFileDescriptor", "Unable to open file");
         }
-
-        // Create Radio button(s)
-        /*
-        RadioButton rb = new RadioButton(this);
-        rb.setText(("Beat_" + patternNum));
-        rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
-        rb.setBackground(getDrawable(R.drawable.radio_normal));
-        */
-
-        // Set Radio Button listener
-        /*
-        rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
-                if (isChecked) {
-                    cb.setBackground(getDrawable(R.drawable.radio_selected));
-                    // Test rock playback
-                    mediaPlayer.start();
-                    //percussion.playRock();
-                } else {
-                    cb.setBackground(getDrawable(R.drawable.radio_normal));
-                }
-            }
-        });
          */
-
-        // Add radio button to radio group
-        //patternGroup.addView(rb);
     }
 
     void displayChords() {
@@ -253,7 +274,6 @@ public class PercussionActivity extends AppCompatActivity {
         row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setDividerPadding(10);
-
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(150, 80);
 
@@ -314,64 +334,12 @@ public class PercussionActivity extends AppCompatActivity {
                 }
             });
 
-            /*
-            rb0.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
-                    if (isChecked) {
-                        cb.setBackground(getDrawable(R.drawable.radio_selected));
-                        for (int i = 0; i < chordButtons.size(); i++) {
-                            for (int j = 0; j < chordButtons.valueAt(i).size(); j++) {
-                                RadioButton temp = chordButtons.valueAt(i).get(j);
-                                if (cb.getId() != temp.getId()) {
-                                    temp.setChecked(false);
-                                    temp.setBackground(getDrawable(R.drawable.radio_normal));
-                                }
-                            }
-                            chordButtons.keyAt(i).setChecked(false);
-                        }
-                    } else {
-                        cb.setBackground(getDrawable(R.drawable.radio_normal));
-                    }
-                }
-            });*/
-
             chordButtons.get(rb).add(rb0);
             row.addView(rb0);
         }
 
         chordLayout.addView(row);
     }
-
-    /*
-    void displayChords() {
-        int chordCount = 0;
-        for (TableRow row : tableRows) {
-            row.removeAllViews();
-            for (int i = 0; i < 3; i++) {
-                RadioButton rb = new RadioButton(this);
-                rb.setLayoutParams(row.getLayoutParams());
-                rb.setText(("Chord " + chordCount));
-                rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
-                rb.setBackground(getDrawable(R.drawable.radio_normal));
-
-                // Set chord radio button listener
-                rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
-                        if (isChecked) {
-                            cb.setBackground(getDrawable(R.drawable.radio_selected));
-                        } else {
-                            cb.setBackground(getDrawable(R.drawable.radio_normal));
-                        }
-                    }
-                });
-                chordCount++;
-                //chordGroup.addView(rb);
-                row.addView(rb);
-            }
-        }
-    }*/
 
     @Override
     protected void onResume() {

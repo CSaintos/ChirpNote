@@ -121,4 +121,8 @@ public class MidiEventHandler implements MidiEventListener {
             System.out.println(mLabel + " paused");
         }*/
     }
+
+    public String getLabel() {
+        return mLabel;
+    }
 }
