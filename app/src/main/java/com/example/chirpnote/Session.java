@@ -20,13 +20,11 @@ public class Session implements Serializable {
     public List<String> mMelodyElements;
     public int mNextMelodyTick;
     private String mAudioPath;
-    private int mPercussionTrack;
+    public List<String> mPercussionPatterns;
     public int[] mTrackVolumes;
 
     // States
-    private boolean mChordsRecorded;
-    private boolean mConstructedMelodyRecorded;
-    private boolean mRealTimeMelodyRecorded;
+    private boolean mMidiPrepared;
     private boolean mAudioRecorded;
 
     /**
@@ -62,15 +60,13 @@ public class Session implements Serializable {
             mTempo = 120;
         }
         mMidiPath = midiPath;
+        mMidiPrepared = false;
         mChords = new ArrayList<>();
-        mChordsRecorded = false;
-        mConstructedMelodyRecorded = false;
-        mRealTimeMelodyRecorded = false;
         mMelodyElements = new ArrayList<>();
         mNextMelodyTick = 0;
         mAudioPath = audioPath;
         mAudioRecorded = false;
-        mPercussionTrack = -1;
+        mPercussionPatterns = new ArrayList<>();
         mTrackVolumes = new int[]{80, 80, 80, 100, 127}; // Chords, constructedMelody, recordedMelody, audio, percussion
     }
 
@@ -115,24 +111,10 @@ public class Session implements Serializable {
     }
 
     /**
-     * Call after a chords has been recorded (inserted) for this session
+     * Call after the MIDI file for this session has been created
      */
-    public void setChordsRecorded(){
-        mChordsRecorded = true;
-    }
-
-    /**
-     * Call after a constructed melody has been recorded for this session
-     */
-    public void setConstructedMelodyRecorded(){
-        mConstructedMelodyRecorded = true;
-    }
-
-    /**
-     * Call after a real time melody has been recorded for this session
-     */
-    public void setRealTimeMelodyRecorded(){
-        mRealTimeMelodyRecorded = true;
+    public void setMidiPrepared(){
+        mMidiPrepared = true;
     }
 
     /**
@@ -143,27 +125,11 @@ public class Session implements Serializable {
     }
 
     /**
-     * Gets whether or not this session's chord track has been recorded
-     * @return True if the session's chord track has been recorded
+     * Gets whether or not this session's MIDI file has been prepared
+     * @return True if the session's MIDI file is ready to be written to
      */
-    public boolean areChordsRecorded(){
-        return mChordsRecorded;
-    }
-
-    /**
-     * Gets whether or not this session's constructed melody has been recorded
-     * @return True if the session's constructed melody has been recorded
-     */
-    public boolean isConstructedMelodyRecorded(){
-        return mConstructedMelodyRecorded;
-    }
-
-    /**
-     * Gets whether or not this session's real time melody has been recorded
-     * @return True if the session's real time melody has been recorded
-     */
-    public boolean isRealTimeMelodyRecorded(){
-        return mRealTimeMelodyRecorded;
+    public boolean isMidiPrepared(){
+        return mMidiPrepared;
     }
 
     /**
@@ -175,12 +141,4 @@ public class Session implements Serializable {
     }
 
     public void setKey(Key key) {mKey = key;}
-
-    /**
-     * Sets this session's percussion track
-     * @param percussion The percussion track this session is using
-     */
-    public void setPercussionTrack(PercussionTrack.Style percussion){
-        mPercussionTrack = percussion.ordinal();
-    }
 }

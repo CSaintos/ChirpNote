@@ -254,9 +254,8 @@ public class ConstructedMelody extends Melody {
         return "128" + "000" + getDurationIdx(duration) + tick;
     }
 
-    @Override
     public boolean isRecorded(){
-        return mSession.isConstructedMelodyRecorded();
+        return mSession.isMidiPrepared();
     }
 
     @Override
@@ -282,7 +281,7 @@ public class ConstructedMelody extends Melody {
         if(!isRecorded()){
             super.stopRecording();
             if(mSession != null) {
-                mSession.setConstructedMelodyRecorded();
+                mSession.setMidiPrepared();
             }
         }
     }

@@ -39,7 +39,7 @@ public class SessionActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.keyText)).setText("Key: " + session.getKey());
 
         Button nextActivityButton = (Button) findViewById(R.id.goToNextActivityButton);
-        if(session.isConstructedMelodyRecorded() && session.isAudioRecorded()) {
+        if(session.isMidiPrepared() && session.isAudioRecorded()) {
             nextActivityButton.setEnabled(true);
         } else {
             nextActivityButton.setEnabled(false);
@@ -106,7 +106,7 @@ public class SessionActivity extends AppCompatActivity {
                 melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)),
                         ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
                 generateMelodyButton.setText("Melody generated!");
-                session.setConstructedMelodyRecorded();
+                session.setMidiPrepared();
                 if(audio.isRecorded()){
                     nextActivityButton.setEnabled(true);
                 }

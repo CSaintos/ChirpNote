@@ -66,18 +66,18 @@ public class RealTimeMelody extends Melody {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mSession.setRealTimeMelodyRecorded();
+            mSession.setMidiPrepared();
         } else {
             super.stopRecording();
         }
         if(mSession != null) {
-            mSession.setRealTimeMelodyRecorded();
+            mSession.setMidiPrepared();
         }
     }
 
     @Override
     public boolean isRecorded(){
-        return mSession != null ? mSession.isRealTimeMelodyRecorded() : super.isRecorded();
+        return mSession != null ? mSession.isMidiPrepared() : super.isRecorded();
     }
 
     /**

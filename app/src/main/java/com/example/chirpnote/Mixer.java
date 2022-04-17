@@ -12,7 +12,6 @@ import com.example.midiFileLib.src.util.MidiProcessor;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
-import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +26,7 @@ public class Mixer {
     public ConstructedMelody constructedMelody;
     public RealTimeMelody realTimeMelody;
     public AudioTrack audioTrack;
-    public PercussionTrack[] percussionTracks;
+    public PercussionPattern[] percussionTracks;
     private int mPercussionTrack;
 
     // For writing the MIDI file
@@ -50,10 +49,10 @@ public class Mixer {
         realTimeMelody = new RealTimeMelody(session);
         audioTrack = new AudioTrack(session);
 
-        PercussionTrack.Style[] styles = PercussionTrack.Style.values();
-        percussionTracks = new PercussionTrack[styles.length];
+        PercussionPattern.Style[] styles = PercussionPattern.Style.values();
+        percussionTracks = new PercussionPattern[styles.length];
         for(int i = 0; i < percussionTracks.length; i++){
-            percussionTracks[i] = new PercussionTrack(styles[i], session, context);
+            percussionTracks[i] = new PercussionPattern(styles[i], session, context);
         }
         mPercussionTrack = 0;
 
@@ -82,8 +81,7 @@ public class Mixer {
         } catch(IOException e) {
             System.err.println(e);
         }
-        mSession.setChordsRecorded();
-        mSession.setConstructedMelodyRecorded();
+        mSession.setMidiPrepared();
         syncSessionVolume();
     }
 
@@ -163,7 +161,7 @@ public class Mixer {
         if(volume < 0 || volume > 127){
             return;
         }
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) volume});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + PercussionTrack.CHANNEL, (byte) 0x07, (byte) volume});
         mSession.mTrackVolumes[4] = volume;
     }
 

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
@@ -31,7 +30,7 @@ import com.example.chirpnote.ConstructedMelody.NoteDuration;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
-import com.example.chirpnote.PercussionTrack;
+import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
 import com.example.chirpnote.Session;
@@ -68,7 +67,7 @@ public class TestOtherActivity extends AppCompatActivity {
     // Which track was most recently recorded
     private Track lastTrack;
     // A Percussion object to play percussion tracks/beats
-    private PercussionTrack rockPercussion;
+    private PercussionPattern rockPercussion;
     // Media player to play percussion
     private MediaPlayer rockPlayer;
     // A list of chords
@@ -386,7 +385,7 @@ public class TestOtherActivity extends AppCompatActivity {
             }
         });
         Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
-        rockPercussion = new PercussionTrack(PercussionTrack.Style.ROCK, session, this, rockMidiButton);
+        rockPercussion = new PercussionPattern(PercussionPattern.Style.ROCK, session, this, rockMidiButton);
         rockMidiButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

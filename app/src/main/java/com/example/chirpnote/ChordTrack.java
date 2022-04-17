@@ -15,7 +15,7 @@ public class ChordTrack implements Track {
     // States
     private boolean mRecording;
 
-    // For recording the melody
+    // For writing to MIDI file
     public final int RESOLUTION = 960;
     private MidiTrack mTempoTrack;
     protected MidiTrack mNoteTrack;
@@ -62,7 +62,7 @@ public class ChordTrack implements Track {
      * @return True if the chord track has been recorded
      */
     public boolean isRecorded(){
-        return mSession.areChordsRecorded();
+        return mSession.isMidiPrepared();
     }
 
     /**
@@ -123,7 +123,7 @@ public class ChordTrack implements Track {
             System.err.println(e);
         }
         mRecording = false;
-        mSession.setChordsRecorded();
+        mSession.setMidiPrepared();
     }
 
     /**
