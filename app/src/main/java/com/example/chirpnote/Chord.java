@@ -11,6 +11,8 @@ import java.util.Iterator;
 public class Chord {
 
 
+
+
     // Root note of the chord
     public enum RootNote {
         C("C", 48),
@@ -79,15 +81,27 @@ public class Chord {
     private final int RESOLUTION = 960;
     private Button mButton;
     private MidiDriver midiDriver = MidiDriver.getInstance();
+    private int mRoman;
 
     // NoteOn events for playback of chord alterations
     private ArrayList<int[]> alteration0Events = new ArrayList<>();
     private ArrayList<int[]> alteration1Events = new ArrayList<>();
     private ArrayList<int[]> alteration2Events = new ArrayList<>();
 
-    public Chord()
-    {
+    public Chord() {}
 
+    public Chord(RootNote rootNote, Type type, int tempo, int roman) {
+        mNotes = new ArrayList<>();
+        mNoteEvents = new ArrayList<>();
+        mType = type;
+        mRootNote = rootNote;
+        mRootNum = rootNote.getMidiNum();
+        buildChord();
+        mTempo = tempo;
+        mButton = null;
+        mPlaying = false;
+
+        mRoman = roman;
     }
 
     public Chord(Button viewById) {
@@ -317,6 +331,11 @@ public class Chord {
     public void setButton(Button button)
     {
         this.mButton = button;
+    }
+
+    public int returnRoman()
+    {
+        return mRoman;
     }
 
     /**
