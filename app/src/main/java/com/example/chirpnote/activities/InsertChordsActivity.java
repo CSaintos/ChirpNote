@@ -74,6 +74,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     private ArrayList<Chord[]> listOfChords = new ArrayList<>();
     private ArrayList<Button[]> listOfButtons = new ArrayList<>();
     private Chord selectedSessionChord = null;
+    private String selectedSuggestedChord;
     // The top three variables should be defined at the top of the file
 
 //    List<String> keyTypeList = new ArrayList<>();
@@ -166,31 +167,6 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                     chordSuggestionStatus = false;
                     chordSuggestion.setSelected(false);
 
-//                    for (int row = 0; row < layoutList.getChildCount(); row++)
-//                    {
-//                        for (int measure = 0; measure < measures.length; measure++)
-//                        {
-//                            Chord currentMeasure = listOfMeasures.get(row)[measure];
-//                            int finalMeasure = measure;
-//                            int finalRow = row;
-//                            currentMeasure.getButton().setOnClickListener(new View.OnClickListener()
-//                            {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    if (currentMeasure.getButton().isSelected())
-//                                    {
-//                                        currentMeasure.getButton().setSelected(false);
-//                                        System.out.println("SELECTED TRUE");
-//                                    }
-//                                    else
-//                                    {
-//                                        currentMeasure.getButton().setSelected(true);
-//                                        System.out.println("SELECTED FALSE");
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    }
                 }
                 else
                 {
@@ -511,6 +487,8 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
             chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
         }
 
+
+
         for(int colIdx = 0; colIdx < 4; colIdx++){
             int col = colIdx;
             listOfButtons.get(rowIdx)[col] = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
@@ -526,17 +504,45 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                         ((Button) v).setText(selectedSessionChord.getButton().getText());
                     }
 
+                    selectedSessionChord = null; // clears selectedChord so that it doesn't keep adding to other measures
+
+
+
+//                    String inputChord = listOfChords.get(rowIdx)[col].toString();
+//                    System.out.println("inputChord = " + inputChord);
+//                    suggestedChords = getSuggestedChords(inputChord, sessionChords);
+//                    if (listOfButtons.get(rowIdx)[col].isSelected())
+//                    {
+//                        chordSuggestionStatus = false;
+//                        listOfButtons.get(rowIdx)[col].setSelected(false);
+//
+//                    }
+//                    else
+//                    {
+//                        chordSuggestionStatus = true;
+//                        listOfButtons.get(rowIdx)[col].setSelected(true);
+//                    }
+
+/** OLD CHORD SUGGESTION METHOD */
+//                    String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
+//                    System.out.println("inputChord = " + inputChord);
+                    String inputChord = listOfChords.get(rowIdx)[col].toString();
+                    System.out.println("inputChord = " + inputChord);
+                    suggestedChords = getSuggestedChords(inputChord, sessionChords);
+//                    System.out.println("suggestedChords = " + suggestedChords);
                     if (chordSuggestionStatus == true) {
-                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
+//                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
+//                        System.out.println("inputChord = " + inputChord);
+//                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
+//                        System.out.println("suggestedChords = " + suggestedChords);
 
                         for (int i = 0; i < suggestedChords.size(); i++) {
                             suggestedChords.get(i).getButton().setSelected(true);
                         }
                     }
                     else if (chordSuggestionStatus == false) {
-                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
+//                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
+//                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
 
                         for (int i = 0; i < suggestedChords.size(); i++) {
                             suggestedChords.get(i).getButton().setSelected(false);
@@ -656,10 +662,13 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
      */
     private ArrayList<Chord> getSuggestedChords(String inputChord, Chord[] keyChords)
     {
-        ArrayList<Chord> listOfChords = new ArrayList<Chord>();
-//        int indexOfInputChord = keyChords.indexOf(inputChord); // grabs the index of chord to determine what roman numeral it is in
-        int indexOfInputChord = 0;
+        System.out.println("inputChord = " + inputChord);
 
+        ArrayList<Chord> listOfChords = new ArrayList<Chord>();
+//        int indexOfInputChord = session.getKey().returnRomanInt(inputChord); // grabs the index of chord to determine what roman numeral it is in
+//        System.out.println("indexOfInputChord = " + indexOfInputChord);
+
+        int indexOfInputChord = 0;
         for (int i = 0; i < keyChords.length; i++)
         {
             if (inputChord.equals(keyChords[i].toString()))
@@ -667,6 +676,8 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 indexOfInputChord = i;
             }
         }
+
+        //        System.out.println("indexOfInputChord = " + indexOfInputChord);
 
         // it doesn't matter if its major or minor since they share most of the same chord suggestions with the exception of VII which we're not using
         // if statements used to collect all the chord suggestions that pertain to the chord found at index of input chord

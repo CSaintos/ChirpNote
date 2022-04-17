@@ -153,6 +153,21 @@ public class Key implements Serializable {
 
     public String[] getRomanTypes() { return mRomanType; }
 
+    public int returnRomanInt(String romanString)
+    {
+        int romanInt = 0;
+
+        for (int i = 0; i < mRomanType.length; i++)
+        {
+            if (romanString.equals(mRomanType[i]))
+            {
+                return romanInt;
+            }
+        }
+
+        return romanInt;
+    }
+
 //    public int[] getNoteIndex()
 
 //    public String[] getKeyAccidentals()
