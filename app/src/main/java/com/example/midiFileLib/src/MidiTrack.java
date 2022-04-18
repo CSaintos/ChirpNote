@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.TreeSet;
 
 import com.example.midiFileLib.src.event.MidiEvent;
+import com.example.midiFileLib.src.event.NoteOff;
 import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.event.meta.EndOfTrack;
 import com.example.midiFileLib.src.event.meta.Tempo;
@@ -274,33 +275,27 @@ public class MidiTrack
         return true;
     }
 
-    public boolean removeNoteEvent(NoteOn event) {
+    public boolean removeNoteOnEvent(NoteOn event) {
         Iterator<MidiEvent> it = mEvents.iterator();
         MidiEvent prev = null, curr = null, next = null;
-
         while(it.hasNext()){
             next = it.next();
-
-            if(curr instanceof NoteOn && noteEventsEqual((NoteOn) curr, event)){
+            if(curr instanceof NoteOn && noteOnEventsEqual((NoteOn) curr, event)){
                 break;
             }
-
             prev = curr;
             curr = next;
             next = null;
         }
-
         if(next == null){
             // Either the event was not found in the track,
             // or this is the last event in the track.
             // Either way, we won't need to update any delta times
             return mEvents.remove(curr);
         }
-
         if(!mEvents.remove(curr)){
             return false;
         }
-
         if(prev != null){
             next.setDelta(next.getTick() - prev.getTick());
         } else {
@@ -312,7 +307,6 @@ public class MidiTrack
     public boolean removeFirstEvent(){
         Iterator<MidiEvent> it = mEvents.iterator();
         MidiEvent curr, next = null;
-
         if(it.hasNext()){
             curr = it.next();
             if(it.hasNext()){
@@ -321,12 +315,14 @@ public class MidiTrack
         } else {
             return false;
         }
-
+        if(!mEvents.remove(curr))
+        {
+            return false;
+        }
         if(next != null){
             next.setDelta(next.getTick());
         }
-
-        return mEvents.remove(curr);
+        return true;
     }
 
     public boolean removeChannel(int channel) {
@@ -348,7 +344,7 @@ public class MidiTrack
         return true;
     }
 
-    private boolean noteEventsEqual(NoteOn a, NoteOn b){
+    private boolean noteOnEventsEqual(NoteOn a, NoteOn b){
         return a.getTick() == b.getTick() && a.getChannel() == b.getChannel() &&
                 a.getNoteValue() == b.getNoteValue() && a.getVelocity() == b.getVelocity();
     }

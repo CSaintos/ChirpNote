@@ -52,6 +52,14 @@ public class MidiEventHandler implements MidiEventListener {
         } else {
             System.out.println(mLabel + " resumed");
         }
+        if(mPlayButton != null) {
+            new Handler(Looper.getMainLooper()).post(new Runnable(){
+                @Override
+                public void run() {
+                    mPlayButton.setText("Stop");
+                }
+            });
+        }
     }
 
     @Override

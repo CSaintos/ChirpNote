@@ -26,7 +26,7 @@ public class Mixer {
     public ConstructedMelody constructedMelody;
     public RealTimeMelody realTimeMelody;
     public AudioTrack audioTrack;
-    public PercussionPattern[] percussionTracks;
+    public PercussionTrack percussionTrack;
     private int mPercussionTrack;
 
     // For writing the MIDI file
@@ -39,7 +39,7 @@ public class Mixer {
     private MidiProcessor mMidiProcessor;
     private Button mPlayButton;
 
-    private Mixer(Session session, Context context){
+    private Mixer(Session session){
         mSession = session;
         mMidiEventHandler = new MidiEventHandler("MidiPlayback", mPlayButton);
 
@@ -48,13 +48,7 @@ public class Mixer {
         constructedMelody = new ConstructedMelody(session);
         realTimeMelody = new RealTimeMelody(session);
         audioTrack = new AudioTrack(session);
-
-        PercussionPattern.Style[] styles = PercussionPattern.Style.values();
-        percussionTracks = new PercussionPattern[styles.length];
-        for(int i = 0; i < percussionTracks.length; i++){
-            percussionTracks[i] = new PercussionPattern(styles[i], session, context);
-        }
-        mPercussionTrack = 0;
+        percussionTrack = new PercussionTrack(session);
 
         // Prepare MIDI file for MIDI tracks
         mTempoTrack = new MidiTrack();
@@ -88,13 +82,12 @@ public class Mixer {
     /**
      * Gets Mixer used to manage all track volumes and playback in the given Session
      * @param session The session whose tracks this mixer will control
-     * @param context The context from the activity (pass "this")
      * @param playButton The button in the activity used to start/stop playback
      * @return The mixer
      */
-    public static Mixer getInstance(Session session, Context context, Button playButton){
+    public static Mixer getInstance(Session session, Button playButton){
         if(mixerInstances.get(session) == null){
-            mixerInstances.put(session, new Mixer(session, context));
+            mixerInstances.put(session, new Mixer(session));
         }
         Mixer mixer = mixerInstances.get(session);
         mixer.setPlayButton(playButton);

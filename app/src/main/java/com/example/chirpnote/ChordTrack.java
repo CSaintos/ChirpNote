@@ -161,7 +161,7 @@ public class ChordTrack implements Track {
             int[][] noteOnEvents = oldChord.getNoteEvents();
             for(int i = 0; i < noteOnEvents.length; i++){
                 NoteOn event = new NoteOn(startTick + noteOnEvents[i][1], CHANNEL, noteOnEvents[i][0], noteOnEvents[i][2]);
-                midiFile.getTracks().get(1).removeNoteEvent(event);
+                midiFile.getTracks().get(1).removeNoteOnEvent(event);
             }
             // Add the new chord
             noteOnEvents = chord.getNoteEvents();

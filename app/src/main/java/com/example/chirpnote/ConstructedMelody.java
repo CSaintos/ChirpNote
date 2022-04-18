@@ -168,10 +168,10 @@ public class ConstructedMelody extends Melody {
         int velocity = removeLeadingZeroes(encodedElement.substring(3, 6));
 
         // Remove NoteOn and NoteOff events from MIDI file to remove the note
-        midiFile.getTracks().get(1).removeNoteEvent(new NoteOn(tickRange[0], CHANNEL, pitch, velocity));
+        midiFile.getTracks().get(1).removeNoteOnEvent(new NoteOn(tickRange[0], CHANNEL, pitch, velocity));
         // A NoteOn event with velocity 0 was used instead of a NoteOff event
         // See: https://github.com/LeffelMania/android-midi-lib/issues/10
-        midiFile.getTracks().get(1).removeNoteEvent(new NoteOn(tickRange[1], CHANNEL, pitch, 0));
+        midiFile.getTracks().get(1).removeNoteOnEvent(new NoteOn(tickRange[1], CHANNEL, pitch, 0));
 
         return tickRange;
     }

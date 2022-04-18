@@ -2,6 +2,7 @@ package com.example.chirpnote;
 
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
+import com.example.midiFileLib.src.event.MidiEvent;
 import com.example.midiFileLib.src.event.NoteOff;
 import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.event.meta.Tempo;
@@ -11,6 +12,7 @@ import com.example.midiFileLib.src.util.MidiProcessor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PercussionTrack implements Track {
     // States
@@ -124,6 +126,122 @@ public class PercussionTrack implements Track {
     }
 
     /**
+     * Adds a pattern to this track at the given position
+     * @param pattern The percussion pattern to add
+     * @param position The position in the track to add the pattern (replaces the existing pattern at this position)
+     * @throws NullPointerException if the given pattern is null
+     * @throws IllegalStateException if the pattern cannot be added to the track at this time
+     */
+    public void addPattern(PercussionPattern pattern, int position) throws NullPointerException, IllegalStateException {
+        if(pattern == null){
+            throw new NullPointerException("Cannot add a null PercussionPattern to the track");
+        }
+        // Recording process is stopped right after it is started for a ChordTrack,
+        // so we check if the chord track has been recorded, and not if the recording process is active
+        if(!isRecorded()){
+            throw new IllegalStateException("Cannot add a pattern to the track if the recording process has not been started");
+        }
+        // Read existing MIDI file
+        MidiFile midiFile = null;
+        File output = new File(mFilePath);
+        try {
+            midiFile = new MidiFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        MidiTrack track = midiFile.getTracks().get(1);
+
+        // Add pattern
+        if(position < mSession.mPercussionPatterns.size()){
+            // Add to the middle of the track
+            int startTick = RESOLUTION * 4 * position;
+            int endTick = RESOLUTION * 4 * (position + 1);
+
+            // Remove the old pattern
+            Iterator<MidiEvent> it = track.getEvents().iterator();
+            MidiEvent prev = null, next = it.hasNext() ? it.next() : null, curr;
+            while(next != null){
+                curr = next;
+                next = it.hasNext() ? it.next() : null;
+                if(curr.getTick() >= startTick){
+                    if(curr instanceof NoteOn){
+                        if(curr.getTick() >= endTick){
+                            break;
+                        }
+                        NoteOn noteEvent = (NoteOn) curr;
+                        if(noteEvent.getChannel() == CHANNEL){
+                            track.getEvents().remove(curr);
+                            if(prev != null){
+                                next.setDelta(next.getTick() - prev.getTick());
+                            } else {
+                                next.setDelta(next.getTick());
+                            }
+                        }
+                    } else if(curr instanceof NoteOff) {
+                        NoteOff noteEvent = (NoteOff) curr;
+                        if(noteEvent.getChannel() == CHANNEL){
+                            track.getEvents().remove(curr);
+                            if(prev != null){
+                                next.setDelta(next.getTick() - prev.getTick());
+                            } else {
+                                next.setDelta(next.getTick());
+                            }
+                        }
+                    }
+                }
+                prev = curr;
+            }
+            // Add the new pattern
+            it = pattern.getMidiFile().getTracks().get(1).getEvents().iterator();
+            while(it.hasNext()){
+                next = it.next();
+                if(next instanceof NoteOn){
+                    NoteOn temp = ((NoteOn) next);
+                    track.insertEvent(new NoteOn(startTick + temp.getTick(), CHANNEL, temp.getNoteValue(), temp.getVelocity()));
+                } else if(next instanceof NoteOff){
+                    NoteOff temp = ((NoteOff) next);
+                    track.insertEvent(new NoteOn(startTick + temp.getTick(), CHANNEL, temp.getNoteValue(), 0));
+                }
+            }
+            mSession.mPercussionPatterns.set(position, encodePattern(pattern));
+        } else {
+            // Add to the end of the track
+            int startTick = RESOLUTION * 4 * mSession.mPercussionPatterns.size();
+            Iterator<MidiEvent> it = pattern.getMidiFile().getTracks().get(1).getEvents().iterator();
+            MidiEvent next;
+            while(it.hasNext()){
+                next = it.next();
+                if(next instanceof NoteOn){
+                    NoteOn temp = ((NoteOn) next);
+                    track.insertEvent(new NoteOn(startTick + (temp.getTick() * 2), CHANNEL, temp.getNoteValue(), temp.getVelocity()));
+                } else if(next instanceof NoteOff){
+                    NoteOff temp = ((NoteOff) next);
+                    track.insertEvent(new NoteOn(startTick + (temp.getTick() * 2), CHANNEL, temp.getNoteValue(), 0));
+                }
+            }
+            mSession.mPercussionPatterns.add(encodePattern(pattern));
+        }
+
+        // Write changes to MIDI file
+        try {
+            midiFile.writeToFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    TODO: Percussion Pattern encoding TBD
+    The string encoding for percussion patterns is defined as follows:
+	char 0: index of percussion style in assets directory
+	char 1: index of percussion pattern in assets directory
+	*/
+
+    private String encodePattern(PercussionPattern pattern){
+        return "percussionEncoding";
+    }
+
+    /**
      * Plays back this percussion track
      * @exception IllegalStateException if the percussion track cannot be played
      */
@@ -146,7 +264,6 @@ public class PercussionTrack implements Track {
         }
         mMidiProcessor = new MidiProcessor(midiFile);
         mMidiProcessor.registerEventListener(mMidiEventHandler, NoteOn.class);
-        mMidiProcessor.registerEventListener(mMidiEventHandler, NoteOff.class);
         mMidiProcessor.start();
     }
 

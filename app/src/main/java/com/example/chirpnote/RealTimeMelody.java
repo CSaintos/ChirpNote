@@ -187,7 +187,7 @@ public class RealTimeMelody extends Melody {
                         }
                         noteMap.remove(noteEvent.getNoteValue());
                     } else {
-                        // TODO: Compute how much the event needs to be quantized (how many ticks to move it up or down)
+                        // Compute how much the event needs to be quantized (how many ticks to move it up or down)
                         long value = 0;
                         long differenceValue = 0;
                         value = curr.getTick();
@@ -201,21 +201,12 @@ public class RealTimeMelody extends Melody {
 //                                        System.out.println("new:" + curr.getTick());
                                         differenceValue = valuesForNoteType.get(i) - value;
                                     }
-                                }
-                                else{
+                                } else {
                                     break;
                                 }
                             }
                         }
-
-                        /*
-                        noteEvent is the current event you want to check
-                        To get the note MIDI number, noteEvent.getNoteValue()
-                        To get the tick the event happens at, noteEvent.getTick()
-                         */
                         int tickDelta = (int) differenceValue;
-                        // ^set tickDelta to how much to move the current event by (negative int if it needs to be moved back)
-                        // Currently just moving everything forward by one measure (RESOLUTION is how many ticks per beat, 4 beats in one measure)
                         if(tickDelta != 0) {
                             curr.setTick(curr.getTick() + tickDelta);
                             if(prev != null) {

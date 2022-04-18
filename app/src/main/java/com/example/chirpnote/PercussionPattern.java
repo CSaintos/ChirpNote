@@ -42,11 +42,11 @@ public class PercussionPattern {
     private MidiEventHandler mMidiEventHandler;
 
     /**
-     * A Percussion track
-     * @param style The style of this percussion track
-     * @param session The session to play this Percussion track on
+     * A Percussion pattern
+     * @param style The style of this percussion pattern
+     * @param session The session to play this Percussion pattern on
      * @param context The context from the activity (pass "this")
-     * @param playButton The button used to play this track
+     * @param playButton The button used to play this pattern
      */
     public PercussionPattern(Style style, Session session, Context context, Button playButton){
         mMidiEventHandler = new MidiEventHandler(style.toString(), playButton);
@@ -56,31 +56,17 @@ public class PercussionPattern {
             mFilePath = tempFile.getPath();
             copyFile(inputStream, new FileOutputStream(tempFile));
 
-            // Set tempo to session tempo
-            MidiFile midiFile = null;
-            try {
-                midiFile = new MidiFile(tempFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Tempo tempo = new Tempo();
-            tempo.setBpm(session.getTempo());
-            midiFile.getTracks().get(0).insertEvent(tempo);
-            try {
-                midiFile.writeToFile(tempFile);
-            } catch(IOException e) {
-                System.err.println(e);
-            }
             inputStream.close();
+            setTempo(session.getTempo());
         } catch (IOException e) {
             throw new RuntimeException("Can't create temp file ", e);
         }
     }
 
     /**
-     * A Percussion track
-     * @param style The style of this percussion track
-     * @param session The session to play this Percussion track on
+     * A Percussion pattern
+     * @param style The style of this percussion pattern
+     * @param session The session to play this Percussion pattern on
      * @param context The context from the activity (pass "this")
      */
     public PercussionPattern(Style style, Session session, Context context){
@@ -91,37 +77,22 @@ public class PercussionPattern {
             mFilePath = tempFile.getPath();
             copyFile(inputStream, new FileOutputStream(tempFile));
 
-            // Set tempo to session tempo
-            MidiFile midiFile = null;
-            try {
-                midiFile = new MidiFile(tempFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Tempo tempo = new Tempo();
-            tempo.setBpm(session.getTempo());
-            midiFile.getTracks().get(0).insertEvent(tempo);
-            try {
-                midiFile.writeToFile(tempFile);
-            } catch(IOException e) {
-                System.err.println(e);
-            }
             inputStream.close();
+            setTempo(session.getTempo());
         } catch (IOException e) {
             throw new RuntimeException("Can't create temp file ", e);
         }
     }
 
     /**
-     * A Percussion track
-     * @param label the label of this percussion track
-     * @param path The path of this percussion track
-     * @param session The session to play this Percussion track on
+     * A Percussion pattern
+     * @param label the label of this percussion pattern
+     * @param path The path of this percussion pattern
+     * @param session The session to play this Percussion pattern on
      * @param context The context from the activity (pass "this")
      */
     public PercussionPattern(String label, String path, Session session, Context context) {
         mMidiEventHandler = new MidiEventHandler(label);
-
         try {
             // get file
             AssetFileDescriptor afd = context.getAssets().openFd(path);
@@ -130,17 +101,11 @@ public class PercussionPattern {
             mFilePath = tempFile.getPath();
             copyFile(inputStream, new FileOutputStream(tempFile));
 
-            MidiFile midiFile = new MidiFile(tempFile);
-
-            // set tempo
-            Tempo tempo = new Tempo();
-            tempo.setBpm(session.getTempo());
-            midiFile.getTracks().get(0).insertEvent(tempo);
-            midiFile.writeToFile(tempFile);
+            inputStream.close();
+            setTempo(session.getTempo());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
@@ -152,7 +117,7 @@ public class PercussionPattern {
     }
 
     /**
-     * Sets the tempo for all percussion tracks
+     * Sets the tempo for this percussion pattern
      * @param bpm The new tempo
      */
     public void setTempo(int bpm){
@@ -171,6 +136,21 @@ public class PercussionPattern {
         } catch(IOException e) {
             System.err.println(e);
         }
+    }
+
+    /**
+     * Gets the MIDI file container for this percussion pattern
+     * @return The MIDI file of this pattern
+     */
+    public MidiFile getMidiFile(){
+        MidiFile midiFile = null;
+        File output = new File(mFilePath);
+        try {
+            midiFile = new MidiFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return midiFile;
     }
 
     /**

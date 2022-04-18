@@ -31,6 +31,7 @@ import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.PercussionPattern;
+import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
 import com.example.chirpnote.Session;
@@ -66,8 +67,10 @@ public class TestOtherActivity extends AppCompatActivity {
     private ChordTrack chordTrack;
     // Which track was most recently recorded
     private Track lastTrack;
-    // A Percussion object to play percussion tracks/beats
+    // A Percussion pattern
     private PercussionPattern rockPercussion;
+    // A percussion track to store many patterns
+    private PercussionTrack percussionTrack;
     // Media player to play percussion
     private MediaPlayer rockPlayer;
     // A list of chords
@@ -127,7 +130,7 @@ public class TestOtherActivity extends AppCompatActivity {
         String basePath = this.getFilesDir().getPath();
         Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
-        Mixer mixer = Mixer.getInstance(session, this, playButton);
+        Mixer mixer = Mixer.getInstance(session, playButton);
 
         // Real time melody
         /*realTimeMelody = new RealTimeMelody(session);
@@ -145,6 +148,8 @@ public class TestOtherActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        percussionTrack = mixer.percussionTrack;
 
         // Music notes
         pianoKeys = new ArrayList<>();
@@ -278,7 +283,7 @@ public class TestOtherActivity extends AppCompatActivity {
         playButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!lastTrack.isPlaying()){
+                if(!mixer.areTracksPlaying()){
                     mixer.playTracks();
                     /*playButton.setText("Stop");
                     lastTrack.play();*/
@@ -386,12 +391,14 @@ public class TestOtherActivity extends AppCompatActivity {
         });
         Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
         rockPercussion = new PercussionPattern(PercussionPattern.Style.ROCK, session, this, rockMidiButton);
+        percussionTrack.startRecording();
         rockMidiButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!rockPercussion.isPlaying()) {
                     rockPercussion.play();
                     rockMidiButton.setText("Stop");
+                    percussionTrack.addPattern(rockPercussion, session.mPercussionPatterns.size());
                 } else {
                     rockPercussion.stop();
                     rockMidiButton.setText("Play");
