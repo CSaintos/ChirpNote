@@ -125,6 +125,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
 
 
+        
         // Touch this button to play the most recently recorded track
         // Touch it again to stop the playback of the track
         Button playButton = (Button) findViewById(R.id.testPlayButton);
