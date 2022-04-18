@@ -154,15 +154,13 @@ public class PercussionTrack implements Track {
         // Add pattern
         if(position < mSession.mPercussionPatterns.size()){
             // Add to the middle of the track
-            int startTick = RESOLUTION * 4 * position;
-            int endTick = RESOLUTION * 4 * (position + 1);
-
+            int startTick = RESOLUTION * 16 * position; // TODO: Offset should only be one measure long, not 4
+            int endTick = RESOLUTION * 16 * (position + 1); // TODO: Offset should only be one measure long, not 4
             // Remove the old pattern
             Iterator<MidiEvent> it = track.getEvents().iterator();
-            MidiEvent prev = null, next = it.hasNext() ? it.next() : null, curr;
-            while(next != null){
-                curr = next;
-                next = it.hasNext() ? it.next() : null;
+            MidiEvent curr;
+            while(it.hasNext()){
+                curr = it.next();
                 if(curr.getTick() >= startTick){
                     if(curr instanceof NoteOn){
                         if(curr.getTick() >= endTick){
@@ -170,43 +168,32 @@ public class PercussionTrack implements Track {
                         }
                         NoteOn noteEvent = (NoteOn) curr;
                         if(noteEvent.getChannel() == CHANNEL){
-                            track.getEvents().remove(curr);
-                            if(prev != null){
-                                next.setDelta(next.getTick() - prev.getTick());
-                            } else {
-                                next.setDelta(next.getTick());
-                            }
+                            it.remove();
                         }
                     } else if(curr instanceof NoteOff) {
                         NoteOff noteEvent = (NoteOff) curr;
                         if(noteEvent.getChannel() == CHANNEL){
-                            track.getEvents().remove(curr);
-                            if(prev != null){
-                                next.setDelta(next.getTick() - prev.getTick());
-                            } else {
-                                next.setDelta(next.getTick());
-                            }
+                            it.remove();
                         }
                     }
                 }
-                prev = curr;
             }
             // Add the new pattern
             it = pattern.getMidiFile().getTracks().get(1).getEvents().iterator();
             while(it.hasNext()){
-                next = it.next();
-                if(next instanceof NoteOn){
-                    NoteOn temp = ((NoteOn) next);
-                    track.insertEvent(new NoteOn(startTick + temp.getTick(), CHANNEL, temp.getNoteValue(), temp.getVelocity()));
-                } else if(next instanceof NoteOff){
-                    NoteOff temp = ((NoteOff) next);
-                    track.insertEvent(new NoteOn(startTick + temp.getTick(), CHANNEL, temp.getNoteValue(), 0));
+                curr = it.next();
+                if(curr instanceof NoteOn){
+                    NoteOn temp = ((NoteOn) curr);
+                    track.insertEvent(new NoteOn(startTick + (temp.getTick() * 2), CHANNEL, temp.getNoteValue(), temp.getVelocity()));
+                } else if(curr instanceof NoteOff){
+                    NoteOff temp = ((NoteOff) curr);
+                    track.insertEvent(new NoteOn(startTick + (temp.getTick() * 2), CHANNEL, temp.getNoteValue(), 0));
                 }
             }
             mSession.mPercussionPatterns.set(position, encodePattern(pattern));
         } else {
             // Add to the end of the track
-            int startTick = RESOLUTION * 4 * mSession.mPercussionPatterns.size();
+            int startTick = RESOLUTION * 16 * mSession.mPercussionPatterns.size(); // TODO: Should only be one measure long
             Iterator<MidiEvent> it = pattern.getMidiFile().getTracks().get(1).getEvents().iterator();
             MidiEvent next;
             while(it.hasNext()){
@@ -221,7 +208,6 @@ public class PercussionTrack implements Track {
             }
             mSession.mPercussionPatterns.add(encodePattern(pattern));
         }
-
         // Write changes to MIDI file
         try {
             midiFile.writeToFile(output);

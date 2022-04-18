@@ -375,7 +375,7 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Testing percussion playback
         Button rockMediaButton = (Button) findViewById(R.id.testRockMediaButton);
-        rockMediaButton.setOnClickListener(new OnClickListener() {
+        /*rockMediaButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(rockPlayer == null) {
@@ -385,6 +385,20 @@ public class TestOtherActivity extends AppCompatActivity {
                     rockMediaButton.setText("Stop");
                 } else {
                     rockPlayer.stop();
+                    rockMediaButton.setText("Play");
+                }
+            }
+        });*/
+        PercussionPattern pattern2 = new PercussionPattern(PercussionPattern.Style.POP, session, this, rockMediaButton);
+        rockMediaButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!pattern2.isPlaying()) {
+                    pattern2.play();
+                    rockMediaButton.setText("Stop");
+                    percussionTrack.addPattern(pattern2, 1);
+                } else {
+                    pattern2.stop();
                     rockMediaButton.setText("Play");
                 }
             }
