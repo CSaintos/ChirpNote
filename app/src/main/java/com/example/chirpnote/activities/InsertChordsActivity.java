@@ -208,7 +208,6 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
-//        addRowOfMeasures();
         switch (v.getId()) {
             case R.id.button_add_row:
                 if (areMeasuresFilled() == true || layoutList.getChildCount() == 0)
@@ -224,7 +223,6 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
-                //chordTrack.play();
                 break;
 //            case R.id.chordSuggestionButton:
 //                chordSuggestion(session);
@@ -505,7 +503,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
         for (int col = 0; col < prefilledMeasures.length; col++)
         {
-            int romanChordIndex = prefilledMeasures[col].returnRoman();
+            int romanChordIndex = prefilledMeasures[col].getRoman();
             String romanChordString = session.getKey().getRomanTypes()[romanChordIndex];
             Button tempMeasure = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
             tempMeasure.setText(romanChordString);
@@ -650,7 +648,8 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
         layoutList.removeView(view);
         listOfChords.remove(rowIndex);
-//        chordTrack.removeChord(rowIndex); // still need to implement
+        listOfButtons.remove(rowIndex);
+        chordTrack.removeFourChords(rowIndex * 4);
     }
 
     public void initializeSessionChords()

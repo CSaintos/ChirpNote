@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Chord {
-
-
-
-
     // Root note of the chord
     public enum RootNote {
         C("C", 48),
@@ -75,24 +71,50 @@ public class Chord {
     private int mAlteration;
     private Inversion mInversion;
     private ArrayList<MusicNote> mNotes;
-    private ArrayList<int[]> mNoteEvents;
+    private int[][] mNoteEvents;
     private boolean mPlaying;
     private int mTempo;
-    private final int RESOLUTION = 960;
+    private final static int RESOLUTION = 960;
     private Button mButton;
     private MidiDriver midiDriver = MidiDriver.getInstance();
     private int mRoman;
 
-    // NoteOn events for playback of chord alterations
-    private ArrayList<int[]> alteration0Events = new ArrayList<>();
-    private ArrayList<int[]> alteration1Events = new ArrayList<>();
-    private ArrayList<int[]> alteration2Events = new ArrayList<>();
+    // MIDI events for playback of chord alterations
+    // Each inner int[] represents a NoteOn event to fire when playing back the chord alteration
+    // [note index in mNotes, MIDI tick of event, velocity of NoteOn (velocity of 0 for NoteOff)]
+    private static int[][] alteration0Events =
+        {{0, 0, MusicNote.VELOCITY},
+        {1, 0, MusicNote.VELOCITY},
+        {2, 0, MusicNote.VELOCITY},
+        {0, RESOLUTION * 4, 0},
+        {1, RESOLUTION * 4, 0},
+        {2, RESOLUTION * 4, 0}};
+    private static int[][] alteration1Events =
+        {{1, 0, MusicNote.VELOCITY},
+        {2, 0, MusicNote.VELOCITY},
+        {1, RESOLUTION, 0},
+        {2, RESOLUTION, 0},
+        {0, RESOLUTION, MusicNote.VELOCITY},
+        {0, RESOLUTION * 2, 0},
+        {1, RESOLUTION * 2, MusicNote.VELOCITY},
+        {2, RESOLUTION * 2, MusicNote.VELOCITY},
+        {1, RESOLUTION * 3, 0},
+        {2, RESOLUTION * 3, 0},
+        {0, RESOLUTION * 3, MusicNote.VELOCITY},
+        {0, RESOLUTION * 4, 0}};
+    private static int[][] alteration2Events =
+        {{0, 0, MusicNote.VELOCITY},
+        {0, RESOLUTION, 0},
+        {1, RESOLUTION, MusicNote.VELOCITY},
+        {1, RESOLUTION * 2, 0},
+        {2, RESOLUTION * 2, MusicNote.VELOCITY},
+        {2, RESOLUTION * 3, 0},
+        {1, RESOLUTION * 3, MusicNote.VELOCITY},
+        {1, RESOLUTION * 4, 0}};
 
     public Chord() {}
 
     public Chord(RootNote rootNote, Type type, int tempo, int roman) {
-        mNotes = new ArrayList<>();
-        mNoteEvents = new ArrayList<>();
         mType = type;
         mRootNote = rootNote;
         mRootNum = rootNote.getMidiNum();
@@ -115,8 +137,6 @@ public class Chord {
      * @param tempo The tempo at which to play this chord
      */
     public Chord(RootNote root, Type chordType, int tempo){
-        mNotes = new ArrayList<>();
-        mNoteEvents = new ArrayList<>();
         mType = chordType;
         mRootNote = root;
         mRootNum = root.getMidiNum();
@@ -129,8 +149,6 @@ public class Chord {
      * copy constructor
      */
     public Chord(Chord c){
-        mNotes = new ArrayList<>();
-        mNoteEvents = new ArrayList<>();
         mType = c.getType();
         mRootNote = c.getRootNote();
         mRootNum = c.getRootNumber();
@@ -148,8 +166,6 @@ public class Chord {
      * @param chordButton The button in the UI that should play this chord
      */
     public Chord(RootNote root, Type chordType, int tempo, Button chordButton){
-        mNotes = new ArrayList<>();
-        mNoteEvents = new ArrayList<>();
         mType = chordType;
         mRootNote = root;
         mRootNum = root.getMidiNum();
@@ -164,6 +180,7 @@ public class Chord {
      * Only call this once, from a constructor
      */
     private void buildChord(){
+        mNotes = new ArrayList<>();
         mNotes.add(new MusicNote(mRootNum));
         if(mType == Type.MAJOR){
             mNotes.add(new MusicNote(mRootNum + 4));
@@ -188,37 +205,6 @@ public class Chord {
         } else if(72 <= mRootNum && mRootNum < 84){
             mOctave = 5;
         }
-        // The NoteOn events to fire when playing the chord
-        // [note index in mNotes, MIDI tick of event, velocity of NoteOn (velocity of 0 for NoteOff)]
-        alteration0Events.add(new int[]{0, 0, MusicNote.VELOCITY});
-        alteration0Events.add(new int[]{1, 0, MusicNote.VELOCITY});
-        alteration0Events.add(new int[]{2, 0, MusicNote.VELOCITY});
-        alteration0Events.add(new int[]{0, RESOLUTION * 4, 0});
-        alteration0Events.add(new int[]{1, RESOLUTION * 4, 0});
-        alteration0Events.add(new int[]{2, RESOLUTION * 4, 0});
-
-        alteration1Events.add(new int[]{1, 0, MusicNote.VELOCITY});
-        alteration1Events.add(new int[]{2, 0, MusicNote.VELOCITY});
-        alteration1Events.add(new int[]{1, RESOLUTION, 0});
-        alteration1Events.add(new int[]{2, RESOLUTION, 0});
-        alteration1Events.add(new int[]{0, RESOLUTION, MusicNote.VELOCITY});
-        alteration1Events.add(new int[]{0, RESOLUTION * 2, 0});
-        alteration1Events.add(new int[]{1, RESOLUTION * 2, MusicNote.VELOCITY});
-        alteration1Events.add(new int[]{2, RESOLUTION * 2, MusicNote.VELOCITY});
-        alteration1Events.add(new int[]{1, RESOLUTION * 3, 0});
-        alteration1Events.add(new int[]{2, RESOLUTION * 3, 0});
-        alteration1Events.add(new int[]{0, RESOLUTION * 3, MusicNote.VELOCITY});
-        alteration1Events.add(new int[]{0, RESOLUTION * 4, 0});
-
-        alteration2Events.add(new int[]{0, 0, MusicNote.VELOCITY});
-        alteration2Events.add(new int[]{0, RESOLUTION, 0});
-        alteration2Events.add(new int[]{1, RESOLUTION, MusicNote.VELOCITY});
-        alteration2Events.add(new int[]{1, RESOLUTION * 2, 0});
-        alteration2Events.add(new int[]{2, RESOLUTION * 2, MusicNote.VELOCITY});
-        alteration2Events.add(new int[]{2, RESOLUTION * 3, 0});
-        alteration2Events.add(new int[]{1, RESOLUTION * 3, MusicNote.VELOCITY});
-        alteration2Events.add(new int[]{1, RESOLUTION * 4, 0});
-
         mAlteration = 0;
         mNoteEvents = alteration0Events;
     }
@@ -312,9 +298,9 @@ public class Chord {
      *          [note number, MIDI tick, velocity]
      */
     public int[][] getNoteEvents(){
-        int[][] events = new int[mNoteEvents.size()][];
-        for(int i = 0; i < mNoteEvents.size(); i++){
-            int[] temp = mNoteEvents.get(i);
+        int[][] events = new int[mNoteEvents.length][];
+        for(int i = 0; i < mNoteEvents.length; i++){
+            int[] temp = mNoteEvents[i];
             events[i] = new int[]{mNotes.get(temp[0]).getNoteNumber(), temp[1], temp[2]};
         }
         return events;
@@ -333,7 +319,7 @@ public class Chord {
         this.mButton = button;
     }
 
-    public int returnRoman()
+    public int getRoman()
     {
         return mRoman;
     }
@@ -449,16 +435,16 @@ public class Chord {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Iterator<int[]> it = mNoteEvents.iterator();
                 long start = System.currentTimeMillis();
                 mPlaying = true;
-                int[] noteEvent = it.next();
-                while(it.hasNext() && mPlaying){
+                int i = 0;
+                int[] noteEvent = mNoteEvents[i++];
+                while(i < mNoteEvents.length && mPlaying){
                     if(noteEvent[1] > getRelativeTick(start)){
                         continue;
                     }
                     midiDriver.write(new byte[]{MidiConstants.NOTE_ON, (byte) mNotes.get(noteEvent[0]).getNoteNumber(), (byte) noteEvent[2]});
-                    noteEvent = it.next();
+                    noteEvent = mNoteEvents[i++];
                 }
                 // Handle the last note event
                 while(noteEvent[1] > getRelativeTick(start)){

@@ -279,6 +279,7 @@ public class ChordTrack implements Track {
 	char 3: index of the chord inversion in the Chord.Inversion enum (0 = ROOT)
 	char 4: chord octave number
 	char 5: chord alteration number
+	char 6: chord roman numeral
 	*/
 
     /**
@@ -288,7 +289,7 @@ public class ChordTrack implements Track {
      */
     private String encodeChord(Chord chord){
         return padNumber(chord.getRootNote().ordinal()) + chord.getType().ordinal()
-                + chord.getInversion().ordinal() + chord.getOctave() + chord.getAlteration();
+                + chord.getInversion().ordinal() + chord.getOctave() + chord.getAlteration() + chord.getRoman();
     }
 
     /**
@@ -312,7 +313,8 @@ public class ChordTrack implements Track {
         int invIdx = Character.getNumericValue(encodedChord.charAt(3));
         int octave = Character.getNumericValue(encodedChord.charAt(4));
         int alteration = Character.getNumericValue(encodedChord.charAt(5));
-        Chord chord = new Chord(Chord.RootNote.values()[rootIdx], Chord.Type.values()[typeIdx], mSession.getTempo());
+        int roman = Character.getNumericValue(encodedChord.charAt(6));
+        Chord chord = new Chord(Chord.RootNote.values()[rootIdx], Chord.Type.values()[typeIdx], mSession.getTempo(), roman);
         chord.setInversion(Chord.Inversion.values()[invIdx]);
         while(chord.getOctave() < octave){
             chord.octaveUp();
