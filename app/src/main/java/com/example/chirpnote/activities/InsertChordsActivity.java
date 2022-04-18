@@ -121,7 +121,10 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         initializeChordListeners(session);
 
 
-
+        // Touch this button to play the most recently recorded track
+        // Touch it again to stop the playback of the track
+        Button playButton = (Button) findViewById(R.id.testPlayButton);
+//        playButton.setEnabled(false);
 
         // set user input key name and type to new key in session
         Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
@@ -184,7 +187,23 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         });
         // end of Sam's section
 
-
+        /** PLAYBUTTON ONCLICK*/
+        // Event listener for play button (to play recorded melody)
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chordTrack.play();
+//                if(!lastTrack.isPlaying()){
+//                    mixer.playTracks();
+//                    /*playButton.setText("Stop");
+//                    lastTrack.play();*/
+//                } else {
+//                    mixer.stopTracks();
+//                    /*playButton.setText("Play");
+//                    lastTrack.stop();*/
+//                }
+            }
+        });
     }
 
     @Override
