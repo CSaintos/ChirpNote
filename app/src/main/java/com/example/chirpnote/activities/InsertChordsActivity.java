@@ -19,7 +19,7 @@ import com.example.chirpnote.Chord;
 import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
@@ -60,7 +60,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     private ArrayList<Object> chords;
     private List<String> keyTypeList = new ArrayList<>();
     private List<String> keyNameList = new ArrayList<>();
-    private Session session;
+    private ChirpNoteSession session;
     private String keyNameChoice;
     private String keyTypeChoice;
     private Key currentKey;
@@ -74,6 +74,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     private ArrayList<Chord[]> listOfChords = new ArrayList<>();
     private ArrayList<Button[]> listOfButtons = new ArrayList<>();
     private Chord selectedSessionChord = null;
+    private String selectedSuggestedChord;
     // The top three variables should be defined at the top of the file
 
 //    List<String> keyTypeList = new ArrayList<>();
@@ -112,7 +113,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         String basePath = this.getFilesDir().getPath();
 //        session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
 //                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
-        session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+        session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
@@ -120,7 +121,10 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         initializeChordListeners(session);
 
 
-
+        // Touch this button to play the most recently recorded track
+        // Touch it again to stop the playback of the track
+        Button playButton = (Button) findViewById(R.id.testPlayButton);
+//        playButton.setEnabled(false);
 
         // set user input key name and type to new key in session
         Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
@@ -166,31 +170,11 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                     chordSuggestionStatus = false;
                     chordSuggestion.setSelected(false);
 
-//                    for (int row = 0; row < layoutList.getChildCount(); row++)
-//                    {
-//                        for (int measure = 0; measure < measures.length; measure++)
-//                        {
-//                            Chord currentMeasure = listOfMeasures.get(row)[measure];
-//                            int finalMeasure = measure;
-//                            int finalRow = row;
-//                            currentMeasure.getButton().setOnClickListener(new View.OnClickListener()
-//                            {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    if (currentMeasure.getButton().isSelected())
-//                                    {
-//                                        currentMeasure.getButton().setSelected(false);
-//                                        System.out.println("SELECTED TRUE");
-//                                    }
-//                                    else
-//                                    {
-//                                        currentMeasure.getButton().setSelected(true);
-//                                        System.out.println("SELECTED FALSE");
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    }
+                    for (int i = 0; i < sessionChords.length; i++)
+                    {
+                        sessionChords[i].getButton().setSelected(false);
+                    }
+
                 }
                 else
                 {
@@ -203,12 +187,27 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         });
         // end of Sam's section
 
-
+        /** PLAYBUTTON ONCLICK*/
+        // Event listener for play button (to play recorded melody)
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chordTrack.play();
+//                if(!lastTrack.isPlaying()){
+//                    mixer.playTracks();
+//                    /*playButton.setText("Stop");
+//                    lastTrack.play();*/
+//                } else {
+//                    mixer.stopTracks();
+//                    /*playButton.setText("Play");
+//                    lastTrack.stop();*/
+//                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
-//        addRowOfMeasures();
         switch (v.getId()) {
             case R.id.button_add_row:
                 if (areMeasuresFilled() == true || layoutList.getChildCount() == 0)
@@ -224,7 +223,6 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
-                //chordTrack.play();
                 break;
 //            case R.id.chordSuggestionButton:
 //                chordSuggestion(session);
@@ -283,7 +281,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 //    }
 
 
-    private void changeKey(Session session)
+    private void changeKey(ChirpNoteSession session)
     {
         /** Allows the user to switch between keys whenever they want */
         if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
@@ -389,7 +387,9 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
                         }
                     });
-                    System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
+//                    System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
+
+
 //                    for (int i = 0; i < listOfMeasures.size(); i++) {
 //                        if (listOfMeasures.get(row)[measure].getRootNote() != null) {
 //                            System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
@@ -503,13 +503,15 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
         for (int col = 0; col < prefilledMeasures.length; col++)
         {
-            int romanChordIndex = prefilledMeasures[col].returnRoman();
+            int romanChordIndex = prefilledMeasures[col].getRoman();
             String romanChordString = session.getKey().getRomanTypes()[romanChordIndex];
             Button tempMeasure = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
             tempMeasure.setText(romanChordString);
 
             chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
         }
+
+
 
         for(int colIdx = 0; colIdx < 4; colIdx++){
             int col = colIdx;
@@ -526,38 +528,119 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                         ((Button) v).setText(selectedSessionChord.getButton().getText());
                     }
 
-                    if (chordSuggestionStatus == true) {
-                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
+                    selectedSessionChord = null; // clears selectedChord so that it doesn't keep adding to other measures
 
-                        for (int i = 0; i < suggestedChords.size(); i++) {
-                            suggestedChords.get(i).getButton().setSelected(true);
+                    if (isAnotherChordSelected())
+                    {
+                        for (int i = 0; i < sessionChords.length; i++) {
+                            sessionChords[i].getButton().setSelected(false);
                         }
+//                        for (int i = 0; i < suggestedChords.size(); i++) {
+//                            suggestedChords.get(i).getButton().setSelected(false);
+//                        }
                     }
-                    else if (chordSuggestionStatus == false) {
-                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
 
+
+                    String inputChord = listOfChords.get(rowIdx)[col].toString();
+//                    System.out.println("inputChord = " + inputChord);
+                    suggestedChords = getSuggestedChords(inputChord, sessionChords);
+
+
+
+
+
+                    if (listOfButtons.get(rowIdx)[col].isSelected())
+                    {
+                        listOfButtons.get(rowIdx)[col].setSelected(false);
+                        // resets everything to off
                         for (int i = 0; i < suggestedChords.size(); i++) {
                             suggestedChords.get(i).getButton().setSelected(false);
                         }
-                        suggestedChords.clear();
+
                     }
+                    else // if listOfButtons.get(rowIdx)[col].isSelected() == false
+                    {
+                        listOfButtons.get(rowIdx)[col].setSelected(true);
+
+
+                        // resets everything to off
+                        for (int i = 0; i < suggestedChords.size(); i++) {
+                            suggestedChords.get(i).getButton().setSelected(false);
+                        }
+
+                        // turn on relevant chords
+                        if (chordSuggestionStatus == true) {
+                            for (int i = 0; i < suggestedChords.size(); i++) {
+                                suggestedChords.get(i).getButton().setSelected(true);
+                            }
+                        }
+                        else if (chordSuggestionStatus == false) {
+                            for (int i = 0; i < suggestedChords.size(); i++) {
+                                suggestedChords.get(i).getButton().setSelected(false);
+                            }
+                        }
+                    }
+
+/** OLD CHORD SUGGESTION METHOD */
+////                    String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
+////                    System.out.println("inputChord = " + inputChord);
+//                    String inputChord = listOfChords.get(rowIdx)[col].toString();
+//                    System.out.println("inputChord = " + inputChord);
+//                    suggestedChords = getSuggestedChords(inputChord, sessionChords);
+////                    System.out.println("suggestedChords = " + suggestedChords);
+//                    if (chordSuggestionStatus == true) {
+////                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
+////                        System.out.println("inputChord = " + inputChord);
+////                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
+////                        System.out.println("suggestedChords = " + suggestedChords);
+//
+//                        for (int i = 0; i < suggestedChords.size(); i++) {
+//                            suggestedChords.get(i).getButton().setSelected(true);
+//                        }
+//                    }
+//                    else if (chordSuggestionStatus == false) {
+////                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
+////                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
+//
+//                        for (int i = 0; i < suggestedChords.size(); i++) {
+//                            suggestedChords.get(i).getButton().setSelected(false);
+//                        }
+//                        suggestedChords.clear();
+//                    }
                 }
             });
         }
 
-        for (int row = 0; row < layoutList.getChildCount(); row++)
-        {
-            for (int measure = 0; measure < 4; measure++)
-            {
-                System.out.println("row = " + row + ", measure " + measure + " = " + listOfChords.get(row)[measure]);
-            }
-        }
+//        for (int row = 0; row < layoutList.getChildCount(); row++)
+//        {
+//            for (int measure = 0; measure < 4; measure++)
+//            {
+//                System.out.println("row = " + row + ", measure " + measure + " = " + listOfChords.get(row)[measure]);
+//            }
+//        }
 
 //        Chord[] tempList = randomChordProgression(sessionChords);
 
     }
+
+    private boolean isAnotherChordSelected()
+    {
+        boolean isSelected = false;
+
+        for (int i = 0; i < listOfButtons.size(); i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (listOfButtons.get(i)[j].isSelected())
+                    return true;
+            }
+
+        }
+
+        return isSelected;
+    }
+
+
 
     private void removeRowOfMeasures(View view, int rowIndex)
     {
@@ -565,7 +648,8 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
         layoutList.removeView(view);
         listOfChords.remove(rowIndex);
-//        chordTrack.removeChord(rowIndex); // still need to implement
+        listOfButtons.remove(rowIndex);
+        chordTrack.removeFourChords(rowIndex * 4);
     }
 
     public void initializeSessionChords()
@@ -620,7 +704,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     }
 
 
-    private void initializeChordListeners(Session session)
+    private void initializeChordListeners(ChirpNoteSession session)
     {
         chordTrack = new ChordTrack(session);
         chordTrack.startRecording();
@@ -656,10 +740,13 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
      */
     private ArrayList<Chord> getSuggestedChords(String inputChord, Chord[] keyChords)
     {
-        ArrayList<Chord> listOfChords = new ArrayList<Chord>();
-//        int indexOfInputChord = keyChords.indexOf(inputChord); // grabs the index of chord to determine what roman numeral it is in
-        int indexOfInputChord = 0;
+//        System.out.println("inputChord = " + inputChord);
 
+        ArrayList<Chord> listOfChords = new ArrayList<Chord>();
+//        int indexOfInputChord = session.getKey().returnRomanInt(inputChord); // grabs the index of chord to determine what roman numeral it is in
+//        System.out.println("indexOfInputChord = " + indexOfInputChord);
+
+        int indexOfInputChord = 0;
         for (int i = 0; i < keyChords.length; i++)
         {
             if (inputChord.equals(keyChords[i].toString()))
@@ -667,6 +754,8 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                 indexOfInputChord = i;
             }
         }
+
+        //        System.out.println("indexOfInputChord = " + indexOfInputChord);
 
         // it doesn't matter if its major or minor since they share most of the same chord suggestions with the exception of VII which we're not using
         // if statements used to collect all the chord suggestions that pertain to the chord found at index of input chord
@@ -766,7 +855,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 //        return listOfChords;
     }
 
-    private void initializeKeyNameList(Session session)
+    private void initializeKeyNameList(ChirpNoteSession session)
     {
         keyNameList.add("Key Name");
         for (int i = 0; i < Key.RootNote.values().length; i++)
@@ -775,14 +864,14 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void initializeKeyTypeList(Session session)
+    private void initializeKeyTypeList(ChirpNoteSession session)
     {
         keyTypeList.add("Key Type");
         keyTypeList.add("Major");
         keyTypeList.add("Minor");
     }
 
-    private Button[] getRomanButtons(Session session)
+    private Button[] getRomanButtons(ChirpNoteSession session)
     {
         Button[] list = new Button[7];
         list[0] = findViewById(R.id.roman1);
@@ -795,7 +884,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 
         return list;
     }
-    
+
     private Chord[] randomChordProgression(Chord[] keyChords)//, int randChoice)
     {
         Chord[] progression = new Chord[4];
@@ -819,11 +908,11 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
             }
         }
 
-        System.out.println("=============================== Chord Progression ========================================");
-        for (int i = 0; i < progression.length; i++)
-        {
-            System.out.println(progression[i]);
-        }
+//        System.out.println("=============================== Chord Progression ========================================");
+//        for (int i = 0; i < progression.length; i++)
+//        {
+//            System.out.println(progression[i]);
+//        }
 
         return progression;
     }
@@ -846,6 +935,6 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         midiDriver.stop();
     }
 
-    
+
 
 }

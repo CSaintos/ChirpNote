@@ -24,7 +24,7 @@ public class ConstructedMelody extends Melody {
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
      * @param session The session this melody is a part of
      */
-    public ConstructedMelody(Session session){
+    public ConstructedMelody(ChirpNoteSession session){
         super(session, session.getMidiPath());
 
         // Possible note durations when building a melody
@@ -168,10 +168,10 @@ public class ConstructedMelody extends Melody {
         int velocity = removeLeadingZeroes(encodedElement.substring(3, 6));
 
         // Remove NoteOn and NoteOff events from MIDI file to remove the note
-        midiFile.getTracks().get(1).removeNoteEvent(new NoteOn(tickRange[0], CHANNEL, pitch, velocity));
+        midiFile.getTracks().get(1).removeNoteOnEvent(new NoteOn(tickRange[0], CHANNEL, pitch, velocity));
         // A NoteOn event with velocity 0 was used instead of a NoteOff event
         // See: https://github.com/LeffelMania/android-midi-lib/issues/10
-        midiFile.getTracks().get(1).removeNoteEvent(new NoteOn(tickRange[1], CHANNEL, pitch, 0));
+        midiFile.getTracks().get(1).removeNoteOnEvent(new NoteOn(tickRange[1], CHANNEL, pitch, 0));
 
         return tickRange;
     }
@@ -254,9 +254,8 @@ public class ConstructedMelody extends Melody {
         return "128" + "000" + getDurationIdx(duration) + tick;
     }
 
-    @Override
     public boolean isRecorded(){
-        return mSession.isConstructedMelodyRecorded();
+        return mSession.isMidiPrepared();
     }
 
     @Override
@@ -282,7 +281,7 @@ public class ConstructedMelody extends Melody {
         if(!isRecorded()){
             super.stopRecording();
             if(mSession != null) {
-                mSession.setConstructedMelodyRecorded();
+                mSession.setMidiPrepared();
             }
         }
     }

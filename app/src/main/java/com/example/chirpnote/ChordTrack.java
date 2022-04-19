@@ -2,6 +2,7 @@ package com.example.chirpnote;
 
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
+import com.example.midiFileLib.src.event.MidiEvent;
 import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.event.meta.Tempo;
 import com.example.midiFileLib.src.event.meta.TimeSignature;
@@ -10,12 +11,14 @@ import com.example.midiFileLib.src.util.MidiProcessor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class ChordTrack implements Track {
     // States
     private boolean mRecording;
 
-    // For recording the melody
+    // For writing to MIDI file
     public final int RESOLUTION = 960;
     private MidiTrack mTempoTrack;
     protected MidiTrack mNoteTrack;
@@ -25,14 +28,14 @@ public class ChordTrack implements Track {
     private MidiProcessor mMidiProcessor;
     private MidiEventHandler mMidiEventHandler;
 
-    private Session mSession;
+    private ChirpNoteSession mSession;
     public final static int CHANNEL = 1;
 
     /**
      * A Chord track
      * @param session The session this chord track is a part of
      */
-    public ChordTrack(Session session){
+    public ChordTrack(ChirpNoteSession session){
         mRecording = false;
         mSession = session;
         mFilePath = session.getMidiPath();
@@ -62,7 +65,7 @@ public class ChordTrack implements Track {
      * @return True if the chord track has been recorded
      */
     public boolean isRecorded(){
-        return mSession.areChordsRecorded();
+        return mSession.isMidiPrepared();
     }
 
     /**
@@ -123,7 +126,7 @@ public class ChordTrack implements Track {
             System.err.println(e);
         }
         mRecording = false;
-        mSession.setChordsRecorded();
+        mSession.setMidiPrepared();
     }
 
     /**
@@ -161,7 +164,7 @@ public class ChordTrack implements Track {
             int[][] noteOnEvents = oldChord.getNoteEvents();
             for(int i = 0; i < noteOnEvents.length; i++){
                 NoteOn event = new NoteOn(startTick + noteOnEvents[i][1], CHANNEL, noteOnEvents[i][0], noteOnEvents[i][2]);
-                midiFile.getTracks().get(1).removeNoteEvent(event);
+                midiFile.getTracks().get(1).removeNoteOnEvent(event);
             }
             // Add the new chord
             noteOnEvents = chord.getNoteEvents();
@@ -189,13 +192,93 @@ public class ChordTrack implements Track {
         }
     }
 
+    /**
+     * Removes the four adjacent chords at the given position, and shifts
+     * all other chords back to fill the empty space (rather than inserting rests)
+     * @param position The position to remove at
+     */
+    public void removeFourChords(int position){
+        // Remove the four chords from MIDI file
+        MidiFile midiFile = null;
+        File output = new File(mFilePath);
+        try {
+            midiFile = new MidiFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        MidiTrack track = midiFile.getTracks().get(1);
+        int startTick = RESOLUTION * 4 * position;
+        int endTick = RESOLUTION * 4 * (position + 4);
+        ArrayList<MidiEvent> eventsToRemove = new ArrayList<>();
+        Iterator<MidiEvent> it = track.getEvents().iterator();
+        MidiEvent prev = null, next = it.hasNext() ? it.next() : null, curr;
+        while(next != null){
+            curr = next;
+            next = it.hasNext() ? it.next() : null;
+            if(curr.getTick() >= endTick){
+                break;
+            } else if(curr.getTick() >= startTick){
+                if(curr instanceof NoteOn){
+                    NoteOn noteEvent = (NoteOn) curr;
+                    if(noteEvent.getChannel() == CHANNEL){
+                        eventsToRemove.add(curr);
+                        if(prev != null){
+                            next.setDelta(next.getTick() - prev.getTick());
+                        } else {
+                            next.setDelta(next.getTick());
+                        }
+                    }
+                }
+            }
+            prev = curr;
+        }
+        for(MidiEvent event : eventsToRemove){
+            track.getEvents().remove(event);
+        }
+        // Remove the four chords from session list
+        for(int i = 0; i < 4; i++){
+            mSession.mChords.remove(position);
+        }
+        // Shift all chords (back) that came after the fourth removed chord
+        if(position < mSession.mChords.size()){
+            HashMap<Integer, Integer> noteMap = new HashMap<>(); // {note MIDI number : amount shifted, in ticks}
+            it = track.getEvents().iterator();
+            next = it.hasNext() ? it.next() : null;
+            while(next != null){
+                curr = next;
+                next = it.hasNext() ? it.next() : null;
+                if(curr.getTick() >= startTick && curr instanceof NoteOn) {
+                    NoteOn noteEvent = (NoteOn) curr;
+                    if(noteEvent.getChannel() == CHANNEL){
+                        if(noteEvent.getVelocity() == 0 && noteMap.get(noteEvent.getNoteValue()) != null){
+                            curr.setTick(curr.getTick() + noteMap.get(noteEvent.getNoteValue()));
+                            noteMap.remove(noteEvent.getNoteValue());
+                        } else {
+                            int tickDelta = -(RESOLUTION * 16); // Shift back by 16 beats (4 measures)
+                            if(tickDelta != 0){
+                                curr.setTick(curr.getTick() + tickDelta);
+                                noteMap.put(noteEvent.getNoteValue(), tickDelta);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        try {
+            midiFile.writeToFile(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
     The string encoding for chords is defined as follows:
 	char 0-1: index of the root note of the chord in the Chord.RootNote enum (01 = C_SHARP)
 	char 2: index of the chord type in the Chord.Type enum (0 = MAJOR)
 	char 3: index of the chord inversion in the Chord.Inversion enum (0 = ROOT)
 	char 4: chord octave number
-	char 4: chord alteration number
+	char 5: chord alteration number
+	char 6: chord roman numeral
 	*/
 
     /**
@@ -205,7 +288,7 @@ public class ChordTrack implements Track {
      */
     private String encodeChord(Chord chord){
         return padNumber(chord.getRootNote().ordinal()) + chord.getType().ordinal()
-                + chord.getInversion().ordinal() + chord.getOctave() + chord.getAlteration();
+                + chord.getInversion().ordinal() + chord.getOctave() + chord.getAlteration() + chord.getRoman();
     }
 
     /**
@@ -229,7 +312,8 @@ public class ChordTrack implements Track {
         int invIdx = Character.getNumericValue(encodedChord.charAt(3));
         int octave = Character.getNumericValue(encodedChord.charAt(4));
         int alteration = Character.getNumericValue(encodedChord.charAt(5));
-        Chord chord = new Chord(Chord.RootNote.values()[rootIdx], Chord.Type.values()[typeIdx], mSession.getTempo());
+        int roman = Character.getNumericValue(encodedChord.charAt(6));
+        Chord chord = new Chord(Chord.RootNote.values()[rootIdx], Chord.Type.values()[typeIdx], mSession.getTempo(), roman);
         chord.setInversion(Chord.Inversion.values()[invIdx]);
         while(chord.getOctave() < octave){
             chord.octaveUp();

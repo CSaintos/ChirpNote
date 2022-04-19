@@ -5,10 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -31,10 +29,11 @@ import com.example.chirpnote.ConstructedMelody.NoteDuration;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
+import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Track;
 
 import org.billthefarmer.mididriver.MidiConstants;
@@ -67,8 +66,10 @@ public class TestOtherActivity extends AppCompatActivity {
     private ChordTrack chordTrack;
     // Which track was most recently recorded
     private Track lastTrack;
-    // A Percussion object to play percussion tracks/beats
-    private PercussionTrack rockPercussion;
+    // A Percussion pattern
+    private PercussionPattern rockPercussion;
+    // A percussion track to store many patterns
+    private PercussionTrack percussionTrack;
     // Media player to play percussion
     private MediaPlayer rockPlayer;
     // A list of chords
@@ -126,9 +127,9 @@ public class TestOtherActivity extends AppCompatActivity {
         playButton.setEnabled(false);
 
         String basePath = this.getFilesDir().getPath();
-        Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+        ChirpNoteSession session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
-        Mixer mixer = Mixer.getInstance(session, this, playButton);
+        Mixer mixer = Mixer.getInstance(session, playButton);
 
         // Real time melody
         /*realTimeMelody = new RealTimeMelody(session);
@@ -146,6 +147,8 @@ public class TestOtherActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        percussionTrack = mixer.percussionTrack;
 
         // Music notes
         pianoKeys = new ArrayList<>();
@@ -279,7 +282,7 @@ public class TestOtherActivity extends AppCompatActivity {
         playButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!lastTrack.isPlaying()){
+                if(!mixer.areTracksPlaying()){
                     mixer.playTracks();
                     /*playButton.setText("Stop");
                     lastTrack.play();*/
@@ -371,7 +374,7 @@ public class TestOtherActivity extends AppCompatActivity {
 
         // Testing percussion playback
         Button rockMediaButton = (Button) findViewById(R.id.testRockMediaButton);
-        rockMediaButton.setOnClickListener(new OnClickListener() {
+        /*rockMediaButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(rockPlayer == null) {
@@ -384,15 +387,31 @@ public class TestOtherActivity extends AppCompatActivity {
                     rockMediaButton.setText("Play");
                 }
             }
+        });*/
+        PercussionPattern pattern2 = new PercussionPattern(PercussionPattern.Style.POP, session, this, rockMediaButton);
+        rockMediaButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!pattern2.isPlaying()) {
+                    pattern2.play();
+                    rockMediaButton.setText("Stop");
+                    percussionTrack.addPattern(pattern2, 1);
+                } else {
+                    pattern2.stop();
+                    rockMediaButton.setText("Play");
+                }
+            }
         });
         Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
-        rockPercussion = new PercussionTrack(PercussionTrack.Style.ROCK, session, this, rockMidiButton);
+        rockPercussion = new PercussionPattern(PercussionPattern.Style.ROCK, session, this, rockMidiButton);
+        percussionTrack.startRecording();
         rockMidiButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!rockPercussion.isPlaying()) {
                     rockPercussion.play();
                     rockMidiButton.setText("Stop");
+                    percussionTrack.addPattern(rockPercussion, session.mPercussionPatterns.size());
                 } else {
                     rockPercussion.stop();
                     rockMidiButton.setText("Play");

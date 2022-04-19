@@ -129,6 +129,53 @@ public class Key implements Serializable {
         return mType;
     }
 
+    /*
+    The string encoding for a key is defined as follows:
+	char 0-1: index of the root note of the key in the Key.RootNote enum (01 = C_SHARP)
+	char 2: index of the type of the key in the Key.Type enum (0 = MAJOR)
+	*/
+
+    /**
+     * Encodes the given key as a String
+     * @param k The key to encode
+     * @return The key encoding
+     */
+    public static String encode(Key k){
+        return k.padNumber(k.getRootNote().ordinal()) + k.getType().ordinal();
+    }
+
+    /**
+     * Decodes the given key encoding
+     * @param k The string encoding of a key to decode
+     * @return The decoded key
+     */
+    public static Key decode(String k){
+        Key key = new Key(RootNote.C, Type.MAJOR);
+        int rootIdx = key.removeLeadingZeroes(k.substring(0, 2));
+        int typeIdx = Character.getNumericValue(k.charAt(2));
+        key = new Key(Key.RootNote.values()[rootIdx], Key.Type.values()[typeIdx]);
+        return key;
+    }
+
+    /**
+     * Adds leading zeroes to the given number
+     * @param num The number to pad
+     * @return The padded number as a String
+     */
+    private String padNumber(int num){
+        if(num < 10) return "0" + num;
+        return "" + num;
+    }
+
+    /**
+     * Removes any leading zeroes from the given String
+     * @param str The String to remove leading zeroes from
+     * @return The trimmed String as an Integer
+     */
+    private int removeLeadingZeroes(String str){
+        return Integer.parseInt(str.replaceFirst("^0+(?!$)", ""));
+    }
+
     /**
      * Gets the MIDI notes of the scale associated with this key
      * @return An array of MIDI note numbers
@@ -152,6 +199,21 @@ public class Key implements Serializable {
     }
 
     public String[] getRomanTypes() { return mRomanType; }
+
+    public int returnRomanInt(String romanString)
+    {
+        int romanInt = 0;
+
+        for (int i = 0; i < mRomanType.length; i++)
+        {
+            if (romanString.equals(mRomanType[i]))
+            {
+                return romanInt;
+            }
+        }
+
+        return romanInt;
+    }
 
 //    public int[] getNoteIndex()
 

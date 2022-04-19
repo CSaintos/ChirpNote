@@ -1,6 +1,5 @@
 package com.example.chirpnote;
 
-import android.content.Context;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
@@ -12,7 +11,6 @@ import com.example.midiFileLib.src.util.MidiProcessor;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
-import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,14 +18,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Mixer {
-    private static HashMap<Session, Mixer> mixerInstances = new HashMap<>();
-    private Session mSession;
+    private static HashMap<ChirpNoteSession, Mixer> mixerInstances = new HashMap<>();
+    private ChirpNoteSession mSession;
 
     public ChordTrack chordTrack;
     public ConstructedMelody constructedMelody;
     public RealTimeMelody realTimeMelody;
     public AudioTrack audioTrack;
-    public PercussionTrack[] percussionTracks;
+    public PercussionTrack percussionTrack;
     private int mPercussionTrack;
 
     // For writing the MIDI file
@@ -40,7 +38,7 @@ public class Mixer {
     private MidiProcessor mMidiProcessor;
     private Button mPlayButton;
 
-    private Mixer(Session session, Context context){
+    private Mixer(ChirpNoteSession session){
         mSession = session;
         mMidiEventHandler = new MidiEventHandler("MidiPlayback", mPlayButton);
 
@@ -49,13 +47,7 @@ public class Mixer {
         constructedMelody = new ConstructedMelody(session);
         realTimeMelody = new RealTimeMelody(session);
         audioTrack = new AudioTrack(session);
-
-        PercussionTrack.Style[] styles = PercussionTrack.Style.values();
-        percussionTracks = new PercussionTrack[styles.length];
-        for(int i = 0; i < percussionTracks.length; i++){
-            percussionTracks[i] = new PercussionTrack(styles[i], session, context);
-        }
-        mPercussionTrack = 0;
+        percussionTrack = new PercussionTrack(session);
 
         // Prepare MIDI file for MIDI tracks
         mTempoTrack = new MidiTrack();
@@ -82,21 +74,19 @@ public class Mixer {
         } catch(IOException e) {
             System.err.println(e);
         }
-        mSession.setChordsRecorded();
-        mSession.setConstructedMelodyRecorded();
+        mSession.setMidiPrepared();
         syncSessionVolume();
     }
 
     /**
      * Gets Mixer used to manage all track volumes and playback in the given Session
      * @param session The session whose tracks this mixer will control
-     * @param context The context from the activity (pass "this")
      * @param playButton The button in the activity used to start/stop playback
      * @return The mixer
      */
-    public static Mixer getInstance(Session session, Context context, Button playButton){
+    public static Mixer getInstance(ChirpNoteSession session, Button playButton){
         if(mixerInstances.get(session) == null){
-            mixerInstances.put(session, new Mixer(session, context));
+            mixerInstances.put(session, new Mixer(session));
         }
         Mixer mixer = mixerInstances.get(session);
         mixer.setPlayButton(playButton);
@@ -108,7 +98,7 @@ public class Mixer {
      * @param session The session to check
      * @return True if a mixer exists
      */
-    public static boolean mixerExists(Session session){
+    public static boolean mixerExists(ChirpNoteSession session){
         return mixerInstances.get(session) != null;
     }
 
@@ -163,7 +153,7 @@ public class Mixer {
         if(volume < 0 || volume > 127){
             return;
         }
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) volume});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + PercussionTrack.CHANNEL, (byte) 0x07, (byte) volume});
         mSession.mTrackVolumes[4] = volume;
     }
 

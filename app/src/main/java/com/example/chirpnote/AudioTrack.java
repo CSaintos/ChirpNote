@@ -26,7 +26,7 @@ public class AudioTrack implements Track {
     private Button mPlayButton;
     private ImageButton mPlayImageButton;
 
-    private Session mSession;
+    private ChirpNoteSession mSession;
 
     /**
      * An audio track
@@ -85,7 +85,7 @@ public class AudioTrack implements Track {
      * An audio track
      * @param session The session this audio track is a part of
      */
-    public AudioTrack(Session session){
+    public AudioTrack(ChirpNoteSession session){
         mRecording = false;
 
         mMediaRecorder = new MediaRecorder();

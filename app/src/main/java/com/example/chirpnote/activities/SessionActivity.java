@@ -15,7 +15,7 @@ import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,13 +33,13 @@ public class SessionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session);
 
-        Session session = (Session) getIntent().getSerializableExtra("session");
+        ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         ((TextView) findViewById(R.id.sessionNameText)).setText("Session Name: " + session.getName());
         ((TextView) findViewById(R.id.tempoText)).setText("Tempo: " + session.getTempo() + " BPM");
         ((TextView) findViewById(R.id.keyText)).setText("Key: " + session.getKey());
 
         Button nextActivityButton = (Button) findViewById(R.id.goToNextActivityButton);
-        if(session.isConstructedMelodyRecorded() && session.isAudioRecorded()) {
+        if(session.isMidiPrepared() && session.isAudioRecorded()) {
             nextActivityButton.setEnabled(true);
         } else {
             nextActivityButton.setEnabled(false);
@@ -106,7 +106,7 @@ public class SessionActivity extends AppCompatActivity {
                 melody.addNote(new MusicNote(ThreadLocalRandom.current().nextInt(50, 70)),
                         ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
                 generateMelodyButton.setText("Melody generated!");
-                session.setConstructedMelodyRecorded();
+                session.setMidiPrepared();
                 if(audio.isRecorded()){
                     nextActivityButton.setEnabled(true);
                 }

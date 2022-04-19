@@ -1,16 +1,8 @@
 package com.example.chirpnote.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintSet;
 
-import android.app.ActionBar;
-import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.PorterDuff;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.util.Log;
@@ -20,20 +12,17 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.chirpnote.Key;
-import com.example.chirpnote.PercussionTrack;
+import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.R;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -41,7 +30,7 @@ public class PercussionActivity extends AppCompatActivity {
 
     private ArrayMap<RadioButton, ArrayList<RadioButton>> chordButtons;
     private ArrayList<String[]> storedList; // to supposedly store chord's patterns
-    private ArrayMap<String, ArrayList<PercussionTrack>> stylePatternMap;
+    private ArrayMap<String, ArrayList<PercussionPattern>> stylePatternMap;
 
     private LinearLayout chordLayout;
     private RadioGroup chordGroup;
@@ -57,7 +46,7 @@ public class PercussionActivity extends AppCompatActivity {
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
 
-    private Session session;
+    private ChirpNoteSession session;
     private Key key;
 
     private String selectedStyle;
@@ -79,7 +68,7 @@ public class PercussionActivity extends AppCompatActivity {
         key = new Key(Key.RootNote.C, Key.Type.MAJOR);
         // Initialize session
         String basePath = this.getFilesDir().getPath();
-        session = new Session("Name", key, 120,
+        session = new ChirpNoteSession("Name", key, 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
 
         storedList = new ArrayList<>();
@@ -94,7 +83,7 @@ public class PercussionActivity extends AppCompatActivity {
                 String[] items = this.getAssets().list("percussion/" + style);
                 for (String item : items) {
                     String path = "percussion/" + style + "/" + item;
-                    stylePatternMap.get(style).add(new PercussionTrack(item, path, session, this));
+                    stylePatternMap.get(style).add(new PercussionPattern(item, path, session, this));
                 }
             }
         } catch (IOException e) { e.printStackTrace(); }
@@ -213,9 +202,9 @@ public class PercussionActivity extends AppCompatActivity {
 
     void initPatterns(String style) {
         patternGroup.removeAllViews();
-        ArrayList<PercussionTrack> patterns = stylePatternMap.get(style);
+        ArrayList<PercussionPattern> patterns = stylePatternMap.get(style);
 
-        for (PercussionTrack pattern : patterns) {
+        for (PercussionPattern pattern : patterns) {
             // Create pattern radio button
             String name = pattern.getLabel().replace(".mid", ""); // returns copy of label
             RadioButton rb = new RadioButton(this);

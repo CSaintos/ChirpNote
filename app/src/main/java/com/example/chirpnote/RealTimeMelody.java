@@ -1,6 +1,5 @@
 package com.example.chirpnote;
 
-import android.os.Environment;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
@@ -34,7 +33,7 @@ public class RealTimeMelody extends Melody {
      * A MIDI melody which is recorded in real time on the UI keyboard
      * @param session The session this melody is a part of
      */
-    public RealTimeMelody(Session session){
+    public RealTimeMelody(ChirpNoteSession session){
         super(session, session.getMidiPath());
     }
 
@@ -66,18 +65,18 @@ public class RealTimeMelody extends Melody {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mSession.setRealTimeMelodyRecorded();
+            mSession.setMidiPrepared();
         } else {
             super.stopRecording();
         }
         if(mSession != null) {
-            mSession.setRealTimeMelodyRecorded();
+            mSession.setMidiPrepared();
         }
     }
 
     @Override
     public boolean isRecorded(){
-        return mSession != null ? mSession.isRealTimeMelodyRecorded() : super.isRecorded();
+        return mSession != null ? mSession.isMidiPrepared() : super.isRecorded();
     }
 
     /**
@@ -187,7 +186,7 @@ public class RealTimeMelody extends Melody {
                         }
                         noteMap.remove(noteEvent.getNoteValue());
                     } else {
-                        // TODO: Compute how much the event needs to be quantized (how many ticks to move it up or down)
+                        // Compute how much the event needs to be quantized (how many ticks to move it up or down)
                         long value = 0;
                         long differenceValue = 0;
                         value = curr.getTick();
@@ -201,21 +200,12 @@ public class RealTimeMelody extends Melody {
 //                                        System.out.println("new:" + curr.getTick());
                                         differenceValue = valuesForNoteType.get(i) - value;
                                     }
-                                }
-                                else{
+                                } else {
                                     break;
                                 }
                             }
                         }
-
-                        /*
-                        noteEvent is the current event you want to check
-                        To get the note MIDI number, noteEvent.getNoteValue()
-                        To get the tick the event happens at, noteEvent.getTick()
-                         */
                         int tickDelta = (int) differenceValue;
-                        // ^set tickDelta to how much to move the current event by (negative int if it needs to be moved back)
-                        // Currently just moving everything forward by one measure (RESOLUTION is how many ticks per beat, 4 beats in one measure)
                         if(tickDelta != 0) {
                             curr.setTick(curr.getTick() + tickDelta);
                             if(prev != null) {
