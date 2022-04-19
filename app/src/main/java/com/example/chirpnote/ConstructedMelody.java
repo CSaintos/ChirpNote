@@ -24,7 +24,7 @@ public class ConstructedMelody extends Melody {
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
      * @param session The session this melody is a part of
      */
-    public ConstructedMelody(Session session){
+    public ConstructedMelody(ChirpNoteSession session){
         super(session, session.getMidiPath());
 
         // Possible note durations when building a melody

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Session implements Serializable {
+public class ChirpNoteSession implements Serializable {
     // Tempo range
     public final static int MIN_TEMPO = 20;
     public final static int MAX_TEMPO = 240;
@@ -33,7 +33,7 @@ public class Session implements Serializable {
      * @param key The key of this session
      * @param tempo The tempo of this session
      */
-    public Session(String name, Key key, int tempo){
+    public ChirpNoteSession(String name, Key key, int tempo){
         mName = name;
         mKey = key;
         if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
@@ -51,7 +51,7 @@ public class Session implements Serializable {
      * @param midiPath The file path to store the MIDI tracks at
      * @param audioPath The file path to store the audio at
      */
-    public Session(String name, Key key, int tempo, String midiPath, String audioPath){
+    public ChirpNoteSession(String name, Key key, int tempo, String midiPath, String audioPath){
         mName = name;
         mKey = key;
         if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {

@@ -19,7 +19,7 @@ import com.example.chirpnote.Chord;
 import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
@@ -60,7 +60,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     private ArrayList<Object> chords;
     private List<String> keyTypeList = new ArrayList<>();
     private List<String> keyNameList = new ArrayList<>();
-    private Session session;
+    private ChirpNoteSession session;
     private String keyNameChoice;
     private String keyTypeChoice;
     private Key currentKey;
@@ -113,7 +113,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         String basePath = this.getFilesDir().getPath();
 //        session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
 //                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
-        session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+        session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
@@ -281,7 +281,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 //    }
 
 
-    private void changeKey(Session session)
+    private void changeKey(ChirpNoteSession session)
     {
         /** Allows the user to switch between keys whenever they want */
         if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
@@ -704,7 +704,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     }
 
 
-    private void initializeChordListeners(Session session)
+    private void initializeChordListeners(ChirpNoteSession session)
     {
         chordTrack = new ChordTrack(session);
         chordTrack.startRecording();
@@ -855,7 +855,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 //        return listOfChords;
     }
 
-    private void initializeKeyNameList(Session session)
+    private void initializeKeyNameList(ChirpNoteSession session)
     {
         keyNameList.add("Key Name");
         for (int i = 0; i < Key.RootNote.values().length; i++)
@@ -864,14 +864,14 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void initializeKeyTypeList(Session session)
+    private void initializeKeyTypeList(ChirpNoteSession session)
     {
         keyTypeList.add("Key Type");
         keyTypeList.add("Major");
         keyTypeList.add("Minor");
     }
 
-    private Button[] getRomanButtons(Session session)
+    private Button[] getRomanButtons(ChirpNoteSession session)
     {
         Button[] list = new Button[7];
         list[0] = findViewById(R.id.roman1);

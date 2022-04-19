@@ -3,7 +3,6 @@ package com.example.chirpnote;
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
 import com.example.midiFileLib.src.event.MidiEvent;
-import com.example.midiFileLib.src.event.NoteOff;
 import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.event.meta.Tempo;
 import com.example.midiFileLib.src.event.meta.TimeSignature;
@@ -29,14 +28,14 @@ public class ChordTrack implements Track {
     private MidiProcessor mMidiProcessor;
     private MidiEventHandler mMidiEventHandler;
 
-    private Session mSession;
+    private ChirpNoteSession mSession;
     public final static int CHANNEL = 1;
 
     /**
      * A Chord track
      * @param session The session this chord track is a part of
      */
-    public ChordTrack(Session session){
+    public ChordTrack(ChirpNoteSession session){
         mRecording = false;
         mSession = session;
         mFilePath = session.getMidiPath();

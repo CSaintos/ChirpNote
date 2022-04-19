@@ -1,6 +1,5 @@
 package com.example.chirpnote;
 
-import android.content.Context;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
@@ -19,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Mixer {
-    private static HashMap<Session, Mixer> mixerInstances = new HashMap<>();
-    private Session mSession;
+    private static HashMap<ChirpNoteSession, Mixer> mixerInstances = new HashMap<>();
+    private ChirpNoteSession mSession;
 
     public ChordTrack chordTrack;
     public ConstructedMelody constructedMelody;
@@ -39,7 +38,7 @@ public class Mixer {
     private MidiProcessor mMidiProcessor;
     private Button mPlayButton;
 
-    private Mixer(Session session){
+    private Mixer(ChirpNoteSession session){
         mSession = session;
         mMidiEventHandler = new MidiEventHandler("MidiPlayback", mPlayButton);
 
@@ -85,7 +84,7 @@ public class Mixer {
      * @param playButton The button in the activity used to start/stop playback
      * @return The mixer
      */
-    public static Mixer getInstance(Session session, Button playButton){
+    public static Mixer getInstance(ChirpNoteSession session, Button playButton){
         if(mixerInstances.get(session) == null){
             mixerInstances.put(session, new Mixer(session));
         }
@@ -99,7 +98,7 @@ public class Mixer {
      * @param session The session to check
      * @return True if a mixer exists
      */
-    public static boolean mixerExists(Session session){
+    public static boolean mixerExists(ChirpNoteSession session){
         return mixerInstances.get(session) != null;
     }
 

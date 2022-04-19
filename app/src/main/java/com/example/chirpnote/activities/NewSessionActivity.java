@@ -15,12 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 
 public class NewSessionActivity extends AppCompatActivity {
     private EditText setName, setTempo;
     private Button createSessionButton;
-    private String tempoInvalidMessage = "Tempo must be " + Session.MIN_TEMPO + "-" + Session.MAX_TEMPO + " BPM";
+    private String tempoInvalidMessage = "Tempo must be " + ChirpNoteSession.MIN_TEMPO + "-" + ChirpNoteSession.MAX_TEMPO + " BPM";
     private TextView tempoInvalid;
     private TextWatcher checkTextValid = new TextWatcher() {
         @Override
@@ -38,7 +38,7 @@ public class NewSessionActivity extends AppCompatActivity {
                 createSessionButton.setEnabled(false);
             } else {
                 int t = Integer.parseInt(tempo);
-                if(t < Session.MIN_TEMPO || t > Session.MAX_TEMPO) {
+                if(t < ChirpNoteSession.MIN_TEMPO || t > ChirpNoteSession.MAX_TEMPO) {
                     tempoInvalid.setText(tempoInvalidMessage);
                     createSessionButton.setEnabled(false);
                 } else {
@@ -80,7 +80,7 @@ public class NewSessionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
-                Session session = new Session(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
+                ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
                         Integer.parseInt(setTempo.getText().toString()), basePath + "/midiTrack.mid", basePath + "audioTrack.mp3");
                 intent.putExtra("session", session);
                 startActivity(intent);

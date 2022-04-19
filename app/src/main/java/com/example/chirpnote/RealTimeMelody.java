@@ -1,6 +1,5 @@
 package com.example.chirpnote;
 
-import android.os.Environment;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
@@ -34,7 +33,7 @@ public class RealTimeMelody extends Melody {
      * A MIDI melody which is recorded in real time on the UI keyboard
      * @param session The session this melody is a part of
      */
-    public RealTimeMelody(Session session){
+    public RealTimeMelody(ChirpNoteSession session){
         super(session, session.getMidiPath());
     }
 

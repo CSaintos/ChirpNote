@@ -30,7 +30,7 @@ abstract class Melody implements Track {
     private MidiEventHandler mMidiEventHandler;
     private Button mPlayButton;
 
-    protected Session mSession;
+    protected ChirpNoteSession mSession;
 
     /**
      * A MIDI melody track
@@ -53,7 +53,7 @@ abstract class Melody implements Track {
      * @param session The session this melody is a part of
      * @param filePath The file path to store the melody at
      */
-    public Melody(Session session, String filePath){
+    public Melody(ChirpNoteSession session, String filePath){
         mRecording = false;
         mSession = session;
         mFilePath = filePath;

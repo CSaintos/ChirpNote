@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ConstructedMelody;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
@@ -29,7 +29,7 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
         Button playAudioButton = (Button) findViewById(R.id.playAudioButton1);
         Button previousActivityButton = (Button) findViewById(R.id.goToPreviousActivityButton);
 
-        Session session = (Session) getIntent().getSerializableExtra("session");
+        ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         ConstructedMelody melody = new ConstructedMelody(session);
         melody.setPlayButton(playMelodyButton);
         AudioTrack audio = new AudioTrack(session);
