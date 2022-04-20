@@ -1,8 +1,11 @@
 package com.example.chirpnote;
 
+import org.bson.types.ObjectId;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+
+import io.realm.RealmList;
 
 public class ChirpNoteSession implements Serializable {
     // Tempo range
@@ -16,12 +19,12 @@ public class ChirpNoteSession implements Serializable {
     private Key mKey;
     private int mTempo;
     private String mMidiPath;
-    public List<String> mChords;
-    public List<String> mMelodyElements;
+    public ArrayList<String> mChords;
+    public ArrayList<String> mMelodyElements;
     public int mNextMelodyTick;
     private String mAudioPath;
-    public List<String> mPercussionPatterns;
-    public int[] mTrackVolumes;
+    public ArrayList<String> mPercussionPatterns;
+    public ArrayList<Integer> mTrackVolumes;
 
     // States
     private boolean mMidiPrepared;
@@ -67,7 +70,12 @@ public class ChirpNoteSession implements Serializable {
         mAudioPath = audioPath;
         mAudioRecorded = false;
         mPercussionPatterns = new ArrayList<>();
-        mTrackVolumes = new int[]{80, 80, 80, 100, 127}; // Chords, constructedMelody, recordedMelody, audio, percussion
+        mTrackVolumes = new ArrayList<>(); //{80, 80, 80, 100, 127}; // Chords, constructedMelody, recordedMelody, audio, percussion
+        mTrackVolumes.add(80);
+        mTrackVolumes.add(80);
+        mTrackVolumes.add(80);
+        mTrackVolumes.add(100);
+        mTrackVolumes.add(127);
     }
 
     /**
@@ -141,4 +149,26 @@ public class ChirpNoteSession implements Serializable {
     }
 
     public void setKey(Key key) {mKey = key;}
+
+    public Session toRealmSession(){
+        Session realmSession = new Session();
+        realmSession.set_id(new ObjectId());
+        realmSession.setName(mName);
+        realmSession.setKey(Key.encode(mKey));
+        realmSession.setTempo(mTempo);
+        realmSession.setChords(toRealmList(mChords));
+        realmSession.setMelodyElements(toRealmList(mMelodyElements));
+        realmSession.setNextMelodyTick(mNextMelodyTick);
+        realmSession.setPercussionPatterns(toRealmList(mPercussionPatterns));
+        realmSession.setTrackVolumes(toRealmList(mTrackVolumes));
+        return realmSession;
+    }
+
+    private <T> RealmList<T> toRealmList(ArrayList<T> list){
+        RealmList<T> realmList = new RealmList<>();
+        for(T item : list){
+            realmList.add(item);
+        }
+        return realmList;
+    }
 }

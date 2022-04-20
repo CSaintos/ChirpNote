@@ -113,11 +113,11 @@ public class Mixer {
     }
 
     private void syncSessionVolume(){
-        setChordVolume(mSession.mTrackVolumes[0]);
-        setConstructedMelodyVolume(mSession.mTrackVolumes[1]);
-        setRealTimeMelodyVolume(mSession.mTrackVolumes[2]);
-        setAudioVolume(mSession.mTrackVolumes[3]);
-        setPercussionVolume(mSession.mTrackVolumes[4]);
+        setChordVolume(mSession.mTrackVolumes.get(0));
+        setConstructedMelodyVolume(mSession.mTrackVolumes.get(1));
+        setRealTimeMelodyVolume(mSession.mTrackVolumes.get(2));
+        setAudioVolume(mSession.mTrackVolumes.get(3));
+        setPercussionVolume(mSession.mTrackVolumes.get(4));
     }
 
     public void setChordVolume(int volume){
@@ -125,7 +125,7 @@ public class Mixer {
             return;
         }
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ChordTrack.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes[0] = volume;
+        mSession.mTrackVolumes.set(0, volume);
     }
 
     public void setConstructedMelodyVolume(int volume){
@@ -133,7 +133,7 @@ public class Mixer {
             return;
         }
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ConstructedMelody.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes[1] = volume;
+        mSession.mTrackVolumes.set(1, volume);
     }
 
     public void setRealTimeMelodyVolume(int volume){
@@ -141,12 +141,12 @@ public class Mixer {
             return;
         }
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + RealTimeMelody.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes[2] = volume;
+        mSession.mTrackVolumes.set(2, volume);
     }
 
     public void setAudioVolume(int volume){
         // TODO: Implement a way to set the audio volume
-        mSession.mTrackVolumes[3] = volume;
+        mSession.mTrackVolumes.set(3, volume);
     }
 
     public void setPercussionVolume(int volume){
@@ -154,7 +154,7 @@ public class Mixer {
             return;
         }
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + PercussionTrack.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes[4] = volume;
+        mSession.mTrackVolumes.set(4, volume);
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.example.chirpnote.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,8 +15,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.Session;
+
+import io.realm.Realm;
+import io.realm.mongodb.App;
+import io.realm.mongodb.AppConfiguration;
+import io.realm.mongodb.sync.SyncConfiguration;
 
 public class NewSessionActivity extends AppCompatActivity {
+    App app;
+    String appID = "chirpnote-jwrci";
+
     private EditText setName, setTempo;
     private Button createSessionButton;
     private String tempoInvalidMessage = "Tempo must be " + ChirpNoteSession.MIN_TEMPO + "-" + ChirpNoteSession.MAX_TEMPO + " BPM";
@@ -55,6 +63,14 @@ public class NewSessionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_session);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Setup a MongoDB Realm instance
+        app = new App(new AppConfiguration.Builder(appID).build());
+        SyncConfiguration config = new SyncConfiguration.Builder(
+                app.currentUser(),
+                "testuser")
+                .build();
+        Realm realm = Realm.getInstance(config);
+
         tempoInvalid = (TextView) findViewById(R.id.tempoInvalidText);
 
         setName = (EditText) findViewById(R.id.setSessionNameText);
@@ -71,8 +87,7 @@ public class NewSessionActivity extends AppCompatActivity {
             }
         });
 
-        Context context = this;
-        String basePath = context.getFilesDir().getPath();
+        String basePath = this.getFilesDir().getPath();
 
         createSessionButton = (Button) findViewById(R.id.createSessionButton);
         createSessionButton.setEnabled(false);
@@ -82,6 +97,14 @@ public class NewSessionActivity extends AppCompatActivity {
                 Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
                 ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
                         Integer.parseInt(setTempo.getText().toString()), basePath + "/midiTrack.mid", basePath + "audioTrack.mp3");
+
+                // Insert the new session into the realm database
+                /*realm.executeTransactionAsync(r -> {
+                    Session sessionToInsert = session.toRealmSession();
+                    sessionToInsert.setUsername("testuser"); // TODO: Set to the username of the currently logged in user
+                    r.insert(sessionToInsert);
+                });*/
+
                 intent.putExtra("session", session);
                 startActivity(intent);
             }

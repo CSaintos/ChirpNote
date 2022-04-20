@@ -14,25 +14,15 @@ import android.widget.Toast;
 
 import com.example.chirpnote.R;
 
-import org.w3c.dom.Document;
-
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 import io.realm.mongodb.Credentials;
-import io.realm.mongodb.mongo.MongoClient;
-import io.realm.mongodb.mongo.MongoCollection;
-import io.realm.mongodb.mongo.MongoDatabase;
 
 public class LoginActivity extends AppCompatActivity {
-
-    private EditText mUsername, mPassword;
-
-    MongoClient mongoClient;
-    MongoDatabase mongoDatabase;
-    MongoCollection<Document> mongoCollection; // not sure we need this yet
     App app;
     String appID = "chirpnote-jwrci";
 
+    private EditText mUsername, mPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +50,6 @@ public class LoginActivity extends AppCompatActivity {
                     if (it.isSuccess()) {
                         Toast.makeText(LoginActivity.this,"Login succeeded", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, HomeScreenActivity.class));
-                        /*String partitionValue = "username";
-                        SyncConfiguration config = new SyncConfiguration.Builder(
-                                user.get(),
-                                partitionValue)
-                                .build();
-                        Realm backgroundThreadRealm = Realm.getInstance(config);
-                        String userId = it.get().getId();
-                        com.example.chirpnote.User newUser =
-                                backgroundThreadRealm.where(com.example.chirpnote.User.class).equalTo("_id", user.get().getId()).findFirst();
-                        test.setText("Chord suggestions: " + newUser.getChordSuggestions());*/
                     } else {
                         Toast.makeText(LoginActivity.this,"Login failed", Toast.LENGTH_LONG).show();
                     }
