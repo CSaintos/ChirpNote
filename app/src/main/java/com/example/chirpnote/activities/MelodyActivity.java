@@ -29,6 +29,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.chirpnote.BLL;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
@@ -65,6 +66,7 @@ public class MelodyActivity extends AppCompatActivity
     private TextView octaveText;
 
     private LinkedList<NoteFont> noteList;
+    private BLL<NoteFont> noteList2;
     private ListIterator<NoteFont> itr;
     private NoteFont currentNote; // can store any symbol
     private NoteFont currentDuration; // only stores rest length
@@ -104,6 +106,7 @@ public class MelodyActivity extends AppCompatActivity
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        // end of navigation menu
 
         // BRANDON
         //ConstructedMelody consMelody2 = new ConstructedMelody(session);
@@ -111,6 +114,7 @@ public class MelodyActivity extends AppCompatActivity
         // BRANDON
 
         noteList = new LinkedList<>();
+        noteList2 = new BLL<>();
         itr = noteList.listIterator();
         midiDriver = MidiDriver.getInstance();
 
@@ -259,6 +263,7 @@ public class MelodyActivity extends AppCompatActivity
                 int tempBarLength = barLength - replacedSymbol.noteLength + currentNote.noteLength;
                 if (tempBarLength <= maxBarLength) {
                     barLength = tempBarLength;
+                    noteList2.set(notation.new NoteFont(currentNote));
                     itr.set(notation.new NoteFont(currentNote));
                 } else {
                     currentNote = replacedSymbol;
@@ -497,6 +502,7 @@ public class MelodyActivity extends AppCompatActivity
                         int tempBarLength = barLength + currentDuration.noteLength - replacedSymbol.noteLength;
                         if (tempBarLength <= maxBarLength) {
                             barLength = tempBarLength;
+                            noteList2.set(notation.new NoteFont(currentNote));
                             itr.set(notation.new NoteFont(currentNote)); // set the last returned note to the currentNote
                         } else {
                             currentNote = replacedSymbol;
@@ -542,6 +548,11 @@ public class MelodyActivity extends AppCompatActivity
         clef.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, clef.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         gclefText.setText(clef);
 
+        noteList2.insertAfter(notation.new NoteFont(Syntax.SPACE_CLEF, 5));
+        if (noteList2.hasNext()) noteList2.next();
+        Log.d("NoteList 2", noteList2.get().symbol.toString());
+
+        // TODO remove iterator
         itr.add(notation.new NoteFont(Syntax.SPACE_CLEF, 5));
         if (itr.hasPrevious()) {
             Log.d("NoteList", itr.previous().symbol.toString());
@@ -560,6 +571,13 @@ public class MelodyActivity extends AppCompatActivity
         currentDuration.noteLength = 32;
         currentNote.noteLength = 0;
         barLength = 0;
+
+        // Add default note to staff
+        noteList2.insertAfter(notation.new NoteFont(currentNote));
+        if (noteList2.hasNext()) noteList2.next();
+        currentNote = notation.new NoteFont(noteList2.get());
+
+        // TODO remove iterator
         // Add default note to staff
         itr.add(notation.new NoteFont(currentNote));
         // Check that the note added is the currentNote
