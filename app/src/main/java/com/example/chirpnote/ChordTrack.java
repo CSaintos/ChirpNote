@@ -211,10 +211,9 @@ public class ChordTrack implements Track {
         int endTick = RESOLUTION * 4 * (position + 4);
         ArrayList<MidiEvent> eventsToRemove = new ArrayList<>();
         Iterator<MidiEvent> it = track.getEvents().iterator();
-        MidiEvent prev = null, next = it.hasNext() ? it.next() : null, curr;
-        while(next != null){
-            curr = next;
-            next = it.hasNext() ? it.next() : null;
+        MidiEvent curr;
+        while(it.hasNext()){
+            curr = it.next();
             if(curr.getTick() >= endTick){
                 break;
             } else if(curr.getTick() >= startTick){
@@ -222,24 +221,19 @@ public class ChordTrack implements Track {
                     NoteOn noteEvent = (NoteOn) curr;
                     if(noteEvent.getChannel() == CHANNEL){
                         eventsToRemove.add(curr);
-                        if(prev != null){
-                            next.setDelta(next.getTick() - prev.getTick());
-                        } else {
-                            next.setDelta(next.getTick());
-                        }
                     }
                 }
             }
-            prev = curr;
         }
         for(MidiEvent event : eventsToRemove){
-            track.getEvents().remove(event);
+            track.removeEvent(event);
         }
         // Remove the four chords from session list
         for(int i = 0; i < 4; i++){
             mSession.mChords.remove(position);
         }
         // Shift all chords (back) that came after the fourth removed chord
+        MidiEvent next, prev = null;
         if(position < mSession.mChords.size()){
             HashMap<Integer, Integer> noteMap = new HashMap<>(); // {note MIDI number : amount shifted, in ticks}
             it = track.getEvents().iterator();
@@ -252,16 +246,31 @@ public class ChordTrack implements Track {
                     if(noteEvent.getChannel() == CHANNEL){
                         if(noteEvent.getVelocity() == 0 && noteMap.get(noteEvent.getNoteValue()) != null){
                             curr.setTick(curr.getTick() + noteMap.get(noteEvent.getNoteValue()));
+                            if(prev != null) {
+                                curr.setDelta(curr.getTick() - prev.getTick());
+                            } else {
+                                curr.setDelta(curr.getTick());
+                            }
+                            if(next != null){
+                                next.setDelta(next.getTick() - curr.getTick());
+                            }
                             noteMap.remove(noteEvent.getNoteValue());
                         } else {
                             int tickDelta = -(RESOLUTION * 16); // Shift back by 16 beats (4 measures)
-                            if(tickDelta != 0){
-                                curr.setTick(curr.getTick() + tickDelta);
-                                noteMap.put(noteEvent.getNoteValue(), tickDelta);
+                            curr.setTick(curr.getTick() + tickDelta);
+                            if(prev != null) {
+                                curr.setDelta(curr.getTick() - prev.getTick());
+                            } else {
+                                curr.setDelta(curr.getTick());
                             }
+                            if(next != null){
+                                next.setDelta(next.getTick() - curr.getTick());
+                            }
+                            noteMap.put(noteEvent.getNoteValue(), tickDelta);
                         }
                     }
                 }
+                prev = curr;
             }
         }
         try {
