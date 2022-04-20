@@ -233,26 +233,28 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 //        addRowOfMeasures();
         switch (v.getId()) {
             case R.id.button_add_row:
-                if (areMeasuresFilled() == true || layoutList.getChildCount() == 0)
-                {
-//                    addRowOfMeasures();
-//                    addRowOfMeasures2();
-//                    if (session.mChords.size() > 0)
-//                    {
-//                        Chord[] initChords = initializeSongMeasures(session);
-//                        addRowOfMeasures3(initChords);
-//                    }
-//                    else {
-//                        Chord[] randChords = randomChordProgression(sessionChords);
-//                        addRowOfMeasures3(randChords);
-//                    }
-                    Chord[] randChords = randomChordProgression(sessionChords);
-                    addRowOfMeasures3(randChords);
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "Please insert chords to all available measures.", Toast.LENGTH_SHORT).show();
-                }
+//                if (areMeasuresFilled() == true || layoutList.getChildCount() == 0)
+//                {
+////                    addRowOfMeasures();
+////                    addRowOfMeasures2();
+////                    if (session.mChords.size() > 0)
+////                    {
+////                        Chord[] initChords = initializeSongMeasures(session);
+////                        addRowOfMeasures3(initChords);
+////                    }
+////                    else {
+////                        Chord[] randChords = randomChordProgression(sessionChords);
+////                        addRowOfMeasures3(randChords);
+////                    }
+//                    Chord[] randChords = randomChordProgression(sessionChords);
+//                    addRowOfMeasures3(randChords);
+//                }
+//                else
+//                {
+//                    Toast.makeText(getApplicationContext(), "Please insert chords to all available measures.", Toast.LENGTH_SHORT).show();
+//                }
+                Chord[] randChords = randomChordProgression(sessionChords);
+                addRowOfMeasures3(randChords);
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
@@ -354,9 +356,11 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
             listOfButtons.get(rowIdx)[col].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int newRowIdx = layoutList.indexOfChild(rowOfMeasures);
                     if(selectedSessionChord != null){
                         // Use copy constructor once it has been fixed
                         // Chord newChord = new Chord(selectedSessionChord);
+
                         Chord newChord = new Chord(selectedSessionChord.getRootNote(), selectedSessionChord.getType(), session.getTempo());
 
                         for (int i = 0; i < listOfChords.size(); i++)
@@ -367,13 +371,15 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                             }
                         }
 
-                        System.out.println("================= HERE =======================");
-                        System.out.println("rowIdx = " + rowIdx);
-                        System.out.println("col = " + col);
-                        System.out.println("listOfChords.size() = " + listOfChords.size());
+//                        System.out.println("================= HERE =======================");
+//                        System.out.println("rowIdx = " + rowIdx);
+//                        int newRowIdx = layoutList.indexOfChild(rowOfMeasures);
+//                        System.out.println("newRowIdx = " + newRowIdx);
+//                        System.out.println("col = " + col);
+//                        System.out.println("listOfChords.size() = " + listOfChords.size());
 
-                        listOfChords.get(rowIdx)[col] = newChord; // ERROR HERE IF I REMOVE FROM MIDDLE
-                        chordTrack.addChord(newChord, (rowIdx * 4) + col);
+                        listOfChords.get(newRowIdx)[col] = newChord; // ERROR HERE IF I REMOVE FROM MIDDLE
+                        chordTrack.addChord(newChord, (newRowIdx * 4) + col);
                         ((Button) v).setText(selectedSessionChord.getButton().getText());
                     }
 
@@ -389,15 +395,14 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
 //                        }
                     }
 
-
-                    String inputChord = listOfChords.get(rowIdx)[col].toString();
+                    String inputChord = listOfChords.get(newRowIdx)[col].toString();
 //                    System.out.println("inputChord = " + inputChord);
                     suggestedChords = getSuggestedChords(inputChord, sessionChords);
 
 
-                    if (listOfButtons.get(rowIdx)[col].isSelected())
+                    if (listOfButtons.get(newRowIdx)[col].isSelected())
                     {
-                        listOfButtons.get(rowIdx)[col].setSelected(false);
+                        listOfButtons.get(newRowIdx)[col].setSelected(false);
                         // resets everything to off
                         for (int i = 0; i < suggestedChords.size(); i++) {
                             suggestedChords.get(i).getButton().setSelected(false);
@@ -406,7 +411,7 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                     }
                     else // if listOfButtons.get(rowIdx)[col].isSelected() == false
                     {
-                        listOfButtons.get(rowIdx)[col].setSelected(true);
+                        listOfButtons.get(newRowIdx)[col].setSelected(true);
 
 
                         // resets everything to off
