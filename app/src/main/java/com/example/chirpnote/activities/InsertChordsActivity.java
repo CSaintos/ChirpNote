@@ -366,11 +366,13 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
                                 System.out.println("listOfChords.get("+i+")["+j+"]" + listOfChords.get(i)[j]);
                             }
                         }
+
                         System.out.println("================= HERE =======================");
                         System.out.println("rowIdx = " + rowIdx);
                         System.out.println("col = " + col);
                         System.out.println("listOfChords.size() = " + listOfChords.size());
-                        listOfChords.get(rowIdx)[col] = newChord; // ERROR HERE IF I REMOVE FIRST OR SECOND ROW
+
+                        listOfChords.get(rowIdx)[col] = newChord; // ERROR HERE IF I REMOVE FROM MIDDLE
                         chordTrack.addChord(newChord, (rowIdx * 4) + col);
                         ((Button) v).setText(selectedSessionChord.getButton().getText());
                     }
