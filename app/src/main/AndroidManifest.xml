@@ -104,6 +104,7 @@
         <activity
             android:name=".activities.InsertChordsActivity"
             android:parentActivityName=".activities.HomeScreenActivity"
+            android:theme="@style/Theme.ChirpNote.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activities.StartUpActivity"

@@ -28,10 +28,10 @@ public class PercussionTrack implements Track {
     private MidiProcessor mMidiProcessor;
     private MidiEventHandler mMidiEventHandler;
 
-    private Session mSession;
+    private ChirpNoteSession mSession;
     public final static int CHANNEL = 9;
 
-    public PercussionTrack(Session session){
+    public PercussionTrack(ChirpNoteSession session){
         mRecording = false;
         mSession = session;
         mFilePath = session.getMidiPath();

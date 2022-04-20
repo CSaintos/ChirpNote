@@ -1,6 +1,5 @@
 package com.example.chirpnote;
 
-import android.content.Context;
 import android.widget.Button;
 
 import com.example.midiFileLib.src.MidiFile;
@@ -19,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Mixer {
-    private static HashMap<Session, Mixer> mixerInstances = new HashMap<>();
-    private Session mSession;
+    private static HashMap<ChirpNoteSession, Mixer> mixerInstances = new HashMap<>();
+    private ChirpNoteSession mSession;
 
     public ChordTrack chordTrack;
     public ConstructedMelody constructedMelody;
@@ -39,7 +38,7 @@ public class Mixer {
     private MidiProcessor mMidiProcessor;
     private Button mPlayButton;
 
-    private Mixer(Session session){
+    private Mixer(ChirpNoteSession session){
         mSession = session;
         mMidiEventHandler = new MidiEventHandler("MidiPlayback", mPlayButton);
 
@@ -85,7 +84,7 @@ public class Mixer {
      * @param playButton The button in the activity used to start/stop playback
      * @return The mixer
      */
-    public static Mixer getInstance(Session session, Button playButton){
+    public static Mixer getInstance(ChirpNoteSession session, Button playButton){
         if(mixerInstances.get(session) == null){
             mixerInstances.put(session, new Mixer(session));
         }
@@ -99,7 +98,7 @@ public class Mixer {
      * @param session The session to check
      * @return True if a mixer exists
      */
-    public static boolean mixerExists(Session session){
+    public static boolean mixerExists(ChirpNoteSession session){
         return mixerInstances.get(session) != null;
     }
 
@@ -114,11 +113,11 @@ public class Mixer {
     }
 
     private void syncSessionVolume(){
-        setChordVolume(mSession.mTrackVolumes[0]);
-        setConstructedMelodyVolume(mSession.mTrackVolumes[1]);
-        setRealTimeMelodyVolume(mSession.mTrackVolumes[2]);
-        setAudioVolume(mSession.mTrackVolumes[3]);
-        setPercussionVolume(mSession.mTrackVolumes[4]);
+        setChordVolume(mSession.mTrackVolumes.get(0));
+        setConstructedMelodyVolume(mSession.mTrackVolumes.get(1));
+        setRealTimeMelodyVolume(mSession.mTrackVolumes.get(2));
+        setAudioVolume(mSession.mTrackVolumes.get(3));
+        setPercussionVolume(mSession.mTrackVolumes.get(4));
     }
 
     public void setChordVolume(int volume){
@@ -126,7 +125,7 @@ public class Mixer {
             return;
         }
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ChordTrack.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes[0] = volume;
+        mSession.mTrackVolumes.set(0, volume);
     }
 
     public void setConstructedMelodyVolume(int volume){
@@ -134,7 +133,7 @@ public class Mixer {
             return;
         }
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ConstructedMelody.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes[1] = volume;
+        mSession.mTrackVolumes.set(1, volume);
     }
 
     public void setRealTimeMelodyVolume(int volume){
@@ -142,12 +141,12 @@ public class Mixer {
             return;
         }
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + RealTimeMelody.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes[2] = volume;
+        mSession.mTrackVolumes.set(2, volume);
     }
 
     public void setAudioVolume(int volume){
         // TODO: Implement a way to set the audio volume
-        mSession.mTrackVolumes[3] = volume;
+        mSession.mTrackVolumes.set(3, volume);
     }
 
     public void setPercussionVolume(int volume){
@@ -155,7 +154,7 @@ public class Mixer {
             return;
         }
         midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + PercussionTrack.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes[4] = volume;
+        mSession.mTrackVolumes.set(4, volume);
     }
 
     /**

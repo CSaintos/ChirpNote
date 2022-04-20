@@ -48,7 +48,7 @@ public class PercussionPattern {
      * @param context The context from the activity (pass "this")
      * @param playButton The button used to play this pattern
      */
-    public PercussionPattern(Style style, Session session, Context context, Button playButton){
+    public PercussionPattern(Style style, ChirpNoteSession session, Context context, Button playButton){
         mMidiEventHandler = new MidiEventHandler(style.toString(), playButton);
         try{
             InputStream inputStream = context.getApplicationContext().getResources().openRawResource(style.rawResource);
@@ -69,7 +69,7 @@ public class PercussionPattern {
      * @param session The session to play this Percussion pattern on
      * @param context The context from the activity (pass "this")
      */
-    public PercussionPattern(Style style, Session session, Context context){
+    public PercussionPattern(Style style, ChirpNoteSession session, Context context){
         mMidiEventHandler = new MidiEventHandler(style.toString());
         try{
             InputStream inputStream = context.getApplicationContext().getResources().openRawResource(style.rawResource);
@@ -91,7 +91,7 @@ public class PercussionPattern {
      * @param session The session to play this Percussion pattern on
      * @param context The context from the activity (pass "this")
      */
-    public PercussionPattern(String label, String path, Session session, Context context) {
+    public PercussionPattern(String label, String path, ChirpNoteSession session, Context context) {
         mMidiEventHandler = new MidiEventHandler(label);
         try {
             // get file

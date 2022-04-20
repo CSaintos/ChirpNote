@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.R;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
@@ -46,7 +46,7 @@ public class PercussionActivity extends AppCompatActivity {
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
 
-    private Session session;
+    private ChirpNoteSession session;
     private Key key;
 
     private String selectedStyle;
@@ -68,7 +68,7 @@ public class PercussionActivity extends AppCompatActivity {
         key = new Key(Key.RootNote.C, Key.Type.MAJOR);
         // Initialize session
         String basePath = this.getFilesDir().getPath();
-        session = new Session("Name", key, 120,
+        session = new ChirpNoteSession("Name", key, 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
 
         storedList = new ArrayList<>();

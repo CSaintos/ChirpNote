@@ -7,7 +7,6 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -34,7 +33,7 @@ import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Track;
 
 import org.billthefarmer.mididriver.MidiConstants;
@@ -128,7 +127,7 @@ public class TestOtherActivity extends AppCompatActivity {
         playButton.setEnabled(false);
 
         String basePath = this.getFilesDir().getPath();
-        Session session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+        ChirpNoteSession session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
         Mixer mixer = Mixer.getInstance(session, playButton);
 

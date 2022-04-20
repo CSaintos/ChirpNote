@@ -1,144 +1,114 @@
 package com.example.chirpnote;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.bson.types.ObjectId;
 
-public class Session implements Serializable {
-    // Tempo range
-    public final static int MIN_TEMPO = 20;
-    public final static int MAX_TEMPO = 240;
+public class Session extends RealmObject {
+    @PrimaryKey
+    private ObjectId _id;
 
-    // Resolution of MIDI tracks
-    public final int RESOLUTION = 960;
+    @Required
+    private RealmList<String> chords;
 
-    private String mName;
-    private Key mKey;
-    private int mTempo;
-    private String mMidiPath;
-    public List<String> mChords;
-    public List<String> mMelodyElements;
-    public int mNextMelodyTick;
-    private String mAudioPath;
-    public List<String> mPercussionPatterns;
-    public int[] mTrackVolumes;
+    private String key;
 
-    // States
-    private boolean mMidiPrepared;
-    private boolean mAudioRecorded;
+    @Required
+    private RealmList<String> melodyElements;
 
-    /**
-     * A session (ChirpNote's project/song type)
-     * @param name The name of this session
-     * @param key The key of this session
-     * @param tempo The tempo of this session
-     */
-    public Session(String name, Key key, int tempo){
-        mName = name;
-        mKey = key;
-        if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
-            mTempo = tempo;
-        } else {
-            mTempo = 120;
-        }
+    private String name;
+
+    private Integer nextMelodyTick;
+
+    @Required
+    private RealmList<String> percussionPatterns;
+
+    private Integer tempo;
+
+    @Required
+    private RealmList<Integer> trackVolumes;
+
+    private String username;
+
+    public ObjectId get_id(){
+        return _id;
     }
 
-    /**
-     * A session (ChirpNote's project/song type)
-     * @param name The name of this session
-     * @param key The key of this session
-     * @param tempo The tempo of this session
-     * @param midiPath The file path to store the MIDI tracks at
-     * @param audioPath The file path to store the audio at
-     */
-    public Session(String name, Key key, int tempo, String midiPath, String audioPath){
-        mName = name;
-        mKey = key;
-        if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
-            mTempo = tempo;
-        } else {
-            mTempo = 120;
-        }
-        mMidiPath = midiPath;
-        mMidiPrepared = false;
-        mChords = new ArrayList<>();
-        mMelodyElements = new ArrayList<>();
-        mNextMelodyTick = 0;
-        mAudioPath = audioPath;
-        mAudioRecorded = false;
-        mPercussionPatterns = new ArrayList<>();
-        mTrackVolumes = new int[]{80, 80, 80, 100, 127}; // Chords, constructedMelody, recordedMelody, audio, percussion
+    public void set_id(ObjectId _id){
+        this._id = _id;
     }
 
-    /**
-     * Gets the name of this session
-     * @return The session name
-     */
+    public RealmList<String> getChords(){
+        return chords;
+    }
+
+    public void setChords(RealmList<String> chords){
+        this.chords = chords;
+    }
+
+    public String getKey(){
+        return key;
+    }
+
+    public void setKey(String key){
+        this.key = key;
+    }
+
+    public RealmList<String> getMelodyElements(){
+        return melodyElements;
+    }
+
+    public void setMelodyElements(RealmList<String> melodyElements){
+        this.melodyElements = melodyElements;
+    }
+
     public String getName(){
-        return mName;
+        return name;
     }
 
-    /**
-     * Gets the key of this session
-     * @return The session key
-     */
-    public Key getKey(){
-        return mKey;
+    public void setName(String name){
+        this.name = name;
     }
 
-    /**
-     * Gets the tempo of this session
-     * @return The session tempo
-     */
-    public int getTempo(){
-        return mTempo;
+    public Integer getNextMelodyTick(){
+        return nextMelodyTick;
     }
 
-    /**
-     * Gets the file path where the MIDI tracks are stored
-     * @return The path of the MIDI file for the chords, constructed melody, and real time melody
-     */
-    public String getMidiPath(){
-        return mMidiPath;
+    public void setNextMelodyTick(Integer nextMelodyTick){
+        this.nextMelodyTick = nextMelodyTick;
     }
 
-    /**
-     * Gets the file path where the audio track is stored
-     * @return The path of the mp3 file for the audio track
-     */
-    public String getAudioPath(){
-        return mAudioPath;
+    public RealmList<String> getPercussionPatterns(){
+        return percussionPatterns;
     }
 
-    /**
-     * Call after the MIDI file for this session has been created
-     */
-    public void setMidiPrepared(){
-        mMidiPrepared = true;
+    public void setPercussionPatterns(RealmList<String> percussionPatterns){
+        this.percussionPatterns = percussionPatterns;
     }
 
-    /**
-     * Call after an audio track has been recorded for this session
-     */
-    public void setAudioRecorded(){
-        mAudioRecorded = true;
+    public Integer getTempo(){
+        return tempo;
     }
 
-    /**
-     * Gets whether or not this session's MIDI file has been prepared
-     * @return True if the session's MIDI file is ready to be written to
-     */
-    public boolean isMidiPrepared(){
-        return mMidiPrepared;
+    public void setTempo(Integer tempo){
+        this.tempo = tempo;
     }
 
-    /**
-     * Gets whether or not this session's audio track has been recorded
-     * @return True if the session's audio track has been recorded
-     */
-    public boolean isAudioRecorded(){
-        return mAudioRecorded;
+    public RealmList<Integer> getTrackVolumes(){
+        return trackVolumes;
     }
 
-    public void setKey(Key key) {mKey = key;}
+    public void setTrackVolumes(RealmList<Integer> trackVolumes){
+        this.trackVolumes = trackVolumes;
+    }
+
+    public String getUsername(){
+        return username;
+    }
+
+    public void setUsername(String username){
+        this.username = username;
+    }
 }

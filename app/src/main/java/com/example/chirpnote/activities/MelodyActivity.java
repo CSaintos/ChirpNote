@@ -35,7 +35,7 @@ import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.Notation;
 import com.example.chirpnote.Notation.NoteFont;
 import com.example.chirpnote.R;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -69,7 +69,7 @@ public class MelodyActivity extends AppCompatActivity
     private NoteFont currentNote; // can store any symbol
     private NoteFont currentDuration; // only stores rest length
     private MidiDriver midiDriver;
-    private Session session;
+    private ChirpNoteSession session;
     private Key key;
     private int octNum;
     private boolean wasNext;
@@ -124,7 +124,7 @@ public class MelodyActivity extends AppCompatActivity
         //session = new Session("Default", key, 140);
 
         String basePath = this.getFilesDir().getPath();
-        session = new Session("Name", key, 120,
+        session = new ChirpNoteSession("Name", key, 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
 
         // Initialize buttons

@@ -32,7 +32,7 @@ import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -89,7 +89,7 @@ public class KeyboardActivity extends AppCompatActivity
         // keyboard code
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
-        Session session = new Session("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
+        ChirpNoteSession session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
@@ -424,7 +424,7 @@ public class KeyboardActivity extends AppCompatActivity
         }
     }
 
-    private void initializeKeyNameList(Session session)
+    private void initializeKeyNameList(ChirpNoteSession session)
     {
         keyNameList.add("Key Name");
         for (int i = 0; i < Key.RootNote.values().length; i++)
@@ -435,7 +435,7 @@ public class KeyboardActivity extends AppCompatActivity
         }
     }
 
-    private void initializeKeyTypeList(Session session)
+    private void initializeKeyTypeList(ChirpNoteSession session)
     {
         keyTypeList.add("Key Type");
         keyTypeList.add("Major");

@@ -18,7 +18,7 @@ import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
-import com.example.chirpnote.Session;
+import com.example.chirpnote.ChirpNoteSession;
 
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -47,7 +47,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().hide();
 
-        Session session = new Session("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
+        ChirpNoteSession session = new ChirpNoteSession("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
 
 
 
@@ -211,7 +211,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeKeys(Session session)
+    private void initializeKeys(ChirpNoteSession session)
     {
         pianoKeys = new ArrayList<>(); // List of MusicNotes
         int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
@@ -224,7 +224,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeKeyNameList(Session session)
+    private void initializeKeyNameList(ChirpNoteSession session)
     {
         keyNameList.add("Key Name");
         for (int i = 0; i < Key.RootNote.values().length; i++)
@@ -235,7 +235,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeKeyTypeList(Session session)
+    private void initializeKeyTypeList(ChirpNoteSession session)
     {
         keyTypeList.add("Key Type");
         keyTypeList.add("Major");
