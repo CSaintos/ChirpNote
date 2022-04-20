@@ -232,7 +232,7 @@ public class InsertChordsActivity extends AppCompatActivity
         });
     }
 
-    private Chord[] initializeSongMeasures(Session session) {
+    private Chord[] initializeSongMeasures(ChirpNoteSession session) {
         Chord [] importChords = new Chord[4];
         if (session.mChords.size() > 0) {
 //            Chord[] importChords = new Chord[4];
@@ -358,7 +358,7 @@ public class InsertChordsActivity extends AppCompatActivity
 
         for (int col = 0; col < prefilledMeasures.length; col++)
         {
-            int romanChordIndex = prefilledMeasures[col].returnRoman();
+            int romanChordIndex = prefilledMeasures[col].getRoman();
             String romanChordString = session.getKey().getRomanTypes()[romanChordIndex];
             Button tempMeasure = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
             tempMeasure.setText(romanChordString);
@@ -695,7 +695,7 @@ public class InsertChordsActivity extends AppCompatActivity
         listOfMeasures.add(measures); // HERE IS WHERE I FINISHED
     }
 
-    private void changeKey(Session session)
+    private void changeKey(ChirpNoteSession session)
     {
         /** Allows the user to switch between keys whenever they want */
         if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
