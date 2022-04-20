@@ -1,7 +1,10 @@
 package com.example.chirpnote.activities;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,14 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ChirpNoteSession;
+import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
@@ -29,7 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class InsertChordsActivity extends AppCompatActivity implements View.OnClickListener
+public class InsertChordsActivity extends AppCompatActivity
+        implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener
 {
     private LinearLayout layoutList; // holds all the rows of buttons that are added to it
     private Button buttonAdd;
@@ -77,6 +87,8 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     private String selectedSuggestedChord;
     // The top three variables should be defined at the top of the file
 
+    private DrawerLayout drawer;
+
 //    List<String> keyTypeList = new ArrayList<>();
 
     @Override
@@ -84,9 +96,22 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
     {
         super.onCreate(savedInstanceState);
         //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().hide();
-
+        //getSupportActionBar().hide();
         setContentView(R.layout.activity_insert_chords);
+
+        // nav drawer
+        Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.bringToFront();
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState(); // end nav drawer
 
         buttonAdd = findViewById(R.id.button_add_row);
         buttonAdd.setOnClickListener(this);
@@ -935,6 +960,57 @@ public class InsertChordsActivity extends AppCompatActivity implements View.OnCl
         midiDriver.stop();
     }
 
+    // nav drawer code
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                redirectActivity(this, HomeScreenActivity.class);
+                break;
+            case R.id.nav_profile:
+                // Just close the drawer since we're already on this activity
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.nav_music_theory:
+                // Just close the drawer since we're already on this activity
+                redirectActivity(this, MusicTheoryInfoActivity.class);
+                break;
+            case R.id.nav_overview:
+                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_melody:
+                redirectActivity(this, MelodyActivity.class);
+                break;
+            case R.id.nav_chords:
+                redirectActivity(this, InsertChordsActivity.class);
+                break;
+            case R.id.nav_percussion:
+                redirectActivity(this, PercussionActivity.class);
+                break;
+            case R.id.nav_keyboard:
+                redirectActivity(this, KeyboardActivity.class);
+                break;
+            default:
+                break;
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    private static void redirectActivity(Activity activity, Class aClass) {
+        Intent intent = new Intent(activity, aClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
+    }
 
 }
