@@ -16,27 +16,39 @@ import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.Session;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import io.realm.Realm;
+import io.realm.mongodb.App;
+import io.realm.mongodb.AppConfiguration;
+import io.realm.mongodb.sync.SyncConfiguration;
+
 public class SessionActivity extends AppCompatActivity {
-    // Sam
     // A list of chords
     private ArrayList<Chord> keyChords;
     private ArrayList<Chord> suggestedChords;
     private Key currentKey;
-    // end Sam
+
+    App app;
+    String appID = "chirpnote-jwrci";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session);
 
+        app = new App(new AppConfiguration.Builder(appID).build());
+
         ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         ((TextView) findViewById(R.id.sessionNameText)).setText("Session Name: " + session.getName());
         ((TextView) findViewById(R.id.tempoText)).setText("Tempo: " + session.getTempo() + " BPM");
         ((TextView) findViewById(R.id.keyText)).setText("Key: " + session.getKey());
+
+        Realm realm = Realm.getDefaultInstance();
 
         Button nextActivityButton = (Button) findViewById(R.id.goToNextActivityButton);
         if(session.isMidiPrepared() && session.isAudioRecorded()) {
@@ -51,10 +63,6 @@ public class SessionActivity extends AppCompatActivity {
         Button recAudioButton = (Button) findViewById(R.id.recAudioButton3);
         AudioTrack audio = new AudioTrack(session);
 
-
-        // Sam's section
-
-
         keyChords = new ArrayList<>();
         currentKey = session.getKey(); // gets the key set when session was initialized
         for (int i = 0; i < currentKey.getScaleNotes().length; i++)
@@ -67,11 +75,9 @@ public class SessionActivity extends AppCompatActivity {
             keyChords.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i], session.getTempo()));
         }
 
-
         suggestedChords = new ArrayList<>();
         Chord inputChord = keyChords.get(3); // arbitrary chord choice to test chord suggestion
         suggestedChords = getSuggestedChords(inputChord, keyChords);
-
 
         Button chordSuggestion = (Button) findViewById(R.id.chordSuggestionButton);
         chordSuggestion.setOnClickListener(new OnClickListener() {
@@ -88,10 +94,6 @@ public class SessionActivity extends AppCompatActivity {
 
             }
         });
-        // end of Sam's section
-
-
-
 
         generateMelodyButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -107,6 +109,11 @@ public class SessionActivity extends AppCompatActivity {
                         ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
                 generateMelodyButton.setText("Melody generated!");
                 session.setMidiPrepared();
+                realm.executeTransactionAsync(r -> {
+                    Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
+                    realmSession.setMelodyElements(realmSession.listToRealmList(session.mMelodyElements));
+                    realmSession.setMidiFile(realmSession.encodeFile(session.getMidiPath()));
+                });
                 if(audio.isRecorded()){
                     nextActivityButton.setEnabled(true);
                 }
@@ -141,8 +148,6 @@ public class SessionActivity extends AppCompatActivity {
 
 
     }
-
-    // sam
 
     /**
      * This function takes in the latest chord chosen by the user in the session and the set of

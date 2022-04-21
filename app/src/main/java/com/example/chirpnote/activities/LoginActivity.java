@@ -14,9 +14,11 @@ import android.widget.Toast;
 
 import com.example.chirpnote.R;
 
+import io.realm.Realm;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 import io.realm.mongodb.Credentials;
+import io.realm.mongodb.sync.SyncConfiguration;
 
 public class LoginActivity extends AppCompatActivity {
     App app;
@@ -49,7 +51,17 @@ public class LoginActivity extends AppCompatActivity {
                 app.loginAsync(customFunctionCredentials, it -> {
                     if (it.isSuccess()) {
                         Toast.makeText(LoginActivity.this,"Login succeeded", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, HomeScreenActivity.class));
+
+                        // Setup a synced MongoDB Realm configuration for the current user
+                        SyncConfiguration config = new SyncConfiguration.Builder(
+                                app.currentUser(),
+                                username)
+                                .build();
+                        Realm.setDefaultConfiguration(config);
+
+                        Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
                     } else {
                         Toast.makeText(LoginActivity.this,"Login failed", Toast.LENGTH_LONG).show();
                     }

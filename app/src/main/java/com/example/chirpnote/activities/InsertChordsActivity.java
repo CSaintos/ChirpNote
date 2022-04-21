@@ -135,7 +135,7 @@ public class InsertChordsActivity extends AppCompatActivity
 //        session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
 //                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
         session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
+                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
         initializeSessionChords();

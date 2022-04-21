@@ -63,13 +63,8 @@ public class NewSessionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_session);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Setup a MongoDB Realm instance
-        app = new App(new AppConfiguration.Builder(appID).build());
-        SyncConfiguration config = new SyncConfiguration.Builder(
-                app.currentUser(),
-                "testuser")
-                .build();
-        Realm realm = Realm.getInstance(config);
+        String username = getIntent().getStringExtra("username");
+        Realm realm = Realm.getDefaultInstance();
 
         tempoInvalid = (TextView) findViewById(R.id.tempoInvalidText);
 
@@ -96,15 +91,13 @@ public class NewSessionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
                 ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
-                        Integer.parseInt(setTempo.getText().toString()), basePath + "/midiTrack.mid", basePath + "audioTrack.mp3");
+                        Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
 
                 // Insert the new session into the realm database
-                /*realm.executeTransactionAsync(r -> {
-                    Session sessionToInsert = session.toRealmSession();
-                    sessionToInsert.setUsername("testuser"); // TODO: Set to the username of the currently logged in user
+                realm.executeTransactionAsync(r -> {
+                    Session sessionToInsert = new Session(session);
                     r.insert(sessionToInsert);
-                });*/
-
+                });
                 intent.putExtra("session", session);
                 startActivity(intent);
             }

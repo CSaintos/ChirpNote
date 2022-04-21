@@ -125,7 +125,7 @@ public class MelodyActivity extends AppCompatActivity
 
         String basePath = this.getFilesDir().getPath();
         session = new ChirpNoteSession("Name", key, 120,
-                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
+                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
 
         // Initialize buttons
         leftButton = (Button) findViewById(R.id.melodyleftbutton);

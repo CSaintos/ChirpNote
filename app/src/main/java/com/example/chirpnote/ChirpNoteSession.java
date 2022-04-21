@@ -4,8 +4,7 @@ import org.bson.types.ObjectId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import io.realm.RealmList;
+import java.util.List;
 
 public class ChirpNoteSession implements Serializable {
     // Tempo range
@@ -15,16 +14,18 @@ public class ChirpNoteSession implements Serializable {
     // Resolution of MIDI tracks
     public final int RESOLUTION = 960;
 
+    private ObjectId _id;
     private String mName;
     private Key mKey;
     private int mTempo;
     private String mMidiPath;
-    public ArrayList<String> mChords;
-    public ArrayList<String> mMelodyElements;
+    public List<String> mChords;
+    public List<String> mMelodyElements;
     public int mNextMelodyTick;
     private String mAudioPath;
-    public ArrayList<String> mPercussionPatterns;
-    public ArrayList<Integer> mTrackVolumes;
+    public List<String> mPercussionPatterns;
+    public List<Integer> mTrackVolumes;
+    private String mUsername;
 
     // States
     private boolean mMidiPrepared;
@@ -53,8 +54,10 @@ public class ChirpNoteSession implements Serializable {
      * @param tempo The tempo of this session
      * @param midiPath The file path to store the MIDI tracks at
      * @param audioPath The file path to store the audio at
+     * @param username The username of the user creating the session
      */
-    public ChirpNoteSession(String name, Key key, int tempo, String midiPath, String audioPath){
+    public ChirpNoteSession(String name, Key key, int tempo, String midiPath, String audioPath, String username){
+        _id = new ObjectId();
         mName = name;
         mKey = key;
         if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
@@ -76,6 +79,15 @@ public class ChirpNoteSession implements Serializable {
         mTrackVolumes.add(80);
         mTrackVolumes.add(100);
         mTrackVolumes.add(127);
+        mUsername = username;
+    }
+
+    /**
+     * Gets the id of this session
+     * @return The session id
+     */
+    public ObjectId getId(){
+        return _id;
     }
 
     /**
@@ -119,6 +131,14 @@ public class ChirpNoteSession implements Serializable {
     }
 
     /**
+     * Gets the username of the user that created this session
+     * @return The user's username
+     */
+    public String getUsername(){
+        return mUsername;
+    }
+
+    /**
      * Call after the MIDI file for this session has been created
      */
     public void setMidiPrepared(){
@@ -149,26 +169,4 @@ public class ChirpNoteSession implements Serializable {
     }
 
     public void setKey(Key key) {mKey = key;}
-
-    public Session toRealmSession(){
-        Session realmSession = new Session();
-        realmSession.set_id(new ObjectId());
-        realmSession.setName(mName);
-        realmSession.setKey(Key.encode(mKey));
-        realmSession.setTempo(mTempo);
-        realmSession.setChords(toRealmList(mChords));
-        realmSession.setMelodyElements(toRealmList(mMelodyElements));
-        realmSession.setNextMelodyTick(mNextMelodyTick);
-        realmSession.setPercussionPatterns(toRealmList(mPercussionPatterns));
-        realmSession.setTrackVolumes(toRealmList(mTrackVolumes));
-        return realmSession;
-    }
-
-    private <T> RealmList<T> toRealmList(ArrayList<T> list){
-        RealmList<T> realmList = new RealmList<>();
-        for(T item : list){
-            realmList.add(item);
-        }
-        return realmList;
-    }
 }

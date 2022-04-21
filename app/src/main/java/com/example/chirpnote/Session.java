@@ -1,4 +1,7 @@
 package com.example.chirpnote;
+
+import android.util.Base64;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -6,9 +9,19 @@ import io.realm.annotations.Required;
 
 import org.bson.types.ObjectId;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+
 public class Session extends RealmObject {
     @PrimaryKey
     private ObjectId _id;
+
+    private String midiFile;
+
+    private String audioFile;
 
     @Required
     private RealmList<String> chords;
@@ -32,12 +45,44 @@ public class Session extends RealmObject {
 
     private String username;
 
+    public Session(){}
+
+    /**
+     * A Session that can be stored in a Realm object
+     * @param session The session whose data to use to create the Realm Session
+     */
+    public Session(ChirpNoteSession session){
+        // No need to set any of the track lists or files, as they will be empty when a session is first created
+        set_id(session.getId());
+        setName(session.getName());
+        setKey(Key.encode(session.getKey()));
+        setTempo(session.getTempo());
+        setTrackVolumes(listToRealmList(session.mTrackVolumes));
+        setUsername(session.getUsername());
+    }
+
     public ObjectId get_id(){
         return _id;
     }
 
     public void set_id(ObjectId _id){
         this._id = _id;
+    }
+
+    public String getMidiFile(){
+        return midiFile;
+    }
+
+    public void setMidiFile(String midiFile) {
+        this.midiFile = midiFile;
+    }
+
+    public String getAudioFile() {
+        return audioFile;
+    }
+
+    public void setAudioFile(String audioFile) {
+        this.audioFile = audioFile;
     }
 
     public RealmList<String> getChords(){
@@ -110,5 +155,38 @@ public class Session extends RealmObject {
 
     public void setUsername(String username){
         this.username = username;
+    }
+
+    /**
+     * Converts the given list to a Realm list
+     * @param list The list to convert
+     * @return The realm list containing the elements from the given list
+     */
+    public <T> RealmList<T> listToRealmList(List<T> list){
+        RealmList<T> realmList = new RealmList<>();
+        for(T item : list){
+            realmList.add(item);
+        }
+        return realmList;
+    }
+
+    /**
+     * Encodes the file at the given path using the Base64 String encoding
+     * @param filePath The path of the file to encode
+     * @return The encoded Base64 string
+     * @exception IOException if the file could not be read
+     */
+    public String encodeFile(String filePath) {
+        File file = new File(filePath);
+        int size = (int) file.length();
+        byte[] bytes = new byte[size];
+        try {
+            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+            buf.read(bytes, 0, bytes.length);
+            buf.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 }
