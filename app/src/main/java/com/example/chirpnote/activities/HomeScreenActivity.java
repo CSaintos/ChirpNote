@@ -23,12 +23,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
         getSupportActionBar().hide();
 
+        String username = getIntent().getStringExtra("username");
         app = new App(new AppConfiguration.Builder(appID).build());
-        /*if(app.currentUser() != null){
-            Toast.makeText(HomeScreenActivity.this, app.currentUser().getId(), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(HomeScreenActivity.this, "None", Toast.LENGTH_LONG).show();
-        }*/
 
         Button newSessionButton = (Button) findViewById(R.id.newSessionButton);
         Button loadSessionButton = (Button) findViewById(R.id.loadSessionButton);
@@ -52,6 +48,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, NewSessionActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });
@@ -61,6 +58,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, LoadSessionActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });

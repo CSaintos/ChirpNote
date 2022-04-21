@@ -18,14 +18,12 @@ import com.example.chirpnote.R;
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Session;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.realm.Realm;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
-import io.realm.mongodb.sync.SyncConfiguration;
 
 public class SessionActivity extends AppCompatActivity {
     // A list of chords
@@ -145,8 +143,6 @@ public class SessionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
 
     /**

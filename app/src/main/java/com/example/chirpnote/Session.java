@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -188,5 +189,25 @@ public class Session extends RealmObject {
             e.printStackTrace();
         }
         return Base64.encodeToString(bytes, Base64.NO_WRAP);
+    }
+
+    /**
+     * Writes the given encoded file to the given file path
+     * @param encodedFile The Base64 encoding of the file to write
+     * @param filePath The path to write the file to
+     */
+    public void writeEncodedFile(String encodedFile, String filePath){
+        byte[] bytes = Base64.decode(encodedFile, Base64.NO_WRAP);
+        File file = new File(filePath);
+        try {
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fout = new FileOutputStream(file);
+            fout.write(bytes);
+            fout.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
