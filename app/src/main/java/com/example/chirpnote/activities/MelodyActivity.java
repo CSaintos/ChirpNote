@@ -65,9 +65,10 @@ public class MelodyActivity extends AppCompatActivity
     private TextView gclefText;
     private TextView octaveText;
 
-    private LinkedList<NoteFont> noteList;
+    //private LinkedList<NoteFont> noteList;
     private BLL<NoteFont> noteList2;
-    private ListIterator<NoteFont> itr;
+    //private ListIterator<NoteFont> itr;
+    private BLL.ListIterator itr3;
     private NoteFont currentNote; // can store any symbol
     private NoteFont currentDuration; // only stores rest length
     private MidiDriver midiDriver;
@@ -113,9 +114,10 @@ public class MelodyActivity extends AppCompatActivity
         //consMelody2.startRecording();
         // BRANDON
 
-        noteList = new LinkedList<>();
+        //noteList = new LinkedList<>();
         noteList2 = new BLL<>();
-        itr = noteList.listIterator();
+        //itr = noteList.listIterator();
+        itr3 = noteList2.listIterator();
         midiDriver = MidiDriver.getInstance();
 
         barLength = 0;
@@ -263,8 +265,8 @@ public class MelodyActivity extends AppCompatActivity
                 int tempBarLength = barLength - replacedSymbol.noteLength + currentNote.noteLength;
                 if (tempBarLength <= maxBarLength) {
                     barLength = tempBarLength;
-                    noteList2.set(notation.new NoteFont(currentNote));
-                    itr.set(notation.new NoteFont(currentNote));
+                    itr3.set(notation.new NoteFont(currentNote));
+                    //itr.set(notation.new NoteFont(currentNote));
                 } else {
                     currentNote = replacedSymbol;
                 }
@@ -290,6 +292,20 @@ public class MelodyActivity extends AppCompatActivity
         navLeftButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (itr3.hasPrevious()) {
+                    currentNote = notation.new NoteFont((NoteFont)itr3.get());
+                    currentNote.color = Color.DKGRAY;
+                    itr3.set(notation.new NoteFont(currentNote));
+                    itr3.previous();
+                    currentNote = notation.new NoteFont((NoteFont)itr3.get());
+                    currentNote.color = Color.BLUE;
+                    itr3.set(notation.new NoteFont(currentNote));
+                }
+
+                Log.d("NoteList2", currentNote.symbol.toString());
+
+                /*
                 if (itr.hasPrevious()) {
                     if (wasNext) currentNote = notation.new NoteFont(itr.previous());
                     currentNote = notation.new NoteFont(itr.previous()); // Returns previous node, not current
@@ -310,6 +326,7 @@ public class MelodyActivity extends AppCompatActivity
                         //Log.d("NoteList pre", currentNote.symbol.toString());
                     }
                 }
+                 */
                 displayText();
             }
         });
@@ -320,6 +337,26 @@ public class MelodyActivity extends AppCompatActivity
         navRightButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (itr3.hasNext()) {
+                    currentNote = notation.new NoteFont((NoteFont) itr3.get());
+                    currentNote.color = Color.DKGRAY;
+                    itr3.set(notation.new NoteFont(currentNote));
+                    itr3.next();
+                    currentNote = notation.new NoteFont((NoteFont) itr3.get());
+                    currentNote.color = Color.BLUE;
+                    itr3.set(notation.new NoteFont(currentNote));
+                } else if (((NoteFont) itr3.get()).symbol != Syntax.EMPTY) {
+                    currentNote = notation.new NoteFont((NoteFont) itr3.get());
+                    currentNote.color = Color.DKGRAY;
+                    itr3.set(notation.new NoteFont(currentNote));
+                    currentNote = notation.new NoteFont();
+                    currentNote.color = Color.BLUE;
+                    itr3.insertAfter(notation.new NoteFont(currentNote));
+                    itr3.next();
+                }
+                Log.d("NoteList2", ((NoteFont) itr3.get()).symbol.toString());
+
+                /*
                 if (itr.hasNext()) {
                     // returns the last edited node. the Next next will be null if this next is the last node
                     currentNote = notation.new NoteFont(itr.next());
@@ -342,6 +379,7 @@ public class MelodyActivity extends AppCompatActivity
                         wasNext = false;
                     }
                 }
+                 */
                 displayText();
             }
         });
@@ -502,8 +540,8 @@ public class MelodyActivity extends AppCompatActivity
                         int tempBarLength = barLength + currentDuration.noteLength - replacedSymbol.noteLength;
                         if (tempBarLength <= maxBarLength) {
                             barLength = tempBarLength;
-                            noteList2.set(notation.new NoteFont(currentNote));
-                            itr.set(notation.new NoteFont(currentNote)); // set the last returned note to the currentNote
+                            itr3.set(notation.new NoteFont(currentNote));
+                            //itr.set(notation.new NoteFont(currentNote)); // set the last returned note to the currentNote
                         } else {
                             currentNote = replacedSymbol;
                         }
@@ -548,17 +586,19 @@ public class MelodyActivity extends AppCompatActivity
         clef.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, clef.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         gclefText.setText(clef);
 
-        noteList2.insertAfter(notation.new NoteFont(Syntax.SPACE_CLEF, 5));
-        if (noteList2.hasNext()) noteList2.next();
-        Log.d("NoteList 2", noteList2.get().symbol.toString());
+        itr3.insertAfter(notation.new NoteFont(Syntax.SPACE_CLEF, 5));
+        if (itr3.hasNext()) itr3.next();
+        Log.d("NoteList 2", ((NoteFont)itr3.get()).symbol.toString());
 
         // TODO remove iterator
+        /*
         itr.add(notation.new NoteFont(Syntax.SPACE_CLEF, 5));
         if (itr.hasPrevious()) {
             Log.d("NoteList", itr.previous().symbol.toString());
             itr.next();
             wasNext = true;
         }
+         */
         // FIXME ? end of fixme
     }
 
@@ -573,19 +613,17 @@ public class MelodyActivity extends AppCompatActivity
         barLength = 0;
 
         // Add default note to staff
-        noteList2.insertAfter(notation.new NoteFont(currentNote));
-        if (noteList2.hasNext()) noteList2.next();
-        currentNote = notation.new NoteFont(noteList2.get());
+        itr3.insertAfter(notation.new NoteFont(currentNote));
+        if (itr3.hasNext()) itr3.next();
+        currentNote = notation.new NoteFont((NoteFont) itr3.get());
+        Log.d("NoteList2", ((NoteFont) itr3.get()).symbol.toString());
 
         // TODO remove iterator
         // Add default note to staff
-        itr.add(notation.new NoteFont(currentNote));
+        //itr.add(notation.new NoteFont(currentNote));
         // Check that the note added is the currentNote
-        if (itr.hasPrevious()) currentNote = notation.new NoteFont(itr.previous());
-        wasNext = false;
-        //Log.d("NoteList", currentNote.symbol.toString() + " " + Integer.toString(currentNote.lineNum));
-        //Log.d("BLUE", Integer.toString(Color.BLUE));
-        //Log.d("DKGRAY", Integer.toString(Color.DKGRAY));
+        //if (itr.hasPrevious()) currentNote = notation.new NoteFont(itr.previous());
+        //wasNext = false;
     }
 
     private void displayOctaveText() {
@@ -606,8 +644,12 @@ public class MelodyActivity extends AppCompatActivity
 
         int strIdx = 0;
         // Add notes to noteList
-        for (ListIterator<NoteFont> itr2 = noteList.listIterator(); itr2.hasNext();) {
-            NoteFont nf = itr2.next();
+        BLL.ListIterator itr2 = noteList2.listIterator();
+        for (int k = 0; k < noteList2.size(); k++) { // FIXME idk how
+            NoteFont nf = notation.new NoteFont((NoteFont)itr2.get());
+            Log.d("displayText", nf.symbol.toString());
+            if (itr2.hasNext()) itr2.next();
+
             int strLen = 0; // FIXME inefficient use of code
             for (int i = 0; i < staffLines.length; i++) {
                 strLen = 0;
@@ -656,8 +698,11 @@ public class MelodyActivity extends AppCompatActivity
         constructedMelody.startRecording();
         int position = 0;
 
-        for (ListIterator<NoteFont> itr2 = noteList.listIterator(); itr2.hasNext();) {
-            NoteFont nf = itr2.next();
+        BLL.ListIterator itr2 = noteList2.listIterator();
+        for (int i = 0; i < noteList2.size(); i++) {
+        //for (BLL.ListIterator itr2 = noteList2.listIterator(); itr2.hasNext(); itr2.next()) {
+            NoteFont nf = (NoteFont)itr2.get();
+            if (itr2.hasNext()) itr2.next();
 
             Notation.MusicFontAdapter mfAdapter = notation.new MusicFontAdapter(nf);
             if (Notation.Syntax.REST.contains(nf.symbol)) {
