@@ -19,6 +19,7 @@ public class ConstructedMelody extends Melody {
     }
     private HashMap<NoteDuration, Integer> mNoteDurations;
     public final static int CHANNEL = 2;
+    public int mElementIndex = 0;
 
     /**
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
@@ -221,6 +222,14 @@ public class ConstructedMelody extends Melody {
 	char 6: note duration (0 = whole, 1 = half, 2 = quarter, 3 = eighth, 4 = sixteenth, 5 = thirty-second)
 	char 7 to last char: note tick (the position of the note in the melody, in terms of MIDI ticks for the MIDI file)
 	*/
+    /*
+    public String[] getNextMeasure()
+    {
+        mSession.mMelodyElements.get(mElementIndex);
+    }
+
+     */
+    // String[] getPreviousMeasure()
 
     /**
      * Encodes the given note as a String

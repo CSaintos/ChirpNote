@@ -43,8 +43,6 @@ import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.ListIterator;
 
 public class MelodyActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,14 +63,17 @@ public class MelodyActivity extends AppCompatActivity
     private TextView gclefText;
     private TextView octaveText;
 
-    private BLL<NoteFont> noteList2;
-    private BLL.ListIterator itr3;
+    private BLL<NoteFont> noteList;
+    private BLL.ListIterator itr;
     private NoteFont currentNote; // can store any symbol
     private NoteFont currentDuration; // only stores rest length
     private MidiDriver midiDriver;
+    private ConstructedMelody consMelody;
+    private Notation.MusicFontAdapter mfAdapter;
     private ChirpNoteSession session;
     private Key key;
     private int octNum;
+    private int melodyPosition;
 
     //private Key currentKey;
     private ArrayList<MusicNote> keyButtons;
@@ -106,18 +107,15 @@ public class MelodyActivity extends AppCompatActivity
         toggle.syncState();
         // end of navigation menu
 
-        // BRANDON
-        //ConstructedMelody consMelody2 = new ConstructedMelody(session);
-        //consMelody2.startRecording();
-        // BRANDON
+        // Init noteList
+        noteList = new BLL<>();
+        itr = noteList.listIterator();
 
-        noteList2 = new BLL<>();
-        itr3 = noteList2.listIterator();
-        midiDriver = MidiDriver.getInstance();
-
+        // Init note constraint vars
         barLength = 0;
         maxBarLength = 32;
 
+        // Init session
         // TODO: get key from Session Activity
         key = new Key(Key.RootNote.C, Key.Type.MAJOR);
         octNum = 4;
@@ -127,6 +125,12 @@ public class MelodyActivity extends AppCompatActivity
         String basePath = this.getFilesDir().getPath();
         session = new ChirpNoteSession("Name", key, 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
+
+        // Init Constructed Melody
+        consMelody = new ConstructedMelody(session);
+        consMelody.startRecording();
+        midiDriver = MidiDriver.getInstance();
+        melodyPosition = 0;
 
         // Initialize buttons
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
@@ -256,9 +260,14 @@ public class MelodyActivity extends AppCompatActivity
                 Log.d("BarLength, before", Integer.toString(barLength));
                 // apply note constraint
                 int tempBarLength = barLength - replacedSymbol.noteLength + currentNote.noteLength;
-                if (tempBarLength <= maxBarLength) {
+                int valuedBarLength = barLength - replacedSymbol.noteLength + currentNote.noteLength + currentDuration.noteLength;
+                if (valuedBarLength <= maxBarLength) {
                     barLength = tempBarLength;
-                    itr3.set(notation.new NoteFont(currentNote));
+                    // Set rest to noteList
+                    itr.set(notation.new NoteFont(currentNote));
+                    // Set rest to constructedMelody
+                    mfAdapter = notation.new MusicFontAdapter(currentNote);
+                    consMelody.addRest(mfAdapter.getNoteDuration(), melodyPosition);
                 } else {
                     currentNote = replacedSymbol;
                 }
@@ -274,7 +283,10 @@ public class MelodyActivity extends AppCompatActivity
         playButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                toConstructedMelody();
+
+                //toConstructedMelody();
+                if (consMelody.isPlaying()) consMelody.stop();
+                consMelody.play();
             }
         });
 
@@ -285,14 +297,16 @@ public class MelodyActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                if (itr3.hasPrevious()) {
-                    currentNote = notation.new NoteFont((NoteFont)itr3.get());
+                if (itr.hasPrevious()) {
+                    currentNote = notation.new NoteFont((NoteFont) itr.get());
                     currentNote.color = Color.DKGRAY;
-                    itr3.set(notation.new NoteFont(currentNote));
-                    itr3.previous();
-                    currentNote = notation.new NoteFont((NoteFont)itr3.get());
+                    itr.set(notation.new NoteFont(currentNote));
+                    itr.previous();
+                    currentNote = notation.new NoteFont((NoteFont) itr.get());
                     currentNote.color = Color.BLUE;
-                    itr3.set(notation.new NoteFont(currentNote));
+                    itr.set(notation.new NoteFont(currentNote));
+
+                    melodyPosition--;
                 }
 
                 Log.d("NoteList2", currentNote.symbol.toString());
@@ -307,25 +321,29 @@ public class MelodyActivity extends AppCompatActivity
         navRightButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (itr3.hasNext()) {
-                    currentNote = notation.new NoteFont((NoteFont) itr3.get());
+                if (itr.hasNext()) {
+                    currentNote = notation.new NoteFont((NoteFont) itr.get());
                     currentNote.color = Color.DKGRAY;
-                    itr3.set(notation.new NoteFont(currentNote));
-                    itr3.next();
-                    currentNote = notation.new NoteFont((NoteFont) itr3.get());
+                    itr.set(notation.new NoteFont(currentNote));
+                    itr.next();
+                    currentNote = notation.new NoteFont((NoteFont) itr.get());
                     currentNote.color = Color.BLUE;
-                    itr3.set(notation.new NoteFont(currentNote));
-                } else if (((NoteFont) itr3.get()).symbol != Syntax.EMPTY) {
-                    currentNote = notation.new NoteFont((NoteFont) itr3.get());
+                    itr.set(notation.new NoteFont(currentNote));
+
+                    melodyPosition++;
+                } else if (((NoteFont) itr.get()).symbol != Syntax.EMPTY) {
+                    currentNote = notation.new NoteFont((NoteFont) itr.get());
                     currentNote.color = Color.DKGRAY;
-                    itr3.set(notation.new NoteFont(currentNote));
+                    itr.set(notation.new NoteFont(currentNote));
                     currentNote = notation.new NoteFont();
                     currentNote.color = Color.BLUE;
                     currentNote.noteLength = 0;
-                    itr3.insertAfter(notation.new NoteFont(currentNote));
-                    itr3.next();
+                    itr.insertAfter(notation.new NoteFont(currentNote));
+                    itr.next();
+
+                    melodyPosition++;
                 }
-                Log.d("NoteList2", ((NoteFont) itr3.get()).symbol.toString());
+                Log.d("NoteList2", ((NoteFont) itr.get()).symbol.toString());
 
                 displayText();
             }
@@ -485,12 +503,16 @@ public class MelodyActivity extends AppCompatActivity
                         Log.d("BarLength, before", Integer.toString(barLength));
                         // note length constraint checking
                         int tempBarLength = barLength + currentDuration.noteLength - replacedSymbol.noteLength;
-                        Log.d("tempbarLength barLength", Integer.toString(barLength));
-                        Log.d("tempbarLength currentDuration.notelength", Integer.toString(currentDuration.noteLength));
-                        Log.d("tempbarLength replacedSymbol.noteLength", Integer.toString(replacedSymbol.noteLength));
+                        //Log.d("tempbarLength barLength", Integer.toString(barLength));
+                        //Log.d("tempbarLength currentDuration.notelength", Integer.toString(currentDuration.noteLength));
+                        //Log.d("tempbarLength replacedSymbol.noteLength", Integer.toString(replacedSymbol.noteLength));
                         if (tempBarLength <= maxBarLength) {
+                            // set note to noteList
                             barLength = tempBarLength;
-                            itr3.set(notation.new NoteFont(currentNote));
+                            itr.set(notation.new NoteFont(currentNote));
+                            // set note to constructed melody
+                            mfAdapter = notation.new MusicFontAdapter(currentNote);
+                            consMelody.addNote(mfAdapter.getMusicNote(), mfAdapter.getNoteDuration(), melodyPosition);
                         } else {
                             currentNote = replacedSymbol;
                         }
@@ -529,6 +551,7 @@ public class MelodyActivity extends AppCompatActivity
         melodyText.setText(ssb);
     }
 
+    // Do not implement like this. The clef should not be in the note list
     private void initClefText() {
         // FIXME ? this might need to be implemented differently later
         SpannableString clef = new SpannableString(Syntax.G_CLEF.unicode);
@@ -536,9 +559,9 @@ public class MelodyActivity extends AppCompatActivity
         gclefText.setText(clef);
         // FIXME ? end of fixme
 
-        itr3.insertAfter(notation.new NoteFont(Syntax.SPACE_CLEF, 5));
-        if (itr3.hasNext()) itr3.next();
-        Log.d("NoteList 2", ((NoteFont)itr3.get()).symbol.toString());
+        itr.insertAfter(notation.new NoteFont(Syntax.SPACE_CLEF, 5));
+        if (itr.hasNext()) itr.next();
+        Log.d("NoteList 2", ((NoteFont) itr.get()).symbol.toString());
     }
 
     private void initNoteText() {
@@ -552,10 +575,13 @@ public class MelodyActivity extends AppCompatActivity
         barLength = 0;
 
         // Add default note to staff
-        itr3.insertAfter(notation.new NoteFont(currentNote));
-        if (itr3.hasNext()) itr3.next();
-        currentNote = notation.new NoteFont((NoteFont) itr3.get());
-        Log.d("NoteList2", ((NoteFont) itr3.get()).symbol.toString());
+        itr.insertAfter(notation.new NoteFont(currentNote));
+        if (itr.hasNext()) itr.next(); // if there was a clef there (supposedly)
+        currentNote = notation.new NoteFont((NoteFont) itr.get());
+        // Add defaults note to constructed melody
+        mfAdapter = notation.new MusicFontAdapter(currentNote);
+        consMelody.addRest(mfAdapter.getNoteDuration(), melodyPosition);
+        Log.d("NoteList2", ((NoteFont) itr.get()).symbol.toString());
     }
 
     private void displayOctaveText() {
@@ -576,8 +602,8 @@ public class MelodyActivity extends AppCompatActivity
 
         int strIdx = 0;
         // Add notes to noteList
-        BLL.ListIterator itr2 = noteList2.listIterator();
-        for (int k = 0; k < noteList2.size(); k++) { // FIXME idk how
+        BLL.ListIterator itr2 = noteList.listIterator();
+        for (int k = 0; k < noteList.size(); k++) { // FIXME idk how
             NoteFont nf = notation.new NoteFont((NoteFont)itr2.get());
             Log.d("displayText", nf.symbol.toString());
             if (itr2.hasNext()) itr2.next();
@@ -630,8 +656,8 @@ public class MelodyActivity extends AppCompatActivity
         constructedMelody.startRecording();
         int position = 0;
 
-        BLL.ListIterator itr2 = noteList2.listIterator();
-        for (int i = 0; i < noteList2.size(); i++) {
+        BLL.ListIterator itr2 = noteList.listIterator();
+        for (int i = 0; i < noteList.size(); i++) {
             NoteFont nf = (NoteFont)itr2.get();
             if (itr2.hasNext()) itr2.next();
 

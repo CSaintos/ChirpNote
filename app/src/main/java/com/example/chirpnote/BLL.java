@@ -18,9 +18,9 @@ public class BLL<T> {
      * Nested Node class for Better Linked List
      */
     protected class Node {
-        public T type;
         public Node next;
         public Node previous;
+        public T type;
 
         public Node(T type) {
             this.type = type;
