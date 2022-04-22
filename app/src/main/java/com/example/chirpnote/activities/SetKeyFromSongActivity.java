@@ -1,6 +1,7 @@
 package com.example.chirpnote.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.KeyEvent;
@@ -37,9 +38,17 @@ import java.util.ArrayList;
 public class SetKeyFromSongActivity extends AppCompatActivity {
     private static final String API_KEY = "b56665025cc9d931bdf1ab71847da39d"; //GetSongKey API Key
     ArrayList<String> songArrayList = new ArrayList<>();
+    boolean flag;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        String checkFlag = intent.getStringExtra("flag");
+        if (checkFlag.equals("A")){
+            flag = true;
+        }
+        else
+            flag = false;
         songArrayList.clear();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key_from_song);
@@ -121,6 +130,10 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
             //shows the key that has been set on click
             Toast.makeText(SetKeyFromSongActivity.this, "Session Key Set to " + songArrayList.get(position).substring(songArrayList.get(position).lastIndexOf(" ") + 1).replace("m"," Minor"),Toast.LENGTH_SHORT).show();
             //TODO set the key in session, need to find ways to link of current session
+            if (flag == true)
+                System.out.println("yes");
+            else
+                System.out.println("no");
         }
     });
     }
