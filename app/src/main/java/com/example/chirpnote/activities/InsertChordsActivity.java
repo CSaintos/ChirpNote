@@ -121,43 +121,31 @@ public class InsertChordsActivity extends AppCompatActivity
         chordSuggestionButton = (Button) findViewById(R.id.chordSuggestionButton);
         chordSuggestionButton.setClickable(true);
 
-
-
-
         // Initialize MIDI driver
         midiDriver = MidiDriver.getInstance();
 
         // Request permission to record audio
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
-
         String basePath = this.getFilesDir().getPath();
-//        session = new Session("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-//                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
         session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
-
-
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
         initializeSessionChords();
         initializeChordListeners(session);
 
-
-
-//        session.mChords.add("");
-
-        for (int i = 0; i < 4; i++)
-        {
-            session.mChords.add("0000300");
-        }
-
+        /*session.mChords.add("0000300");
+        session.mChords.add("0500303");
+        session.mChords.add("0000300");
+        session.mChords.add("0700304");
+        session.mChords.add("0000300");
+        session.mChords.add("0700304");
+        session.mChords.add("0910305");
+        session.mChords.add("0500303");*/
         initializeSongMeasures(session);
 
-
-
-        
         // Touch this button to play the most recently recorded track
         // Touch it again to stop the playback of the track
         Button playButton = (Button) findViewById(R.id.testPlayButton);
@@ -194,7 +182,6 @@ public class InsertChordsActivity extends AppCompatActivity
 
             }
         });
-
 
 //        suggestedChords = getSuggestedChords(inputChord, keyChords);
 
@@ -246,37 +233,20 @@ public class InsertChordsActivity extends AppCompatActivity
     private void initializeSongMeasures(ChirpNoteSession session)
     {
         /** this works */
-        Chord[] importChords = new Chord[4];
-        for (int i = 0; i < 2; i++)
-        {
-            importChords = randomChordProgression(sessionChords);
-            addRowOfMeasures3(importChords);
-        }
-
-        /** doesn't load chords */
 //        Chord[] importChords = new Chord[4];
-//        for (int i = 0; i < 4; i++)
+//        for (int i = 0; i < 2; i++)
 //        {
-//            importChords[i] = chordTrack.decodeChord(session.mChords.get(i));
-//            System.out.println(session.mChords.get(i));
+//            importChords = randomChordProgression(sessionChords);
+//            addRowOfMeasures3(importChords);
 //        }
 
-        /** doesn't load chords */
-//        Chord[] importChords = new Chord[4];
-//        if (session.mChords.size() > 0) {
-////            Chord[] importChords = new Chord[4];
-//            for (int i = 0; i < session.mChords.size(); i++) {
-//                if (i != 0 && i % 4 == 0) {
-//                    addRowOfMeasures3(importChords);
-//                    importChords = new Chord[4];
-//                }
-//                else {
-//                    importChords[i] = chordTrack.decodeChord(session.mChords.get(i));
-//                    System.out.println(importChords[i]);
-//                }
-//            }
-//        }
-
+        Chord[] importChords = new Chord[4];
+        for(int i = 0; i < session.mChords.size(); i++){
+            importChords[i % 4] = chordTrack.decodeChord(session.mChords.get(i));
+            if ((i + 1) % 4 == 0) {
+                addRowOfMeasures3(importChords, true);
+            }
+        }
     }
 
     @Override
@@ -304,8 +274,7 @@ public class InsertChordsActivity extends AppCompatActivity
 //                    Toast.makeText(getApplicationContext(), "Please insert chords to all available measures.", Toast.LENGTH_SHORT).show();
 //                }
                 Chord[] randChords = randomChordProgression(sessionChords);
-                addRowOfMeasures3(randChords);
-                System.out.println(session.mChords.get(0));
+                addRowOfMeasures3(randChords, false);
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
@@ -366,7 +335,7 @@ public class InsertChordsActivity extends AppCompatActivity
 //        }
 //    }
 
-    private void addRowOfMeasures3(Chord[] prefilledMeasures) {
+    private void addRowOfMeasures3(Chord[] prefilledMeasures, boolean loadingSession) {
         View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
         layoutList.addView(rowOfMeasures);
         int rowIdx = layoutList.indexOfChild(rowOfMeasures);
@@ -394,8 +363,7 @@ public class InsertChordsActivity extends AppCompatActivity
             Button tempMeasure = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
             tempMeasure.setText(romanChordString);
 
-            /** Had to comment this out */
-//            chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
+            if(!loadingSession) chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
         }
 
 
@@ -429,8 +397,7 @@ public class InsertChordsActivity extends AppCompatActivity
 //                        System.out.println("listOfChords.size() = " + listOfChords.size());
 
                         listOfChords.get(newRowIdx)[col] = newChord; // ERROR HERE IF I REMOVE FROM MIDDLE
-                        /** Had to comment this out */
-//                        chordTrack.addChord(newChord, (newRowIdx * 4) + col);
+                        if(!loadingSession) chordTrack.addChord(newChord, (newRowIdx * 4) + col);
                         ((Button) v).setText(selectedSessionChord.getButton().getText());
                     }
 
