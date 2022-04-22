@@ -233,20 +233,20 @@ public class InsertChordsActivity extends AppCompatActivity
     private void initializeSongMeasures(ChirpNoteSession session)
     {
         /** this works */
-//        Chord[] importChords = new Chord[4];
-//        for (int i = 0; i < 2; i++)
-//        {
-//            importChords = randomChordProgression(sessionChords);
-//            addRowOfMeasures3(importChords);
-//        }
-
         Chord[] importChords = new Chord[4];
-        for(int i = 0; i < session.mChords.size(); i++){
-            importChords[i % 4] = chordTrack.decodeChord(session.mChords.get(i));
-            if ((i + 1) % 4 == 0) {
-                addRowOfMeasures3(importChords, true);
-            }
+        for (int i = 0; i < 2; i++)
+        {
+            importChords = randomChordProgression(sessionChords);
+            addRowOfMeasures3(importChords, true);
         }
+
+//        Chord[] importChords = new Chord[4];
+//        for(int i = 0; i < session.mChords.size(); i++){
+//            importChords[i % 4] = chordTrack.decodeChord(session.mChords.get(i));
+//            if ((i + 1) % 4 == 0) {
+//                addRowOfMeasures3(importChords, true);
+//            }
+//        }
     }
 
     @Override
