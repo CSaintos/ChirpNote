@@ -1,5 +1,7 @@
 package com.example.chirpnote;
 
+import org.bson.types.ObjectId;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ public class ChirpNoteSession implements Serializable {
     // Resolution of MIDI tracks
     public final int RESOLUTION = 960;
 
+    private ObjectId _id;
     private String mName;
     private Key mKey;
     private int mTempo;
@@ -21,7 +24,8 @@ public class ChirpNoteSession implements Serializable {
     public int mNextMelodyTick;
     private String mAudioPath;
     public List<String> mPercussionPatterns;
-    public int[] mTrackVolumes;
+    public List<Integer> mTrackVolumes;
+    private String mUsername;
 
     // States
     private boolean mMidiPrepared;
@@ -50,8 +54,10 @@ public class ChirpNoteSession implements Serializable {
      * @param tempo The tempo of this session
      * @param midiPath The file path to store the MIDI tracks at
      * @param audioPath The file path to store the audio at
+     * @param username The username of the user creating the session
      */
-    public ChirpNoteSession(String name, Key key, int tempo, String midiPath, String audioPath){
+    public ChirpNoteSession(String name, Key key, int tempo, String midiPath, String audioPath, String username){
+        _id = new ObjectId();
         mName = name;
         mKey = key;
         if(MIN_TEMPO <= tempo && tempo <= MAX_TEMPO) {
@@ -67,7 +73,21 @@ public class ChirpNoteSession implements Serializable {
         mAudioPath = audioPath;
         mAudioRecorded = false;
         mPercussionPatterns = new ArrayList<>();
-        mTrackVolumes = new int[]{80, 80, 80, 100, 127}; // Chords, constructedMelody, recordedMelody, audio, percussion
+        mTrackVolumes = new ArrayList<>(); //{80, 80, 80, 100, 127}; // Chords, constructedMelody, recordedMelody, audio, percussion
+        mTrackVolumes.add(80);
+        mTrackVolumes.add(80);
+        mTrackVolumes.add(80);
+        mTrackVolumes.add(100);
+        mTrackVolumes.add(127);
+        mUsername = username;
+    }
+
+    /**
+     * Gets the id of this session
+     * @return The session id
+     */
+    public ObjectId getId(){
+        return _id;
     }
 
     /**
@@ -108,6 +128,14 @@ public class ChirpNoteSession implements Serializable {
      */
     public String getAudioPath(){
         return mAudioPath;
+    }
+
+    /**
+     * Gets the username of the user that created this session
+     * @return The user's username
+     */
+    public String getUsername(){
+        return mUsername;
     }
 
     /**

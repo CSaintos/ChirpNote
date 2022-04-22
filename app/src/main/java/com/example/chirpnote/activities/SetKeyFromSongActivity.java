@@ -60,7 +60,6 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
             }
         });
 
-
         searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -82,7 +81,6 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-
                             songArrayList.addAll(songData(songQueryString));
                             ArrayList<String> removelist = new ArrayList<>();
                             for (String S: songArrayList){
@@ -112,8 +110,6 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                     }
                 }).start();
             }
-
-
         });
     /*
     This listener functions for changing the key of the song on item click. also displays a message to user on click.
@@ -128,7 +124,6 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         }
     });
     }
-
 
     /***
      * Creates a list of elements for the top 5 search results as an ArrayList of string
@@ -168,8 +163,6 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                     //gson parsing and posting results
                     songData.add(getSongData(songSB));
                 }
-
-
             }
 
         } catch (Exception e) {

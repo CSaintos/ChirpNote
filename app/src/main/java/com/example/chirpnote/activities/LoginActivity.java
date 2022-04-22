@@ -14,25 +14,17 @@ import android.widget.Toast;
 
 import com.example.chirpnote.R;
 
-import org.w3c.dom.Document;
-
+import io.realm.Realm;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 import io.realm.mongodb.Credentials;
-import io.realm.mongodb.mongo.MongoClient;
-import io.realm.mongodb.mongo.MongoCollection;
-import io.realm.mongodb.mongo.MongoDatabase;
+import io.realm.mongodb.sync.SyncConfiguration;
 
 public class LoginActivity extends AppCompatActivity {
-
-    private EditText mUsername, mPassword;
-
-    MongoClient mongoClient;
-    MongoDatabase mongoDatabase;
-    MongoCollection<Document> mongoCollection; // not sure we need this yet
     App app;
     String appID = "chirpnote-jwrci";
 
+    private EditText mUsername, mPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +51,17 @@ public class LoginActivity extends AppCompatActivity {
                 app.loginAsync(customFunctionCredentials, it -> {
                     if (it.isSuccess()) {
                         Toast.makeText(LoginActivity.this,"Login succeeded", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, HomeScreenActivity.class));
-                        /*String partitionValue = "username";
+
+                        // Setup a synced MongoDB Realm configuration for the current user
                         SyncConfiguration config = new SyncConfiguration.Builder(
-                                user.get(),
-                                partitionValue)
+                                app.currentUser(),
+                                username)
                                 .build();
-                        Realm backgroundThreadRealm = Realm.getInstance(config);
-                        String userId = it.get().getId();
-                        com.example.chirpnote.User newUser =
-                                backgroundThreadRealm.where(com.example.chirpnote.User.class).equalTo("_id", user.get().getId()).findFirst();
-                        test.setText("Chord suggestions: " + newUser.getChordSuggestions());*/
+                        Realm.setDefaultConfiguration(config);
+
+                        Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
                     } else {
                         Toast.makeText(LoginActivity.this,"Login failed", Toast.LENGTH_LONG).show();
                     }
