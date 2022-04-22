@@ -19,7 +19,7 @@ public class ConstructedMelody extends Melody {
     }
     private HashMap<NoteDuration, Integer> mNoteDurations;
     public final static int CHANNEL = 2;
-    public int mElementIndex = 0;
+    public int mElementIndex = -1;
 
     /**
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
@@ -223,12 +223,20 @@ public class ConstructedMelody extends Melody {
 	char 7 to last char: note tick (the position of the note in the melody, in terms of MIDI ticks for the MIDI file)
 	*/
     /*
+    you can return an array, or arraylist or list...
+    // getNextMeasure:
+    // reads from the mMelodyElements from session,
+    //  builds an array of strings (melody elements) such that their note duration sums up to 1 whole note
+    //    If in the instance that when reading the next element, the sum is more than a whole note,
+    //    then return the array without the next element. the array can be empty.
+    //  then returns that array
     public String[] getNextMeasure()
     {
         mSession.mMelodyElements.get(mElementIndex);
     }
 
      */
+    // Same as getNextMeasure except you're going backwards in the list.
     // String[] getPreviousMeasure()
 
     /**
