@@ -136,13 +136,24 @@ public class InsertChordsActivity extends AppCompatActivity
 //                basePath + "/chords.mid", basePath + "/cMelody.mid", basePath + "/rMelody.mid", basePath + "/audioTrack.mp3");
         session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+
+
+
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
         initializeSessionChords();
         initializeChordListeners(session);
+
+
+
+//        session.mChords.add("");
+
+        for (int i = 0; i < 4; i++)
+        {
+            session.mChords.add("0000300");
+        }
+
         initializeSongMeasures(session);
-
-
 
 
 
@@ -232,21 +243,40 @@ public class InsertChordsActivity extends AppCompatActivity
         });
     }
 
-    private Chord[] initializeSongMeasures(ChirpNoteSession session) {
-        Chord [] importChords = new Chord[4];
-        if (session.mChords.size() > 0) {
-//            Chord[] importChords = new Chord[4];
-            for (int i = 0; i < session.mChords.size(); i++) {
-                if (i != 0 && i % 4 == 0) {
-                    addRowOfMeasures3(importChords);
-                    importChords = new Chord[4];
-                }
-                else {
-                    importChords[i] = chordTrack.decodeChord(session.mChords.get(i));
-                }
-            }
+    private void initializeSongMeasures(ChirpNoteSession session)
+    {
+        /** this works */
+        Chord[] importChords = new Chord[4];
+        for (int i = 0; i < 2; i++)
+        {
+            importChords = randomChordProgression(sessionChords);
+            addRowOfMeasures3(importChords);
         }
-        return importChords;
+
+        /** doesn't load chords */
+//        Chord[] importChords = new Chord[4];
+//        for (int i = 0; i < 4; i++)
+//        {
+//            importChords[i] = chordTrack.decodeChord(session.mChords.get(i));
+//            System.out.println(session.mChords.get(i));
+//        }
+
+        /** doesn't load chords */
+//        Chord[] importChords = new Chord[4];
+//        if (session.mChords.size() > 0) {
+////            Chord[] importChords = new Chord[4];
+//            for (int i = 0; i < session.mChords.size(); i++) {
+//                if (i != 0 && i % 4 == 0) {
+//                    addRowOfMeasures3(importChords);
+//                    importChords = new Chord[4];
+//                }
+//                else {
+//                    importChords[i] = chordTrack.decodeChord(session.mChords.get(i));
+//                    System.out.println(importChords[i]);
+//                }
+//            }
+//        }
+
     }
 
     @Override
@@ -275,6 +305,7 @@ public class InsertChordsActivity extends AppCompatActivity
 //                }
                 Chord[] randChords = randomChordProgression(sessionChords);
                 addRowOfMeasures3(randChords);
+                System.out.println(session.mChords.get(0));
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
@@ -363,7 +394,8 @@ public class InsertChordsActivity extends AppCompatActivity
             Button tempMeasure = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
             tempMeasure.setText(romanChordString);
 
-            chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
+            /** Had to comment this out */
+//            chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
         }
 
 
@@ -397,7 +429,8 @@ public class InsertChordsActivity extends AppCompatActivity
 //                        System.out.println("listOfChords.size() = " + listOfChords.size());
 
                         listOfChords.get(newRowIdx)[col] = newChord; // ERROR HERE IF I REMOVE FROM MIDDLE
-                        chordTrack.addChord(newChord, (newRowIdx * 4) + col);
+                        /** Had to comment this out */
+//                        chordTrack.addChord(newChord, (newRowIdx * 4) + col);
                         ((Button) v).setText(selectedSessionChord.getButton().getText());
                     }
 
@@ -450,32 +483,7 @@ public class InsertChordsActivity extends AppCompatActivity
                         }
                     }
 
-/** OLD CHORD SUGGESTION METHOD */
-////                    String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-////                    System.out.println("inputChord = " + inputChord);
-//                    String inputChord = listOfChords.get(rowIdx)[col].toString();
-//                    System.out.println("inputChord = " + inputChord);
-//                    suggestedChords = getSuggestedChords(inputChord, sessionChords);
-////                    System.out.println("suggestedChords = " + suggestedChords);
-//                    if (chordSuggestionStatus == true) {
-////                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-////                        System.out.println("inputChord = " + inputChord);
-////                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
-////                        System.out.println("suggestedChords = " + suggestedChords);
-//
-//                        for (int i = 0; i < suggestedChords.size(); i++) {
-//                            suggestedChords.get(i).getButton().setSelected(true);
-//                        }
-//                    }
-//                    else if (chordSuggestionStatus == false) {
-////                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-////                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
-//
-//                        for (int i = 0; i < suggestedChords.size(); i++) {
-//                            suggestedChords.get(i).getButton().setSelected(false);
-//                        }
-//                        suggestedChords.clear();
-//                    }
+
                 }
             });
         }
@@ -599,45 +607,9 @@ public class InsertChordsActivity extends AppCompatActivity
                         }
                     }
 
-/** OLD CHORD SUGGESTION METHOD */
-////                    String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-////                    System.out.println("inputChord = " + inputChord);
-//                    String inputChord = listOfChords.get(rowIdx)[col].toString();
-//                    System.out.println("inputChord = " + inputChord);
-//                    suggestedChords = getSuggestedChords(inputChord, sessionChords);
-////                    System.out.println("suggestedChords = " + suggestedChords);
-//                    if (chordSuggestionStatus == true) {
-////                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-////                        System.out.println("inputChord = " + inputChord);
-////                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
-////                        System.out.println("suggestedChords = " + suggestedChords);
-//
-//                        for (int i = 0; i < suggestedChords.size(); i++) {
-//                            suggestedChords.get(i).getButton().setSelected(true);
-//                        }
-//                    }
-//                    else if (chordSuggestionStatus == false) {
-////                        String inputChord = (String) listOfButtons.get(rowIdx)[col].getText();
-////                        suggestedChords = getSuggestedChords(inputChord, sessionChords);
-//
-//                        for (int i = 0; i < suggestedChords.size(); i++) {
-//                            suggestedChords.get(i).getButton().setSelected(false);
-//                        }
-//                        suggestedChords.clear();
-//                    }
                 }
             });
         }
-
-//        for (int row = 0; row < layoutList.getChildCount(); row++)
-//        {
-//            for (int measure = 0; measure < 4; measure++)
-//            {
-//                System.out.println("row = " + row + ", measure " + measure + " = " + listOfChords.get(row)[measure]);
-//            }
-//        }
-
-//        Chord[] tempList = randomChordProgression(sessionChords);
 
     }
     
@@ -1003,60 +975,6 @@ public class InsertChordsActivity extends AppCompatActivity
             listOfChords.add(keyChords[5]);
         }
         return listOfChords;
-//        ArrayList<Chord> listOfChords = new ArrayList<Chord>();
-////        int indexOfInputChord = keyChords.indexOf(inputChord); // grabs the index of chord to determine what roman numeral it is in
-//        int indexOfInputChord = 0;
-//
-//        for (int i = 0; i < keyChords.size(); i++)
-//        {
-//            if (inputChord.equals(keyChords.get(i).toString()))
-//            {
-//                indexOfInputChord = i;
-//            }
-//        }
-//
-//        // it doesn't matter if its major or minor since they share most of the same chord suggestions with the exception of VII which we're not using
-//        // if statements used to collect all the chord suggestions that pertain to the chord found at index of input chord
-//        if (indexOfInputChord == 0 || indexOfInputChord == 7) // I chord
-//        {
-//            for (int i = 1; i < 7; i++)
-//            {
-//                listOfChords.add(keyChords.get(i)); // a I chord can go virtually anywhere
-//            }
-//        }
-//        else if (indexOfInputChord == 1) // ii Chord
-//        {
-//            listOfChords.add(keyChords.get(6));
-//            listOfChords.add(keyChords.get(4));
-//        }
-//        else if (indexOfInputChord == 2) // iii Chord
-//        {
-//            listOfChords.add(keyChords.get(3));
-//            listOfChords.add(keyChords.get(5));
-//        }
-//        else if (indexOfInputChord == 3) // IV Chord
-//        {
-//            listOfChords.add(keyChords.get(1));
-//            listOfChords.add(keyChords.get(4));
-//            listOfChords.add(keyChords.get(6));
-//        }
-//        else if (indexOfInputChord == 4) // V chord
-//        {
-//            listOfChords.add(keyChords.get(1));
-//            listOfChords.add(keyChords.get(5));
-//            listOfChords.add(keyChords.get(7));
-//        }
-//        else if (indexOfInputChord == 5) // vi chord
-//        {
-//            listOfChords.add(keyChords.get(3));
-//            listOfChords.add(keyChords.get(1));
-//        }
-//        else // vii* chord
-//        {
-//            listOfChords.add(keyChords.get(1));
-//            listOfChords.add(keyChords.get(5));
-//        }
-//        return listOfChords;
     }
 
     private void initializeKeyNameList(ChirpNoteSession session)
@@ -1111,12 +1029,6 @@ public class InsertChordsActivity extends AppCompatActivity
                 progression[i] = new Chord(keyChords[chosenProgression[i]].getRootNote(), keyChords[chosenProgression[i]].getType(), keyChords[chosenProgression[i]].getTempo(), chosenProgression[i]);
             }
         }
-
-//        System.out.println("=============================== Chord Progression ========================================");
-//        for (int i = 0; i < progression.length; i++)
-//        {
-//            System.out.println(progression[i]);
-//        }
 
         return progression;
     }
