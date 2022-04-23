@@ -116,7 +116,31 @@ public class Notation {
     }
 
     /**
-     *
+     * MelodyElement struct
+     * Encapsulates a melody element for Melody classes
+     */
+    public class MelodyElement {
+        public MusicNote musicNote;
+        public ConstructedMelody.NoteDuration noteDuration;
+        public int[] velTick;
+
+        public MelodyElement() {
+
+        }
+
+        public MelodyElement(MusicNote mn, ConstructedMelody.NoteDuration nd, int[] velTick) {
+            this.velTick = new int[2];
+            musicNote = mn;
+            noteDuration = nd;
+            this.velTick[0] = velTick[0];
+            this.velTick[1] = velTick[1];
+        }
+    }
+
+    /**
+     * MusicFontAdapter
+     * An assistant class to convert NoteFonts to durations and musicNotes
+     * Also works in vice versa, duration and musicNotes to NoteFonts
      */
     public class MusicFontAdapter {
         private MusicNote mn;

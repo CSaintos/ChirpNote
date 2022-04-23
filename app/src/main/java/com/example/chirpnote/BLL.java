@@ -305,9 +305,9 @@ public class BLL<T> {
                 current.next = temp;
                 if (end == current) end = temp;
 
-                if (temp.previous != null) Log.d("insertAfter previous", (temp.previous.type.toString()));
-                if (temp.next != null) Log.d("insertAfter next", (temp.next.type.toString()));
-                if (temp.next == null || temp.previous == null) Log.d("insertAfter", "null");
+                //if (temp.previous != null) Log.d("insertAfter previous", (temp.previous.type.toString()));
+                //if (temp.next != null) Log.d("insertAfter next", (temp.next.type.toString()));
+                //if (temp.next == null || temp.previous == null) Log.d("insertAfter", "null");
             }
             size++;
         }
@@ -315,6 +315,8 @@ public class BLL<T> {
         /**
          * Remove the current node
          * The previous node is the new current node
+         *
+         * TODO do a fullproof test on this and removeThenAfter()
          */
         public void removeThenBefore() {
             if (current == null) throw new NullPointerException("Can't remove from empty list");

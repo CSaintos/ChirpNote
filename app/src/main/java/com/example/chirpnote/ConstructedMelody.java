@@ -3,11 +3,15 @@ package com.example.chirpnote;
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.event.NoteOn;
 
+import com.example.chirpnote.Notation.NoteFont;
+import com.example.chirpnote.Notation.MelodyElement;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
 public class ConstructedMelody extends Melody {
+
     // Durations for notes
     public enum NoteDuration {
         WHOLE_NOTE,
@@ -18,6 +22,7 @@ public class ConstructedMelody extends Melody {
         THIRTY_SECOND_NOTE,
     }
     private HashMap<NoteDuration, Integer> mNoteDurations;
+    public final static Notation notation = new Notation(); // for getElement
     public final static int CHANNEL = 2;
     public int mElementIndex = -1;
 
@@ -131,6 +136,20 @@ public class ConstructedMelody extends Melody {
     }
 
     /**
+     * Get's the melody element given the position
+     * @param position int index
+     * @return NotFont representation of the element
+     */
+    public NoteFont getElement(int position) {
+        NoteFont nf = notation.new NoteFont();
+        if (position < mSession.mMelodyElements.size()) {
+            MelodyElement me = decodeElement(mSession.mMelodyElements.get(position));
+            // TODO construct NoteFont
+        }
+        return nf;
+    }
+
+    /**
      * Gets the length of the given NoteDuration in MIDI ticks
      * @param duration The duration to compute the ticks of
      * @return The duration's MIDI ticks
@@ -213,6 +232,33 @@ public class ConstructedMelody extends Melody {
                 mSession.mMelodyElements.remove(position);
             } while(endTick > tickRange[1]);
         }
+    }
+
+    /**
+     * Decodes a Melody Element String into a MelodyElement struct and returns it.
+     * The struct can be used to access any attributes that is stored within a melody element, ex:
+     *   melodyElement.musicNote; // retrieves the MusicNote variable
+     *   melodyElement.noteDuration; // retrieves the NoteDuration variable
+     *   melodyElement.velTick; // retrieves the velocity, tick array pair
+     *
+     * @param element melody element string representation
+     * @return MelodyElement struct
+     */
+    private MelodyElement decodeElement(String element) {
+        MelodyElement me = notation.new MelodyElement();
+
+        if (element.length() == 8) {
+            try {
+                NoteDuration noteDuration = NoteDuration.values()[element.charAt(6)];
+                MusicNote musicNote = new MusicNote(Integer.parseInt(element.substring(0, 2)));
+                int[] velTick = {Integer.parseInt(element.substring(3, 5)), element.charAt(7)};
+
+                me = notation.new MelodyElement(musicNote, noteDuration, velTick);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return me;
     }
 
     /*

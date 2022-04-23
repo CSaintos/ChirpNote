@@ -594,6 +594,7 @@ public class MelodyActivity extends AppCompatActivity
         Log.d("NoteList2", ((NoteFont) itr.get()).symbol.toString() + " " + ((NoteFont) itr.get()).noteLength);
     }
 
+    // FIXME theres a bug concerning consMelody and noteList compatibility
     private void replaceElement(NoteFont nf, NoteFont replaced) {
         int tempBarLength = barLength + nf.noteLength - replaced.noteLength;
         int elementLength = 0;
@@ -635,9 +636,10 @@ public class MelodyActivity extends AppCompatActivity
                 // eight, eight, half, replace first eight with half, not allowed
                 // whole, replace with 32nd: 32 32 16 8 4 2
             } else if (nf.noteLength < replaced.noteLength) {
-                Log.d("replace Element", "big to small"); //cons melody can do stb, but not bts FIXME
+                Log.d("replace Element", "big to small");
                 NoteFont temp;
                 elementLength = nf.noteLength;
+                int offset = melodyPosition;
 
                 itr.set(notation.new NoteFont(nf));
 
@@ -657,9 +659,18 @@ public class MelodyActivity extends AppCompatActivity
                     } else {
                         temp = notation.new NoteFont(Syntax.REST_32ND, Syntax.EMPTY, Syntax.EMPTY, 1, 7, Color.DKGRAY);
                     }
+                    offset++;
 
+                    // insert into noteList
                     itr.insertAfter(temp);
                     elementLength += temp.noteLength;
+
+                    // insert element to constructed melody
+                    mfAdapter = notation.new MusicFontAdapter(temp);
+                    if (Notation.Syntax.REST.contains(temp.symbol)) {
+                        consMelody.addRest(mfAdapter.getNoteDuration(), offset);
+                    }
+
                 }
 
             } else {
