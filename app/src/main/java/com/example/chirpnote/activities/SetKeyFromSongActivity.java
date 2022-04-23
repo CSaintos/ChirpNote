@@ -18,11 +18,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chirpnote.R;
+import com.example.chirpnote.SongListAdapter;
+import com.example.chirpnote.queryResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,21 +44,26 @@ import java.util.ArrayList;
 public class SetKeyFromSongActivity extends AppCompatActivity {
     private static final String API_KEY = "b56665025cc9d931bdf1ab71847da39d"; //GetSongKey API Key
     ArrayList<String> songArrayList = new ArrayList<>();
-    boolean flag;
+    ArrayList<queryResult> songArrayListFinished = new ArrayList<>();
+    boolean flag = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        String checkFlag = intent.getStringExtra("flag");
-        if (checkFlag.equals("A")){
-            flag = true;
-        }
-        else
-            flag = false;
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config);
+        //flag to check if the activity came from the right place
+//        Intent intent = getIntent();
+//        String checkFlag = intent.getStringExtra("flag");
+//        if (checkFlag.equals("A")){
+//            flag = true;
+//        }
+//        else
+//            flag = false;
         songArrayList.clear();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key_from_song);
-        ArrayAdapter adapter = new ArrayAdapter<>(SetKeyFromSongActivity.this, android.R.layout.simple_list_item_1, songArrayList);
+        SongListAdapter adapter = new SongListAdapter(SetKeyFromSongActivity.this, R.layout.song_custom_list_row, songArrayListFinished);
         Button searchButton = (Button) findViewById(R.id.keySearchButton);
         ListView listView = (ListView) findViewById(R.id.songListView);
         listView.setAdapter(adapter);
@@ -97,6 +108,10 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                                     removelist.add(S);
                                 }}
                             songArrayList.removeAll(removelist);
+                            for (String song:songArrayList){
+                                String sub = StringUtils.substringBetween(song,"Song: ","Key:");
+                                songArrayListFinished.add(new queryResult(song, sub ));
+                            }
                             progressDialog.dismiss();
                             //update the ListView
                             runOnUiThread(new Runnable() {
