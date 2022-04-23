@@ -1,5 +1,7 @@
 package com.example.chirpnote;
 
+import android.util.Log;
+
 /**
  * Better linked list
  * Because Java's linked List is A trociously S uffering S everely
@@ -268,6 +270,12 @@ public class BLL<T> {
                 end = current;
             } else {
                 Node temp = new Node(type);
+                if (current.previous != null) {
+                    temp.previous = current.previous;
+                    current.previous.next = temp;
+                } else {
+                    temp.previous = null;
+                }
                 temp.previous = current.previous;
                 temp.next = current;
                 current.previous = temp;
@@ -287,10 +295,19 @@ public class BLL<T> {
                 end = current;
             } else {
                 Node temp = new Node(type);
-                temp.next = current.next;
+                if (current.next != null) {
+                    temp.next = current.next;
+                    current.next.previous = temp;
+                } else {
+                    temp.next = null;
+                }
                 temp.previous = current;
                 current.next = temp;
                 if (end == current) end = temp;
+
+                if (temp.previous != null) Log.d("insertAfter previous", (temp.previous.type.toString()));
+                if (temp.next != null) Log.d("insertAfter next", (temp.next.type.toString()));
+                if (temp.next == null || temp.previous == null) Log.d("insertAfter", "null");
             }
             size++;
         }
@@ -354,6 +371,7 @@ public class BLL<T> {
          * @return T object at current node
          */
         public T get() {
+            if (current == null) return null;
             return current.type;
         }
 
@@ -362,7 +380,8 @@ public class BLL<T> {
          * @return T object from current's next node
          */
         public T peekNext() {
-            return current.next.type;
+            if (hasNext()) return current.next.type;
+            return null;
         }
 
         /**
@@ -370,7 +389,8 @@ public class BLL<T> {
          * @return T object from current's previous node
          */
         public T peekPrevious() {
-            return current.previous.type;
+            if (hasPrevious()) return current.previous.type;
+            return null;
         }
 
         /**
@@ -378,6 +398,7 @@ public class BLL<T> {
          * @return T object at begin node
          */
         public T getBegin() {
+            if (begin == null) return null;
             return begin.type;
         }
 
@@ -386,6 +407,7 @@ public class BLL<T> {
          * @return T object at end node
          */
         public T getEnd() {
+            if (end == null) return null;
             return end.type;
         }
     }

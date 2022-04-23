@@ -109,6 +109,10 @@ public class Notation {
         public NoteFont(NoteFont nf) {
             this(nf.symbol, nf.prefix, nf.suffix, nf.noteLength, nf.lineNum, nf.color);
         }
+
+        public String toString() {
+            return symbol.toString();
+        }
     }
 
     /**

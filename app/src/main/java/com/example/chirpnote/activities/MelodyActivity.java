@@ -244,7 +244,7 @@ public class MelodyActivity extends AppCompatActivity
                 currentNote.symbol = currentDuration.symbol;
 
                 // Set noteLength
-                currentNote.noteLength = 0;
+                currentNote.noteLength = currentDuration.noteLength;
 
                 // Locate vertical line staff position
                 if (currentDuration.symbol == Syntax.REST_WHOLE) {
@@ -257,11 +257,12 @@ public class MelodyActivity extends AppCompatActivity
                 currentNote.prefix = Syntax.EMPTY;
                 currentNote.suffix = Syntax.EMPTY;
 
+                replaceElement(currentNote, replacedSymbol);
+                /*
                 Log.d("BarLength, before", Integer.toString(barLength));
                 // apply note constraint
                 int tempBarLength = barLength - replacedSymbol.noteLength + currentNote.noteLength;
-                int valuedBarLength = barLength - replacedSymbol.noteLength + currentNote.noteLength + currentDuration.noteLength;
-                if (valuedBarLength <= maxBarLength) {
+                if (tempBarLength <= maxBarLength) {
                     barLength = tempBarLength;
                     // Set rest to noteList
                     itr.set(notation.new NoteFont(currentNote));
@@ -272,6 +273,7 @@ public class MelodyActivity extends AppCompatActivity
                     currentNote = replacedSymbol;
                 }
                 Log.d("BarLength, after", Integer.toString(barLength));
+                 */
 
                 displayText();
             }
@@ -500,6 +502,12 @@ public class MelodyActivity extends AppCompatActivity
                                 break;
                         }
 
+                        /*
+                        Implement Note/Rest Replacement
+                         */
+                        replaceElement(currentNote, replacedSymbol);
+
+                        /*
                         Log.d("BarLength, before", Integer.toString(barLength));
                         // note length constraint checking
                         int tempBarLength = barLength + currentDuration.noteLength - replacedSymbol.noteLength;
@@ -517,6 +525,7 @@ public class MelodyActivity extends AppCompatActivity
                             currentNote = replacedSymbol;
                         }
                         Log.d("BarLength, after", Integer.toString(barLength));
+                         */
 
                         // Double check the note
                         //Log.d("NoteList", currentNote.symbol.toString() + " " + Integer.toString(currentNote.lineNum));
@@ -571,17 +580,102 @@ public class MelodyActivity extends AppCompatActivity
         currentNote = notation.new NoteFont(currentDuration.symbol, 9);
         currentNote.color = Color.BLUE;
         currentDuration.noteLength = 32;
-        currentNote.noteLength = 0;
+        currentNote.noteLength = currentDuration.noteLength;
         barLength = 0;
 
         // Add default note to staff
         itr.insertAfter(notation.new NoteFont(currentNote));
         if (itr.hasNext()) itr.next(); // if there was a clef there (supposedly)
         currentNote = notation.new NoteFont((NoteFont) itr.get());
+
         // Add defaults note to constructed melody
         mfAdapter = notation.new MusicFontAdapter(currentNote);
         consMelody.addRest(mfAdapter.getNoteDuration(), melodyPosition);
-        Log.d("NoteList2", ((NoteFont) itr.get()).symbol.toString());
+        Log.d("NoteList2", ((NoteFont) itr.get()).symbol.toString() + " " + ((NoteFont) itr.get()).noteLength);
+    }
+
+    private void replaceElement(NoteFont nf, NoteFont replaced) {
+        int tempBarLength = barLength + nf.noteLength - replaced.noteLength;
+        int elementLength = 0;
+
+        Log.d("replace Element", "Attempt: " + replaced.toString() + " to " + nf.toString());
+
+        if (tempBarLength > maxBarLength) {
+            Log.d("replace Element", "failed to replace");
+            nf = replaced;
+        } else {
+            boolean replaceable = true;
+            if (nf.noteLength > replaced.noteLength) {
+                Log.d("replace Element", "small to big");
+                int numNexts = 0;
+                NoteFont temp;
+                elementLength = replaced.noteLength;
+                while (elementLength < nf.noteLength && itr.hasNext()) {
+                    itr.next();
+                    temp = (NoteFont) itr.get();
+                    numNexts++;
+                    elementLength += temp.noteLength;
+                }
+
+                for (int i = 0; i < numNexts; i++) {
+                    itr.previous();
+                }
+
+                if (elementLength == nf.noteLength) { // if replaceable
+                    itr.set(notation.new NoteFont(nf));
+
+                    for (; numNexts > 0; numNexts--) {
+                        itr.next();
+                        itr.removeThenBefore();
+                    }
+                } else {
+                    replaceable = false;
+                    Log.d("replace Element", "did not replace");
+                }
+                // eight, eight, half, replace first eight with half, not allowed
+                // whole, replace with 32nd: 32 32 16 8 4 2
+            } else if (nf.noteLength < replaced.noteLength) {
+                Log.d("replace Element", "big to small"); //cons melody can do stb, but not bts FIXME
+                NoteFont temp;
+                elementLength = nf.noteLength;
+
+                itr.set(notation.new NoteFont(nf));
+
+                while (elementLength < replaced.noteLength) {
+                    Log.d("replace Element", "el: " + elementLength + ". replace: " + replaced.noteLength);
+
+                    if (elementLength + 32 <= replaced.noteLength) {
+                        temp = notation.new NoteFont(Syntax.REST_WHOLE, Syntax.EMPTY, Syntax.EMPTY, 32, 9, Color.DKGRAY);
+                    } else if (elementLength + 16 <= replaced.noteLength) {
+                        temp = notation.new NoteFont(Syntax.REST_HALF, Syntax.EMPTY, Syntax.EMPTY, 16, 7, Color.DKGRAY);
+                    } else if (elementLength + 8 <= replaced.noteLength) {
+                        temp = notation.new NoteFont(Syntax.REST_QUARTER, Syntax.EMPTY, Syntax.EMPTY, 8, 7, Color.DKGRAY);
+                    } else if (elementLength + 4 <= replaced.noteLength) {
+                        temp = notation.new NoteFont(Syntax.REST_8TH, Syntax.EMPTY, Syntax.EMPTY, 4, 7, Color.DKGRAY);
+                    } else if (elementLength + 2 <= replaced.noteLength) {
+                        temp = notation.new NoteFont(Syntax.REST_16TH, Syntax.EMPTY, Syntax.EMPTY, 2, 7, Color.DKGRAY);
+                    } else {
+                        temp = notation.new NoteFont(Syntax.REST_32ND, Syntax.EMPTY, Syntax.EMPTY, 1, 7, Color.DKGRAY);
+                    }
+
+                    itr.insertAfter(temp);
+                    elementLength += temp.noteLength;
+                }
+
+            } else {
+                Log.d("replace Element", "same size");
+                itr.set(notation.new NoteFont(nf));
+            }
+            if (replaceable) {
+                // set element to constructed melody
+                mfAdapter = notation.new MusicFontAdapter(nf);
+                if (Notation.Syntax.REST.contains(nf.symbol)) {
+                    consMelody.addRest(mfAdapter.getNoteDuration(), melodyPosition);
+                } else if (Notation.Syntax.NOTE.contains(nf.symbol)) {
+                    consMelody.addNote(mfAdapter.getMusicNote(), mfAdapter.getNoteDuration(), melodyPosition);
+                }
+            }
+        }
     }
 
     private void displayOctaveText() {
