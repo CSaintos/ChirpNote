@@ -5,6 +5,7 @@ import com.example.midiFileLib.src.event.NoteOn;
 
 import com.example.chirpnote.Notation.NoteFont;
 import com.example.chirpnote.Notation.MelodyElement;
+import com.example.chirpnote.Notation.MusicFontAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -142,9 +143,11 @@ public class ConstructedMelody extends Melody {
      */
     public NoteFont getElement(int position) {
         NoteFont nf = notation.new NoteFont();
+        MusicFontAdapter mfAdapter;
         if (position < mSession.mMelodyElements.size()) {
             MelodyElement me = decodeElement(mSession.mMelodyElements.get(position));
-            // TODO construct NoteFont
+            mfAdapter = notation.new MusicFontAdapter(me.musicNote, me.noteDuration);
+            nf = mfAdapter.getNoteFont();
         }
         return nf;
     }
