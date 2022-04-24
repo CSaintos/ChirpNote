@@ -251,8 +251,9 @@ public class ConstructedMelody extends Melody {
      */
     private MelodyElement decodeElement(String element) {
         MelodyElement me = notation.new MelodyElement();
+        Log.d("Decode element length", ""+element.length());
 
-        if (element.length() == 8) {
+        if (element.length() >= 8) {
             try {
                 Log.d("Decode", ""+element.charAt(6));
                 NoteDuration noteDuration = NoteDuration.values()[Character.getNumericValue(element.charAt(6))];

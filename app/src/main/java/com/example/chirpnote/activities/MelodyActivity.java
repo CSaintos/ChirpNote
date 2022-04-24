@@ -668,6 +668,7 @@ public class MelodyActivity extends AppCompatActivity
                     itr.insertAfter(temp);
                     elementLength += temp.noteLength;
 
+                    /*
                     // insert element to constructed melody
                     mfAdapter = notation.new MusicFontAdapter(temp);
                     if (Notation.Syntax.REST.contains(temp.symbol)) {
@@ -675,7 +676,23 @@ public class MelodyActivity extends AppCompatActivity
                         consMelody.addRest(mfAdapter.getNoteDuration(), offset);
                         Log.d("ConsMelody", "position " + offset + ", element " + consMelody.getElement(offset).toString());
                     }
+                     */
 
+                }
+
+                int offset2 = melodyPosition;
+                // insert elements to constructed melody
+                while (offset > offset2) {
+                    itr.next();
+                    offset2++;
+                    mfAdapter = notation.new MusicFontAdapter((NoteFont) itr.get());
+                    Log.d("replace element adapter duration", mfAdapter.getNoteDuration().toString());
+                    consMelody.addRest(mfAdapter.getNoteDuration(), offset2);
+                    Log.d("ConsMelody", "position " + offset2 + ", element " + consMelody.getElement(offset2).toString());
+                }
+
+                for (; offset2 > 0; offset2--) {
+                    itr.previous();
                 }
 
             } else {
