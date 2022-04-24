@@ -311,7 +311,8 @@ public class MelodyActivity extends AppCompatActivity
                     melodyPosition--;
                 }
 
-                Log.d("NoteList2", currentNote.symbol.toString());
+                Log.d("NoteList", currentNote.symbol.toString());
+                Log.d("ConsMelody", consMelody.getElement(melodyPosition).toString());
 
                 displayText();
             }
@@ -345,7 +346,9 @@ public class MelodyActivity extends AppCompatActivity
 
                     melodyPosition++;
                 }
-                Log.d("NoteList2", ((NoteFont) itr.get()).symbol.toString());
+
+                Log.d("NoteList", ((NoteFont) itr.get()).symbol.toString());
+                if (currentNote.symbol != Syntax.EMPTY) Log.d("ConsMelody", consMelody.getElement(melodyPosition).toString());
 
                 displayText();
             }
@@ -591,7 +594,7 @@ public class MelodyActivity extends AppCompatActivity
         // Add defaults note to constructed melody
         mfAdapter = notation.new MusicFontAdapter(currentNote);
         consMelody.addRest(mfAdapter.getNoteDuration(), melodyPosition);
-        Log.d("NoteList2", ((NoteFont) itr.get()).symbol.toString() + " " + ((NoteFont) itr.get()).noteLength);
+        //Log.d("NoteList", ((NoteFont) itr.get()).symbol.toString());
     }
 
     // FIXME theres a bug concerning consMelody and noteList compatibility
@@ -668,7 +671,9 @@ public class MelodyActivity extends AppCompatActivity
                     // insert element to constructed melody
                     mfAdapter = notation.new MusicFontAdapter(temp);
                     if (Notation.Syntax.REST.contains(temp.symbol)) {
+                        Log.d("replace element adapter duration", mfAdapter.getNoteDuration().toString());
                         consMelody.addRest(mfAdapter.getNoteDuration(), offset);
+                        Log.d("ConsMelody", "position " + offset + ", element " + consMelody.getElement(offset).toString());
                     }
 
                 }
@@ -685,6 +690,7 @@ public class MelodyActivity extends AppCompatActivity
                 } else if (Notation.Syntax.NOTE.contains(nf.symbol)) {
                     consMelody.addNote(mfAdapter.getMusicNote(), mfAdapter.getNoteDuration(), melodyPosition);
                 }
+                Log.d("ConsMelody", consMelody.getElement(melodyPosition).toString());
             }
         }
     }

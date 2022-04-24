@@ -1,5 +1,7 @@
 package com.example.chirpnote;
 
+import android.util.Log;
+
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.event.NoteOn;
 
@@ -252,9 +254,10 @@ public class ConstructedMelody extends Melody {
 
         if (element.length() == 8) {
             try {
-                NoteDuration noteDuration = NoteDuration.values()[element.charAt(6)];
+                Log.d("Decode", ""+element.charAt(6));
+                NoteDuration noteDuration = NoteDuration.values()[Character.getNumericValue(element.charAt(6))];
                 MusicNote musicNote = new MusicNote(Integer.parseInt(element.substring(0, 2)));
-                int[] velTick = {Integer.parseInt(element.substring(3, 5)), element.charAt(7)};
+                int[] velTick = {Integer.parseInt(element.substring(3, 5)), Character.getNumericValue(element.charAt(7))};
 
                 me = notation.new MelodyElement(musicNote, noteDuration, velTick);
             } catch (Exception e) {
