@@ -226,7 +226,11 @@ public class MelodyActivity extends AppCompatActivity
         rightButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // TODO print more descriptive list
+                for (String str : consMelody.getMeasure()) {
+                    Notation.MelodyElement me = consMelody.decodeElement(str);
+                    Log.d("getConstructedMeasure", me.noteDuration.toString());
+                }
             }
         });
 

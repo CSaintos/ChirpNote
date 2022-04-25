@@ -250,7 +250,7 @@ public class ConstructedMelody extends Melody {
      * @param element melody element string representation
      * @return MelodyElement struct
      */
-    private MelodyElement decodeElement(String element) {
+    public MelodyElement decodeElement(String element) {
         MelodyElement me = notation.new MelodyElement();
         //Log.d("Decode element length", ""+element.length());
 
@@ -274,6 +274,7 @@ public class ConstructedMelody extends Melody {
 	char 0-2: note MIDI number (range of 000-127, 128 if rest)
 	char 3-5: note velocity (range of 000-127)
 	char 6: note duration (0 = whole, 1 = half, 2 = quarter, 3 = eighth, 4 = sixteenth, 5 = thirty-second)
+	                        2^5        2^4      2^3           2^2        2^1            2^0
 	char 7 to last char: note tick (the position of the note in the melody, in terms of MIDI ticks for the MIDI file)
 	*/
     /*
@@ -286,7 +287,8 @@ public class ConstructedMelody extends Melody {
     //  then returns that array
      */
     public String[] getMeasure() {
-        int measureSize = 0;
+        int measureDuration = 0;
+
 
 
         return new String[]{};
@@ -295,6 +297,7 @@ public class ConstructedMelody extends Melody {
     // Calculates and sets the mElementIndex for the starting point of the next measure
     public void nextMeasure()
     {
+        if (mSession.mMelodyElements.size() > 0)
         mSession.mMelodyElements.get(mElementIndex);
     }
 
