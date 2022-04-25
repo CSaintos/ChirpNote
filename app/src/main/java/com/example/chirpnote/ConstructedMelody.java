@@ -147,6 +147,7 @@ public class ConstructedMelody extends Melody {
         NoteFont nf = notation.new NoteFont();
         MusicFontAdapter mfAdapter;
         if (position < mSession.mMelodyElements.size()) {
+            System.out.println(mSession.mMelodyElements.get(position));
             MelodyElement me = decodeElement(mSession.mMelodyElements.get(position));
             mfAdapter = notation.new MusicFontAdapter(me.musicNote, me.noteDuration);
             nf = mfAdapter.getNoteFont();
@@ -251,14 +252,14 @@ public class ConstructedMelody extends Melody {
      */
     private MelodyElement decodeElement(String element) {
         MelodyElement me = notation.new MelodyElement();
-        Log.d("Decode element length", ""+element.length());
+        //Log.d("Decode element length", ""+element.length());
 
         if (element.length() >= 8) {
             try {
-                Log.d("Decode", ""+element.charAt(6));
+                //Log.d("Decode", ""+element.charAt(6));
                 NoteDuration noteDuration = NoteDuration.values()[Character.getNumericValue(element.charAt(6))];
-                MusicNote musicNote = new MusicNote(Integer.parseInt(element.substring(0, 2)));
-                int[] velTick = {Integer.parseInt(element.substring(3, 5)), Character.getNumericValue(element.charAt(7))};
+                MusicNote musicNote = new MusicNote(Integer.parseInt(element.substring(0, 3)));
+                int[] velTick = {Integer.parseInt(element.substring(3, 6)), Character.getNumericValue(element.charAt(7))};
 
                 me = notation.new MelodyElement(musicNote, noteDuration, velTick);
             } catch (Exception e) {

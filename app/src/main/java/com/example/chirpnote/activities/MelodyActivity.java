@@ -258,22 +258,6 @@ public class MelodyActivity extends AppCompatActivity
                 currentNote.suffix = Syntax.EMPTY;
 
                 replaceElement(currentNote, replacedSymbol);
-                /*
-                Log.d("BarLength, before", Integer.toString(barLength));
-                // apply note constraint
-                int tempBarLength = barLength - replacedSymbol.noteLength + currentNote.noteLength;
-                if (tempBarLength <= maxBarLength) {
-                    barLength = tempBarLength;
-                    // Set rest to noteList
-                    itr.set(notation.new NoteFont(currentNote));
-                    // Set rest to constructedMelody
-                    mfAdapter = notation.new MusicFontAdapter(currentNote);
-                    consMelody.addRest(mfAdapter.getNoteDuration(), melodyPosition);
-                } else {
-                    currentNote = replacedSymbol;
-                }
-                Log.d("BarLength, after", Integer.toString(barLength));
-                 */
 
                 displayText();
             }
@@ -311,8 +295,9 @@ public class MelodyActivity extends AppCompatActivity
                     melodyPosition--;
                 }
 
-                Log.d("NoteList", currentNote.symbol.toString());
-                Log.d("ConsMelody", consMelody.getElement(melodyPosition).toString());
+                Log.d("NavLeft noteFont", ((NoteFont) itr.get()).symbol.toString());
+                if (currentNote.symbol != Syntax.EMPTY) Log.d("ConsMelody", "position " +
+                        melodyPosition + ", element " + consMelody.getElement(melodyPosition).toString());
 
                 displayText();
             }
@@ -324,6 +309,9 @@ public class MelodyActivity extends AppCompatActivity
         navRightButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (currentNote.symbol != Syntax.EMPTY) Log.d("Navb4 ConsMelody", "position " +
+                        melodyPosition + ", element " + consMelody.getElement(melodyPosition).toString());
+
                 if (itr.hasNext()) {
                     currentNote = notation.new NoteFont((NoteFont) itr.get());
                     currentNote.color = Color.DKGRAY;
@@ -347,8 +335,9 @@ public class MelodyActivity extends AppCompatActivity
                     melodyPosition++;
                 }
 
-                Log.d("NoteList", ((NoteFont) itr.get()).symbol.toString());
-                if (currentNote.symbol != Syntax.EMPTY) Log.d("ConsMelody", consMelody.getElement(melodyPosition).toString());
+                Log.d("NavRight noteFont", ((NoteFont) itr.get()).symbol.toString());
+                if (currentNote.symbol != Syntax.EMPTY) Log.d("ConsMelody", "position " +
+                        melodyPosition + ", element " + consMelody.getElement(melodyPosition).toString());
 
                 displayText();
             }
@@ -510,26 +499,6 @@ public class MelodyActivity extends AppCompatActivity
                          */
                         replaceElement(currentNote, replacedSymbol);
 
-                        /*
-                        Log.d("BarLength, before", Integer.toString(barLength));
-                        // note length constraint checking
-                        int tempBarLength = barLength + currentDuration.noteLength - replacedSymbol.noteLength;
-                        //Log.d("tempbarLength barLength", Integer.toString(barLength));
-                        //Log.d("tempbarLength currentDuration.notelength", Integer.toString(currentDuration.noteLength));
-                        //Log.d("tempbarLength replacedSymbol.noteLength", Integer.toString(replacedSymbol.noteLength));
-                        if (tempBarLength <= maxBarLength) {
-                            // set note to noteList
-                            barLength = tempBarLength;
-                            itr.set(notation.new NoteFont(currentNote));
-                            // set note to constructed melody
-                            mfAdapter = notation.new MusicFontAdapter(currentNote);
-                            consMelody.addNote(mfAdapter.getMusicNote(), mfAdapter.getNoteDuration(), melodyPosition);
-                        } else {
-                            currentNote = replacedSymbol;
-                        }
-                        Log.d("BarLength, after", Integer.toString(barLength));
-                         */
-
                         // Double check the note
                         //Log.d("NoteList", currentNote.symbol.toString() + " " + Integer.toString(currentNote.lineNum));
 
@@ -601,6 +570,7 @@ public class MelodyActivity extends AppCompatActivity
     private void replaceElement(NoteFont nf, NoteFont replaced) {
         int tempBarLength = barLength + nf.noteLength - replaced.noteLength;
         int elementLength = 0;
+        int offset = melodyPosition;
 
         Log.d("replace Element", "Attempt: " + replaced.toString() + " to " + nf.toString());
 
@@ -632,6 +602,7 @@ public class MelodyActivity extends AppCompatActivity
                         itr.next();
                         itr.removeThenBefore();
                     }
+
                 } else {
                     replaceable = false;
                     Log.d("replace Element", "did not replace");
@@ -642,7 +613,6 @@ public class MelodyActivity extends AppCompatActivity
                 Log.d("replace Element", "big to small");
                 NoteFont temp;
                 elementLength = nf.noteLength;
-                int offset = melodyPosition;
 
                 itr.set(notation.new NoteFont(nf));
 
@@ -667,26 +637,16 @@ public class MelodyActivity extends AppCompatActivity
                     // insert into noteList
                     itr.insertAfter(temp);
                     elementLength += temp.noteLength;
-
-                    /*
-                    // insert element to constructed melody
-                    mfAdapter = notation.new MusicFontAdapter(temp);
-                    if (Notation.Syntax.REST.contains(temp.symbol)) {
-                        Log.d("replace element adapter duration", mfAdapter.getNoteDuration().toString());
-                        consMelody.addRest(mfAdapter.getNoteDuration(), offset);
-                        Log.d("ConsMelody", "position " + offset + ", element " + consMelody.getElement(offset).toString());
-                    }
-                     */
-
                 }
 
+                /*
                 int offset2 = melodyPosition;
                 // insert elements to constructed melody
                 while (offset > offset2) {
                     itr.next();
                     offset2++;
                     mfAdapter = notation.new MusicFontAdapter((NoteFont) itr.get());
-                    Log.d("replace element adapter duration", mfAdapter.getNoteDuration().toString());
+                    //Log.d("replace element adapter duration", mfAdapter.getNoteDuration().toString());
                     consMelody.addRest(mfAdapter.getNoteDuration(), offset2);
                     Log.d("ConsMelody", "position " + offset2 + ", element " + consMelody.getElement(offset2).toString());
                 }
@@ -694,12 +654,12 @@ public class MelodyActivity extends AppCompatActivity
                 for (; offset2 > 0; offset2--) {
                     itr.previous();
                 }
-
+                 */
             } else {
                 Log.d("replace Element", "same size");
                 itr.set(notation.new NoteFont(nf));
             }
-            if (replaceable) {
+            if (replaceable) { // when adding notes, must be done chronologically
                 // set element to constructed melody
                 mfAdapter = notation.new MusicFontAdapter(nf);
                 if (Notation.Syntax.REST.contains(nf.symbol)) {
@@ -707,7 +667,25 @@ public class MelodyActivity extends AppCompatActivity
                 } else if (Notation.Syntax.NOTE.contains(nf.symbol)) {
                     consMelody.addNote(mfAdapter.getMusicNote(), mfAdapter.getNoteDuration(), melodyPosition);
                 }
-                Log.d("ConsMelody", consMelody.getElement(melodyPosition).toString());
+                //Log.d("ConsMelody", consMelody.getElement(melodyPosition).toString());
+                Log.d("ConsMelody", "position " + melodyPosition + ", element " +
+                        consMelody.getElement(melodyPosition).toString());
+
+                // insert rests to constructed melody
+                int offset2 = melodyPosition;
+                while (offset > offset2) {
+                    itr.next();
+                    offset2++;
+                    mfAdapter = notation.new MusicFontAdapter((NoteFont) itr.get());
+                    //Log.d("replace element adapter duration", mfAdapter.getNoteDuration().toString());
+                    Log.d("ConsMelody b4", "position " + offset2 + ", element " + consMelody.getElement(offset2).toString());
+                    consMelody.addRest(mfAdapter.getNoteDuration(), offset2);
+                    Log.d("ConsMelody", "position " + offset2 + ", element " + consMelody.getElement(offset2).toString());
+                }
+                // reset iterator
+                for (; offset2 > melodyPosition; offset2--) {
+                    itr.previous();
+                }
             }
         }
     }
@@ -779,6 +757,7 @@ public class MelodyActivity extends AppCompatActivity
     /**
      * Temporary method to construct melody
      */
+    /*
     private void toConstructedMelody() {
         ConstructedMelody constructedMelody = new ConstructedMelody(session);
         constructedMelody.startRecording();
@@ -802,6 +781,7 @@ public class MelodyActivity extends AppCompatActivity
         constructedMelody.play();
         constructedMelody.stopRecording();
     }
+     */
 
     @Override
     protected void onResume() {
