@@ -278,20 +278,28 @@ public class ConstructedMelody extends Melody {
 	*/
     /*
     you can return an array, or arraylist or list...
-    // getNextMeasure:
-    // reads from the mMelodyElements from session,
+    // getMeasure:
+    // reads from the mMelodyElements from session starting from mElementIndex,
     //  builds an array of strings (melody elements) such that their note duration sums up to 1 whole note
     //    If in the instance that when reading the next element, the sum is more than a whole note,
-    //    then return the array without the next element. the array can be empty.
+    //    return the array without the next element. Also, the array can be empty.
     //  then returns that array
-    public String[] getNextMeasure()
+     */
+    public String[] getMeasure() {
+        int measureSize = 0;
+
+
+        return new String[]{};
+    }
+
+    // Calculates and sets the mElementIndex for the starting point of the next measure
+    public void nextMeasure()
     {
         mSession.mMelodyElements.get(mElementIndex);
     }
 
-     */
-    // Same as getNextMeasure except you're going backwards in the list.
-    // String[] getPreviousMeasure()
+    // Same as nextMeasure except you're going backwards in the list.
+    // public void previousMeasure()
 
     /**
      * Encodes the given note as a String
