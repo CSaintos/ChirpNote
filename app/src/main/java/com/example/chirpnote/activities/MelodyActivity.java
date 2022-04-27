@@ -229,7 +229,9 @@ public class MelodyActivity extends AppCompatActivity
                 // TODO print more descriptive list
                 for (String str : consMelody.getMeasure()) {
                     Notation.MelodyElement me = consMelody.decodeElement(str);
-                    Log.d("getConstructedMeasure", me.noteDuration.toString());
+                    Notation.MusicFontAdapter mf = notation.new MusicFontAdapter(me.musicNote, me.noteDuration);
+                    Notation.NoteFont nf = mf.getNoteFont();
+                    Log.d("getConstructedMeasure", nf.toString());
                 }
             }
         });

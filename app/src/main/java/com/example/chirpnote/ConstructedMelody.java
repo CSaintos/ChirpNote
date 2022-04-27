@@ -11,6 +11,7 @@ import com.example.chirpnote.Notation.MusicFontAdapter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ConstructedMelody extends Melody {
@@ -27,7 +28,7 @@ public class ConstructedMelody extends Melody {
     private HashMap<NoteDuration, Integer> mNoteDurations;
     public final static Notation notation = new Notation(); // for getElement
     public final static int CHANNEL = 2;
-    public int mElementIndex = -1;
+    public int mElementIndex = 0;
 
     /**
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
@@ -139,6 +140,7 @@ public class ConstructedMelody extends Melody {
     }
 
     /**
+     * Temporary method used for testing
      * Get's the melody element given the position
      * @param position int index
      * @return NotFont representation of the element
@@ -286,12 +288,30 @@ public class ConstructedMelody extends Melody {
     //    return the array without the next element. Also, the array can be empty.
     //  then returns that array
      */
+
     public String[] getMeasure() {
+        ArrayList<String> measure = new ArrayList<>();
         int measureDuration = 0;
+        int index = mElementIndex;
+        boolean val = true;
 
+        if (mSession.mMelodyElements.size() == 0) {
+            return new String[0];
+        }
 
-
-        return new String[]{};
+        while (measureDuration < 32 && val) {
+            String encodedElement = mSession.mMelodyElements.get(index);
+            Notation.MelodyElement me = decodeElement(encodedElement);
+            measureDuration += me.getDurationValue();
+            if (measureDuration > 32) {
+                val = false;
+                //measureDuration -= me.getDurationValue();
+            } else {
+                measure.add(encodedElement);
+            }
+            index++;
+        }
+        return measure.toArray(new String[0]);
     }
 
     // Calculates and sets the mElementIndex for the starting point of the next measure

@@ -137,6 +137,31 @@ public class Notation {
             this.velTick[0] = velTick[0];
             this.velTick[1] = velTick[1];
         }
+
+        public int getDurationValue() {
+            int i = 1;
+            switch (noteDuration) {
+                case WHOLE_NOTE:
+                    i = 32;
+                    break;
+                case HALF_NOTE:
+                    i = 16;
+                    break;
+                case QUARTER_NOTE:
+                    i = 8;
+                    break;
+                case EIGHTH_NOTE:
+                    i = 4;
+                    break;
+                case SIXTEENTH_NOTE:
+                    i = 2;
+                    break;
+                case THIRTY_SECOND_NOTE:
+                    i = 1;
+                    break;
+            }
+            return i;
+        }
     }
 
     /**
