@@ -279,23 +279,20 @@ public class ConstructedMelody extends Melody {
 	                        2^5        2^4      2^3           2^2        2^1            2^0
 	char 7 to last char: note tick (the position of the note in the melody, in terms of MIDI ticks for the MIDI file)
 	*/
-    /*
-    you can return an array, or arraylist or list...
-    // getMeasure:
-    // reads from the mMelodyElements from session starting from mElementIndex,
-    //  builds an array of strings (melody elements) such that their note duration sums up to 1 whole note
-    //    If in the instance that when reading the next element, the sum is more than a whole note,
-    //    return the array without the next element. Also, the array can be empty.
-    //  then returns that array
-     */
 
+    /**
+     * getMeasure
+     * Reads from mMelodyElements from session starting from mElementIndex
+     * and constructs a measure
+     * @return encoded melody string[] equivalent to a measure
+     */
     public String[] getMeasure() {
         ArrayList<String> measure = new ArrayList<>();
         int measureDuration = 0;
         int index = mElementIndex;
         boolean val = true;
 
-        if (mSession.mMelodyElements.size() == 0) {
+        if (mSession.mMelodyElements.size() == 0) { // this would be an error
             return new String[0];
         }
 
@@ -305,7 +302,6 @@ public class ConstructedMelody extends Melody {
             measureDuration += me.getDurationValue();
             if (measureDuration > 32) {
                 val = false;
-                //measureDuration -= me.getDurationValue();
             } else {
                 measure.add(encodedElement);
             }
@@ -314,15 +310,22 @@ public class ConstructedMelody extends Melody {
         return measure.toArray(new String[0]);
     }
 
-    // Calculates and sets the mElementIndex for the starting point of the next measure
     public void nextMeasure()
     {
-        if (mSession.mMelodyElements.size() > 0)
-        mSession.mMelodyElements.get(mElementIndex);
+        int index = mElementIndex;
+        index += getMeasure().length;
+        if (mSession.mMelodyElements.size() > index) {
+            mElementIndex = index;
+        }
     }
 
-    // Same as nextMeasure except you're going backwards in the list.
-    // public void previousMeasure()
+    public void previousMeasure() {
+        int index = mElementIndex;
+        index -= getMeasure().length;
+        if (index >= 0) {
+            mElementIndex = index;
+        }
+    }
 
     /**
      * Encodes the given note as a String

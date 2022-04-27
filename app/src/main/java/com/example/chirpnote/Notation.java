@@ -304,6 +304,27 @@ public class Notation {
                         break;
                 }
             }
+
+            switch(this.nd) {
+                case WHOLE_NOTE:
+                    nf.noteLength = 32;
+                    break;
+                case HALF_NOTE:
+                    nf.noteLength = 16;
+                    break;
+                case QUARTER_NOTE:
+                    nf.noteLength = 8;
+                    break;
+                case EIGHTH_NOTE:
+                    nf.noteLength = 4;
+                    break;
+                case SIXTEENTH_NOTE:
+                    nf.noteLength = 2;
+                    break;
+                case THIRTY_SECOND_NOTE:
+                    nf.noteLength = 1;
+                    break;
+            }
         }
 
         public NoteFont getNoteFont() {
