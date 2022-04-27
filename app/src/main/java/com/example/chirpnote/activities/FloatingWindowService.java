@@ -16,10 +16,10 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
-import com.example.chirpnote.ChirpNoteSession;
 
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -72,7 +72,11 @@ public class FloatingWindowService extends Service
 //        floatView = (ViewGroup) inflater.inflate(R.layout.floating_layout, null);
         floatView = (ViewGroup) inflater.inflate(R.layout.activity_test_floating_window, null);
 
+        // TODO: need to find a way to access intent so as to use they updated key in this activity
         ChirpNoteSession session = new ChirpNoteSession("Session1", new Key(Key.RootNote.G, Key.Type.MAJOR), 120);
+//        ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+//        ChirpNoteSession session = (ChirpNoteSession) intent.getExtras().get("session");
+
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
         pianoKeys = new ArrayList<>(); // List of notes
 

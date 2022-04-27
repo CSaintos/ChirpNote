@@ -52,7 +52,7 @@ public class KeyboardActivity extends AppCompatActivity
     private ArrayList<MusicNote> flatKeys;
     RealTimeMelody melody;
 
-    private ArrayList<MusicNote> keyButtons;
+
 
     private Button minimizeBtn;
     private AlertDialog dialog;
@@ -62,6 +62,7 @@ public class KeyboardActivity extends AppCompatActivity
     private String keyNameChoice;
     private String keyTypeChoice;
     private Key currentKey;
+    private ArrayList<MusicNote> keyButtons;
 
     private DrawerLayout drawer;
 
@@ -149,38 +150,42 @@ public class KeyboardActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
-                {
-                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
-                    Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
+                Intent intent = new Intent(KeyboardActivity.this, SetKeyActivity.class);
+                intent.putExtra("SessionFreePlay", session);
+                startActivity(intent);
 
-                    session.setKey(new Key(newRootNote, newKeyType));
-//                    initializeKeys(session);
-                    keyButtons = new ArrayList<>();
-                    currentKey = session.getKey(); // gets the key set when session was initialized
-                    for (int i = 0; i < currentKey.getScaleNotes().length; i++)
-                    {
-                        // TODO: Think of a better way to do this
-                        int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
-                        if (keyButtons.contains(pianoKeys.get(0))) // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
-                        {
+//                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
+//                {
+//                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
+//                }
+//                else
+//                {
+//                    Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
+//                    Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
 //
-                            keyButtons.add(pianoKeys.get(12));
-                        }
-                        /** arraylist of all chords that belong to the current key based on the type of chord
-                         * it takes in the root note of the chord and type of chord
-                         */
-//            keyButtons.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i]));
-                        keyButtons.add(pianoKeys.get(rootIdx));
-                    }
-
-                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
-                }
-//                eventListener(pianoKeys);
+//                    session.setKey(new Key(newRootNote, newKeyType));
+////                    initializeKeys(session);
+//                    keyButtons = new ArrayList<>();
+//                    currentKey = session.getKey(); // gets the key set when session was initialized
+//                    for (int i = 0; i < currentKey.getScaleNotes().length; i++)
+//                    {
+//                        // TODO: Think of a better way to do this
+//                        int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
+//                        if (keyButtons.contains(pianoKeys.get(0))) // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
+//                        {
+////
+//                            keyButtons.add(pianoKeys.get(12));
+//                        }
+//                        /** arraylist of all chords that belong to the current key based on the type of chord
+//                         * it takes in the root note of the chord and type of chord
+//                         */
+////            keyButtons.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i]));
+//                        keyButtons.add(pianoKeys.get(rootIdx));
+//                    }
+//
+//                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
+//                }
+////                eventListener(pianoKeys);
             }
         });
 
@@ -232,7 +237,15 @@ public class KeyboardActivity extends AppCompatActivity
                 // 'Display over other apps' permission in given
                 if (checkOverlayDisplayPermission()) {
                     // FloatingWindowService service is started
-                    startService(new Intent(KeyboardActivity.this, FloatingWindowService.class));
+//                    Intent intent = new Intent(KeyboardActivity.this, FloatingWindowService.class);
+//                    intent.putExtra("session", session);
+//                    startService(intent);
+
+                    Intent intent = new Intent(KeyboardActivity.this, FloatingWindowService.class);
+                    intent.putExtra("session", session);
+                    startService(intent);
+
+
                     // The MainActivity closes here
                     finish();
                 } else {

@@ -31,10 +31,10 @@
         </provider>
 
         <activity
-            android:name=".activities.TestTrackPersistenceActivity"
+            android:name=".activities.SetKeyActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SetKeyActivity"
+            android:name=".activities.TestTrackPersistenceActivity"
             android:exported="false" />
         <activity
             android:name=".activities.SessionActivity"

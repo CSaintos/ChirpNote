@@ -1,6 +1,7 @@
 package com.example.chirpnote.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.KeyEvent;
@@ -51,13 +52,13 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
         //flag to check if the activity came from the right place
-//        Intent intent = getIntent();
-//        String checkFlag = intent.getStringExtra("flag");
-//        if (checkFlag.equals("A")){
-//            flag = true;
-//        }
-//        else
-//            flag = false;
+        Intent intent = getIntent();
+        String checkFlag = intent.getStringExtra("flag");
+        if (checkFlag.equals("fromSetKeyActivity")){
+            flag = true;
+        }
+        else
+            flag = false;
         songArrayList.clear();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key_from_song);
