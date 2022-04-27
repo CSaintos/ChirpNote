@@ -1,7 +1,11 @@
 package com.example.chirpnote;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Environment;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +16,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.example.midiFileLib.src.event.meta.Text;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -34,6 +46,8 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
 
     private Context mContext;
     private int mResource;
+    final Handler handler = new Handler();
+
 
 
     public SongListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<queryResult> objects) {
@@ -55,39 +69,59 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
         ImageLoader.getInstance().init(config);
         ImageLoader imageLoader = ImageLoader.getInstance();
         String queryJsonPre = getItem(position).getImage();
-        File text = new File("text.json");
-
+        File text = new File(mContext.getFilesDir() + "/" + getItem(position).getSongArtist() + "_text.json");
+        try {
+            text.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         new Thread(new Runnable() {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void run() {
         try {
-            System.out.println(text.getPath());
-            Gson gson = new Gson();
             URL queryURL = new URL(queryJsonPre);
             FileUtils.copyURLToFile(queryURL,text);
-            System.out.println(text.getPath());
-            Reader reader = Files.newBufferedReader(Paths.get("text.json"));
-            Map<?, ?> map = gson.fromJson(reader, Map.class);
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                System.out.println(entry.getKey() + "=" + entry.getValue());
+            JsonElement searchRootElement = null;
+            try {
+                searchRootElement = new JsonParser().parse(new FileReader(text));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-            reader.close();
+            JsonObject searchRootObject = searchRootElement.getAsJsonObject();
 
+            if (!searchRootElement.getAsJsonObject().isJsonObject() || searchRootObject.size() == 0 || searchRootObject.getAsJsonArray("results").isEmpty()){
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setImageDrawable(AppCompatResources.getDrawable(mContext,R.drawable.chirpnote_temp_icon));
+                        mContext.deleteFile(text.getName());
+                    }
+                });
+            }
+            else {
+                String songImg = searchRootObject.getAsJsonArray("results").get(0).getAsJsonObject().get("artworkUrl100").getAsString();
+                imageLoader.loadImage(songImg, new SimpleImageLoadingListener(){
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        super.onLoadingComplete(imageUri, view, loadedImage);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageBitmap(loadedImage);
+                                mContext.deleteFile(text.getName());
+                            }
+                        });
+                    }
+                });
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-}).start();
-//        JsonElement searchRootElement = JsonParser.parseString();
-//        JsonObject searchRootObject = searchRootElement.getAsJsonObject();
-//
-//
-//        String songImg = searchRootObject.getAsJsonArray("results").get(0).getAsJsonObject().get("artworkUrl60").getAsString();
-        String songImg = "https://i.imgur.com/TXoM8gQ.png";
-        imageLoader.displayImage(songImg,imageView);
+        }).start();
         textView.setText(getItem(position).getSongTitle());
         songArtistView.setText(getItem(position).getSongArtist());
         songKeyView.setText(getItem(position).getSongKey());

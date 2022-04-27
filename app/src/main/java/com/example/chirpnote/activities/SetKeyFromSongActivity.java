@@ -87,6 +87,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
              */
             public void onClick(View v) {
                 songArrayList.clear();
+                songArrayListFinished.clear();
                 searchButton.setText("Searching");
                 EditText query = (EditText) findViewById(R.id.editSongQuery);
                 String songQueryString = query.getText().toString();
@@ -151,7 +152,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             //shows the key that has been set on click
-            Toast.makeText(SetKeyFromSongActivity.this, "Session Key Set to " + songArrayList.get(position).substring(songArrayList.get(position).lastIndexOf(" ") + 1).replace("m"," Minor"),Toast.LENGTH_SHORT).show();
+            Toast.makeText(SetKeyFromSongActivity.this, "Session Key Set to " + songArrayListFinished.get(position).getSongKey(),Toast.LENGTH_SHORT).show();
             //TODO set the key in session, need to find ways to link of current session
             if (flag == true)
                 System.out.println("yes");

@@ -11,7 +11,7 @@ public class queryResult {
         this.songTitle = information;
         this.songArtist = songArtist;
         this.songKey = songKey;
-        this.image = "https://itunes.apple.com/search?term=" + image.replaceAll(" ", "+") + "&limit=1";
+        this.image = "https://itunes.apple.com/search?term=" + image.replaceAll(" ", "+").replaceAll("\n","") + "&limit=1";
     }
 
     public String getImage() {
