@@ -46,16 +46,29 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
 
     private Context mContext;
     private int mResource;
+    //handler to launch things on main thread where required
     final Handler handler = new Handler();
 
 
-
+    /**
+     * A SongListAdapter
+     * @param context the context
+     * @param resource the resource
+     * @param objects the related objects
+     */
     public SongListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<queryResult> objects) {
         super(context, resource, objects);
         this.mContext = context;
         this.mResource = resource;
     }
 
+    /**
+     * Recieve the packaged view in the listview context per item
+     * @param position the current item
+     * @param convertView the packaged view
+     * @param parent the parent context
+     * @return the packaged view
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -75,6 +88,10 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        /*
+         * This thread does a bulk of the work related to network required commands, which is why it
+         * loads in data asynchronously for the images. It's best to just let it work when it does.
+         */
         new Thread(new Runnable() {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -89,7 +106,9 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
                 e.printStackTrace();
             }
             JsonObject searchRootObject = searchRootElement.getAsJsonObject();
-
+            /*
+            Avoid crashes related to esoteric results.
+            */
             if (!searchRootElement.getAsJsonObject().isJsonObject() || searchRootObject.size() == 0 || searchRootObject.getAsJsonArray("results").isEmpty()){
                 handler.post(new Runnable() {
                     @Override
@@ -103,6 +122,9 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
                 String songImg = searchRootObject.getAsJsonArray("results").get(0).getAsJsonObject().get("artworkUrl100").getAsString();
                 imageLoader.loadImage(songImg, new SimpleImageLoadingListener(){
                     @Override
+                    /*
+                     * this listener is for the image loading process that works with a url
+                     */
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         super.onLoadingComplete(imageUri, view, loadedImage);
                         handler.post(new Runnable() {
@@ -122,6 +144,9 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
         }
     }
         }).start();
+        /*
+        Set all the rest of the elements before packaginng the view back to the listview
+         */
         textView.setText(getItem(position).getSongTitle());
         songArtistView.setText(getItem(position).getSongArtist());
         songKeyView.setText(getItem(position).getSongKey());
