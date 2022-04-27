@@ -1,6 +1,7 @@
 package com.example.chirpnote.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.KeyEvent;
