@@ -1,13 +1,11 @@
 package com.example.chirpnote.activities;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -109,8 +107,18 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                                 }}
                             songArrayList.removeAll(removelist);
                             for (String song:songArrayList){
-                                String sub = StringUtils.substringBetween(song,"Song: ","Key:");
-                                songArrayListFinished.add(new queryResult(song, sub ));
+                                String songTitle = StringUtils.substringBetween(song,"Song: "," by");
+                                String songArtist = StringUtils.substringBetween(song,"by ", "\nKey:");
+                                String songKey = StringUtils.substringBetween(song,"Key: ","|").replace("m", " Minor");
+                                if (!songKey.contains("Minor")){
+                                    songKey = songKey + " Major";
+                                }
+                                String songQuery = StringUtils.substringBetween(song,"Song: ", "Key:");
+                                System.out.println(songTitle);
+                                System.out.println(songArtist);
+                                System.out.println(songKey);
+                                System.out.println(songQuery);
+                                songArrayListFinished.add(new queryResult(songTitle, songArtist, songKey, songQuery));
                             }
                             progressDialog.dismiss();
                             //update the ListView
@@ -266,7 +274,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         String songArtist = songRootObject.getAsJsonObject("song").getAsJsonObject("artist").get("name").getAsString();
         //includes unicode replacement for sharp symbol
         String songKey = songRootObject.getAsJsonObject("song").get("key_of").getAsString().replaceAll("\\u266f", "#");
-        return ("\nSong: " + songName + " by " + songArtist + "\nKey: " + songKey);
+        return ("\nSong: " + songName + " by " + songArtist + "\nKey: " + songKey + "|");
     }
 
     /***

@@ -1,10 +1,7 @@
 package com.example.chirpnote;
 
-import android.app.Application;
 import android.content.Context;
-import android.media.Image;
 import android.os.Build;
-import android.util.JsonReader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +13,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.example.chirpnote.activities.SetKeyFromSongActivity;
+import com.example.midiFileLib.src.event.meta.Text;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -59,6 +49,8 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
         convertView = layoutInflater.inflate(mResource,parent,false);
         ImageView imageView = convertView.findViewById(R.id.SongImageItem);
         TextView textView = convertView.findViewById(R.id.SongText);
+        TextView songArtistView = convertView.findViewById(R.id.SongArtistText);
+        TextView songKeyView = convertView.findViewById(R.id.SongKeyText);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(mContext).build();
         ImageLoader.getInstance().init(config);
         ImageLoader imageLoader = ImageLoader.getInstance();
@@ -96,7 +88,10 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
 //        String songImg = searchRootObject.getAsJsonArray("results").get(0).getAsJsonObject().get("artworkUrl60").getAsString();
         String songImg = "https://i.imgur.com/TXoM8gQ.png";
         imageLoader.displayImage(songImg,imageView);
-        textView.setText(getItem(position).getInformation());
+        textView.setText(getItem(position).getSongTitle());
+        songArtistView.setText(getItem(position).getSongArtist());
+        songKeyView.setText(getItem(position).getSongKey());
+
         return convertView;
     }
 }

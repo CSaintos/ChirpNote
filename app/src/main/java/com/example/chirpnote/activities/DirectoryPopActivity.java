@@ -94,7 +94,7 @@ public class DirectoryPopActivity extends Activity {
 
     private void previewAudio(File exportFile) throws IOException {
         //method for previewing audio
-    }
+    }   
 
     public void traverseAndAdd (File dir) {
         if (dir.exists()) {

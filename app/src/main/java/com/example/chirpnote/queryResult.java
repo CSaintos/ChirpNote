@@ -2,11 +2,15 @@ package com.example.chirpnote;
 
 public class queryResult {
 
-    private String information;
+    private String songTitle;
+    private String songArtist;
+    private String songKey;
     private String image;
 
-    public queryResult(String information, String image) {
-        this.information = information;
+    public queryResult(String information, String songArtist, String songKey, String image) {
+        this.songTitle = information;
+        this.songArtist = songArtist;
+        this.songKey = songKey;
         this.image = "https://itunes.apple.com/search?term=" + image.replaceAll(" ", "+") + "&limit=1";
     }
 
@@ -14,7 +18,11 @@ public class queryResult {
         return image;
     }
 
-    public String getInformation() {
-        return information;
+    public String getSongArtist() { return songArtist; }
+
+    public String getSongKey() {return songKey; }
+
+    public String getSongTitle() {
+        return songTitle;
     }
 }

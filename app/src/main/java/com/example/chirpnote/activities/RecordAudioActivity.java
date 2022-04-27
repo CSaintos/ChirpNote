@@ -9,6 +9,7 @@ import android.icu.text.AlphabeticIndex;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.view.View;
@@ -46,6 +47,9 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -242,17 +246,18 @@ public class RecordAudioActivity extends AppCompatActivity {
                 ExportHelper.shareFile(context,audioFile);
             }
         });
-//    exportButton.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            System.out.println("find this");
-//
-//
-//
-//
-//
-//        }
-//    });
+    exportButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            System.out.println("find this");
+            try {
+                new ZipFile(getFilesDir() + "/audio.zip").addFolder(new File(getFilesDir() + "/Session/"));
+            } catch (ZipException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(RecordAudioActivity.this,"Directory zipped",Toast.LENGTH_SHORT).show();
+        }
+    });
         directoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,21 +3,50 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:padding="16dp">
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/SongImageItem"
         android:layout_width="60dp"
-        android:layout_height="60dp"/>
+        android:layout_height="60dp" />
+
     <TextView
         android:id="@+id/SongText"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/SongImageItem"
         android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/SongImageItem"
         android:text="Song Information"
-        style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/SongArtistText"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/SongText"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@id/SongImageItem"
+        android:fontFamily="sans-serif-light"
+        android:text="song Artist"
+        android:textColor="@color/material_on_background_emphasis_high_type"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/SongKeyText"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/SongArtistText"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="sans-serif-light"
+        android:text="song Key"
+        android:textColor="@color/material_on_background_emphasis_high_type"
+        android:textSize="14sp" />
 
 
-    
 </RelativeLayout>
