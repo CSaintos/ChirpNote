@@ -151,6 +151,7 @@ public class KeyboardActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 Intent intent = new Intent(KeyboardActivity.this, SetKeyActivity.class);
+                intent.putExtra("flag", "fromKeyboardActivity");
                 intent.putExtra("SessionFreePlay", session);
                 startActivity(intent);
 

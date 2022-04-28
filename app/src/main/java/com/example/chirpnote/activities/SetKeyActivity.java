@@ -51,23 +51,25 @@ public class SetKeyActivity extends AppCompatActivity {
         {
 //            String intentName = intent.getComponent().getClassName(); // intentName = com.example.chirpnote.activities.SetKeyActivity <- WRONG NAME
 //            System.out.println("================================================================================== intentName = " + intentName);
-            String intentName = getIntent().getType(); // doesn't work
+            String intentName = intent.getType(); // doesn't work
             System.out.println("================================================================================== intentName = " + intentName);
 
             //TODO: Need to find a way to get the name of setkeyfromsong so that i can use the passed in string array to set the key
 
-            if (intentName != null && intentName.equals("fromSetKeyFromSong"))
+
+//            if (intentName != null && intentName.equals("fromSetKeyFromSong"))
+            if (intent.getStringExtra("flag").equals("setKeyFromSongActivity"))
             {
-                String[] checkFlag = (String[]) intent.getSerializableExtra("fromSetKeyFromSong"); // str[0] = keyname, str[1] = keytype
-                keyNameChoice = checkFlag[0]; // e.g. C
-                keyTypeChoice = checkFlag[1]; // e.g. Major
+                String[] keyArray = (String[]) intent.getSerializableExtra("keyArray"); // str[0] = keyname, str[1] = keytype
+                keyNameChoice = keyArray[0]; // e.g. C
+                keyTypeChoice = keyArray[1]; // e.g. Major
 
                 int keyNamePosition = keyNameAdapter.getPosition(keyNameChoice);
                 keyNameSpinner.setSelection(keyNamePosition);
                 int keyTypePosition = keyNameAdapter.getPosition(keyTypeChoice);
                 keyTypeSpinner.setSelection(keyTypePosition);
             }
-            else// if (intentName != null && intentName.equals("SessionFreePlay"))
+            else if (intent.getStringExtra("flag").equals("fromKeyboardActivity"))
             {
                 session = (ChirpNoteSession) getIntent().getSerializableExtra("SessionFreePlay"); // coming from keyboard activity
                 System.out.println("key = " + session.getKey().toString());
