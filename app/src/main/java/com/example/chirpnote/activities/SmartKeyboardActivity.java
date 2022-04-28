@@ -49,7 +49,32 @@ public class SmartKeyboardActivity extends AppCompatActivity {
 
         ChirpNoteSession session = new ChirpNoteSession("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
 
+        initializeKeys(session); // replaces bottom comments
+//        pianoKeys = new ArrayList<>(); // List of MusicNotes
+//        int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
+//
+//        View[] keys = new View[]{findViewById(R.id.key1), findViewById(R.id.key2), findViewById(R.id.key3), findViewById(R.id.key4),
+//                findViewById(R.id.key5), findViewById(R.id.key6), findViewById(R.id.key7), findViewById(R.id.key8)};
+//
+//        for(int i = 0; i < keys.length; i++){
+//            pianoKeys.add(new MusicNote(notes[i], (Button) keys[i], melody));
+//        }
 
+        eventListener(pianoKeys); // replaces bottom comments
+        //        // Setup event listener for each piano key
+//        for(MusicNote note : pianoKeys){
+//            note.getButton().setOnTouchListener(new OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+//                        note.play();
+//                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//                        note.stop();
+//                    }
+//                    return true;
+//                }
+//            });
+//        }
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
@@ -96,17 +121,6 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         });
 
 
-//        keyNameSpinner.setOnClickListener(new OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-////                View currentView = getLayoutInflater().inflate(R.layout.activity_smart_keyboard, null, false);
-////                AppCompatSpinner keyTypeSpinner = (AppCompatSpinner)currentView.findViewById(R.id.spinner_key_type);
-//            }
-//        });
-
-
 
         /** Allows the user to switch between keys whenever they want */
         Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
@@ -139,15 +153,8 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
-        pianoKeys = new ArrayList<>(); // List of MusicNotes
-        int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
 
-        View[] keys = new View[]{findViewById(R.id.key1), findViewById(R.id.key2), findViewById(R.id.key3), findViewById(R.id.key4),
-                findViewById(R.id.key5), findViewById(R.id.key6), findViewById(R.id.key7), findViewById(R.id.key8)};
 
-        for(int i = 0; i < keys.length; i++){
-            pianoKeys.add(new MusicNote(notes[i], (Button) keys[i], melody));
-        }
 
         // Event listener for record button (to record melody)
         recordButton.setOnClickListener(new OnClickListener() {
@@ -177,20 +184,8 @@ public class SmartKeyboardActivity extends AppCompatActivity {
             }
         });
 
-        // Setup event listener for each piano key
-        for(MusicNote note : pianoKeys){
-            note.getButton().setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.play();
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stop();
-                    }
-                    return true;
-                }
-            });
-        }
+
+
     }
 
     private void eventListener(ArrayList<MusicNote> pianoKeys)
