@@ -1,13 +1,21 @@
 package com.example.chirpnote;
 
+import android.util.Log;
+
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.event.NoteOn;
 
+import com.example.chirpnote.Notation.NoteFont;
+import com.example.chirpnote.Notation.MelodyElement;
+import com.example.chirpnote.Notation.MusicFontAdapter;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ConstructedMelody extends Melody {
+
     // Durations for notes
     public enum NoteDuration {
         WHOLE_NOTE,
@@ -18,7 +26,9 @@ public class ConstructedMelody extends Melody {
         THIRTY_SECOND_NOTE,
     }
     private HashMap<NoteDuration, Integer> mNoteDurations;
+    public final static Notation notation = new Notation(); // for getElement
     public final static int CHANNEL = 2;
+    public int mElementIndex = 0;
 
     /**
      * A MIDI melody which is recorded (constructed) by adding notes from the UI
@@ -130,6 +140,24 @@ public class ConstructedMelody extends Melody {
     }
 
     /**
+     * Temporary method used for testing
+     * Get's the melody element given the position
+     * @param position int index
+     * @return NotFont representation of the element
+     */
+    public NoteFont getElement(int position) {
+        NoteFont nf = notation.new NoteFont();
+        MusicFontAdapter mfAdapter;
+        if (position < mSession.mMelodyElements.size()) {
+            System.out.println(mSession.mMelodyElements.get(position));
+            MelodyElement me = decodeElement(mSession.mMelodyElements.get(position));
+            mfAdapter = notation.new MusicFontAdapter(me.musicNote, me.noteDuration);
+            nf = mfAdapter.getNoteFont();
+        }
+        return nf;
+    }
+
+    /**
      * Gets the length of the given NoteDuration in MIDI ticks
      * @param duration The duration to compute the ticks of
      * @return The duration's MIDI ticks
@@ -214,13 +242,117 @@ public class ConstructedMelody extends Melody {
         }
     }
 
+    /**
+     * Decodes a Melody Element String into a MelodyElement struct and returns it.
+     * The struct can be used to access any attributes that is stored within a melody element, ex:
+     *   melodyElement.musicNote; // retrieves the MusicNote variable
+     *   melodyElement.noteDuration; // retrieves the NoteDuration variable
+     *   melodyElement.velTick; // retrieves the velocity, tick array pair
+     *
+     * @param element melody element string representation
+     * @return MelodyElement struct
+     */
+    public MelodyElement decodeElement(String element) {
+        MelodyElement me = notation.new MelodyElement();
+        //Log.d("Decode element length", ""+element.length());
+
+        if (element.length() >= 8) {
+            try {
+                //Log.d("Decode", ""+element.charAt(6));
+                NoteDuration noteDuration = NoteDuration.values()[Character.getNumericValue(element.charAt(6))];
+                MusicNote musicNote = new MusicNote(Integer.parseInt(element.substring(0, 3)));
+                int[] velTick = {Integer.parseInt(element.substring(3, 6)), Character.getNumericValue(element.charAt(7))};
+
+                me = notation.new MelodyElement(musicNote, noteDuration, velTick);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return me;
+    }
+
     /*
 	The string encoding for melody elements (notes/rests) is defined as follows:
 	char 0-2: note MIDI number (range of 000-127, 128 if rest)
 	char 3-5: note velocity (range of 000-127)
 	char 6: note duration (0 = whole, 1 = half, 2 = quarter, 3 = eighth, 4 = sixteenth, 5 = thirty-second)
+	                        2^5        2^4      2^3           2^2        2^1            2^0
 	char 7 to last char: note tick (the position of the note in the melody, in terms of MIDI ticks for the MIDI file)
 	*/
+
+    /**
+     * getMeasure
+     * Reads from mMelodyElements from session starting from mElementIndex
+     * and constructs a measure
+     * @return encoded melody string[] equivalent to a measure
+     */
+    public String[] getMeasure() {
+        ArrayList<String> measure = new ArrayList<>();
+        int measureDuration = 0;
+        int index = mElementIndex;
+        boolean val = true;
+
+        if (mSession.mMelodyElements.size() == 0) { // this would be an error
+            return new String[0];
+        }
+
+        while (measureDuration < 32 && val) {
+            String encodedElement = mSession.mMelodyElements.get(index);
+            Notation.MelodyElement me = decodeElement(encodedElement);
+            measureDuration += me.getDurationValue();
+            if (measureDuration > 32) {
+                val = false;
+            } else {
+                measure.add(encodedElement);
+            }
+            index++;
+        }
+        return measure.toArray(new String[0]);
+    }
+
+    /**
+     *
+     */
+    public void nextMeasure()
+    {
+        int index = mElementIndex;
+        index += getMeasure().length;
+        if (mSession.mMelodyElements.size() > index) {
+            mElementIndex = index;
+        }
+    }
+
+    /**
+     *
+     */
+    public void previousMeasure() {
+        int measureDuration = 0;
+        int index = mElementIndex - 1;
+        boolean val = true;
+
+        if (index > 0) {
+            while (measureDuration < 32 && val) {
+                String encodedElement = mSession.mMelodyElements.get(index);
+                Notation.MelodyElement me = decodeElement(encodedElement);
+                measureDuration += me.getDurationValue();
+
+                if (measureDuration >= 32) {
+                    val = false;
+                } else {
+                    index--;
+                }
+            }
+            mElementIndex = index;
+        }
+    }
+
+    /**
+     * getElementIndex
+     * @return mElementIndex
+     */
+    public int getElementIndex() {
+        return mElementIndex;
+    }
 
     /**
      * Encodes the given note as a String

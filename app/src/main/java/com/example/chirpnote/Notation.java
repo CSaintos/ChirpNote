@@ -109,16 +109,73 @@ public class Notation {
         public NoteFont(NoteFont nf) {
             this(nf.symbol, nf.prefix, nf.suffix, nf.noteLength, nf.lineNum, nf.color);
         }
+
+        public String toString() {
+            return symbol.toString();
+        }
     }
 
     /**
-     *
+     * MelodyElement struct
+     * Encapsulates a melody element for Melody classes
+     */
+    public class MelodyElement {
+        public MusicNote musicNote;
+        public ConstructedMelody.NoteDuration noteDuration;
+        public int[] velTick;
+
+        public MelodyElement() {
+            musicNote = new MusicNote(60);
+            noteDuration = ConstructedMelody.NoteDuration.WHOLE_NOTE;
+            velTick = new int[]{1, 1};
+        }
+
+        public MelodyElement(MusicNote mn, ConstructedMelody.NoteDuration nd, int[] velTick) {
+            this.velTick = new int[2];
+            musicNote = mn;
+            noteDuration = nd;
+            this.velTick[0] = velTick[0];
+            this.velTick[1] = velTick[1];
+        }
+
+        public int getDurationValue() {
+            int i = 1;
+            switch (noteDuration) {
+                case WHOLE_NOTE:
+                    i = 32;
+                    break;
+                case HALF_NOTE:
+                    i = 16;
+                    break;
+                case QUARTER_NOTE:
+                    i = 8;
+                    break;
+                case EIGHTH_NOTE:
+                    i = 4;
+                    break;
+                case SIXTEENTH_NOTE:
+                    i = 2;
+                    break;
+                case THIRTY_SECOND_NOTE:
+                    i = 1;
+                    break;
+            }
+            return i;
+        }
+    }
+
+    /**
+     * MusicFontAdapter
+     * An assistant class to convert NoteFonts to durations and musicNotes
+     * Also works in vice versa, duration and musicNotes to NoteFonts
      */
     public class MusicFontAdapter {
         private MusicNote mn;
         private ConstructedMelody.NoteDuration nd;
+        private NoteFont nf;
 
         public MusicFontAdapter(NoteFont nf) {
+            this.nf = nf;
             int noteNumber = 60;
 
             if (Syntax.WHOLE.contains(nf.symbol)) {
@@ -135,7 +192,7 @@ public class Notation {
                 nd = ConstructedMelody.NoteDuration.THIRTY_SECOND_NOTE;
             }
 
-            switch (nf.lineNum) {
+            switch (this.nf.lineNum) {
                 case 1:
                     noteNumber = 60;
                     break;
@@ -158,11 +215,120 @@ public class Notation {
                     noteNumber = 71;
                     break;
             }
-            if (nf.prefix == Syntax.ACCIDENTAL_SHARP) {
+            if (this.nf.prefix == Syntax.ACCIDENTAL_SHARP) {
                 noteNumber++;
             }
 
+            if (Syntax.REST.contains(nf.symbol)) {
+                noteNumber = 128;
+            }
+
             mn = new MusicNote(noteNumber);
+        }
+
+        public MusicFontAdapter(MusicNote mn, ConstructedMelody.NoteDuration nd) {
+            this.mn = mn;
+            this.nd = nd;
+            this.nf = new NoteFont();
+
+            int noteNumber = this.mn.getNoteNumber();
+
+            switch (noteNumber) {
+                case 61:
+                case 63:
+                case 66:
+                case 68:
+                case 70:
+                case 72:
+                    this.nf.prefix = Syntax.ACCIDENTAL_SHARP;
+                    break;
+            }
+
+            if (60 == noteNumber || 61 == noteNumber) {
+                this.nf.lineNum = 1;
+            } else if (62 == noteNumber || 63 == noteNumber) {
+                this.nf.lineNum = 2;
+            } else if (64 == noteNumber) {
+                this.nf.lineNum = 3;
+            } else if (65 == noteNumber || 66 == noteNumber) {
+                this.nf.lineNum = 4;
+            } else if (67 == noteNumber || 68 == noteNumber) {
+                this.nf.lineNum = 5;
+            } else if (69 == noteNumber || 70 == noteNumber) {
+                this.nf.lineNum = 6;
+            } else {
+                this.nf.lineNum = 7;
+            }
+
+            if (128 == noteNumber) {
+                switch (this.nd) {
+                    case WHOLE_NOTE:
+                        this.nf.symbol = Syntax.REST_WHOLE;
+                        this.nf.lineNum = 9;
+                        break;
+                    case HALF_NOTE:
+                        this.nf.symbol = Syntax.REST_HALF;
+                        break;
+                    case QUARTER_NOTE:
+                        this.nf.symbol = Syntax.REST_QUARTER;
+                        break;
+                    case EIGHTH_NOTE:
+                        this.nf.symbol = Syntax.REST_8TH;
+                        break;
+                    case SIXTEENTH_NOTE:
+                        this.nf.symbol = Syntax.REST_16TH;
+                        break;
+                    case THIRTY_SECOND_NOTE:
+                        this.nf.symbol = Syntax.REST_32ND;
+                        break;
+                }
+            } else {
+                switch (this.nd) {
+                    case WHOLE_NOTE:
+                        this.nf.symbol = Syntax.NOTE_WHOLE;
+                        break;
+                    case HALF_NOTE:
+                        this.nf.symbol = Syntax.NOTE_HALF_UP;
+                        break;
+                    case QUARTER_NOTE:
+                        this.nf.symbol = Syntax.NOTE_QUARTER_UP;
+                        break;
+                    case EIGHTH_NOTE:
+                        this.nf.symbol = Syntax.NOTE_8TH_UP;
+                        break;
+                    case SIXTEENTH_NOTE:
+                        this.nf.symbol = Syntax.NOTE_16TH_UP;
+                        break;
+                    case THIRTY_SECOND_NOTE:
+                        this.nf.symbol = Syntax.NOTE_32ND_UP;
+                        break;
+                }
+            }
+
+            switch(this.nd) {
+                case WHOLE_NOTE:
+                    nf.noteLength = 32;
+                    break;
+                case HALF_NOTE:
+                    nf.noteLength = 16;
+                    break;
+                case QUARTER_NOTE:
+                    nf.noteLength = 8;
+                    break;
+                case EIGHTH_NOTE:
+                    nf.noteLength = 4;
+                    break;
+                case SIXTEENTH_NOTE:
+                    nf.noteLength = 2;
+                    break;
+                case THIRTY_SECOND_NOTE:
+                    nf.noteLength = 1;
+                    break;
+            }
+        }
+
+        public NoteFont getNoteFont() {
+            return nf;
         }
 
         public MusicNote getMusicNote() {
