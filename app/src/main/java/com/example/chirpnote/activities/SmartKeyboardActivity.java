@@ -144,6 +144,8 @@ public class SmartKeyboardActivity extends AppCompatActivity {
 
             }
         });
+=======
+>>>>>>> smartkeyboard
 
 
 
