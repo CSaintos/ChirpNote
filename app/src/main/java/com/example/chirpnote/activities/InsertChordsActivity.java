@@ -680,7 +680,8 @@ public class InsertChordsActivity extends AppCompatActivity
                 redirectActivity(this, MelodyActivity.class);
                 break;
             case R.id.nav_chords:
-                redirectActivity(this, InsertChordsActivity.class);
+                // Just close the drawer since we're already on this activity
+                drawer.closeDrawer(GravityCompat.START);
                 break;
             case R.id.nav_percussion:
                 redirectActivity(this, PercussionActivity.class);
