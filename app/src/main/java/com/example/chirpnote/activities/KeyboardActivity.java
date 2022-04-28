@@ -96,7 +96,7 @@ public class KeyboardActivity extends AppCompatActivity
 
 
 //        ChirpNoteSession session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
-        session = (ChirpNoteSession) getIntent().getSerializableExtra("SessionFreePlay"); // coming from keyboard activity
+//        session = (ChirpNoteSession) getIntent().getSerializableExtra("SessionFreePlay"); // coming from keyboard activity
 
 
         Intent intent = getIntent();
