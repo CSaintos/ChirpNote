@@ -125,7 +125,7 @@ public class SetKeyActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                Intent intent = new Intent(SetKeyActivity.this, KeyboardActivity.class);
+                Intent intent = new Intent(SetKeyActivity.this, SmartKeyboardActivity.class);
                 intent.putExtra("flag", "fromSetKeyActivity");
                 intent.putExtra("session", session);
                 startActivity(intent);
