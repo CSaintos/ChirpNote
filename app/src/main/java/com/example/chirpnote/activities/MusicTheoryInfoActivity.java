@@ -19,8 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.chirpnote.R;
 import com.google.android.material.navigation.NavigationView;
 
-public class MusicTheoryInfoActivity extends AppCompatActivity implements View.OnClickListener,
-        NavigationView.OnNavigationItemSelectedListener {
+public class MusicTheoryInfoActivity extends AppCompatActivity implements View.OnClickListener {
 
     ViewFlipper viewFlipper;
     Button next;
@@ -34,19 +33,8 @@ public class MusicTheoryInfoActivity extends AppCompatActivity implements View.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_theory_info);
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Toolbar toolbar = findViewById(R.id.nav_toolbar);
-        setSupportActionBar(toolbar);
-
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.bringToFront();
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        //actionbar back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         next = (Button) findViewById(R.id.next);
@@ -67,41 +55,6 @@ public class MusicTheoryInfoActivity extends AppCompatActivity implements View.O
         {
             viewFlipper.showPrevious();
         }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_home:
-                redirectActivity(this, HomeScreenActivity.class);
-                break;
-            case R.id.nav_profile:
-                redirectActivity(this, UserProfileActivity.class);
-                break;
-            case R.id.nav_music_theory:
-                // Just close the drawer since we're already on this activity
-                drawer.closeDrawer(GravityCompat.START);
-                break;
-            case R.id.nav_overview:
-                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_melody:
-                redirectActivity(this, MelodyActivity.class);
-                break;
-            case R.id.nav_chords:
-                redirectActivity(this, InsertChordsActivity.class);
-                break;
-            case R.id.nav_percussion:
-                redirectActivity(this, PercussionActivity.class);
-                break;
-            case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
-                break;
-            default:
-                break;
-        }
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override

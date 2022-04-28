@@ -8,14 +8,6 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_baseline_home_24"
             android:title="Home" />
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_baseline_person_outline_24"
-            android:title="Profile" />
-        <item
-            android:id="@+id/nav_music_theory"
-            android:icon="@drawable/ic_baseline_menu_book_24"
-            android:title="Music Theory" />
     </group>
 
     <item android:title="Session">
@@ -30,7 +22,7 @@
                 android:title="Melody" />
             <item
                 android:id="@+id/nav_chords"
-                android:icon="@drawable/ic_chord_icon"
+                android:icon="@drawable/ic_chords_icon"
                 android:title="Add Chords" />
             <item
                 android:id="@+id/nav_percussion"
@@ -40,6 +32,14 @@
                 android:id="@+id/nav_keyboard"
                 android:icon="@drawable/ic_pianoicon"
                 android:title="Free Play" />
+            <item
+                android:id="@+id/nav_mixer"
+                android:icon="@drawable/ic_mixer_icon"
+                android:title="Mixer" />
+            <item
+                android:id="@+id/nav_audio"
+                android:icon="@drawable/ic_audio_icon"
+                android:title="Audio" />
         </menu>
     </item>
 
