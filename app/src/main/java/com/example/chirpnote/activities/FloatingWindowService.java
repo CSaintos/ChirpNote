@@ -171,7 +171,7 @@ public class FloatingWindowService extends Service
 
                 // The app will maximize again. So the MainActivity
                 // class will be called again.
-                Intent backToHome = new Intent(FloatingWindowService.this, KeyboardActivity.class);
+                Intent backToHome = new Intent(FloatingWindowService.this, SmartKeyboardActivity.class);
 
                 // 1) FLAG_ACTIVITY_NEW_TASK flag helps activity to start a new task on the history stack.
                 // If a task is already running like the floating window service, a new activity will not be started.

@@ -42,44 +42,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/changeKeyButton"
-            android:layout_width="120dp"
-            android:layout_height="53dp"
-            android:text="change Key"
-            app:layout_constraintBottom_toTopOf="@+id/noteFSharp4Button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.728"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteDSharp4Button" />
+<!--        <Button-->
+<!--            android:id="@+id/changeKeyButton"-->
+<!--            android:layout_width="120dp"-->
+<!--            android:layout_height="53dp"-->
+<!--            android:text="change Key"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/noteFSharp4Button"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.728"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/noteDSharp4Button" />-->
 
-        <Spinner
-            android:id="@+id/spinner_key_name"
-            android:layout_width="90dp"
-            android:layout_height="60dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.582"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button"
-            app:layout_constraintVertical_bias="0.148" />
+<!--        <Spinner-->
+<!--            android:id="@+id/spinner_key_name"-->
+<!--            android:layout_width="90dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.582"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button"-->
+<!--            app:layout_constraintVertical_bias="0.148" />-->
 
-        <Spinner
-            android:id="@+id/spinner_key_type"
-            android:layout_width="87dp"
-            android:layout_height="59dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.895"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button"
-            app:layout_constraintVertical_bias="0.147" />
+<!--        <Spinner-->
+<!--            android:id="@+id/spinner_key_type"-->
+<!--            android:layout_width="87dp"-->
+<!--            android:layout_height="59dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.895"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button"-->
+<!--            app:layout_constraintVertical_bias="0.147" />-->
 
         <Button
             android:id="@+id/buttonMinimize"
             android:layout_width="83dp"
             android:layout_height="49dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="25dp"
             android:backgroundTint="@color/purple_500"
             android:text="MINIMIZE"
             android:textColor="@android:color/white"
@@ -87,27 +87,27 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.57"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button" />
 
         <Button
             android:id="@+id/noteSuggestion"
             android:layout_width="86dp"
             android:layout_height="53dp"
-            android:layout_marginTop="24dp"
             android:background="@drawable/button_chord"
             android:text="Note\nSuggestion"
+            android:layout_marginTop="20dp"
             android:textColor="@android:color/black"
             android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.895"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/noteC4Button"
             android:layout_width="170dp"
             android:layout_height="80dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="56dp"
             android:background="@drawable/button_whitekey"
             android:text="C"
             app:layout_constraintEnd_toEndOf="parent"
@@ -119,7 +119,7 @@
             android:id="@+id/noteD4Button"
             android:layout_width="170dp"
             android:layout_height="80dp"
-            android:layout_marginTop="116dp"
+            android:layout_marginTop="136dp"
             android:background="@drawable/button_whitekey"
             android:text="D"
             app:layout_constraintEnd_toEndOf="parent"
@@ -131,7 +131,7 @@
             android:id="@+id/noteE4Button"
             android:layout_width="170dp"
             android:layout_height="80dp"
-            android:layout_marginTop="196dp"
+            android:layout_marginTop="216dp"
             android:background="@drawable/button_whitekey"
             android:text="E"
             app:layout_constraintEnd_toEndOf="parent"
@@ -143,7 +143,7 @@
             android:id="@+id/noteF4Button"
             android:layout_width="170dp"
             android:layout_height="80dp"
-            android:layout_marginTop="276dp"
+            android:layout_marginTop="296dp"
             android:background="@drawable/button_whitekey"
             android:text="F"
             app:layout_constraintEnd_toEndOf="parent"
@@ -155,7 +155,7 @@
             android:id="@+id/noteG4Button"
             android:layout_width="170dp"
             android:layout_height="80dp"
-            android:layout_marginTop="356dp"
+            android:layout_marginTop="376dp"
             android:background="@drawable/button_whitekey"
             android:text="G"
             app:layout_constraintEnd_toEndOf="parent"
@@ -167,7 +167,7 @@
             android:id="@+id/noteA4Button"
             android:layout_width="170dp"
             android:layout_height="80dp"
-            android:layout_marginTop="436dp"
+            android:layout_marginTop="456dp"
             android:background="@drawable/button_whitekey"
             android:text="A"
             app:layout_constraintEnd_toEndOf="parent"
@@ -179,7 +179,7 @@
             android:id="@+id/noteB4Button"
             android:layout_width="170dp"
             android:layout_height="80dp"
-            android:layout_marginTop="516dp"
+            android:layout_marginTop="536dp"
             android:background="@drawable/button_whitekey"
             android:text="B"
             app:layout_constraintEnd_toEndOf="parent"
@@ -191,7 +191,7 @@
             android:id="@+id/noteC5Button"
             android:layout_width="170dp"
             android:layout_height="80dp"
-            android:layout_marginTop="596dp"
+            android:layout_marginTop="616dp"
             android:background="@drawable/button_whitekey"
             android:text="C"
             app:layout_constraintEnd_toEndOf="parent"
