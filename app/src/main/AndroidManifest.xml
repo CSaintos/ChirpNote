@@ -68,7 +68,6 @@
         <activity
             android:name=".activities.MusicTheoryInfoActivity"
             android:parentActivityName=".activities.HomeScreenActivity"
-            android:theme="@style/Theme.ChirpNote.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activities.UserOptionsActivity"
