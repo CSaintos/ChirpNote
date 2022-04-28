@@ -58,18 +58,6 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
         {
 
-<<<<<<< HEAD
-        initializeKeys(session); // replaces bottom comments
-//        pianoKeys = new ArrayList<>(); // List of MusicNotes
-//        int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
-//
-//        View[] keys = new View[]{findViewById(R.id.key1), findViewById(R.id.key2), findViewById(R.id.key3), findViewById(R.id.key4),
-//                findViewById(R.id.key5), findViewById(R.id.key6), findViewById(R.id.key7), findViewById(R.id.key8)};
-//
-//        for(int i = 0; i < keys.length; i++){
-//            pianoKeys.add(new MusicNote(notes[i], (Button) keys[i], melody));
-//        }
-=======
             session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
         }
         else
@@ -82,23 +70,7 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         initializeKeys(session);
 
         eventListener(pianoKeys);
->>>>>>> smartkeyboard
 
-        eventListener(pianoKeys); // replaces bottom comments
-        //        // Setup event listener for each piano key
-//        for(MusicNote note : pianoKeys){
-//            note.getButton().setOnTouchListener(new OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
-//                        note.play();
-//                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-//                        note.stop();
-//                    }
-//                    return true;
-//                }
-//            });
-//        }
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
@@ -112,40 +84,6 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
 
 
-<<<<<<< HEAD
-        // set user input key name and type to new key in session
-        Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
-        ArrayAdapter keyNameAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyNameList);
-        keyNameSpinner.setAdapter(keyNameAdapter);
-        keyNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                keyNameChoice = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), keyNameChoice, Toast.LENGTH_LONG).show();
-//                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        Spinner keyTypeSpinner = findViewById(R.id.spinner_key_type);
-        ArrayAdapter keyTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyTypeList);
-        keyTypeSpinner.setAdapter(keyTypeAdapter);
-        keyTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                keyTypeChoice = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-=======
->>>>>>> smartkeyboard
 
 
 
@@ -156,8 +94,6 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
 
 
-<<<<<<< HEAD
-=======
 //        pianoKeys = new ArrayList<>(); // List of MusicNotes
 //        int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
 //
@@ -167,7 +103,6 @@ public class SmartKeyboardActivity extends AppCompatActivity {
 //        for(int i = 0; i < keys.length; i++){
 //            pianoKeys.add(new MusicNote(notes[i], (Button) keys[i], melody));
 //        }
->>>>>>> smartkeyboard
 
         // Event listener for record button (to record melody)
         recordButton.setOnClickListener(new OnClickListener() {
@@ -197,10 +132,6 @@ public class SmartKeyboardActivity extends AppCompatActivity {
             }
         });
 
-<<<<<<< HEAD
-
-
-=======
 //        // Setup event listener for each piano key
 //        for(MusicNote note : pianoKeys){
 //            note.getButton().setOnTouchListener(new OnTouchListener() {
@@ -291,7 +222,6 @@ public class SmartKeyboardActivity extends AppCompatActivity {
             }
         });
 
->>>>>>> smartkeyboard
     }
 
     private void eventListener(ArrayList<MusicNote> pianoKeys)
