@@ -220,6 +220,7 @@ public class MelodyActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 consMelody.previousMeasure();
+                melodyPosition = consMelody.getElementIndex();
                 constructNoteList(consMelody.getMeasure());
                 displayText();
                 // For testing purposes only
@@ -237,6 +238,7 @@ public class MelodyActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 consMelody.nextMeasure();
+                melodyPosition = consMelody.getElementIndex();
                 constructNoteList(consMelody.getMeasure());
                 displayText();
             }
@@ -767,6 +769,7 @@ public class MelodyActivity extends AppCompatActivity
 
     /**
      * Temporary method to construct melody
+     * DO NOT REMOVE
      */
     /*
     private void toConstructedMelody() {
@@ -803,7 +806,8 @@ public class MelodyActivity extends AppCompatActivity
             Notation.MusicFontAdapter mf = notation.new MusicFontAdapter(me.musicNote, me.noteDuration);
             Notation.NoteFont nf = notation.new NoteFont(mf.getNoteFont());
             Log.d("constructNoteList", nf.toString());
-            itr.insertBefore(nf);
+            itr.insertAfter(nf);
+            if (itr.hasNext()) itr.next();
         }
 
         itr.goToBegin();

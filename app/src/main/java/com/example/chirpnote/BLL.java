@@ -274,9 +274,9 @@ public class BLL<T> {
                     temp.previous = current.previous;
                     current.previous.next = temp;
                 } else {
-                    temp.previous = null;
+                    temp.previous = null; //1
                 }
-                temp.previous = current.previous;
+                temp.previous = current.previous; //1 redundant
                 temp.next = current;
                 current.previous = temp;
                 if (begin == current) begin = temp;

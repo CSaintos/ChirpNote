@@ -310,6 +310,9 @@ public class ConstructedMelody extends Melody {
         return measure.toArray(new String[0]);
     }
 
+    /**
+     *
+     */
     public void nextMeasure()
     {
         int index = mElementIndex;
@@ -319,12 +322,36 @@ public class ConstructedMelody extends Melody {
         }
     }
 
+    /**
+     *
+     */
     public void previousMeasure() {
-        int index = mElementIndex;
-        index -= getMeasure().length;
-        if (index >= 0) {
+        int measureDuration = 0;
+        int index = mElementIndex - 1;
+        boolean val = true;
+
+        if (index > 0) {
+            while (measureDuration < 32 && val) {
+                String encodedElement = mSession.mMelodyElements.get(index);
+                Notation.MelodyElement me = decodeElement(encodedElement);
+                measureDuration += me.getDurationValue();
+
+                if (measureDuration >= 32) {
+                    val = false;
+                } else {
+                    index--;
+                }
+            }
             mElementIndex = index;
         }
+    }
+
+    /**
+     * getElementIndex
+     * @return mElementIndex
+     */
+    public int getElementIndex() {
+        return mElementIndex;
     }
 
     /**
