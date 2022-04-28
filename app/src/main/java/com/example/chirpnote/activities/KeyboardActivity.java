@@ -63,6 +63,7 @@ public class KeyboardActivity extends AppCompatActivity
     private String keyTypeChoice;
     private Key currentKey;
     private ArrayList<MusicNote> keyButtons;
+    private ChirpNoteSession session;
 
     private DrawerLayout drawer;
 
@@ -90,7 +91,28 @@ public class KeyboardActivity extends AppCompatActivity
         // keyboard code
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
-        ChirpNoteSession session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
+
+
+
+
+//        ChirpNoteSession session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("SessionFreePlay"); // coming from keyboard activity
+
+
+        Intent intent = getIntent();
+        if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
+        {
+
+            session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
+        }
+        else
+        {
+            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
+            System.out.println("session key name = " + session.getKey().toString());
+        }
+
+
+
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
@@ -152,7 +174,7 @@ public class KeyboardActivity extends AppCompatActivity
             {
                 Intent intent = new Intent(KeyboardActivity.this, SetKeyActivity.class);
                 intent.putExtra("flag", "fromKeyboardActivity");
-                intent.putExtra("SessionFreePlay", session);
+                intent.putExtra("session", session);
                 startActivity(intent);
 
 //                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))

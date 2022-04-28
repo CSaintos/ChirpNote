@@ -71,7 +71,7 @@ public class SetKeyActivity extends AppCompatActivity {
             }
             else if (intent.getStringExtra("flag").equals("fromKeyboardActivity"))
             {
-                session = (ChirpNoteSession) getIntent().getSerializableExtra("SessionFreePlay"); // coming from keyboard activity
+                session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
                 System.out.println("key = " + session.getKey().toString());
             }
 
@@ -126,6 +126,7 @@ public class SetKeyActivity extends AppCompatActivity {
 
 
                 Intent intent = new Intent(SetKeyActivity.this, KeyboardActivity.class);
+                intent.putExtra("flag", "fromSetKeyActivity");
                 intent.putExtra("session", session);
                 startActivity(intent);
             }
