@@ -1,5 +1,6 @@
 package com.example.chirpnote.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -21,9 +23,13 @@ import android.widget.Toast;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.anggrayudi.storage.file.DocumentFileCompat;
 import com.anggrayudi.storage.file.DocumentFileUtils;
@@ -40,6 +46,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.slider.Slider;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -66,7 +73,8 @@ import java.util.TimerTask;
 /**
  * This class represents recording audio from the user's microphone. It will provide certain monitoring elements such as the current chord and waveform representataion of intensity of amplitude.
  */
-public class RecordAudioActivity extends AppCompatActivity {
+public class RecordAudioActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
     //layout items
     private ImageButton recordButton;
     private ImageButton playRecordedAudioButton;
@@ -91,9 +99,8 @@ public class RecordAudioActivity extends AppCompatActivity {
     String filePath;
     DriveServiceHelper driveServiceHelper;
 
-
-
-
+    // navigation drawer
+    private DrawerLayout drawer;
 
     /***
      * onCreate function sets values
@@ -103,6 +110,21 @@ public class RecordAudioActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_record_audio);
         super.onCreate(savedInstanceState);
+
+        //navigation drawer
+        Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.bringToFront();
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
         volSlider = findViewById(R.id.volumeSlider);
         timer = findViewById(R.id.recordTimer);
         directoryButton = findViewById(R.id.directoryShowButton);
@@ -351,5 +373,57 @@ public class RecordAudioActivity extends AppCompatActivity {
 //            }
 //        });
 
+    }
+
+    // navigation drawer
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                redirectActivity(this, HomeScreenActivity.class);
+                break;
+            case R.id.nav_overview:
+                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_melody:
+                redirectActivity(this, MelodyActivity.class);
+                break;
+            case R.id.nav_chords:
+                redirectActivity(this, InsertChordsActivity.class);
+                break;
+            case R.id.nav_percussion:
+                redirectActivity(this, PercussionActivity.class);
+                break;
+            case R.id.nav_keyboard:
+                redirectActivity(this, KeyboardActivity.class);
+                break;
+            case R.id.nav_mixer:
+                Toast.makeText(this, "Mixer", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_audio:
+                // Just close the drawer since we're already on this activity
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+            default:
+                break;
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    private static void redirectActivity(Activity activity, Class aClass) {
+        Intent intent = new Intent(activity, aClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
     }
 }

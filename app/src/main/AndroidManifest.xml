@@ -58,6 +58,7 @@
         <activity
             android:name=".activities.PercussionActivity"
             android:parentActivityName=".activities.HomeScreenActivity"
+            android:theme="@style/Theme.ChirpNote.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activities.UserProfileActivity"
@@ -121,7 +122,9 @@
             android:exported="false" />
         <activity
             android:name=".activities.RecordAudioActivity"
-            android:exported="true" />
+            android:theme="@style/Theme.ChirpNote.NoActionBar"
+            android:exported="true"
+            />
         <activity android:name=".activities.DirectoryPopActivity"
             android:exported="true"
             android:theme="@style/Theme.ChirpNote.PopUpDir"/>

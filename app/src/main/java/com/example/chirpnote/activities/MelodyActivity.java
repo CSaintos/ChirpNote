@@ -871,12 +871,6 @@ public class MelodyActivity extends AppCompatActivity
             case R.id.nav_home:
                 redirectActivity(this, HomeScreenActivity.class);
                 break;
-            case R.id.nav_profile:
-                redirectActivity(this, UserProfileActivity.class);
-                break;
-            case R.id.nav_music_theory:
-                redirectActivity(this, MusicTheoryInfoActivity.class);
-                break;
             case R.id.nav_overview:
                 Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
                 break;
@@ -892,6 +886,12 @@ public class MelodyActivity extends AppCompatActivity
                 break;
             case R.id.nav_keyboard:
                 redirectActivity(this, KeyboardActivity.class);
+                break;
+            case R.id.nav_mixer:
+                Toast.makeText(this, "Mixer", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_audio:
+                redirectActivity(this, RecordAudioActivity.class);
                 break;
             default:
                 break;
