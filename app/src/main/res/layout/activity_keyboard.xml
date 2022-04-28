@@ -75,19 +75,19 @@
 <!--            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button"-->
 <!--            app:layout_constraintVertical_bias="0.147" />-->
 
-        <Button
-            android:id="@+id/buttonMinimize"
-            android:layout_width="83dp"
-            android:layout_height="49dp"
-            android:layout_marginTop="25dp"
-            android:backgroundTint="@color/purple_500"
-            android:text="MINIMIZE"
-            android:textColor="@android:color/white"
-            android:textSize="10sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.57"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button" />
+<!--        <Button-->
+<!--            android:id="@+id/buttonMinimize"-->
+<!--            android:layout_width="83dp"-->
+<!--            android:layout_height="49dp"-->
+<!--            android:layout_marginTop="25dp"-->
+<!--            android:backgroundTint="@color/purple_500"-->
+<!--            android:text="MINIMIZE"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="10sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.57"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button" />-->
 
         <Button
             android:id="@+id/noteSuggestion"
