@@ -1,24 +1,26 @@
 package com.example.chirpnote.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
-import com.example.chirpnote.ChirpNoteSession;
 
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -31,11 +33,13 @@ public class SmartKeyboardActivity extends AppCompatActivity {
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
     RealTimeMelody melody;
-    private Spinner keyTypeSpinner;
+    private AlertDialog dialog;
+
     private String keyNameChoice;
     private String keyTypeChoice;
+    private ChirpNoteSession session;
+    private Button minimizeBtn;
 
-    private Button changeKeyNameSpinner;
 
     private List<String> keyTypeList = new ArrayList<>();
     private List<String> keyNameList = new ArrayList<>();
@@ -46,9 +50,26 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_smart_keyboard);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().hide();
+        // keyboard code
+        minimizeBtn = findViewById(R.id.buttonMinimize);
 
-        ChirpNoteSession session = new ChirpNoteSession("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
+//        ChirpNoteSession session = new ChirpNoteSession("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
+        Intent intent = getIntent();
+        if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
+        {
 
+            session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
+        }
+        else
+        {
+            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
+            System.out.println("session key name = " + session.getKey().toString());
+        }
+
+
+        initializeKeys(session);
+
+        eventListener(pianoKeys);
 
 
         initializeKeyNameList(session);
@@ -63,91 +84,25 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
 
 
-        // set user input key name and type to new key in session
-        Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
-        ArrayAdapter keyNameAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyNameList);
-        keyNameSpinner.setAdapter(keyNameAdapter);
-        keyNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                keyNameChoice = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), keyNameChoice, Toast.LENGTH_LONG).show();
-//                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        Spinner keyTypeSpinner = findViewById(R.id.spinner_key_type);
-        ArrayAdapter keyTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyTypeList);
-        keyTypeSpinner.setAdapter(keyTypeAdapter);
-        keyTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                keyTypeChoice = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
-//        keyNameSpinner.setOnClickListener(new OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-////                View currentView = getLayoutInflater().inflate(R.layout.activity_smart_keyboard, null, false);
-////                AppCompatSpinner keyTypeSpinner = (AppCompatSpinner)currentView.findViewById(R.id.spinner_key_type);
-//            }
-//        });
 
 
 
-        /** Allows the user to switch between keys whenever they want */
-        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
-        changeKeyButton.setClickable(true);
-
-        changeKeyButton.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
-                {
-                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
-                    Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
-
-                    session.setKey(new Key(newRootNote, newKeyType));
-                    initializeKeys(session);
-
-                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
-                }
-                eventListener(pianoKeys);
-            }
-        });
 
 
         melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
-        pianoKeys = new ArrayList<>(); // List of MusicNotes
-        int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
 
-        View[] keys = new View[]{findViewById(R.id.key1), findViewById(R.id.key2), findViewById(R.id.key3), findViewById(R.id.key4),
-                findViewById(R.id.key5), findViewById(R.id.key6), findViewById(R.id.key7), findViewById(R.id.key8)};
 
-        for(int i = 0; i < keys.length; i++){
-            pianoKeys.add(new MusicNote(notes[i], (Button) keys[i], melody));
-        }
+//        pianoKeys = new ArrayList<>(); // List of MusicNotes
+//        int[] notes = session.getKey().getScaleNotes(); // Array of MIDI note numbers
+//
+//        View[] keys = new View[]{findViewById(R.id.key1), findViewById(R.id.key2), findViewById(R.id.key3), findViewById(R.id.key4),
+//                findViewById(R.id.key5), findViewById(R.id.key6), findViewById(R.id.key7), findViewById(R.id.key8)};
+//
+//        for(int i = 0; i < keys.length; i++){
+//            pianoKeys.add(new MusicNote(notes[i], (Button) keys[i], melody));
+//        }
 
         // Event listener for record button (to record melody)
         recordButton.setOnClickListener(new OnClickListener() {
@@ -177,20 +132,96 @@ public class SmartKeyboardActivity extends AppCompatActivity {
             }
         });
 
-        // Setup event listener for each piano key
-        for(MusicNote note : pianoKeys){
-            note.getButton().setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                        note.play();
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        note.stop();
-                    }
-                    return true;
+//        // Setup event listener for each piano key
+//        for(MusicNote note : pianoKeys){
+//            note.getButton().setOnTouchListener(new OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+//                        note.play();
+//                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//                        note.stop();
+//                    }
+//                    return true;
+//                }
+//            });
+//        }
+
+
+
+
+
+//        /** Allows the user to switch between keys whenever they want */
+//        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
+//        changeKeyButton.setClickable(true);
+//
+//        changeKeyButton.setOnClickListener(new OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
+//                {
+//                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
+//                }
+//                else
+//                {
+//                    Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
+//                    Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
+//
+//                    session.setKey(new Key(newRootNote, newKeyType));
+//                    initializeKeys(session);
+//
+//                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
+//                }
+//                eventListener(pianoKeys);
+//            }
+//        });
+        /** Allows the user to switch between keys whenever they want */
+        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
+        changeKeyButton.setClickable(true);
+
+        changeKeyButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(SmartKeyboardActivity.this, SetKeyActivity.class);
+                intent.putExtra("flag", "fromKeyboardActivity");
+                intent.putExtra("session", session);
+                startActivity(intent);
+            }
+//            eventListener(pianoKeys);
+        });
+
+        // The Main Button that helps to minimize the app
+        minimizeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // First it confirms whether the
+                // 'Display over other apps' permission in given
+                if (checkOverlayDisplayPermission()) {
+                    // FloatingWindowService service is started
+//                    Intent intent = new Intent(KeyboardActivity.this, FloatingWindowService.class);
+//                    intent.putExtra("session", session);
+//                    startService(intent);
+
+                    Intent intent = new Intent(SmartKeyboardActivity.this, FloatingWindowService.class);
+                    intent.putExtra("session", session);
+                    startService(intent);
+
+
+                    // The MainActivity closes here
+                    finish();
+                } else {
+                    // If permission is not given,
+                    // it shows the AlertDialog box and
+                    // redirects to the Settings
+                    requestOverlayDisplayPermission();
                 }
-            });
-        }
+            }
+        });
+
     }
 
     private void eventListener(ArrayList<MusicNote> pianoKeys)
@@ -254,4 +285,67 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         super.onPause();
         midiDriver.stop();
     }
+
+    private void requestOverlayDisplayPermission() {
+        // An AlertDialog is created
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+
+        // This dialog can be closed, just by taping
+        // anywhere outside the dialog-box
+        builder.setCancelable(true);
+
+
+        // The title of the Dialog-box is set
+        builder.setTitle("Screen Overlay Permission Needed");
+
+
+        // The message of the Dialog-box is set
+        builder.setMessage("Enable 'Display over other apps' from System Settings.");
+
+
+
+        // The event of the Positive-Button is set
+        builder.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // The app will redirect to the 'Display over other apps' in Settings.
+                // This is an Implicit Intent. This is needed when any Action is needed
+                // to perform, here it is
+                // redirecting to an other app(Settings).
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+
+
+                // This method will start the intent. It takes two parameter, one is the Intent and the other is
+                // an requestCode Integer. Here it is -1.
+                startActivityForResult(intent, RESULT_OK);
+            }
+        });
+
+        dialog = builder.create();
+        // The Dialog will
+        // show in the screen
+        dialog.show();
+    }
+    private boolean checkOverlayDisplayPermission() {
+        // Android Version is lesser than Marshmallow or
+        // the API is lesser than 23
+        // doesn't need 'Display over other apps' permission enabling.
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            // If 'Display over other apps' is not enabled
+            // it will return false or else true
+            if (!Settings.canDrawOverlays(this)) {
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+
+
 }
