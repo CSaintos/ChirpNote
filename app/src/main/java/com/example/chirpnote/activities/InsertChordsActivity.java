@@ -109,6 +109,22 @@ public class InsertChordsActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState(); // end nav drawer
 
+        // actionbar play and stop buttons
+        ImageView navPlayButton = findViewById(R.id.nav_play_button);
+        navPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(InsertChordsActivity.this, "Play", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ImageView navStopButton = findViewById(R.id.nav_stop_button);
+        navStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(InsertChordsActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         buttonAdd = findViewById(R.id.button_add_row);
         buttonAdd.setOnClickListener(this);
 

@@ -58,7 +58,7 @@ public class SetKeyActivity extends AppCompatActivity {
 
 
 //            if (intentName != null && intentName.equals("fromSetKeyFromSong"))
-            if (intent.getStringExtra("flag").equals("setKeyFromSongActivity"))
+            if (intent.getStringExtra("flag").equals("fromSetKeyFromSongActivity"))
             {
                 String[] keyArray = (String[]) intent.getSerializableExtra("keyArray"); // str[0] = keyname, str[1] = keytype
                 keyNameChoice = keyArray[0]; // e.g. C

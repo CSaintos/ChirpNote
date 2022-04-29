@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     android:outlineProvider="none"
     tools:context=".activities.UserProfileActivity"
-    tools:openDrawer="start">
+    tools:openDrawer="end">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +22,20 @@
             android:background="@color/design_default_color_primary"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            <ImageView
+                android:id="@+id/nav_play_button"
+                android:src="@drawable/ic_baseline_play_arrow"
+                android:layout_height="match_parent"
+                android:layout_width="50dp"
+                android:layout_marginStart="215dp"/>
+            <ImageView
+                android:id="@+id/nav_stop_button"
+                android:src="@drawable/ic_baseline_stop_button"
+                android:layout_height="match_parent"
+                android:layout_width="50dp"
+                android:layout_marginStart="0dp"/>
+        </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
             android:id="@+id/fragment_container"

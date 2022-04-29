@@ -15,6 +15,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import io.realm.mongodb.App;
@@ -56,6 +59,22 @@ public class UserProfileActivity extends AppCompatActivity
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //play and stop button in ActionBar
+        ImageView playButton = findViewById(R.id.nav_play_button);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(UserProfileActivity.this, "Play", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ImageView stopButton = findViewById(R.id.nav_stop_button);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(UserProfileActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //navigationView.setCheckedItem(R.id.nav_profile);
 
