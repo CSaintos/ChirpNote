@@ -61,6 +61,7 @@ public class SetKeyActivity extends AppCompatActivity {
             if (intent.getStringExtra("flag").equals("fromSetKeyFromSongActivity"))
             {
                 String[] keyArray = (String[]) intent.getSerializableExtra("keyArray"); // str[0] = keyname, str[1] = keytype
+                session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
                 keyNameChoice = keyArray[0]; // e.g. C
                 keyTypeChoice = keyArray[1]; // e.g. Major
 
