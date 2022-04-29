@@ -59,6 +59,7 @@ public class PercussionActivity extends AppCompatActivity
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
     private PercussionTrack track;
+    private PercussionPattern percussionPattern;
     private ChirpNoteSession session;
     private Key key;
 
@@ -112,12 +113,13 @@ public class PercussionActivity extends AppCompatActivity
         // Initialize stylePatternMap with tracks in assets folder
         try {
             String[] styles = this.getAssets().list("percussion");
-            for (String style : styles) {
-                stylePatternMap.put(style, new ArrayList<>());
-                String[] items = this.getAssets().list("percussion/" + style);
-                for (String item : items) {
-                    String path = "percussion/" + style + "/" + item;
-                    stylePatternMap.get(style).add(new PercussionPattern(item, path, session, this));
+            for (int i = 0; i < styles.length; i++) {
+                stylePatternMap.put(styles[i], new ArrayList<>());
+                String[] patterns = this.getAssets().list("percussion/" + styles[1]);
+                for (int j = 0; j < patterns.length; j++) {
+                    PercussionPattern.PatternAsset patternAsset = percussionPattern.new
+                            PatternAsset(patterns[j], styles[i], j, i);
+                    stylePatternMap.get(styles[i]).add(new PercussionPattern(patternAsset, session, this));
                 }
             }
         } catch (IOException e) { e.printStackTrace(); }
@@ -175,7 +177,8 @@ public class PercussionActivity extends AppCompatActivity
                                 int position = (int)rb.getTag(R.id.percussion_index);
                                 PercussionPattern pp = null;
                                 for (PercussionPattern p : stylePatternMap.get(selectedStyle)) {
-                                    if (p.getLabel().equals(selectedPattern)) pp = p;
+                                    PercussionPattern.PatternAsset patternAsset = p.getPatternAsset();
+                                    if (patternAsset.pattern.equals(selectedPattern)) pp = p;
                                 }
                                 track.addPattern(pp, position);
                             }
@@ -249,7 +252,8 @@ public class PercussionActivity extends AppCompatActivity
 
         for (PercussionPattern pattern : patterns) {
             // Create pattern radio button
-            String name = pattern.getLabel().replace(".mid", ""); // returns copy of label
+            PercussionPattern.PatternAsset patternAsset = pattern.getPatternAsset();
+            String name = patternAsset.pattern.replace(".mid", ""); // returns copy of label
             RadioButton rb = new RadioButton(this);
             rb.setText(name);
             rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
@@ -264,7 +268,7 @@ public class PercussionActivity extends AppCompatActivity
                         pattern.play();
                         currentPatternButton = rb;
                         selectedStyle = style;
-                        selectedPattern = pattern.getLabel();
+                        selectedPattern = patternAsset.pattern;
                     } else {
                         cb.setBackground(getDrawable(R.drawable.radio_normal));
                         if (pattern.isPlaying()) pattern.stop();
@@ -398,11 +402,6 @@ public class PercussionActivity extends AppCompatActivity
         }
 
         chordLayout.addView(row);
-    }
-
-    PercussionPattern constructPattern(String style, String pattern) { //bad idea FIXME
-        String path = "percussion/" + style + "/" + pattern;
-        return new PercussionPattern(pattern, path, session, this);
     }
 
     void displayIndicator(String style, String pattern) {

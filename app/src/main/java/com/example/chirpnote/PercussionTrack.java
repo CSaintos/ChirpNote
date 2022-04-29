@@ -1,5 +1,6 @@
 package com.example.chirpnote;
 
+import com.example.chirpnote.activities.PercussionActivity;
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
 import com.example.midiFileLib.src.event.MidiEvent;
@@ -219,13 +220,29 @@ public class PercussionTrack implements Track {
     /*
     TODO: Percussion Pattern encoding TBD
     The string encoding for percussion patterns is defined as follows:
-	char 0: index of percussion style in assets directory, range (000-127, 128 if null)
-	char 1: index of percussion pattern in assets directory, range (000-127, 128 if null)
+	char 0: index of percussion style in assets directory, range (0-9, a if null)
+	char 1-2: index of percussion pattern in assets directory, range (00-99, aa if null)
 	*/
-
     private String encodePattern(PercussionPattern pattern) {
-        pattern.getLabel();
-        return "percussionEncoding";
+        if (pattern == null) return "aaa";
+        PercussionPattern.PatternAsset patternAsset = pattern.getPatternAsset();
+        return padNumber(patternAsset.styIndex) + padNumber(patternAsset.patIndex);
+    }
+
+    public PercussionPattern decodeElement(String percussionElement) {
+        String encodedStyle = percussionElement.substring(0, 1);
+        String encodedPattern = percussionElement.substring(1);
+        int styIndex = 0;
+        int patIndex = 0;
+        try {
+            styIndex = Integer.parseInt(encodedStyle);
+            patIndex = Integer.parseInt(encodedPattern);
+        } catch (Exception e) {
+            return null;
+        }
+
+        String style = PercussionActivity.stylePatternMap.keyAt(styIndex);
+        return PercussionActivity.stylePatternMap.get(style).get(patIndex);
     }
 
     /**
@@ -267,5 +284,16 @@ public class PercussionTrack implements Track {
             throw new IllegalStateException("Cannot stop the percussion track if it is not being played (start playback first)");
         }
         mMidiProcessor.reset();
+    }
+
+    /**
+     * Adds leading zeroes to the given number
+     * @param num The number to pad
+     * @return The padded number as a String
+     */
+    private String padNumber(int num){
+        if(num < 10) return "00" + num;
+        if(num < 100) return "0" + num;
+        return "" + num;
     }
 }

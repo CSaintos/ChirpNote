@@ -35,9 +35,31 @@ public class PercussionPattern {
             return string;
         }
     }
+
+    public class PatternAsset {
+        public String pattern;
+        public String style;
+        public int patIndex;
+        public int styIndex;
+
+        public PatternAsset(String pattern, String style) {
+            this.pattern = pattern;
+            this.style = style;
+        }
+
+        public PatternAsset(String pattern, String style, int patIndex, int styIndex) {
+            this(pattern, style);
+            this.patIndex = patIndex;
+            this.styIndex = styIndex;
+        }
+
+        public String getPath() {
+            return "percussion/" + style + "/" + pattern;
+        }
+    }
+
+    private PatternAsset patternAsset;
     private String mFilePath;
-    private String pattern;
-    private String style;
 
     // For playback
     private MidiProcessor mMidiProcessor;
@@ -88,16 +110,16 @@ public class PercussionPattern {
 
     /**
      * A Percussion pattern
-     * @param pattern the pattern of this percussion pattern
-     * @param path The path of this percussion pattern
+     * @param patternAsset pattern asset information
      * @param session The session to play this Percussion pattern on
      * @param context The context from the activity (pass "this")
      */
-    public PercussionPattern(String pattern, String path, ChirpNoteSession session, Context context) {
-        mMidiEventHandler = new MidiEventHandler(pattern);
+    public PercussionPattern(PatternAsset patternAsset, ChirpNoteSession session, Context context) {
+        mMidiEventHandler = new MidiEventHandler(patternAsset.pattern);
+
         try {
             // get file
-            AssetFileDescriptor afd = context.getAssets().openFd(path);
+            AssetFileDescriptor afd = context.getAssets().openFd(patternAsset.getPath());
             InputStream inputStream = afd.createInputStream();
             File tempFile = File.createTempFile("temp", "file");
             mFilePath = tempFile.getPath();
@@ -194,7 +216,7 @@ public class PercussionPattern {
         mMidiProcessor.reset();
     }
 
-    public String getLabel() {
-        return mMidiEventHandler.getLabel();
+    public PatternAsset getPatternAsset() {
+        return patternAsset;
     }
 }
