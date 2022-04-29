@@ -36,6 +36,8 @@ public class PercussionPattern {
         }
     }
     private String mFilePath;
+    private String pattern;
+    private String style;
 
     // For playback
     private MidiProcessor mMidiProcessor;
@@ -86,13 +88,13 @@ public class PercussionPattern {
 
     /**
      * A Percussion pattern
-     * @param label the label of this percussion pattern
+     * @param pattern the pattern of this percussion pattern
      * @param path The path of this percussion pattern
      * @param session The session to play this Percussion pattern on
      * @param context The context from the activity (pass "this")
      */
-    public PercussionPattern(String label, String path, ChirpNoteSession session, Context context) {
-        mMidiEventHandler = new MidiEventHandler(label);
+    public PercussionPattern(String pattern, String path, ChirpNoteSession session, Context context) {
+        mMidiEventHandler = new MidiEventHandler(pattern);
         try {
             // get file
             AssetFileDescriptor afd = context.getAssets().openFd(path);
