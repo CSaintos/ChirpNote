@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.KeyEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.R;
 import com.example.chirpnote.SongListAdapter;
 import com.example.chirpnote.queryResult;
@@ -35,6 +37,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /***
  * This activity works with the getsongBPM API to take in a user's query for a known song, and to
@@ -155,10 +158,24 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
             //shows the key that has been set on click
             Toast.makeText(SetKeyFromSongActivity.this, "Session Key Set to " + songArrayListFinished.get(position).getSongKey(),Toast.LENGTH_SHORT).show();
             //TODO set the key in session, need to find ways to link of current session
-            if (flag == true)
+            if (flag == true){
                 System.out.println("yes");
-            else
+                ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+                Intent intent = new Intent(SetKeyFromSongActivity.this,SetKeyActivity.class);
+                intent.putExtra("flag","fromSetKeyFromSongActivity");
+                String keyName = StringUtils.substringBetween(songArrayListFinished.get(position).getSongKey(),""," ");
+                String keyMajorMinor = StringUtils.substringAfter(songArrayListFinished.get(position).getSongKey()," ").replaceAll(" ","");
+                String[] keyToSend = new String[] {keyName,keyMajorMinor};
+                System.out.println(Arrays.toString(keyToSend));
+                System.out.println(keyToSend[1]);
+                intent.putExtra("keyArray",keyToSend);
+                intent.putExtra("session",session);
+                startActivity(intent);
+            }
+            else{
                 System.out.println("no");
+            }
+
         }
     });
     }

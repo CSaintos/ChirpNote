@@ -66,7 +66,7 @@ public class SetKeyActivity extends AppCompatActivity {
 
                 int keyNamePosition = keyNameAdapter.getPosition(keyNameChoice);
                 keyNameSpinner.setSelection(keyNamePosition);
-                int keyTypePosition = keyNameAdapter.getPosition(keyTypeChoice);
+                int keyTypePosition = keyTypeAdapter.getPosition(keyTypeChoice);
                 keyTypeSpinner.setSelection(keyTypePosition);
             }
             else if (intent.getStringExtra("flag").equals("fromKeyboardActivity"))
