@@ -59,7 +59,6 @@ public class PercussionActivity extends AppCompatActivity
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
     private PercussionTrack track;
-    private PercussionPattern percussionPattern;
     private ChirpNoteSession session;
     private Key key;
 
@@ -115,10 +114,10 @@ public class PercussionActivity extends AppCompatActivity
             String[] styles = this.getAssets().list("percussion");
             for (int i = 0; i < styles.length; i++) {
                 stylePatternMap.put(styles[i], new ArrayList<>());
-                String[] patterns = this.getAssets().list("percussion/" + styles[1]);
+                String[] patterns = this.getAssets().list("percussion/" + styles[i]);
                 for (int j = 0; j < patterns.length; j++) {
-                    PercussionPattern.PatternAsset patternAsset = percussionPattern.new
-                            PatternAsset(patterns[j], styles[i], j, i);
+                    PercussionPattern.PatternAsset patternAsset = new PercussionPattern.PatternAsset(patterns[j], styles[i], j, i);
+                    //Log.d("PatternAssets", patterns[j]);
                     stylePatternMap.get(styles[i]).add(new PercussionPattern(patternAsset, session, this));
                 }
             }
@@ -178,7 +177,7 @@ public class PercussionActivity extends AppCompatActivity
                                 PercussionPattern pp = null;
                                 for (PercussionPattern p : stylePatternMap.get(selectedStyle)) {
                                     PercussionPattern.PatternAsset patternAsset = p.getPatternAsset();
-                                    if (patternAsset.pattern.equals(selectedPattern)) pp = p;
+                                    if (patternAsset.patternStr.equals(selectedPattern)) pp = p;
                                 }
                                 track.addPattern(pp, position);
                             }
@@ -253,7 +252,7 @@ public class PercussionActivity extends AppCompatActivity
         for (PercussionPattern pattern : patterns) {
             // Create pattern radio button
             PercussionPattern.PatternAsset patternAsset = pattern.getPatternAsset();
-            String name = patternAsset.pattern.replace(".mid", ""); // returns copy of label
+            String name = patternAsset.patternStr.replace(".mid", "");
             RadioButton rb = new RadioButton(this);
             rb.setText(name);
             rb.setButtonTintMode(PorterDuff.Mode.CLEAR);
@@ -268,7 +267,7 @@ public class PercussionActivity extends AppCompatActivity
                         pattern.play();
                         currentPatternButton = rb;
                         selectedStyle = style;
-                        selectedPattern = patternAsset.pattern;
+                        selectedPattern = patternAsset.patternStr;
                     } else {
                         cb.setBackground(getDrawable(R.drawable.radio_normal));
                         if (pattern.isPlaying()) pattern.stop();

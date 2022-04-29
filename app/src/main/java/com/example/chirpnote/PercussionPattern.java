@@ -36,25 +36,25 @@ public class PercussionPattern {
         }
     }
 
-    public class PatternAsset {
-        public String pattern;
-        public String style;
+    public static class PatternAsset {
+        public String patternStr;
+        public String styleStr;
         public int patIndex;
         public int styIndex;
 
-        public PatternAsset(String pattern, String style) {
-            this.pattern = pattern;
-            this.style = style;
+        public PatternAsset(String patternStr, String styleStr) {
+            this.patternStr = patternStr;
+            this.styleStr = styleStr;
         }
 
-        public PatternAsset(String pattern, String style, int patIndex, int styIndex) {
-            this(pattern, style);
+        public PatternAsset(String patternStr, String styleStr, int patIndex, int styIndex) {
+            this(patternStr, styleStr);
             this.patIndex = patIndex;
             this.styIndex = styIndex;
         }
 
         public String getPath() {
-            return "percussion/" + style + "/" + pattern;
+            return "percussion/" + styleStr + "/" + patternStr;
         }
     }
 
@@ -115,7 +115,8 @@ public class PercussionPattern {
      * @param context The context from the activity (pass "this")
      */
     public PercussionPattern(PatternAsset patternAsset, ChirpNoteSession session, Context context) {
-        mMidiEventHandler = new MidiEventHandler(patternAsset.pattern);
+        mMidiEventHandler = new MidiEventHandler(patternAsset.patternStr);
+        this.patternAsset = patternAsset;
 
         try {
             // get file
