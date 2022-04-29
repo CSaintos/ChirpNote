@@ -154,8 +154,8 @@ public class PercussionTrack implements Track {
         // Add pattern
         if(position < mSession.mPercussionPatterns.size()){
             // Add to the middle of the track
-            int startTick = RESOLUTION * 16 * position; // TODO: Offset should only be one measure long, not 4
-            int endTick = RESOLUTION * 16 * (position + 1); // TODO: Offset should only be one measure long, not 4
+            int startTick = RESOLUTION * 4 * position; // TODO: Offset should only be one measure long, not 4
+            int endTick = RESOLUTION * 4 * (position + 1); // TODO: Offset should only be one measure long, not 4
             // Remove the old pattern
             Iterator<MidiEvent> it = track.getEvents().iterator();
             MidiEvent curr;
@@ -193,7 +193,7 @@ public class PercussionTrack implements Track {
             mSession.mPercussionPatterns.set(position, encodePattern(pattern));
         } else {
             // Add to the end of the track
-            int startTick = RESOLUTION * 16 * mSession.mPercussionPatterns.size(); // TODO: Should only be one measure long
+            int startTick = RESOLUTION * 4 * mSession.mPercussionPatterns.size(); // TODO: Should only be one measure long
             Iterator<MidiEvent> it = pattern.getMidiFile().getTracks().get(1).getEvents().iterator();
             MidiEvent next;
             while(it.hasNext()){
@@ -219,11 +219,12 @@ public class PercussionTrack implements Track {
     /*
     TODO: Percussion Pattern encoding TBD
     The string encoding for percussion patterns is defined as follows:
-	char 0: index of percussion style in assets directory
-	char 1: index of percussion pattern in assets directory
+	char 0: index of percussion style in assets directory, range (000-127, 128 if null)
+	char 1: index of percussion pattern in assets directory, range (000-127, 128 if null)
 	*/
 
-    private String encodePattern(PercussionPattern pattern){
+    private String encodePattern(PercussionPattern pattern) {
+        pattern.getLabel();
         return "percussionEncoding";
     }
 

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.chirpnote.Key;
 import com.example.chirpnote.PercussionPattern;
+import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ChirpNoteSession;
 import com.google.android.material.navigation.NavigationView;
@@ -39,9 +40,10 @@ import java.util.ArrayList;
 public class PercussionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static ArrayMap<String, ArrayList<PercussionPattern>> stylePatternMap;
+
     private ArrayMap<RadioButton, ArrayList<RadioButton>> chordButtons;
     private ArrayList<String[]> storedList; // to supposedly store chord's patterns
-    private ArrayMap<String, ArrayList<PercussionPattern>> stylePatternMap;
 
     private LinearLayout chordLayout;
     private RadioGroup chordGroup;
@@ -56,7 +58,7 @@ public class PercussionActivity extends AppCompatActivity
 
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
-
+    private PercussionTrack track;
     private ChirpNoteSession session;
     private Key key;
 
@@ -65,6 +67,7 @@ public class PercussionActivity extends AppCompatActivity
 
     private int chordButtonId;
     private int chordIndex;
+    private int percussionIndex;
 
     private DrawerLayout drawer;
 
@@ -98,6 +101,9 @@ public class PercussionActivity extends AppCompatActivity
         String basePath = this.getFilesDir().getPath();
         session = new ChirpNoteSession("Name", key, 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+        track = new PercussionTrack(session);
+        track.startRecording();
+        percussionIndex = 0;
 
         storedList = new ArrayList<>();
         chordButtons = new ArrayMap<>();
@@ -166,6 +172,12 @@ public class PercussionActivity extends AppCompatActivity
                             if (rb.isChecked()) {
                                 storedList.set((int)rb.getTag(R.id.chord_index), new String[] {selectedStyle, selectedPattern});
                                 //Log.d("Insert", "index: " + (int)rb.getTag(R.id.chord_index));
+                                int position = (int)rb.getTag(R.id.percussion_index);
+                                PercussionPattern pp = null;
+                                for (PercussionPattern p : stylePatternMap.get(selectedStyle)) {
+                                    if (p.getLabel().equals(selectedPattern)) pp = p;
+                                }
+                                track.addPattern(pp, position);
                             }
                         }
                     }
@@ -186,6 +198,9 @@ public class PercussionActivity extends AppCompatActivity
                             if (!removed) removed = true;
                             storedList.set((int)rb.getTag(R.id.chord_index), new String[] {"null", "null"});
                             //Log.d("Remove", "index: " + (int)rb.getTag(R.id.chord_index));
+                            int position = (int)rb.getTag(R.id.percussion_index);
+                            //track.addPattern(constructPattern("null", "null"), position);
+                            track.addPattern(null, position);
                         }
                     }
                 }
@@ -285,24 +300,6 @@ public class PercussionActivity extends AppCompatActivity
         rb.setId(chordButtonId);
         chordButtonId++;
 
-        /*
-        rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
-                if (isChecked) {
-                    ArrayList<RadioButton> tempButtons = chordButtons.get(cb);
-                    for (int i = 0; i < tempButtons.size(); i++) {
-                        RadioButton temp = tempButtons.get(i);
-                        temp.setChecked(true);
-                        temp.setBackground(getDrawable(R.drawable.radio_selected));
-                    }
-                } else {
-
-                }
-            }
-        });
-         */
-
         rb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -362,6 +359,8 @@ public class PercussionActivity extends AppCompatActivity
             chordButtonId++;
             rb0.setTag(R.id.chord_index, chordIndex);
             chordIndex++;
+            rb0.setTag(R.id.percussion_index, percussionIndex);
+            percussionIndex++;
 
             rb0.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -399,6 +398,11 @@ public class PercussionActivity extends AppCompatActivity
         }
 
         chordLayout.addView(row);
+    }
+
+    PercussionPattern constructPattern(String style, String pattern) { //bad idea FIXME
+        String path = "percussion/" + style + "/" + pattern;
+        return new PercussionPattern(pattern, path, session, this);
     }
 
     void displayIndicator(String style, String pattern) {

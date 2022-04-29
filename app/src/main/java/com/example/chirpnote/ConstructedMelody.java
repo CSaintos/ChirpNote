@@ -311,7 +311,7 @@ public class ConstructedMelody extends Melody {
     }
 
     /**
-     *
+     * Sets mElementIndex to the start of the next measure
      */
     public void nextMeasure()
     {
@@ -323,7 +323,7 @@ public class ConstructedMelody extends Melody {
     }
 
     /**
-     *
+     * Sets mElementIndex to the start of the previous measure
      */
     public void previousMeasure() {
         int measureDuration = 0;
