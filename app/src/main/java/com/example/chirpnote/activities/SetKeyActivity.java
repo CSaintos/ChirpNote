@@ -54,16 +54,19 @@ public class SetKeyActivity extends AppCompatActivity {
             String intentName = intent.getType(); // doesn't work
             System.out.println("================================================================================== intentName = " + intentName);
 
-            //TODO: Need to find a way to get the name of setkeyfromsong so that i can use the passed in string array to set the key
-
 
 //            if (intentName != null && intentName.equals("fromSetKeyFromSong"))
             if (intent.getStringExtra("flag").equals("fromSetKeyFromSongActivity"))
             {
+                System.out.println("intent = " + "fromSetKeyFromSongActivity");
+
                 String[] keyArray = (String[]) intent.getSerializableExtra("keyArray"); // str[0] = keyname, str[1] = keytype
                 session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
                 keyNameChoice = keyArray[0]; // e.g. C
                 keyTypeChoice = keyArray[1]; // e.g. Major
+
+                System.out.println("keyName from SetKeyFromSongActivity = " + keyNameChoice);
+                System.out.println("keyType from SetKeyFromSongActivity = " + keyTypeChoice);
 
                 int keyNamePosition = keyNameAdapter.getPosition(keyNameChoice);
                 keyNameSpinner.setSelection(keyNamePosition);
@@ -72,6 +75,8 @@ public class SetKeyActivity extends AppCompatActivity {
             }
             else if (intent.getStringExtra("flag").equals("fromKeyboardActivity"))
             {
+                System.out.println("intent = " + "fromKeyboardActivity");
+
                 session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
                 System.out.println("key = " + session.getKey().toString());
             }
@@ -96,6 +101,7 @@ public class SetKeyActivity extends AppCompatActivity {
                 Intent intent = new Intent(SetKeyActivity.this, SetKeyFromSongActivity.class);
 //                intent.putExtra("session", session);
                 intent.putExtra("flag", "fromSetKeyActivity");
+                intent.putExtra("session", session);
                 startActivity(intent);
             }
         });
@@ -143,6 +149,7 @@ public class SetKeyActivity extends AppCompatActivity {
                 keyNameChoice = parent.getItemAtPosition(position).toString();
 //                Toast.makeText(getApplicationContext(), keyNameChoice, Toast.LENGTH_LONG).show();
 //                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
+                System.out.println("keyName from SetKeyActivity = " + keyNameChoice);
             }
 
             @Override
@@ -158,6 +165,8 @@ public class SetKeyActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 keyTypeChoice = parent.getItemAtPosition(position).toString();
 //                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
+
+                System.out.println("keyType from SetKeyActivity = " + keyTypeChoice);
             }
 
             @Override
