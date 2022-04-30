@@ -130,17 +130,21 @@ public class PercussionTrack implements Track {
      * Adds a pattern to this track at the given position
      * @param pattern The percussion pattern to add
      * @param position The position in the track to add the pattern (replaces the existing pattern at this position)
-     * @throws NullPointerException if the given pattern is null
      * @throws IllegalStateException if the pattern cannot be added to the track at this time
      */
-    public void addPattern(PercussionPattern pattern, int position) throws NullPointerException, IllegalStateException {
-        if(pattern == null){
-            throw new NullPointerException("Cannot add a null PercussionPattern to the track");
-        }
+    public void addPattern(PercussionPattern pattern, int position) throws IllegalStateException {
         // Recording process is stopped right after it is started for a ChordTrack,
         // so we check if the chord track has been recorded, and not if the recording process is active
         if(!isRecorded()){
             throw new IllegalStateException("Cannot add a pattern to the track if the recording process has not been started");
+        }
+        if(pattern == null){
+            if(position < mSession.mPercussionPatterns.size()){
+                mSession.mPercussionPatterns.set(position, encodePattern(pattern));
+            } else {
+                mSession.mPercussionPatterns.add(encodePattern(pattern));
+            }
+            return;
         }
         // Read existing MIDI file
         MidiFile midiFile = null;
@@ -155,8 +159,8 @@ public class PercussionTrack implements Track {
         // Add pattern
         if(position < mSession.mPercussionPatterns.size()){
             // Add to the middle of the track
-            int startTick = RESOLUTION * 4 * position; // TODO: Offset should only be one measure long, not 4
-            int endTick = RESOLUTION * 4 * (position + 1); // TODO: Offset should only be one measure long, not 4
+            int startTick = RESOLUTION * 4 * position;
+            int endTick = RESOLUTION * 4 * (position + 1);
             // Remove the old pattern
             Iterator<MidiEvent> it = track.getEvents().iterator();
             MidiEvent curr;
@@ -194,7 +198,7 @@ public class PercussionTrack implements Track {
             mSession.mPercussionPatterns.set(position, encodePattern(pattern));
         } else {
             // Add to the end of the track
-            int startTick = RESOLUTION * 4 * mSession.mPercussionPatterns.size(); // TODO: Should only be one measure long
+            int startTick = RESOLUTION * 4 * mSession.mPercussionPatterns.size();
             Iterator<MidiEvent> it = pattern.getMidiFile().getTracks().get(1).getEvents().iterator();
             MidiEvent next;
             while(it.hasNext()){
@@ -218,18 +222,28 @@ public class PercussionTrack implements Track {
     }
 
     /*
-    TODO: Percussion Pattern encoding TBD
     The string encoding for percussion patterns is defined as follows:
 	char 0: index of percussion style in assets directory, range (0-9, a if null)
 	char 1-2: index of percussion pattern in assets directory, range (00-99, aa if null)
 	*/
+
+    /**
+     * Encodes the given percussion pattern as a String
+     * @param pattern The pattern to encode
+     * @return The pattern encoding
+     */
     private String encodePattern(PercussionPattern pattern) {
         if (pattern == null) return "aaa";
         PercussionPattern.PatternAsset patternAsset = pattern.getPatternAsset();
-        return padNumber(patternAsset.styIndex) + padNumber(patternAsset.patIndex);
+        return patternAsset.styIndex + padNumber(patternAsset.patIndex);
     }
 
-    public PercussionPattern decodeElement(String percussionElement) {
+    /**
+     * Decodes the given percussion pattern encoding
+     * @param percussionElement The encoded pattern
+     * @return The decoded percussion pattern
+     */
+    public PercussionPattern decodePattern(String percussionElement) {
         String encodedStyle = percussionElement.substring(0, 1);
         String encodedPattern = percussionElement.substring(1);
         int styIndex = 0;
@@ -240,7 +254,6 @@ public class PercussionTrack implements Track {
         } catch (Exception e) {
             return null;
         }
-
         String style = PercussionActivity.stylePatternMap.keyAt(styIndex);
         return PercussionActivity.stylePatternMap.get(style).get(patIndex);
     }
@@ -292,8 +305,7 @@ public class PercussionTrack implements Track {
      * @return The padded number as a String
      */
     private String padNumber(int num){
-        if(num < 10) return "00" + num;
-        if(num < 100) return "0" + num;
+        if(num < 10) return "0" + num;
         return "" + num;
     }
 }

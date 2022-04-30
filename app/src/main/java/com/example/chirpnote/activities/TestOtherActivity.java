@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,8 +67,8 @@ public class TestOtherActivity extends AppCompatActivity {
     private ChordTrack chordTrack;
     // Which track was most recently recorded
     private Track lastTrack;
-    // A Percussion pattern
-    private PercussionPattern rockPercussion;
+    // A container for all percussion patterns
+    private static ArrayMap<String, ArrayList<PercussionPattern>> stylePatternMap;
     // A percussion track to store many patterns
     private PercussionTrack percussionTrack;
     // Media player to play percussion
@@ -372,49 +373,50 @@ public class TestOtherActivity extends AppCompatActivity {
             });
         }
 
-        // Testing percussion playback
-        Button rockMediaButton = (Button) findViewById(R.id.testRockMediaButton);
-        /*rockMediaButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(rockPlayer == null) {
-                    rockPlayer = MediaPlayer.create(v.getContext(), R.raw.rock_drums);
-                    rockPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    rockPlayer.start();
-                    rockMediaButton.setText("Stop");
-                } else {
-                    rockPlayer.stop();
-                    rockMediaButton.setText("Play");
+        // Initialize stylePatternMap with tracks in assets folder
+        stylePatternMap = new ArrayMap<>();
+        try {
+            String[] styles = this.getAssets().list("percussion");
+            for (int i = 0; i < styles.length; i++) {
+                stylePatternMap.put(styles[i], new ArrayList<>());
+                String[] patterns = this.getAssets().list("percussion/" + styles[i]);
+                for (int j = 0; j < patterns.length; j++) {
+                    PercussionPattern.PatternAsset patternAsset = new PercussionPattern.PatternAsset(patterns[j], styles[i], j, i);
+                    stylePatternMap.get(styles[i]).add(new PercussionPattern(patternAsset, session, this));
                 }
             }
-        });*/
-        PercussionPattern pattern2 = new PercussionPattern(PercussionPattern.Style.POP, session, this, rockMediaButton);
-        rockMediaButton.setOnClickListener(new OnClickListener() {
+        } catch (IOException e) { e.printStackTrace(); }
+
+        // Testing percussion playback
+        Button percussionButton1 = (Button) findViewById(R.id.testRockMediaButton);
+        PercussionPattern percussion1 = stylePatternMap.get("pop").get(0);
+        percussionButton1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!pattern2.isPlaying()) {
-                    pattern2.play();
-                    rockMediaButton.setText("Stop");
-                    percussionTrack.addPattern(pattern2, 1);
+                if(!percussion1.isPlaying()) {
+                    percussion1.play();
+                    percussionButton1.setText("Stop");
+                    percussionTrack.addPattern(percussion1, session.mPercussionPatterns.size());
                 } else {
-                    pattern2.stop();
-                    rockMediaButton.setText("Play");
+                    percussion1.stop();
+                    percussionButton1.setText("Play");
                 }
+                //percussionTrack.addPattern(null, session.mPercussionPatterns.size());
             }
         });
-        Button rockMidiButton = (Button) findViewById(R.id.testRockMidiButton);
-        rockPercussion = new PercussionPattern(PercussionPattern.Style.ROCK, session, this, rockMidiButton);
+        Button percussionButton2 = (Button) findViewById(R.id.testRockMidiButton);
+        PercussionPattern percussion2 = stylePatternMap.get("rock").get(0);
         percussionTrack.startRecording();
-        rockMidiButton.setOnClickListener(new OnClickListener() {
+        percussionButton2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!rockPercussion.isPlaying()) {
-                    rockPercussion.play();
-                    rockMidiButton.setText("Stop");
-                    percussionTrack.addPattern(rockPercussion, session.mPercussionPatterns.size());
+                if(!percussion2.isPlaying()) {
+                    percussion2.play();
+                    percussionButton2.setText("Stop");
+                    percussionTrack.addPattern(percussion2, session.mPercussionPatterns.size());
                 } else {
-                    rockPercussion.stop();
-                    rockMidiButton.setText("Play");
+                    percussion2.stop();
+                    percussionButton2.setText("Play");
                 }
             }
         });

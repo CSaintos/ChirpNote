@@ -17,25 +17,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class PercussionPattern {
-    // Style of percussion
-    public enum Style {
-        POP("Pop", R.raw.pop_drums),
-        ROCK("Rock", R.raw.rock_drums);
-
-        private String string;
-        private int rawResource;
-
-        Style(String s, int r){
-            string = s;
-            rawResource = r;
-        }
-
-        @Override
-        public String toString() {
-            return string;
-        }
-    }
-
     public static class PatternAsset {
         public String patternStr;
         public String styleStr;
@@ -64,49 +45,6 @@ public class PercussionPattern {
     // For playback
     private MidiProcessor mMidiProcessor;
     private MidiEventHandler mMidiEventHandler;
-
-    /**
-     * A Percussion pattern
-     * @param style The style of this percussion pattern
-     * @param session The session to play this Percussion pattern on
-     * @param context The context from the activity (pass "this")
-     * @param playButton The button used to play this pattern
-     */
-    public PercussionPattern(Style style, ChirpNoteSession session, Context context, Button playButton){
-        mMidiEventHandler = new MidiEventHandler(style.toString(), playButton);
-        try{
-            InputStream inputStream = context.getApplicationContext().getResources().openRawResource(style.rawResource);
-            File tempFile = File.createTempFile("temp", style.toString());
-            mFilePath = tempFile.getPath();
-            copyFile(inputStream, new FileOutputStream(tempFile));
-
-            inputStream.close();
-            setTempo(session.getTempo());
-        } catch (IOException e) {
-            throw new RuntimeException("Can't create temp file ", e);
-        }
-    }
-
-    /**
-     * A Percussion pattern
-     * @param style The style of this percussion pattern
-     * @param session The session to play this Percussion pattern on
-     * @param context The context from the activity (pass "this")
-     */
-    public PercussionPattern(Style style, ChirpNoteSession session, Context context){
-        mMidiEventHandler = new MidiEventHandler(style.toString());
-        try{
-            InputStream inputStream = context.getApplicationContext().getResources().openRawResource(style.rawResource);
-            File tempFile = File.createTempFile("temp", style.toString());
-            mFilePath = tempFile.getPath();
-            copyFile(inputStream, new FileOutputStream(tempFile));
-
-            inputStream.close();
-            setTempo(session.getTempo());
-        } catch (IOException e) {
-            throw new RuntimeException("Can't create temp file ", e);
-        }
-    }
 
     /**
      * A Percussion pattern
