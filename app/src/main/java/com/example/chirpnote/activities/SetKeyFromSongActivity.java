@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 import com.example.chirpnote.SongListAdapter;
 import com.example.chirpnote.queryResult;
@@ -158,13 +159,13 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
             //shows the key that has been set on click
             Toast.makeText(SetKeyFromSongActivity.this, "Session Key Set to " + songArrayListFinished.get(position).getSongKey(),Toast.LENGTH_SHORT).show();
             //TODO set the key in session, need to find ways to link of current session
+            String keyName = StringUtils.substringBetween(songArrayListFinished.get(position).getSongKey(),""," ");
+            String keyMajorMinor = StringUtils.substringAfter(songArrayListFinished.get(position).getSongKey()," ").replaceAll(" ","");
             if (flag == true){
                 System.out.println("yes");
                 ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
                 Intent intent = new Intent(SetKeyFromSongActivity.this,SetKeyActivity.class);
                 intent.putExtra("flag","fromSetKeyFromSongActivity");
-                String keyName = StringUtils.substringBetween(songArrayListFinished.get(position).getSongKey(),""," ");
-                String keyMajorMinor = StringUtils.substringAfter(songArrayListFinished.get(position).getSongKey()," ").replaceAll(" ","");
                 String[] keyToSend = new String[] {keyName,keyMajorMinor};
                 System.out.println(Arrays.toString(keyToSend));
                 System.out.println(keyToSend[1]);
@@ -174,6 +175,11 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
             }
             else{
                 System.out.println("no");
+                //TODO for regular use I assume we have to pass session back with changes
+//                intent.putExtra("flag","fromSetKeyFromSongActivity");
+//                ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+//                session.setKey(new Key(Key.RootNote.returnRootNote(keyName),Key.Type.valueOf(keyMajorMinor)));
+//                intent.putExtra("session",session);
             }
 
         }

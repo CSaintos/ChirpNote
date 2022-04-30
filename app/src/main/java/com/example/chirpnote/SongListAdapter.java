@@ -82,7 +82,8 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
         ImageLoader.getInstance().init(config);
         ImageLoader imageLoader = ImageLoader.getInstance();
         String queryJsonPre = getItem(position).getImage();
-        File text = new File(mContext.getFilesDir() + "/" + getItem(position).getSongArtist() + "_text.json");
+        File text = new File(mContext.getFilesDir() + "/" + getItem(position).getSongTitle() + "_" +
+                getItem(position).getSongArtist() + "_text.json");
         try {
             text.createNewFile();
         } catch (IOException e) {
@@ -105,45 +106,59 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            JsonObject searchRootObject = searchRootElement.getAsJsonObject();
+            if (!(searchRootElement == null) || !(text.length() == 0) || !text.isFile() || !searchRootElement.equals("null")) {
+                JsonObject searchRootObject = searchRootElement.getAsJsonObject();
             /*
             Avoid crashes related to esoteric results.
             */
-            if (!searchRootElement.getAsJsonObject().isJsonObject() || searchRootObject.size() == 0 || searchRootObject.getAsJsonArray("results").isEmpty()){
+                if (!searchRootElement.getAsJsonObject().isJsonObject() || searchRootObject.size() == 0 || searchRootObject.getAsJsonArray("results").isEmpty()) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.setImageDrawable(AppCompatResources.getDrawable(mContext, R.drawable.chirpnote_temp_icon));
+                            mContext.deleteFile(text.getName());
+                        }
+                    });
+                } else {
+                    String songImg = searchRootObject.getAsJsonArray("results").get(0).getAsJsonObject().get("artworkUrl100").getAsString();
+                    imageLoader.loadImage(songImg, new SimpleImageLoadingListener() {
+                        @Override
+                        /*
+                         * this listener is for the image loading process that works with a url
+                         */
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            super.onLoadingComplete(imageUri, view, loadedImage);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    imageView.setImageBitmap(loadedImage);
+                                    mContext.deleteFile(text.getName());
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        else {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        imageView.setImageDrawable(AppCompatResources.getDrawable(mContext,R.drawable.chirpnote_temp_icon));
-                        mContext.deleteFile(text.getName());
+                        imageView.setImageDrawable(AppCompatResources.getDrawable(mContext, R.drawable.chirpnote_temp_icon));
                     }
                 });
-            }
-            else {
-                String songImg = searchRootObject.getAsJsonArray("results").get(0).getAsJsonObject().get("artworkUrl100").getAsString();
-                imageLoader.loadImage(songImg, new SimpleImageLoadingListener(){
-                    @Override
-                    /*
-                     * this listener is for the image loading process that works with a url
-                     */
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        super.onLoadingComplete(imageUri, view, loadedImage);
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                imageView.setImageBitmap(loadedImage);
-                                mContext.deleteFile(text.getName());
-                            }
-                        });
-                    }
-                });
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-    }
-        }).start();
+        }catch(MalformedURLException e){
+                e.printStackTrace();
+            }
+        catch(IOException e){
+                e.printStackTrace();
+            }
+        catch (NullPointerException e){
+            e.printStackTrace();
+            handler.post(() -> imageView.setImageDrawable(AppCompatResources.getDrawable(mContext, R.drawable.chirpnote_temp_icon)));
+        }
+        }
+    }).start();
         /*
         Set all the rest of the elements before packaginng the view back to the listview
          */
