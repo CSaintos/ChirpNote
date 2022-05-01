@@ -256,48 +256,19 @@ public class InsertChordsActivity extends AppCompatActivity
             addRowOfMeasures3(importChords, true);
         }
 
-//        Chord[] importChords = new Chord[4];
-//        for(int i = 0; i < session.mChords.size(); i++){
-//            importChords[i % 4] = chordTrack.decodeChord(session.mChords.get(i));
-//            if ((i + 1) % 4 == 0) {
-//                addRowOfMeasures3(importChords, true);
-//            }
-//        }
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_add_row:
-//                if (areMeasuresFilled() == true || layoutList.getChildCount() == 0)
-//                {
-////                    addRowOfMeasures();
-////                    addRowOfMeasures2();
-////                    if (session.mChords.size() > 0)
-////                    {
-////                        Chord[] initChords = initializeSongMeasures(session);
-////                        addRowOfMeasures3(initChords);
-////                    }
-////                    else {
-////                        Chord[] randChords = randomChordProgression(sessionChords);
-////                        addRowOfMeasures3(randChords);
-////                    }
-//                    Chord[] randChords = randomChordProgression(sessionChords);
-//                    addRowOfMeasures3(randChords);
-//                }
-//                else
-//                {
-//                    Toast.makeText(getApplicationContext(), "Please insert chords to all available measures.", Toast.LENGTH_SHORT).show();
-//                }
                 Chord[] randChords = randomChordProgression(sessionChords);
                 addRowOfMeasures3(randChords, false);
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
                 break;
-//            case R.id.chordSuggestionButton:
-//                chordSuggestion(session);
-//                break;
         }
     }
 
@@ -347,15 +318,25 @@ public class InsertChordsActivity extends AppCompatActivity
                         // Use copy constructor once it has been fixed
                         // Chord newChord = new Chord(selectedSessionChord);
 
-                        Chord newChord = new Chord(selectedSessionChord.getRootNote(), selectedSessionChord.getType(), session.getTempo());
+                        System.out.println("============= selectedSessionChord.getRoman() = " + selectedSessionChord.getRoman()); // selectedSessionChord.getRoman()
+                        System.out.println("============= selectedSessionChord.getRootNote() = " + selectedSessionChord.getRootNote()); // selectedSessionChord.getRoman()
+                        System.out.println("============= selectedSessionChord.getButton().getText() = " + selectedSessionChord.getButton().getText());
 
-                        for (int i = 0; i < listOfChords.size(); i++)
+
+                        int selectedRomanIndex = 0;
+                        for (int i = 0; i < currentKey.getRomanTypes().length; i++)
                         {
-                            for (int j = 0; j < listOfChords.get(0).length; j++)
+                            if (currentKey.getRomanTypes()[i].equals(selectedSessionChord.getButton().getText()))
                             {
-                                System.out.println("listOfChords.get("+i+")["+j+"]" + listOfChords.get(i)[j]);
+                                selectedRomanIndex = i;
+                                break;
                             }
                         }
+                        System.out.println("selectedRomanIndex = " + selectedRomanIndex);
+
+//                        Chord newChord = new Chord(selectedSessionChord.getRootNote(), selectedSessionChord.getType(), session.getTempo(), selectedSessionChord.getRoman());
+                        Chord newChord = new Chord(selectedSessionChord.getRootNote(), selectedSessionChord.getType(), session.getTempo(), selectedRomanIndex);
+
 
 //                        System.out.println("================= HERE =======================");
 //                        System.out.println("rowIdx = " + rowIdx);
@@ -365,8 +346,22 @@ public class InsertChordsActivity extends AppCompatActivity
 //                        System.out.println("listOfChords.size() = " + listOfChords.size());
 
                         listOfChords.get(newRowIdx)[col] = newChord; // ERROR HERE IF I REMOVE FROM MIDDLE
+
+
+                        for (int i = 0; i < listOfChords.size(); i++)
+                        {
+                            for (int j = 0; j < 4; j++)
+                            {
+                                int romanInt = listOfChords.get(i)[j].getRoman();
+                                String romanStr = session.getKey().getRomanTypes()[romanInt];
+
+                                System.out.println("listOfChords.get("+i+")["+j+"]" + listOfChords.get(i)[j] + "; roman = " + romanStr);
+                            }
+                        }
+
                         if(!loadingSession) chordTrack.addChord(newChord, (newRowIdx * 4) + col);
                         ((Button) v).setText(selectedSessionChord.getButton().getText());
+
                     }
 
                     selectedSessionChord = null; // clears selectedChord so that it doesn't keep adding to other measures
@@ -376,9 +371,6 @@ public class InsertChordsActivity extends AppCompatActivity
                         for (int i = 0; i < sessionChords.length; i++) {
                             sessionChords[i].getButton().setSelected(false);
                         }
-//                        for (int i = 0; i < suggestedChords.size(); i++) {
-//                            suggestedChords.get(i).getButton().setSelected(false);
-//                        }
                     }
 
                     String inputChord = listOfChords.get(newRowIdx)[col].toString();
@@ -423,20 +415,17 @@ public class InsertChordsActivity extends AppCompatActivity
             });
         }
 
-//        for (int row = 0; row < layoutList.getChildCount(); row++)
-//        {
-//            for (int measure = 0; measure < 4; measure++)
-//            {
-//                System.out.println("row = " + row + ", measure " + measure + " = " + listOfChords.get(row)[measure]);
-//            }
-//        }
-
-//        Chord[] tempList = randomChordProgression(sessionChords);
-
-
     }
 
+    private int getRomanIndex(String chordRootName) {
+        ArrayList<String> notesArray = new ArrayList<>();
+        for (int i = 0; i < currentKey.getScaleNotes().length - 1; i++) {
+            int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
+            notesArray.add(Key.RootNote.values()[rootIdx].toString());
+        }
 
+        return notesArray.indexOf(chordRootName);
+    }
 
 
     private void changeKey(ChirpNoteSession session)
@@ -740,361 +729,361 @@ public class InsertChordsActivity extends AppCompatActivity
 
 
 
-    private void modifyMeasure(Chord sessionChord)
-    {
-//        System.out.println("layoutList size = " + layoutList.getChildCount());
-        currentChord = new Chord();
-        currentChord = new Chord(sessionChord);
-        if (layoutList.getChildCount() == 0)
-        {
-            if (notificationCounter < 1) {
-                Toast.makeText(getApplicationContext(), "Please add row of measures first.", Toast.LENGTH_SHORT).show();
-                notificationCounter += 1;
-            }
-        }
-        else {
-            if (notificationCounter < 2) {
-                Toast.makeText(getApplicationContext(), "Select a measure.", Toast.LENGTH_SHORT).show();
-                notificationCounter += 1;
-            }
-//            updateOnClickListenForMeasures(sessionChord);
-
-
-//            System.out.println("current selected chord = " + sessionChord.getText());
-//            System.out.println("outside for-loop sessionChord = " + currentChord);
-            for (int row = 0; row < layoutList.getChildCount(); row++)
-            {
-//                System.out.println("before second for loop row = " + row);
-                for (int measure = 0; measure < measures.length; measure++)
-                {
-
-                    Chord currentMeasure = listOfMeasures.get(row)[measure];
-                    int finalMeasure = measure;
-                    int finalRow = row;
-//                    System.out.println("before onClick row = " + finalRow);
-                    currentMeasure.getButton().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-//                            System.out.println(" ");
-//                            System.out.println("row = " + finalRow);
-//                            System.out.println("measure = " + finalMeasure);
-//                            System.out.println("layoutList size = " + layoutList.getChildCount());
-
-                            // start
-//                            System.out.println("before setting text sessionChord = " + currentChord);
-
-                            currentMeasure.getButton().setText(currentChord.getButton().getText());
-//                            currentMeasure.getButton().setText(sessionChord.getButton().getText());
-
-//                            System.out.println("sessionChord = " + currentChord);
-//                            System.out.println("currentMeasure = " + currentChord);
-
-                            Chord[] currentRowMeasure = listOfMeasures.get(finalRow);
-                            currentRowMeasure[finalMeasure] = new Chord(currentChord); // need to make a copy constructor in chord
-
-                            listOfMeasures.set(finalRow, currentRowMeasure);
-
-                            if (chordSuggestionStatus == true)
-                            {
-                                String inputChord = (String) currentMeasure.getButton().getText();
-                                suggestedChords = getSuggestedChords(inputChord, sessionChords);
-
-                                for (int i = 0; i < suggestedChords.size(); i++)
-                                {
-                                    suggestedChords.get(i).getButton().setSelected(true);
-                                }
-                            }
-                            else if (chordSuggestionStatus == false)
-                            {
-                                for (int i = 0; i < suggestedChords.size(); i++)
-                                {
-                                    suggestedChords.get(i).getButton().setSelected(false);
-                                }
-                                suggestedChords.clear();
-                            }
-
-//                            System.out.println("sessionChord = " + sessionChord);
-//                            System.out.println("currentRowMeasure[finalMeasure] = " + currentRowMeasure[finalMeasure]);
-                            // end same as bellow but using currentChord
-
-
-
-                        }
-                    });
-//                    System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
-
-
-//                    for (int i = 0; i < listOfMeasures.size(); i++) {
-//                        if (listOfMeasures.get(row)[measure].getRootNote() != null) {
-//                            System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
+//    private void modifyMeasure(Chord sessionChord)
+//    {
+////        System.out.println("layoutList size = " + layoutList.getChildCount());
+//        currentChord = new Chord();
+//        currentChord = new Chord(sessionChord);
+//        if (layoutList.getChildCount() == 0)
+//        {
+//            if (notificationCounter < 1) {
+//                Toast.makeText(getApplicationContext(), "Please add row of measures first.", Toast.LENGTH_SHORT).show();
+//                notificationCounter += 1;
+//            }
+//        }
+//        else {
+//            if (notificationCounter < 2) {
+//                Toast.makeText(getApplicationContext(), "Select a measure.", Toast.LENGTH_SHORT).show();
+//                notificationCounter += 1;
+//            }
+////            updateOnClickListenForMeasures(sessionChord);
+//
+//
+////            System.out.println("current selected chord = " + sessionChord.getText());
+////            System.out.println("outside for-loop sessionChord = " + currentChord);
+//            for (int row = 0; row < layoutList.getChildCount(); row++)
+//            {
+////                System.out.println("before second for loop row = " + row);
+//                for (int measure = 0; measure < measures.length; measure++)
+//                {
+//
+//                    Chord currentMeasure = listOfMeasures.get(row)[measure];
+//                    int finalMeasure = measure;
+//                    int finalRow = row;
+////                    System.out.println("before onClick row = " + finalRow);
+//                    currentMeasure.getButton().setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+////                            System.out.println(" ");
+////                            System.out.println("row = " + finalRow);
+////                            System.out.println("measure = " + finalMeasure);
+////                            System.out.println("layoutList size = " + layoutList.getChildCount());
+//
+//                            // start
+////                            System.out.println("before setting text sessionChord = " + currentChord);
+//
+//                            currentMeasure.getButton().setText(currentChord.getButton().getText());
+////                            currentMeasure.getButton().setText(sessionChord.getButton().getText());
+//
+////                            System.out.println("sessionChord = " + currentChord);
+////                            System.out.println("currentMeasure = " + currentChord);
+//
+//                            Chord[] currentRowMeasure = listOfMeasures.get(finalRow);
+//                            currentRowMeasure[finalMeasure] = new Chord(currentChord); // need to make a copy constructor in chord
+//
+//                            listOfMeasures.set(finalRow, currentRowMeasure);
+//
+//                            if (chordSuggestionStatus == true)
+//                            {
+//                                String inputChord = (String) currentMeasure.getButton().getText();
+//                                suggestedChords = getSuggestedChords(inputChord, sessionChords);
+//
+//                                for (int i = 0; i < suggestedChords.size(); i++)
+//                                {
+//                                    suggestedChords.get(i).getButton().setSelected(true);
+//                                }
+//                            }
+//                            else if (chordSuggestionStatus == false)
+//                            {
+//                                for (int i = 0; i < suggestedChords.size(); i++)
+//                                {
+//                                    suggestedChords.get(i).getButton().setSelected(false);
+//                                }
+//                                suggestedChords.clear();
+//                            }
+//
+////                            System.out.println("sessionChord = " + sessionChord);
+////                            System.out.println("currentRowMeasure[finalMeasure] = " + currentRowMeasure[finalMeasure]);
+//                            // end same as bellow but using currentChord
+//
+//
+//
 //                        }
-//                        else
-//                        {
-//                            System.out.println("row = " + row + ", measure " + measure + " = " + "NO CHORD");
-//                        }
+//                    });
+////                    System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
+//
+//
+////                    for (int i = 0; i < listOfMeasures.size(); i++) {
+////                        if (listOfMeasures.get(row)[measure].getRootNote() != null) {
+////                            System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
+////                        }
+////                        else
+////                        {
+////                            System.out.println("row = " + row + ", measure " + measure + " = " + "NO CHORD");
+////                        }
+////                    }
+//
+//                }
+//            }
+//        }
+//    }
+
+//    private boolean areMeasuresFilled() {
+//        if (measures != null) {
+//            for (int row = 0; row < layoutList.getChildCount(); row++) {
+//                for (int measure = 0; measure < measures.length; measure++) {
+//                    if (listOfMeasures.get(row)[measure].getRootNote() == null) {
+//                        return false;
 //                    }
-
-                }
-            }
-        }
-    }
-
-    private boolean areMeasuresFilled() {
-        if (measures != null) {
-            for (int row = 0; row < layoutList.getChildCount(); row++) {
-                for (int measure = 0; measure < measures.length; measure++) {
-                    if (listOfMeasures.get(row)[measure].getRootNote() == null) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    private ArrayList<Chord> returnValidMeasures() {
-        ArrayList<Chord> list = new ArrayList<>();
-        for (int row = 0; row < layoutList.getChildCount(); row++)
-        {
-            for (int measure = 0; measure < measures.length; measure++)
-            {
-                list.add(listOfMeasures.get(row)[measure]);
-            }
-        }
-
-        return list;
-    }
-
-    private void updateOnClickListenForMeasures(Button sessionChord)
-    {
-        for (int row = 0; row < layoutList.getChildCount(); row++) {
-            for (int measure = 0; measure < measures.length; measure++) {
-                Chord currentMeasure = listOfMeasures.get(row)[measure];
-                int finalMeasure = measure;
-                int finalRow = row;
-                currentMeasure.getButton().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        System.out.println(" ");
-                        System.out.println("row = " + finalRow);
-                        System.out.println("measure = " + finalMeasure);
-                        currentMeasure.getButton().setText(sessionChord.getText());
-                    }
-                });
-            }
-        }
-    }
-    //    // The bottom three variables should be defined at the top of the file
-//    private ArrayList<Chord[]> listOfChords = new ArrayList<>();
-//    private ArrayList<Button[]> listOfButtons = new ArrayList<>();
-//    private Chord selectedSessionChord = null;
-//    // The top three variables should be defined at the top of the file
-
-    private void addRowOfMeasures2(){
-        View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
-        layoutList.addView(rowOfMeasures);
-        int rowIdx = layoutList.indexOfChild(rowOfMeasures);
-
-        ImageView imageClose = (ImageView) rowOfMeasures.findViewById(R.id.row_remove);
-        imageClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int index = layoutList.indexOfChild(rowOfMeasures);
-                removeRowOfMeasures(rowOfMeasures, index);
-            }
-        });
-
-//        listOfChords.add(new Chord[4]);
-        Chord[] prefilledMeasures = randomChordProgression(sessionChords);
-        listOfChords.add(prefilledMeasures);
-
-        listOfButtons.add(new Button[4]);
-        int[] buttonIds = new int[]{R.id.measure1, R.id.measure2, R.id.measure3, R.id.measure4}; // these are the tags that are going to be needed to look up the specific buttons from the particular view
-
-        for (int col = 0; col < prefilledMeasures.length; col++){
-            int romanChordIndex = prefilledMeasures[col].getRoman();
-            String romanChordString = session.getKey().getRomanTypes()[romanChordIndex];
-            Button tempMeasure = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
-            tempMeasure.setText(romanChordString);
-
-            chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
-        }
-
-        for(int colIdx = 0; colIdx < 4; colIdx++){
-            int col = colIdx;
-            listOfButtons.get(rowIdx)[col] = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
-            listOfButtons.get(rowIdx)[col].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int row = layoutList.indexOfChild(rowOfMeasures);
-                    if(selectedSessionChord != null){
-                        // Use copy constructor once it has been fixed
-                        // Chord newChord = new Chord(selectedSessionChord);
-                        Chord newChord = new Chord(selectedSessionChord.getRootNote(), selectedSessionChord.getType(), session.getTempo());
-                        listOfChords.get(row)[col] = newChord;
-                        chordTrack.addChord(newChord, (row * 4) + col);
-                        ((Button) v).setText(selectedSessionChord.getButton().getText());
-                    }
-
-                    selectedSessionChord = null; // clears selectedChord so that it doesn't keep adding to other measures
-
-                    if (isAnotherChordSelected())
-                    {
-                        for (int i = 0; i < sessionChords.length; i++) {
-                            sessionChords[i].getButton().setSelected(false);
-                        }
-//                        for (int i = 0; i < suggestedChords.size(); i++) {
-//                            suggestedChords.get(i).getButton().setSelected(false);
-//                        }
-                    }
-
-
-                    String inputChord = listOfChords.get(row)[col].toString();
-//                    System.out.println("inputChord = " + inputChord);
-                    suggestedChords = getSuggestedChords(inputChord, sessionChords);
-
-
-
-
-
-                    if (listOfButtons.get(row)[col].isSelected())
-                    {
-                        listOfButtons.get(row)[col].setSelected(false);
-                        // resets everything to off
-                        for (int i = 0; i < suggestedChords.size(); i++) {
-                            suggestedChords.get(i).getButton().setSelected(false);
-                        }
-
-                    }
-                    else // if listOfButtons.get(rowIdx)[col].isSelected() == false
-                    {
-                        listOfButtons.get(row)[col].setSelected(true);
-
-
-                        // resets everything to off
-                        for (int i = 0; i < suggestedChords.size(); i++) {
-                            suggestedChords.get(i).getButton().setSelected(false);
-                        }
-
-                        // turn on relevant chords
-                        if (chordSuggestionStatus == true) {
-                            for (int i = 0; i < suggestedChords.size(); i++) {
-                                suggestedChords.get(i).getButton().setSelected(true);
-                            }
-                        }
-                        else if (chordSuggestionStatus == false) {
-                            for (int i = 0; i < suggestedChords.size(); i++) {
-                                suggestedChords.get(i).getButton().setSelected(false);
-                            }
-                        }
-                    }
-
-                }
-            });
-        }
-
-    }
-
-    private void addRowOfMeasures()
-    {
-
-        View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
-        ImageView imageClose = (ImageView) rowOfMeasures.findViewById(R.id.row_remove);
-        layoutList.addView(rowOfMeasures);
-
-
-        int currentRowIndex = layoutList.indexOfChild(rowOfMeasures);
-        //        int currentRowIndex = layoutList.getChildCount() - 1; // grabs the index of the recently added row, i.e. row 1 - 1 = row 0 => first row of measures
-
-
-        imageClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int index = layoutList.indexOfChild(rowOfMeasures);
-                removeRowOfMeasures(rowOfMeasures, index);
-
-                //                removeRowOfMeasures(rowOfMeasures, currentRowIndex);
-                //                removeRowOfMeasures(rowOfMeasures);//, currentRowIndex); // old
-            }
-        });
-
-
-        // adds 4 measures to a measures array which is then set to listOfMeasures so that each row of the listOfMeasures will correspond to a specific row which ideally would make it easier to add and remove later
-        measures = new Chord[4];
-        measures[0] = new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure1));
-        measures[1] = new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure2));
-        measures[2] = new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure3));
-        measures[3] = new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure4));
-
-        //        // 4.7 changes
-        //        for (int i = 0; i < measures.length; i++)
-        //        {
-        //            measures[i].getButton().setOnClickListener(new View.OnClickListener() {
-        //                @Override
-        //                public void onClick(View v) {
-        //                    modifyMeasure(measures);
-        //
-        //                }
-        //            });
-        //        }
-        //        // end of 4.7 changes
-
-        //        // adds 4 measures to a measures array which is then set to listOfMeasures so that each row of the listOfMeasures will correspond to a specific row which ideally would make it easier to add and remove later
-        //        measures = new ArrayList<>();
-        //        measures.set(0, new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure1)));
-        //        measures.set(1, new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure2)));
-        //        measures.set(2, new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure3)));
-        //        measures.set(3, new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure4)));
-
-        listOfMeasures.add(measures); // HERE IS WHERE I FINISHED
-    }
-    //    private void chordSuggestion(Session session) {
+//                }
+//            }
+//        }
+//        return true;
+//    }
+//
+//    private ArrayList<Chord> returnValidMeasures() {
+//        ArrayList<Chord> list = new ArrayList<>();
 //        for (int row = 0; row < layoutList.getChildCount(); row++)
 //        {
 //            for (int measure = 0; measure < measures.length; measure++)
 //            {
+//                list.add(listOfMeasures.get(row)[measure]);
+//            }
+//        }
+//
+//        return list;
+//    }
+//
+//    private void updateOnClickListenForMeasures(Button sessionChord)
+//    {
+//        for (int row = 0; row < layoutList.getChildCount(); row++) {
+//            for (int measure = 0; measure < measures.length; measure++) {
 //                Chord currentMeasure = listOfMeasures.get(row)[measure];
 //                int finalMeasure = measure;
 //                int finalRow = row;
 //                currentMeasure.getButton().setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View v) {
-//                        for (int i = 0; i < sessionChords.length; i++)
-//                        {
-//                            if (currentMeasure.toString().equals(sessionChords[i].toString()))
-//                            {
-//                                sessionChords[i].getButton().setSelected(true);
-//                                System.out.println("sessionChord = " + sessionChords[i]);
-//                            }
-//                        }
-//
-////                        System.out.println(" ");
-////                        System.out.println("row = " + finalRow);
-////                        System.out.println("measure = " + finalMeasure);
-////                        System.out.println("layoutList size = " + layoutList.getChildCount());
-////
-////                        // start
-////                        System.out.println("before setting text sessionChord = " + currentChord);
-////                        currentMeasure.getButton().setText(currentChord.getButton().getText());
-////                        System.out.println("sessionChord = " + currentChord);
-////                        System.out.println("currentMeasure = " + currentChord);
-////
-////                        Chord[] currentRowMeasure = listOfMeasures.get(finalRow);
-////                        currentRowMeasure[finalMeasure] = new Chord(currentChord); // need to make a copy constructor in chord
-////
-////                        listOfMeasures.set(finalRow, currentRowMeasure);
-////
-////                            System.out.println("sessionChord = " + sessionChord);
-////                            System.out.println("currentRowMeasure[finalMeasure] = " + currentRowMeasure[finalMeasure]);
-//                        // end same as bellow but using currentChord
-//
-//
-//
+//                        System.out.println(" ");
+//                        System.out.println("row = " + finalRow);
+//                        System.out.println("measure = " + finalMeasure);
+//                        currentMeasure.getButton().setText(sessionChord.getText());
 //                    }
 //                });
-//                System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
-//
 //            }
 //        }
 //    }
+    //    // The bottom three variables should be defined at the top of the file
+//    private ArrayList<Chord[]> listOfChords = new ArrayList<>();
+//    private ArrayList<Button[]> listOfButtons = new ArrayList<>();
+//    private Chord selectedSessionChord = null;
+//    // The top three variables should be defined at the top of the file
+
+//    private void addRowOfMeasures2(){
+//        View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
+//        layoutList.addView(rowOfMeasures);
+//        int rowIdx = layoutList.indexOfChild(rowOfMeasures);
+//
+//        ImageView imageClose = (ImageView) rowOfMeasures.findViewById(R.id.row_remove);
+//        imageClose.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int index = layoutList.indexOfChild(rowOfMeasures);
+//                removeRowOfMeasures(rowOfMeasures, index);
+//            }
+//        });
+//
+////        listOfChords.add(new Chord[4]);
+//        Chord[] prefilledMeasures = randomChordProgression(sessionChords);
+//        listOfChords.add(prefilledMeasures);
+//
+//        listOfButtons.add(new Button[4]);
+//        int[] buttonIds = new int[]{R.id.measure1, R.id.measure2, R.id.measure3, R.id.measure4}; // these are the tags that are going to be needed to look up the specific buttons from the particular view
+//
+//        for (int col = 0; col < prefilledMeasures.length; col++){
+//            int romanChordIndex = prefilledMeasures[col].getRoman();
+//            String romanChordString = session.getKey().getRomanTypes()[romanChordIndex];
+//            Button tempMeasure = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
+//            tempMeasure.setText(romanChordString);
+//
+//            chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
+//        }
+//
+//        for(int colIdx = 0; colIdx < 4; colIdx++){
+//            int col = colIdx;
+//            listOfButtons.get(rowIdx)[col] = layoutList.getChildAt(rowIdx).findViewById(buttonIds[col]);
+//            listOfButtons.get(rowIdx)[col].setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int row = layoutList.indexOfChild(rowOfMeasures);
+//                    if(selectedSessionChord != null){
+//                        // Use copy constructor once it has been fixed
+//                        // Chord newChord = new Chord(selectedSessionChord);
+//                        Chord newChord = new Chord(selectedSessionChord.getRootNote(), selectedSessionChord.getType(), session.getTempo());
+//                        listOfChords.get(row)[col] = newChord;
+//                        chordTrack.addChord(newChord, (row * 4) + col);
+//                        ((Button) v).setText(selectedSessionChord.getButton().getText());
+//                    }
+//
+//                    selectedSessionChord = null; // clears selectedChord so that it doesn't keep adding to other measures
+//
+//                    if (isAnotherChordSelected())
+//                    {
+//                        for (int i = 0; i < sessionChords.length; i++) {
+//                            sessionChords[i].getButton().setSelected(false);
+//                        }
+////                        for (int i = 0; i < suggestedChords.size(); i++) {
+////                            suggestedChords.get(i).getButton().setSelected(false);
+////                        }
+//                    }
+//
+//
+//                    String inputChord = listOfChords.get(row)[col].toString();
+////                    System.out.println("inputChord = " + inputChord);
+//                    suggestedChords = getSuggestedChords(inputChord, sessionChords);
+//
+//
+//
+//
+//
+//                    if (listOfButtons.get(row)[col].isSelected())
+//                    {
+//                        listOfButtons.get(row)[col].setSelected(false);
+//                        // resets everything to off
+//                        for (int i = 0; i < suggestedChords.size(); i++) {
+//                            suggestedChords.get(i).getButton().setSelected(false);
+//                        }
+//
+//                    }
+//                    else // if listOfButtons.get(rowIdx)[col].isSelected() == false
+//                    {
+//                        listOfButtons.get(row)[col].setSelected(true);
+//
+//
+//                        // resets everything to off
+//                        for (int i = 0; i < suggestedChords.size(); i++) {
+//                            suggestedChords.get(i).getButton().setSelected(false);
+//                        }
+//
+//                        // turn on relevant chords
+//                        if (chordSuggestionStatus == true) {
+//                            for (int i = 0; i < suggestedChords.size(); i++) {
+//                                suggestedChords.get(i).getButton().setSelected(true);
+//                            }
+//                        }
+//                        else if (chordSuggestionStatus == false) {
+//                            for (int i = 0; i < suggestedChords.size(); i++) {
+//                                suggestedChords.get(i).getButton().setSelected(false);
+//                            }
+//                        }
+//                    }
+//
+//                }
+//            });
+//        }
+//
+//    }
+//
+//    private void addRowOfMeasures()
+//    {
+//
+//        View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
+//        ImageView imageClose = (ImageView) rowOfMeasures.findViewById(R.id.row_remove);
+//        layoutList.addView(rowOfMeasures);
+//
+//
+//        int currentRowIndex = layoutList.indexOfChild(rowOfMeasures);
+//        //        int currentRowIndex = layoutList.getChildCount() - 1; // grabs the index of the recently added row, i.e. row 1 - 1 = row 0 => first row of measures
+//
+//
+//        imageClose.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int index = layoutList.indexOfChild(rowOfMeasures);
+//                removeRowOfMeasures(rowOfMeasures, index);
+//
+//                //                removeRowOfMeasures(rowOfMeasures, currentRowIndex);
+//                //                removeRowOfMeasures(rowOfMeasures);//, currentRowIndex); // old
+//            }
+//        });
+//
+//
+//        // adds 4 measures to a measures array which is then set to listOfMeasures so that each row of the listOfMeasures will correspond to a specific row which ideally would make it easier to add and remove later
+//        measures = new Chord[4];
+//        measures[0] = new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure1));
+//        measures[1] = new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure2));
+//        measures[2] = new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure3));
+//        measures[3] = new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure4));
+//
+//        //        // 4.7 changes
+//        //        for (int i = 0; i < measures.length; i++)
+//        //        {
+//        //            measures[i].getButton().setOnClickListener(new View.OnClickListener() {
+//        //                @Override
+//        //                public void onClick(View v) {
+//        //                    modifyMeasure(measures);
+//        //
+//        //                }
+//        //            });
+//        //        }
+//        //        // end of 4.7 changes
+//
+//        //        // adds 4 measures to a measures array which is then set to listOfMeasures so that each row of the listOfMeasures will correspond to a specific row which ideally would make it easier to add and remove later
+//        //        measures = new ArrayList<>();
+//        //        measures.set(0, new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure1)));
+//        //        measures.set(1, new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure2)));
+//        //        measures.set(2, new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure3)));
+//        //        measures.set(3, new Chord(layoutList.getChildAt(currentRowIndex).findViewById(R.id.measure4)));
+//
+//        listOfMeasures.add(measures); // HERE IS WHERE I FINISHED
+//    }
+//    //    private void chordSuggestion(Session session) {
+////        for (int row = 0; row < layoutList.getChildCount(); row++)
+////        {
+////            for (int measure = 0; measure < measures.length; measure++)
+////            {
+////                Chord currentMeasure = listOfMeasures.get(row)[measure];
+////                int finalMeasure = measure;
+////                int finalRow = row;
+////                currentMeasure.getButton().setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View v) {
+////                        for (int i = 0; i < sessionChords.length; i++)
+////                        {
+////                            if (currentMeasure.toString().equals(sessionChords[i].toString()))
+////                            {
+////                                sessionChords[i].getButton().setSelected(true);
+////                                System.out.println("sessionChord = " + sessionChords[i]);
+////                            }
+////                        }
+////
+//////                        System.out.println(" ");
+//////                        System.out.println("row = " + finalRow);
+//////                        System.out.println("measure = " + finalMeasure);
+//////                        System.out.println("layoutList size = " + layoutList.getChildCount());
+//////
+//////                        // start
+//////                        System.out.println("before setting text sessionChord = " + currentChord);
+//////                        currentMeasure.getButton().setText(currentChord.getButton().getText());
+//////                        System.out.println("sessionChord = " + currentChord);
+//////                        System.out.println("currentMeasure = " + currentChord);
+//////
+//////                        Chord[] currentRowMeasure = listOfMeasures.get(finalRow);
+//////                        currentRowMeasure[finalMeasure] = new Chord(currentChord); // need to make a copy constructor in chord
+//////
+//////                        listOfMeasures.set(finalRow, currentRowMeasure);
+//////
+//////                            System.out.println("sessionChord = " + sessionChord);
+//////                            System.out.println("currentRowMeasure[finalMeasure] = " + currentRowMeasure[finalMeasure]);
+////                        // end same as bellow but using currentChord
+////
+////
+////
+////                    }
+////                });
+////                System.out.println("row = " + row + ", measure " + measure + " = " + listOfMeasures.get(row)[measure]);
+////
+////            }
+////        }
+////    }
 }
