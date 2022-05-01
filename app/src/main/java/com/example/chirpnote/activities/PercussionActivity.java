@@ -55,6 +55,7 @@ public class PercussionActivity extends AppCompatActivity
     private Button insertButton;
     private Button removeButton;
     private TextView indicator;
+    private DrawerLayout drawer;
 
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
@@ -68,8 +69,7 @@ public class PercussionActivity extends AppCompatActivity
     private int chordButtonId;
     private int chordIndex;
     private int percussionIndex;
-
-    private DrawerLayout drawer;
+    private int measureIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +138,8 @@ public class PercussionActivity extends AppCompatActivity
         chordButtonId = 0;
         // identify chords
         chordIndex = 0;
+        // measure index
+        measureIndex = 0;
 
         // reset views
         chordGroup.removeAllViews();
@@ -152,14 +154,16 @@ public class PercussionActivity extends AppCompatActivity
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                previous16Measures();
+                String[] measures = get16Measures();
             }
         });
 
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                next16Measures();
+                String[] measures = get16Measures();
             }
         });
 
@@ -405,6 +409,42 @@ public class PercussionActivity extends AppCompatActivity
 
     void displayIndicator(String style, String pattern) {
         indicator.setText("style\n" + style + "\npattern\n" + pattern);
+    }
+
+
+    public String[] get16Measures() {
+        ArrayList<String> measures = new ArrayList<>();
+        int index = measureIndex;
+        int size = 0;
+        boolean underSized = true;
+
+        if (session.mPercussionPatterns.size() == 0) {
+            return new String[0];
+        }
+
+        while (index < session.mPercussionPatterns.size() && underSized) {
+            measures.add(session.mPercussionPatterns.get(index));
+            index++;
+            size++;
+            if (size > 15) {
+                underSized = false;
+            }
+        }
+
+        return measures.toArray(new String[0]);
+    }
+
+    public void next16Measures() {
+        String[] measures = get16Measures();
+        if (measures.length == 16) {
+            measureIndex+=16;
+        }
+    }
+
+    public void previous16Measures() {
+        if (measureIndex != 0) {
+            measureIndex-=16;
+        }
     }
 
     @Override
