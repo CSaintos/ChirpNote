@@ -1,5 +1,6 @@
 package com.example.chirpnote;
 
+import org.billthefarmer.mididriver.GeneralMidiConstants;
 import org.bson.types.ObjectId;
 
 import java.io.Serializable;
@@ -25,6 +26,7 @@ public class ChirpNoteSession implements Serializable {
     private String mAudioPath;
     public List<String> mPercussionPatterns;
     public List<Integer> mTrackVolumes;
+    public List<Byte> mInstruments;
     private String mUsername;
 
     // States
@@ -73,12 +75,16 @@ public class ChirpNoteSession implements Serializable {
         mAudioPath = audioPath;
         mAudioRecorded = false;
         mPercussionPatterns = new ArrayList<>();
-        mTrackVolumes = new ArrayList<>(); //{80, 80, 80, 100, 127}; // Chords, constructedMelody, recordedMelody, audio, percussion
+        mTrackVolumes = new ArrayList<>(); //{80, 80, 80, 100, 127} -> Chords, constructedMelody, recordedMelody, audio, percussion
         mTrackVolumes.add(80);
         mTrackVolumes.add(80);
         mTrackVolumes.add(80);
         mTrackVolumes.add(100);
         mTrackVolumes.add(127);
+        mInstruments = new ArrayList<>(); //{piano, piano, piano} -> Chords, constructedMelody, recordedMelody
+        mInstruments.add(GeneralMidiConstants.ACOUSTIC_GRAND_PIANO);
+        mInstruments.add(GeneralMidiConstants.ACOUSTIC_GRAND_PIANO);
+        mInstruments.add(GeneralMidiConstants.ACOUSTIC_GRAND_PIANO);
         mUsername = username;
     }
 

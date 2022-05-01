@@ -1,7 +1,5 @@
 package com.example.chirpnote;
 
-import android.widget.Button;
-
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
 import com.example.midiFileLib.src.event.NoteOn;
@@ -11,14 +9,13 @@ import com.example.midiFileLib.src.util.MidiProcessor;
 
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
+import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Mixer {
-    private static HashMap<ChirpNoteSession, Mixer> mixerInstances = new HashMap<>();
     private ChirpNoteSession mSession;
 
     public ChordTrack chordTrack;
@@ -26,7 +23,6 @@ public class Mixer {
     public RealTimeMelody realTimeMelody;
     public AudioTrack audioTrack;
     public PercussionTrack percussionTrack;
-    private int mPercussionTrack;
 
     // For writing the MIDI file
     private MidiTrack mTempoTrack;
@@ -36,11 +32,10 @@ public class Mixer {
     private MidiDriver midiDriver = MidiDriver.getInstance();
     private MidiEventHandler mMidiEventHandler;
     private MidiProcessor mMidiProcessor;
-    private Button mPlayButton;
 
-    private Mixer(ChirpNoteSession session){
+    public Mixer(ChirpNoteSession session){
         mSession = session;
-        mMidiEventHandler = new MidiEventHandler("MidiPlayback", mPlayButton);
+        mMidiEventHandler = new MidiEventHandler("MidiPlayback");
 
         // Initialize tracks
         chordTrack = new ChordTrack(session);
@@ -49,67 +44,40 @@ public class Mixer {
         audioTrack = new AudioTrack(session);
         percussionTrack = new PercussionTrack(session);
 
-        // Prepare MIDI file for MIDI tracks
-        mTempoTrack = new MidiTrack();
-        mNoteTrack = new MidiTrack();
+        if(!mSession.isMidiPrepared()) {
+            // Prepare MIDI file for MIDI tracks
+            mTempoTrack = new MidiTrack();
+            mNoteTrack = new MidiTrack();
 
-        // Time signature setup
-        TimeSignature ts = new TimeSignature();
-        ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION);
-        mTempoTrack.insertEvent(ts);
+            // Time signature setup
+            TimeSignature ts = new TimeSignature();
+            ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION);
+            mTempoTrack.insertEvent(ts);
 
-        // Tempo setup
-        Tempo tempo = new Tempo();
-        tempo.setBpm(session.getTempo());
-        mTempoTrack.insertEvent(tempo);
+            // Tempo setup
+            Tempo tempo = new Tempo();
+            tempo.setBpm(session.getTempo());
+            mTempoTrack.insertEvent(tempo);
 
-        ArrayList<MidiTrack> tracks = new ArrayList<>();
-        tracks.add(mTempoTrack);
-        tracks.add(mNoteTrack);
+            ArrayList<MidiTrack> tracks = new ArrayList<>();
+            tracks.add(mTempoTrack);
+            tracks.add(mNoteTrack);
 
-        // Write tracks to MIDI file
-        MidiFile midiFile = new MidiFile(session.RESOLUTION, tracks);
-        try {
-            midiFile.writeToFile(new File(session.getMidiPath()));
-        } catch(IOException e) {
-            System.err.println(e);
+            // Write tracks to MIDI file
+            MidiFile midiFile = new MidiFile(session.RESOLUTION, tracks);
+            try {
+                midiFile.writeToFile(new File(session.getMidiPath()));
+            } catch (IOException e) {
+                System.err.println(e);
+            }
+            mSession.setMidiPrepared();
         }
-        mSession.setMidiPrepared();
+    }
+
+    public void syncWithSession(){
+        midiDriver.setReverb(ReverbConstants.OFF);
         syncSessionVolume();
-    }
-
-    /**
-     * Gets Mixer used to manage all track volumes and playback in the given Session
-     * @param session The session whose tracks this mixer will control
-     * @param playButton The button in the activity used to start/stop playback
-     * @return The mixer
-     */
-    public static Mixer getInstance(ChirpNoteSession session, Button playButton){
-        if(mixerInstances.get(session) == null){
-            mixerInstances.put(session, new Mixer(session));
-        }
-        Mixer mixer = mixerInstances.get(session);
-        mixer.setPlayButton(playButton);
-        return mixer;
-    }
-
-    /**
-     * Gets if a mixer exists yet for this session
-     * @param session The session to check
-     * @return True if a mixer exists
-     */
-    public static boolean mixerExists(ChirpNoteSession session){
-        return mixerInstances.get(session) != null;
-    }
-
-    /**
-     * Sets the play button for this mixer
-     * Use to set a new play button in the getInstance() method,
-     * as we may be calling from a new activity with a new play button
-     * @param playButton
-     */
-    private void setPlayButton(Button playButton){
-        mPlayButton = playButton;
+        syncSessionInstruments();
     }
 
     private void syncSessionVolume(){
@@ -118,6 +86,27 @@ public class Mixer {
         setRealTimeMelodyVolume(mSession.mTrackVolumes.get(2));
         setAudioVolume(mSession.mTrackVolumes.get(3));
         setPercussionVolume(mSession.mTrackVolumes.get(4));
+    }
+
+    private void syncSessionInstruments(){
+        setChordInstrument(mSession.mInstruments.get(0));
+        setConstructedMelodyInstrument(mSession.mInstruments.get(1));
+        setRealTimeMelodyInstrument(mSession.mInstruments.get(2));
+    }
+
+    public void setChordInstrument(byte instrument){
+        midiDriver.write(new byte[]{MidiConstants.PROGRAM_CHANGE + ChordTrack.CHANNEL, instrument});
+        mSession.mInstruments.set(0, instrument);
+    }
+
+    public void setConstructedMelodyInstrument(byte instrument){
+        midiDriver.write(new byte[]{MidiConstants.PROGRAM_CHANGE + ConstructedMelody.CHANNEL, instrument});
+        mSession.mInstruments.set(1, instrument);
+    }
+
+    public void setRealTimeMelodyInstrument(byte instrument){
+        midiDriver.write(new byte[]{MidiConstants.PROGRAM_CHANGE + RealTimeMelody.CHANNEL, instrument});
+        mSession.mInstruments.set(2, instrument);
     }
 
     public void setChordVolume(int volume){

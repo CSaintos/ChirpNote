@@ -39,36 +39,28 @@ public class RealTimeMelody extends Melody {
 
     @Override
     public void startRecording() throws IllegalStateException {
-        if(Mixer.mixerExists(mSession)){
-            tempMidiFile = null;
-            tempOutput = new File(mFilePath);
-            try {
-                tempMidiFile = new MidiFile(tempOutput);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mNoteTrack = tempMidiFile.getTracks().get(1);
-            mNoteTrack.removeChannel(CHANNEL);
-            mRecording = true;
-        } else {
-            super.startRecording();
+        tempMidiFile = null;
+        tempOutput = new File(mFilePath);
+        try {
+            tempMidiFile = new MidiFile(tempOutput);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        mNoteTrack = tempMidiFile.getTracks().get(1);
+        mNoteTrack.removeChannel(CHANNEL);
+        mRecording = true;
         mRecordingStartTime = System.currentTimeMillis();
     }
 
     @Override
     public void stopRecording() throws IllegalStateException {
-        if(Mixer.mixerExists(mSession)){
-            mRecording = false;
-            try {
-                tempMidiFile.writeToFile(tempOutput);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mSession.setMidiPrepared();
-        } else {
-            super.stopRecording();
+        mRecording = false;
+        try {
+            tempMidiFile.writeToFile(tempOutput);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        mSession.setMidiPrepared();
         if(mSession != null) {
             mSession.setMidiPrepared();
         }

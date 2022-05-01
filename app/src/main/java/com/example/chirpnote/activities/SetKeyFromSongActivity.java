@@ -58,7 +58,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         //flag to check if the activity came from the right place
         Intent intent = getIntent();
         String checkFlag = intent.getStringExtra("flag");
-        if (checkFlag.equals("fromSetKeyActivity")){
+        if (checkFlag != null && checkFlag.equals("fromSetKeyActivity")){
             flag = true;
         }
         else
