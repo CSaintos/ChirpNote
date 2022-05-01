@@ -37,6 +37,7 @@ import com.example.chirpnote.RealTimeMelody;
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Track;
 
+import org.billthefarmer.mididriver.GeneralMidiConstants;
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -71,10 +72,12 @@ public class TestOtherActivity extends AppCompatActivity {
     private static ArrayMap<String, ArrayList<PercussionPattern>> stylePatternMap;
     // A percussion track to store many patterns
     private PercussionTrack percussionTrack;
-    // Media player to play percussion
-    private MediaPlayer rockPlayer;
     // A list of chords
     private ArrayList<Chord> chords;
+    // A mixer object; used to manage all tracks (volume, playback, etc...)
+    private Mixer mixer;
+    // A session that stores all data and settings
+    private ChirpNoteSession session;
 
     // Used to request permission to RECORD_AUDIO
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
@@ -128,9 +131,9 @@ public class TestOtherActivity extends AppCompatActivity {
         playButton.setEnabled(false);
 
         String basePath = this.getFilesDir().getPath();
-        ChirpNoteSession session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+        session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
-        Mixer mixer = Mixer.getInstance(session, playButton);
+        mixer = new Mixer(session);
 
         // Real time melody
         /*realTimeMelody = new RealTimeMelody(session);
@@ -426,12 +429,7 @@ public class TestOtherActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         midiDriver.start();
-        midiDriver.setReverb(ReverbConstants.OFF);
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 1, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 2, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 3, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) 127});
+        mixer.syncWithSession();
     }
 
     @Override

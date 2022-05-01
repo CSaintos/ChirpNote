@@ -1,33 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.chirpnote" >
+    package="com.example.chirpnote">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.MANAGE_MEDIA"/>
+    <uses-permission android:name="android.permission.MANAGE_MEDIA" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Chirpnote"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ChirpNote"
-        android:requestLegacyExternalStorage="true"
-        >
+        android:theme="@style/Theme.ChirpNote">
+        <activity
+            android:name=".activities.SessionOptionsActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.chirpnote.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"></meta-data>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
         </provider>
 
         <activity
@@ -53,62 +58,62 @@
             android:exported="false" />
         <activity
             android:name=".activities.TestOtherActivity"
-            android:parentActivityName=".activities.HomeScreenActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:parentActivityName=".activities.HomeScreenActivity" />
         <activity
             android:name=".activities.PercussionActivity"
+            android:exported="false"
             android:parentActivityName=".activities.HomeScreenActivity"
-            android:theme="@style/Theme.ChirpNote.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/Theme.ChirpNote.NoActionBar" />
         <activity
             android:name=".activities.UserProfileActivity"
+            android:exported="false"
             android:parentActivityName=".activities.HomeScreenActivity"
-            android:theme="@style/Theme.ChirpNote.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/Theme.ChirpNote.NoActionBar" />
         <activity
             android:name=".activities.MusicTheoryInfoActivity"
-            android:parentActivityName=".activities.HomeScreenActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.HomeScreenActivity" />
         <activity
             android:name=".activities.UserOptionsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.LoadSessionActivity"
-            android:parentActivityName=".activities.HomeScreenActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.HomeScreenActivity" />
         <activity
             android:name=".activities.NewSessionActivity"
-            android:parentActivityName=".activities.HomeScreenActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.HomeScreenActivity" />
         <activity
             android:name=".activities.HomeScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MelodyActivity"
+            android:exported="false"
             android:parentActivityName=".activities.HomeScreenActivity"
-            android:theme="@style/Theme.ChirpNote.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/Theme.ChirpNote.NoActionBar" />
         <activity
             android:name=".activities.KeyboardActivity"
             android:exported="false"
             android:parentActivityName=".activities.HomeScreenActivity"
-            android:theme="@style/Theme.ChirpNote.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ChirpNote.NoActionBar" />
         <activity
             android:name=".activities.SetKeyFromSongActivity"
             android:exported="true" />
         <activity
             android:name=".activities.SmartKeyboardActivity"
-            android:parentActivityName=".activities.HomeScreenActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.HomeScreenActivity" />
         <activity
             android:name=".activities.InsertChordsActivity"
+            android:exported="false"
             android:parentActivityName=".activities.HomeScreenActivity"
-            android:theme="@style/Theme.ChirpNote.NoActionBar"
-            android:exported="false" />
+            android:theme="@style/Theme.ChirpNote.NoActionBar" />
         <activity
             android:name=".activities.StartUpActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -121,18 +126,24 @@
             android:exported="false" />
         <activity
             android:name=".activities.RecordAudioActivity"
-            android:theme="@style/Theme.ChirpNote.NoActionBar"
             android:exported="true"
-            />
-        <activity android:name=".activities.DirectoryPopActivity"
+            android:theme="@style/Theme.ChirpNote.NoActionBar" />
+        <activity
+            android:name=".activities.DirectoryPopActivity"
             android:exported="true"
-            android:theme="@style/Theme.ChirpNote.PopUpDir"/>
-        <service
-            android:name=".activities.FloatingWindowService"
-            />
+            android:theme="@style/Theme.ChirpNote.PopUpDir" />
+
+        <service android:name=".activities.FloatingWindowService" />
+
         <activity
             android:name=".activities.MixerActivity"
             android:exported="true" />
+
+        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+
     </application>
 
 </manifest>
