@@ -224,11 +224,8 @@ public class InsertChordsActivity extends AppCompatActivity
                     chordSuggestionStatus = true;
                     chordSuggestion.setSelected(true);
                 }
-
-
             }
         });
-        // end of Sam's section
 
         /** PLAYBUTTON ONCLICK*/
         // Event listener for play button (to play recorded melody)
@@ -236,30 +233,19 @@ public class InsertChordsActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 chordTrack.play();
-//                if(!lastTrack.isPlaying()){
-//                    mixer.playTracks();
-//                    /*playButton.setText("Stop");
-//                    lastTrack.play();*/
-//                } else {
-//                    mixer.stopTracks();
-//                    /*playButton.setText("Play");
-//                    lastTrack.stop();*/
-//                }
             }
         });
     }
 
     private void initializeSongMeasures(ChirpNoteSession session)
     {
-        /** this works */
         Chord[] importChords = new Chord[4];
-        for (int i = 0; i < 2; i++)
-        {
-            importChords = randomChordProgression(sessionChords);
-            addRowOfMeasures3(importChords, true);
+        for(int i = 0; i < session.mChords.size(); i++){
+            importChords[i % 4] = chordTrack.decodeChord(session.mChords.get(i));
+            if ((i + 1) % 4 == 0) {
+                addRowOfMeasures3(importChords, true);
+            }
         }
-
-
     }
 
     @Override
@@ -274,8 +260,6 @@ public class InsertChordsActivity extends AppCompatActivity
                 break;
         }
     }
-
-
 
     private void addRowOfMeasures3(Chord[] prefilledMeasures, boolean loadingSession) {
         View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
@@ -456,8 +440,6 @@ public class InsertChordsActivity extends AppCompatActivity
         }
     }
 
-
-
     private boolean isAnotherChordSelected()
     {
         boolean isSelected = false;
@@ -492,7 +474,6 @@ public class InsertChordsActivity extends AppCompatActivity
         Chord.Type[] chordTypes = currentKey.getChordTypes();
         for (int i = 0; i < currentKey.getScaleNotes().length - 1; i++)
         {
-            // TODO: Think of a better way to do this
             int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
             /** arraylist of all chords that belong to the current key based on the type of chord
              * it takes in the root note of the chord and type of chord
@@ -502,8 +483,6 @@ public class InsertChordsActivity extends AppCompatActivity
 
 //        System.out.println("====================================== sessionChords =================================== = " + Arrays.toString(sessionChords));
     }
-
-
 
     private void initializeChordListeners(ChirpNoteSession session)
     {
