@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Navigation Drawer Example</string>
 
+    <string name="adsUnit">ca-app-pub-3940256099942544/1033173712</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="instrument_variable"></string>
 </resources>
