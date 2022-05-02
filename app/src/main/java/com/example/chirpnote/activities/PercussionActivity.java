@@ -104,6 +104,7 @@ public class PercussionActivity extends AppCompatActivity
         track = new PercussionTrack(session);
         track.startRecording();
         percussionIndex = 0;
+        measureIndex = 0;
 
         storedList = new ArrayList<>();
         chordButtons = new ArrayMap<>();
@@ -149,13 +150,19 @@ public class PercussionActivity extends AppCompatActivity
 
         // Initialize chords and style scrollbar
         initStyles();
+        // TODO implement initialization in insertChords Activity
+        testInitSessionPPs();
+        initTrack();
+        updatePercussionChords(get16Measures());
         displayChords();
+
 
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 previous16Measures();
                 String[] measures = get16Measures();
+                updatePercussionChords(measures);
             }
         });
 
@@ -164,6 +171,7 @@ public class PercussionActivity extends AppCompatActivity
             public void onClick(View v) {
                 next16Measures();
                 String[] measures = get16Measures();
+                updatePercussionChords(measures);
             }
         });
 
@@ -284,6 +292,7 @@ public class PercussionActivity extends AppCompatActivity
         }
     }
 
+    // Adds rows of buttons
     void displayChords() {
 
         for (int i = 0; i < 4; i++) {
@@ -333,11 +342,11 @@ public class PercussionActivity extends AppCompatActivity
                     temp.setChecked(true);
                     temp.setBackground(getDrawable(R.drawable.radio_selected));
 
-                    String[] chordInd = storedList.get((int)temp.getTag(R.id.chord_index));
+                    String[] chordIndication = storedList.get((int)temp.getTag(R.id.chord_index));
                     if (indication == null) {
-                        indication = chordInd;
+                        indication = chordIndication;
                     } else {
-                        if (!indication[1].equals(chordInd[1])) {
+                        if (!indication[1].equals(chordIndication[1])) {
                             sameIndication = false;
                         }
                     }
@@ -401,18 +410,37 @@ public class PercussionActivity extends AppCompatActivity
             chordButtons.get(rb).add(rb0);
             row.addView(rb0);
 
+            // FIXME Remove later
             storedList.add(new String[] {"null", "null"});
         }
 
         chordLayout.addView(row);
     }
 
+    void initTrack() {
+        for (int i = 0; i < session.mPercussionPatterns.size(); i++) {
+            track.addPattern(track.decodePattern(session.mPercussionPatterns.get(i)), i);
+        }
+    }
+
     void displayIndicator(String style, String pattern) {
         indicator.setText("style\n" + style + "\npattern\n" + pattern);
     }
 
+    void updatePercussionChords(String[] measures) {
+        storedList = new ArrayList<>();
+        for (String measure : measures) {
+            PercussionPattern pp = track.decodePattern(measure);
+            if (pp == null) {
+                storedList.add(new String[] {"null", "null"});
+            } else {
+                PercussionPattern.PatternAsset pa = pp.getPatternAsset();
+                storedList.add(new String[] {pa.styleStr, pa.patternStr});
+            }
+        }
+    }
 
-    public String[] get16Measures() {
+    String[] get16Measures() {
         ArrayList<String> measures = new ArrayList<>();
         int index = measureIndex;
         int size = 0;
@@ -434,16 +462,24 @@ public class PercussionActivity extends AppCompatActivity
         return measures.toArray(new String[0]);
     }
 
-    public void next16Measures() {
+    void next16Measures() {
         String[] measures = get16Measures();
         if (measures.length == 16) {
             measureIndex+=16;
+            percussionIndex = measureIndex;
         }
     }
 
-    public void previous16Measures() {
+    void previous16Measures() {
         if (measureIndex != 0) {
             measureIndex-=16;
+            percussionIndex = measureIndex;
+        }
+    }
+
+    void testInitSessionPPs() {
+        for (int i = 0; i < 32; i++) {
+            session.mPercussionPatterns.add("aaa");
         }
     }
 
