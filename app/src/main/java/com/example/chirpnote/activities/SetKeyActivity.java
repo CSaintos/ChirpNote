@@ -80,6 +80,10 @@ public class SetKeyActivity extends AppCompatActivity {
                 session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
                 System.out.println("key = " + session.getKey().toString());
             }
+            else if (intent.getStringExtra("flag").equals("fromNewSessionActivity"))
+            {
+                session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
+            }
 
         }
 
