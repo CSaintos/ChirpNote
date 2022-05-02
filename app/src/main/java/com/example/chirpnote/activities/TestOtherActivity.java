@@ -146,11 +146,7 @@ public class TestOtherActivity extends AppCompatActivity {
         constructedMelody = mixer.constructedMelody;
 
         // Audio track
-        try {
-            audio = new AudioTrack(basePath + "/audioTrack.mp3", playButton);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        audio = mixer.audioTrack;
 
         percussionTrack = mixer.percussionTrack;
 

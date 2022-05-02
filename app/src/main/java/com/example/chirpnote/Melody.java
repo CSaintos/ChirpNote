@@ -186,11 +186,4 @@ abstract class Melody implements Track {
         }
         mMidiProcessor.reset();
     }
-
-    /**
-     * For testing (TODO: Remove play button from all Tracks and move to a new class that globally controls playback of tracks)
-     */
-    public void setPlayButton(Button button){
-        mPlayButton = button;
-    }
 }

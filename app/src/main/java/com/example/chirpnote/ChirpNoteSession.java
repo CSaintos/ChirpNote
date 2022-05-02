@@ -145,6 +145,14 @@ public class ChirpNoteSession implements Serializable {
     }
 
     /**
+     * Sets the path for the active audio recording
+     * @param audioPath The path of the session's audio
+     */
+    public void setAudioPath(String audioPath){
+        mAudioPath = audioPath;
+    }
+
+    /**
      * Call after the MIDI file for this session has been created
      */
     public void setMidiPrepared(){

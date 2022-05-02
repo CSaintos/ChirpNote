@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.example.chirpnote.AudioTrack;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.ChirpNoteSession;
@@ -19,6 +20,7 @@ import org.billthefarmer.mididriver.ReverbConstants;
 
 public class TestTrackPersistenceActivity extends AppCompatActivity {
     MidiDriver midiDriver = MidiDriver.getInstance();
+    Mixer mixer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +32,9 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
         Button previousActivityButton = (Button) findViewById(R.id.goToPreviousActivityButton);
 
         ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
-        ConstructedMelody melody = new ConstructedMelody(session);
-        melody.setPlayButton(playMelodyButton);
-        AudioTrack audio = new AudioTrack(session);
-        audio.setPlayButton(playAudioButton);
+        mixer = new Mixer(session);
+        ConstructedMelody melody = mixer.constructedMelody;
+        AudioTrack audio = mixer.audioTrack;
 
         playAudioButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -75,12 +76,7 @@ public class TestTrackPersistenceActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         midiDriver.start();
-        midiDriver.setReverb(ReverbConstants.OFF);
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 1, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 2, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 3, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) 127});
+        mixer.syncWithSession();
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ChirpNoteSession;
@@ -45,8 +46,9 @@ public class SessionActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.sessionNameText)).setText("Session Name: " + session.getName());
         ((TextView) findViewById(R.id.tempoText)).setText("Tempo: " + session.getTempo() + " BPM");
         ((TextView) findViewById(R.id.keyText)).setText("Key: " + session.getKey());
+        Mixer mixer = new Mixer(session);
 
-        Realm realm = Realm.getDefaultInstance();
+        //Realm realm = Realm.getDefaultInstance();
 
         Button nextActivityButton = (Button) findViewById(R.id.goToNextActivityButton);
         if(session.isMidiPrepared() && session.isAudioRecorded()) {
@@ -56,16 +58,15 @@ public class SessionActivity extends AppCompatActivity {
         }
 
         Button generateMelodyButton = (Button) findViewById(R.id.generateMelodyButton);
-        ConstructedMelody melody = new ConstructedMelody(session);
+        ConstructedMelody melody = mixer.constructedMelody;
 
         Button recAudioButton = (Button) findViewById(R.id.recAudioButton3);
-        AudioTrack audio = new AudioTrack(session);
+        AudioTrack audio = mixer.audioTrack;
 
         keyChords = new ArrayList<>();
         currentKey = session.getKey(); // gets the key set when session was initialized
         for (int i = 0; i < currentKey.getScaleNotes().length; i++)
         {
-            // TODO: Think of a better way to do this
             int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
             /** arraylist of all chords that belong to the current key based on the type of chord
              * it takes in the root note of the chord and type of chord
@@ -88,8 +89,6 @@ public class SessionActivity extends AppCompatActivity {
                     listOfSuggestedChords = listOfSuggestedChords + suggestedChords.get(i) + " ";
                 }
                 ((TextView) findViewById(R.id.chordSuggestion_list)).setText("Suggested Chords: " + listOfSuggestedChords);
-
-
             }
         });
 
@@ -107,11 +106,11 @@ public class SessionActivity extends AppCompatActivity {
                         ConstructedMelody.NoteDuration.QUARTER_NOTE, session.mNextMelodyTick);
                 generateMelodyButton.setText("Melody generated!");
                 session.setMidiPrepared();
-                realm.executeTransactionAsync(r -> {
+                /*realm.executeTransactionAsync(r -> {
                     Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
                     realmSession.setMelodyElements(realmSession.listToRealmList(session.mMelodyElements));
                     realmSession.setMidiFile(realmSession.encodeFile(session.getMidiPath()));
-                });
+                });*/
                 if(audio.isRecorded()){
                     nextActivityButton.setEnabled(true);
                 }

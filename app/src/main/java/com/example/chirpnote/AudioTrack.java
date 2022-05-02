@@ -23,40 +23,8 @@ public class AudioTrack implements Track {
 
     // For playback
     private MediaPlayer mMediaPlayer;
-    private Button mPlayButton;
-    private ImageButton mPlayImageButton;
 
     private ChirpNoteSession mSession;
-
-    /**
-     * An audio track
-     * @param filePath The path to store the file (of the audio recording) at
-     * @param playButton The button used to start playback of the audio track
-     */
-    public AudioTrack(String filePath, Button playButton) throws IOException {
-        mRecording = false;
-        mRecorded = false;
-
-        mMediaRecorder = new MediaRecorder();
-        mFilePath = filePath;
-
-        mMediaPlayer = new MediaPlayer();
-
-        mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.start();
-            }
-        });
-        mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.stop();
-                mPlayButton.setText("Play");
-            }
-        });
-        mPlayButton = playButton;
-    }
 
     public AudioTrack(String filePath, ImageButton playImageButton) {
         mRecording = false;
@@ -78,7 +46,6 @@ public class AudioTrack implements Track {
                 mp.stop();
             }
         });
-        mPlayImageButton = playImageButton;
     }
 
     /**
@@ -104,7 +71,6 @@ public class AudioTrack implements Track {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 mp.stop();
-                mPlayButton.setText("Play");
             }
         });
     }
@@ -229,12 +195,5 @@ public class AudioTrack implements Track {
             throw new IllegalStateException("Cannot stop the audio track if it is not being played (start playback first)");
         }
         mMediaPlayer.stop();
-    }
-
-    /**
-     * For testing
-     */
-    public void setPlayButton(Button button){
-        mPlayButton = button;
     }
 }

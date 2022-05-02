@@ -92,7 +92,6 @@ public class NewSessionActivity extends AppCompatActivity {
         });
         setAds();
 
-
         String username = getIntent().getStringExtra("username");
         Realm realm = Realm.getDefaultInstance();
 
@@ -103,8 +102,6 @@ public class NewSessionActivity extends AppCompatActivity {
 
         setTempo = (EditText) findViewById(R.id.setTempoText);
         setTempo.addTextChangedListener(checkTextValid);
-
-
 
         String basePath = this.getFilesDir().getPath();
 
@@ -138,13 +135,9 @@ public class NewSessionActivity extends AppCompatActivity {
             setTempo.addTextChangedListener(checkTextValid);
         }
 
-
-//        setKeyButton = (Button) findViewById(R.id.setKeyButton);
-//        setKeyButton.setEnabled(false);
         setKeyButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Go to the set key dialog or activity or whatever
                 Intent intent = new Intent(NewSessionActivity.this, SetKeyActivity.class);
                 intent.putExtra("flag", "fromNewSessionActivity");
                 dummySession = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.C, Key.Type.MAJOR), Integer.parseInt(setTempo.getText().toString()));
@@ -153,13 +146,10 @@ public class NewSessionActivity extends AppCompatActivity {
             }
         });
 
-//        createSessionButton = (Button) findViewById(R.id.createSessionButton);
-//        createSessionButton.setEnabled(false);
         createSessionButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v)
             {
-
                 if (mInterstitialAd != null)
                 {
                     mInterstitialAd.show(NewSessionActivity.this);
@@ -188,19 +178,17 @@ public class NewSessionActivity extends AppCompatActivity {
                     });
                 }
                 else {
-
-
                     Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
 //                    ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
 //                            Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
                     ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), newKey,
-                            Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
+                            Integer.parseInt(setTempo.getText().toString()), basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", username);
 
                     // Insert the new session into the realm database
-                    realm.executeTransactionAsync(r -> {
+                    /*realm.executeTransactionAsync(r -> {
                         Session sessionToInsert = new Session(session);
                         r.insert(sessionToInsert);
-                    });
+                    });*/
                     intent.putExtra("session", session);
                     startActivity(intent);
                 }
