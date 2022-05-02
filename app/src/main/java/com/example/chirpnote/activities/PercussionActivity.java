@@ -23,6 +23,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chirpnote.Chord;
+import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.PercussionTrack;
@@ -46,7 +48,7 @@ public class PercussionActivity extends AppCompatActivity
     private ArrayList<String[]> storedList; // to supposedly store chord's patterns
 
     private LinearLayout chordLayout;
-    private RadioGroup chordGroup;
+    //private RadioGroup chordGroup; // ? when was this used?
     private RadioGroup styleGroup;
     private RadioGroup patternGroup;
     private RadioButton currentPatternButton;
@@ -59,15 +61,19 @@ public class PercussionActivity extends AppCompatActivity
 
     // The driver that allows us to play MIDI notes
     private MidiDriver midiDriver;
-    private PercussionTrack track;
+    private PercussionTrack percussionTrack;
+    private ChordTrack chordTrack;
+
     private ChirpNoteSession session;
     private Key key;
 
     private String selectedStyle;
     private String selectedPattern;
 
+    // FIXME These two variables might be redundant
     private int chordButtonId;
     private int chordIndex;
+
     private int percussionIndex;
     private int measureIndex;
 
@@ -101,8 +107,9 @@ public class PercussionActivity extends AppCompatActivity
         String basePath = this.getFilesDir().getPath();
         session = new ChirpNoteSession("Name", key, 120,
                 basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
-        track = new PercussionTrack(session);
-        track.startRecording();
+        percussionTrack = new PercussionTrack(session);
+        chordTrack = new ChordTrack(session);
+        percussionTrack.startRecording();
         percussionIndex = 0;
         measureIndex = 0;
 
@@ -125,7 +132,7 @@ public class PercussionActivity extends AppCompatActivity
         } catch (IOException e) { e.printStackTrace(); }
 
         // Initialize views
-        chordGroup = findViewById(R.id.percussionChordGroup);
+        //chordGroup = findViewById(R.id.percussionChordGroup);
         styleGroup = findViewById(R.id.percussionStyleGroup);
         patternGroup = findViewById(R.id.percussionPatternGroup);
         leftButton = (Button) findViewById(R.id.percussionLeftButton);
@@ -136,32 +143,30 @@ public class PercussionActivity extends AppCompatActivity
         indicator = findViewById(R.id.percussionIndicator);
 
         // identify radio buttons
-        chordButtonId = 0;
+        //chordButtonId = 0;
         // identify chords
-        chordIndex = 0;
+        //chordIndex = 0;
         // measure index
         measureIndex = 0;
 
         // reset views
-        chordGroup.removeAllViews();
+        //chordGroup.removeAllViews();
         styleGroup.removeAllViews();
         patternGroup.removeAllViews();
-        chordLayout.removeAllViews();
+        //chordLayout.removeAllViews();
 
         // Initialize chords and style scrollbar
         initStyles();
         // TODO implement initialization in insertChords Activity
         testInitSessionPPs();
-        initTrack();
+        initPercussionTrack();
         updatePercussionChords(get16Measures());
-        displayChords();
-
 
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 previous16Measures();
-                String[] measures = get16Measures();
+                String[][] measures = get16Measures();
                 updatePercussionChords(measures);
             }
         });
@@ -170,7 +175,7 @@ public class PercussionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 next16Measures();
-                String[] measures = get16Measures();
+                String[][] measures = get16Measures();
                 updatePercussionChords(measures);
             }
         });
@@ -191,7 +196,7 @@ public class PercussionActivity extends AppCompatActivity
                                     PercussionPattern.PatternAsset patternAsset = p.getPatternAsset();
                                     if (patternAsset.patternStr.equals(selectedPattern)) pp = p;
                                 }
-                                track.addPattern(pp, position);
+                                percussionTrack.addPattern(pp, position);
                             }
                         }
                     }
@@ -214,7 +219,7 @@ public class PercussionActivity extends AppCompatActivity
                             //Log.d("Remove", "index: " + (int)rb.getTag(R.id.chord_index));
                             int position = (int)rb.getTag(R.id.percussion_index);
                             //track.addPattern(constructPattern("null", "null"), position);
-                            track.addPattern(null, position);
+                            percussionTrack.addPattern(null, position);
                         }
                     }
                 }
@@ -293,14 +298,44 @@ public class PercussionActivity extends AppCompatActivity
     }
 
     // Adds rows of buttons
-    void displayChords() {
+    void displayChords(String[] romanNums) {
+        // Build roman numeral matrix
+        ArrayList<String[]> romanSets = new ArrayList<>();
+        ArrayList<String> romanSetBuilder;
 
+        int fours = romanNums.length / 4;
+        int j = 0;
+        for (int i = 0; i < fours; i++) {
+            romanSetBuilder = new ArrayList<>();
+            for (int k = 0; k < 4; k++) {
+                romanSetBuilder.add(romanNums[j]);
+                j++;
+            }
+            romanSets.add(romanSetBuilder.toArray(new String[0]));
+        }
+
+        if (j < romanNums.length) {
+            romanSetBuilder = new ArrayList<>();
+            for (; j < romanNums.length; j++) {
+                romanSetBuilder.add(romanNums[j]);
+            }
+            romanSets.add(romanSetBuilder.toArray(new String[0]));
+        }
+        // End of numeral matrix build
+
+        for (String[] romanArray : romanSets) {
+            addRow(romanArray);
+        }
+
+        /*
         for (int i = 0; i < 4; i++) {
             addRow();
         }
+         */
     }
 
-    void addRow() {
+    void addRow(String[] romanArray) {
+        // row linear layout
         LinearLayout row = new LinearLayout(this);
 
         row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -309,7 +344,7 @@ public class PercussionActivity extends AppCompatActivity
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(150, 80);
 
-        // Children of row Linear Layout
+        // Row selector radio button
         RadioButton rb = new RadioButton(this);
         layoutParams.setMargins(70, 10, 70, 10);
         rb.setLayoutParams(layoutParams);
@@ -366,11 +401,12 @@ public class PercussionActivity extends AppCompatActivity
 
         layoutParams.setMargins(20, 10, 20, 10);
 
-        for (int i = 0; i < 4; i++) {
+        // individual chord radio buttons
+        for (int i = 0; i < romanArray.length; i++) {
             RadioButton rb0 = new RadioButton(this);
             rb0.setLayoutParams(layoutParams);
             rb0.setBackground(getDrawable(R.drawable.radio_selector));
-            rb0.setText("I");
+            rb0.setText(romanArray[i]); // set roman numeral on button
             rb0.setId(chordButtonId);
             chordButtonId++;
             rb0.setTag(R.id.chord_index, chordIndex);
@@ -398,7 +434,6 @@ public class PercussionActivity extends AppCompatActivity
                         chordButtons.keyAt(i).setChecked(false);
                     }
 
-
                     // update displayIndicator
                     int index = (int) rb0.getTag(R.id.chord_index);
                     Log.d("Retrieve", "index: " + index);
@@ -407,19 +442,16 @@ public class PercussionActivity extends AppCompatActivity
                 }
             });
 
-            chordButtons.get(rb).add(rb0);
-            row.addView(rb0);
-
-            // FIXME Remove later
-            storedList.add(new String[] {"null", "null"});
+            chordButtons.get(rb).add(rb0); // add to ArrayList<ArrayList<RB>>
+            row.addView(rb0); // add to row
         }
 
-        chordLayout.addView(row);
+        chordLayout.addView(row); // add to chordLayout
     }
 
-    void initTrack() {
+    void initPercussionTrack() {
         for (int i = 0; i < session.mPercussionPatterns.size(); i++) {
-            track.addPattern(track.decodePattern(session.mPercussionPatterns.get(i)), i);
+            percussionTrack.addPattern(percussionTrack.decodePattern(session.mPercussionPatterns.get(i)), i);
         }
     }
 
@@ -427,10 +459,10 @@ public class PercussionActivity extends AppCompatActivity
         indicator.setText("style\n" + style + "\npattern\n" + pattern);
     }
 
-    void updatePercussionChords(String[] measures) {
+    void updatePercussionChords(String[][] measures) {
         storedList = new ArrayList<>();
-        for (String measure : measures) {
-            PercussionPattern pp = track.decodePattern(measure);
+        for (String pattern : measures[0]) {
+            PercussionPattern pp = percussionTrack.decodePattern(pattern);
             if (pp == null) {
                 storedList.add(new String[] {"null", "null"});
             } else {
@@ -438,20 +470,39 @@ public class PercussionActivity extends AppCompatActivity
                 storedList.add(new String[] {pa.styleStr, pa.patternStr});
             }
         }
+
+        ArrayList<String> romanNums = new ArrayList<>();
+        for (String encodedChord : measures[1]) {
+            Chord chord = chordTrack.decodeChord(encodedChord);
+            romanNums.add(key.getRomanTypes()[chord.getRoman()]);
+        }
+
+        // re-initialize chord button parameters
+        chordLayout.removeAllViews();
+        chordButtonId = 0;
+        chordIndex = 0;
+        chordButtons = new ArrayMap<>();
+        // create and display chord buttons
+        displayChords(romanNums.toArray(new String[0]));
     }
 
-    String[] get16Measures() {
-        ArrayList<String> measures = new ArrayList<>();
+    String[][] get16Measures() {
+        ArrayList<String> patterns = new ArrayList<>();
+        ArrayList<String> numerals = new ArrayList<>();
         int index = measureIndex;
         int size = 0;
         boolean underSized = true;
 
-        if (session.mPercussionPatterns.size() == 0) {
-            return new String[0];
+        if (session.mPercussionPatterns.size() == 0 ||
+            session.mChords.size() == 0) {
+            return new String[0][0];
         }
 
-        while (index < session.mPercussionPatterns.size() && underSized) {
-            measures.add(session.mPercussionPatterns.get(index));
+        while (index < session.mPercussionPatterns.size() &&
+                index < session.mChords.size() &&
+                underSized) {
+            patterns.add(session.mPercussionPatterns.get(index));
+            numerals.add(session.mChords.get(index));
             index++;
             size++;
             if (size > 15) {
@@ -459,11 +510,13 @@ public class PercussionActivity extends AppCompatActivity
             }
         }
 
-        return measures.toArray(new String[0]);
+        if (patterns.size() != numerals.size()) Log.e("get16Measures", "Inconsistent sizes");
+
+        return new String[][]{patterns.toArray(new String[0]), numerals.toArray(new String[0])};
     }
 
     void next16Measures() {
-        String[] measures = get16Measures();
+        String[] measures = get16Measures()[0];
         if (measures.length == 16) {
             measureIndex+=16;
             percussionIndex = measureIndex;
