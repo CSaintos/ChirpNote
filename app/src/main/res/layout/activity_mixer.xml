@@ -5,21 +5,170 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.slider.Slider
-        app:trackColorActive="@color/purple_200"
-        app:trackColorInactive="@color/button_grey_color"
-        app:tickVisible="false"
-        android:id="@+id/Slider"
-        android:stepSize="1"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/AudioMixerText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="Audio Mixer"
+        android:textAlignment="center"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toTopOf="@+id/chordsVolumeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.081" />
+
+    <TextView
+        android:id="@+id/chordsVolumeText"
+        android:layout_width="105dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="128dp"
+        android:text="Chords Volume"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/chordsVolumeSlider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/chordsVolumeSlider"
+        android:layout_width="287dp"
+        android:layout_height="44dp"
+        android:stepSize="1"
+        android:value="100"
         android:valueFrom="0"
         android:valueTo="100"
-        android:value="100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.282" />
+        app:layout_constraintVertical_bias="0.282"
+        app:tickVisible="false"
+        app:trackColorActive="@color/purple_200"
+        app:trackColorInactive="@color/button_grey_color" />
+
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/composedMelodyVolumeSlider"
+        android:layout_width="287dp"
+        android:layout_height="44dp"
+        android:stepSize="1"
+        android:value="100"
+        android:valueFrom="0"
+        android:valueTo="100"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.379"
+        app:tickVisible="false"
+        app:trackColorActive="@color/purple_200"
+        app:trackColorInactive="@color/button_grey_color" />
+
+    <TextView
+        android:id="@+id/composedMelodyVolumeText"
+        android:layout_width="188dp"
+        android:layout_height="18dp"
+        android:text="Composed Melody Volume"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/composedMelodyVolumeSlider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chordsVolumeSlider"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/recordedMelodyVolumeText"
+        android:layout_width="212dp"
+        android:layout_height="19dp"
+        android:text="Recorded Melody Volume"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/recordedMelodyVolumeSlider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/composedMelodyVolumeSlider" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/recordedMelodyVolumeSlider"
+        android:layout_width="287dp"
+        android:layout_height="44dp"
+        android:stepSize="1"
+        android:value="100"
+        android:valueFrom="0"
+        android:valueTo="100"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.477"
+        app:tickVisible="false"
+        app:trackColorActive="@color/purple_200"
+        app:trackColorInactive="@color/button_grey_color" />
+
+    <TextView
+        android:id="@+id/audioVolumeText"
+        android:layout_width="212dp"
+        android:layout_height="19dp"
+        android:text="Audio Volume"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/audioVolumeSlider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recordedMelodyVolumeSlider" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/audioVolumeSlider"
+        android:layout_width="287dp"
+        android:layout_height="44dp"
+        android:stepSize="1"
+        android:value="100"
+        android:valueFrom="0"
+        android:valueTo="100"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.573"
+        app:tickVisible="false"
+        app:trackColorActive="@color/purple_200"
+        app:trackColorInactive="@color/button_grey_color" />
+
+    <TextView
+        android:id="@+id/percussionVolumeText"
+        android:layout_width="212dp"
+        android:layout_height="19dp"
+        android:text="Percussion Volume"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/percussionVolumeSlider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/audioVolumeSlider"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/percussionVolumeSlider"
+        android:layout_width="287dp"
+        android:layout_height="44dp"
+        android:stepSize="1"
+        android:value="100"
+        android:valueFrom="0"
+        android:valueTo="100"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.673"
+        app:tickVisible="false"
+        app:trackColorActive="@color/purple_200"
+        app:trackColorInactive="@color/button_grey_color" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
