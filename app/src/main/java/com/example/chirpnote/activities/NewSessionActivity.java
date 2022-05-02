@@ -35,6 +35,11 @@ public class NewSessionActivity extends AppCompatActivity {
 
     private InterstitialAd mInterstitialAd;
 
+    ChirpNoteSession session;
+    Key newKey;
+    Button setKeyButton;
+    ChirpNoteSession dummySession;
+
     private EditText setName, setTempo;
     private Button createSessionButton;
     private String tempoInvalidMessage = "Tempo must be " + ChirpNoteSession.MIN_TEMPO + "-" + ChirpNoteSession.MAX_TEMPO + " BPM";
@@ -53,14 +58,17 @@ public class NewSessionActivity extends AppCompatActivity {
 
             if(name.equals("") || tempo.equals("")){
                 createSessionButton.setEnabled(false);
+                setKeyButton.setEnabled(false);
             } else {
                 int t = Integer.parseInt(tempo);
                 if(t < ChirpNoteSession.MIN_TEMPO || t > ChirpNoteSession.MAX_TEMPO) {
                     tempoInvalid.setText(tempoInvalidMessage);
                     createSessionButton.setEnabled(false);
+                    setKeyButton.setEnabled(false);
                 } else {
                     tempoInvalid.setText("");
                     createSessionButton.setEnabled(true);
+                    setKeyButton.setEnabled(true);
                 }
             }
         }
@@ -71,6 +79,11 @@ public class NewSessionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_session);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setKeyButton = (Button) findViewById(R.id.setKeyButton);
+        setKeyButton.setEnabled(false);
+        createSessionButton = (Button) findViewById(R.id.createSessionButton);
+        createSessionButton.setEnabled(false);
+
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -78,6 +91,7 @@ public class NewSessionActivity extends AppCompatActivity {
             }
         });
         setAds();
+
 
         String username = getIntent().getStringExtra("username");
         Realm realm = Realm.getDefaultInstance();
@@ -90,18 +104,57 @@ public class NewSessionActivity extends AppCompatActivity {
         setTempo = (EditText) findViewById(R.id.setTempoText);
         setTempo.addTextChangedListener(checkTextValid);
 
-        Button setKeyButton = (Button) findViewById(R.id.setKeyButton);
+
+
+        String basePath = this.getFilesDir().getPath();
+
+
+//        // replaced the initialization of session in createSession onClickListener
+//        Intent intent = getIntent();
+//        if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
+//        {
+//            System.out.println("intent = " + "fromSetKeyActivity");
+////            session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
+//            Key newKey = (Key) getIntent().getSerializableExtra("newKey");
+//        }
+//        else
+//        {
+////            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
+////            System.out.println("session key name = " + session.getKey().toString());
+//            System.out.println("intent = " + "fromNewSessionActivity");
+//            session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.C, Key.Type.MAJOR),
+//                    Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
+//        }
+
+        Intent intent = getIntent();
+        if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity")) {
+            newKey = (Key) getIntent().getSerializableExtra("newKey");
+            dummySession = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+
+            setName.setText(dummySession.getName());
+            setName.addTextChangedListener(checkTextValid);
+
+            setTempo.setText(Integer.toString(dummySession.getTempo()));
+            setTempo.addTextChangedListener(checkTextValid);
+        }
+
+
+//        setKeyButton = (Button) findViewById(R.id.setKeyButton);
+//        setKeyButton.setEnabled(false);
         setKeyButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: Go to the set key dialog or activity or whatever
+                Intent intent = new Intent(NewSessionActivity.this, SetKeyActivity.class);
+                intent.putExtra("flag", "fromNewSessionActivity");
+                dummySession = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.C, Key.Type.MAJOR), Integer.parseInt(setTempo.getText().toString()));
+                intent.putExtra("session", dummySession);
+                startActivity(intent);
             }
         });
 
-        String basePath = this.getFilesDir().getPath();
-
-        createSessionButton = (Button) findViewById(R.id.createSessionButton);
-        createSessionButton.setEnabled(false);
+//        createSessionButton = (Button) findViewById(R.id.createSessionButton);
+//        createSessionButton.setEnabled(false);
         createSessionButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v)
@@ -116,7 +169,9 @@ public class NewSessionActivity extends AppCompatActivity {
                         public void onAdDismissedFullScreenContent() {
                             super.onAdDismissedFullScreenContent();
                             Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
-                            ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
+//                            ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
+//                                    Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
+                            ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), newKey,
                                     Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
 
                             // Insert the new session into the realm database
@@ -126,6 +181,7 @@ public class NewSessionActivity extends AppCompatActivity {
                             });
                             intent.putExtra("session", session);
                             startActivity(intent);
+
                             mInterstitialAd = null;
                             setAds();
                         }
@@ -135,7 +191,9 @@ public class NewSessionActivity extends AppCompatActivity {
 
 
                     Intent intent = new Intent(NewSessionActivity.this, SessionActivity.class);
-                    ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
+//                    ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
+//                            Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
+                    ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), newKey,
                             Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
 
                     // Insert the new session into the realm database
@@ -156,21 +214,21 @@ public class NewSessionActivity extends AppCompatActivity {
 
 //        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
         InterstitialAd.load(this,getString(R.string.adsUnit), adRequest, new InterstitialAdLoadCallback() {
-                @Override
-                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                    // The mInterstitialAd reference will be null until
-                    // an ad is loaded.
-                    mInterstitialAd = interstitialAd;
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                // The mInterstitialAd reference will be null until
+                // an ad is loaded.
+                mInterstitialAd = interstitialAd;
 //                        Log.i(TAG, "onAdLoaded");
-                }
+            }
 
-                @Override
-                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    // Handle the error
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                // Handle the error
 //                        Log.i(TAG, loadAdError.getMessage());
-                    mInterstitialAd = null;
-                }
-            });
+                mInterstitialAd = null;
+            }
+        });
     }
 
 }

@@ -27,6 +27,8 @@ public class SetKeyActivity extends AppCompatActivity {
     private List<String> keyNameList = new ArrayList<>();
     boolean flag = false;
 
+    private Key newKey;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,8 @@ public class SetKeyActivity extends AppCompatActivity {
                 keyNameChoice = keyArray[0]; // e.g. C
                 keyTypeChoice = keyArray[1]; // e.g. Major
 
+//                newKey = new Key(Key.RootNote.returnRootNote(keyNameChoice), Key.Type.valueOf(keyTypeChoice.toUpperCase()));
+
                 System.out.println("keyName from SetKeyFromSongActivity = " + keyNameChoice);
                 System.out.println("keyType from SetKeyFromSongActivity = " + keyTypeChoice);
 
@@ -73,9 +77,9 @@ public class SetKeyActivity extends AppCompatActivity {
                 int keyTypePosition = keyTypeAdapter.getPosition(keyTypeChoice);
                 keyTypeSpinner.setSelection(keyTypePosition);
             }
-            else if (intent.getStringExtra("flag").equals("fromKeyboardActivity"))
+            else if (intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
             {
-                System.out.println("intent = " + "fromKeyboardActivity");
+                System.out.println("intent = " + "fromSmartKeyboardActivity");
 
                 session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
                 System.out.println("key = " + session.getKey().toString());
@@ -123,7 +127,19 @@ public class SetKeyActivity extends AppCompatActivity {
                     Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
                     Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
 
-                    session.setKey(new Key(newRootNote, newKeyType));
+
+                    newKey = new Key(newRootNote, newKeyType);
+                    session.setKey(newKey);
+
+//                    if (intent.getStringExtra("flag").equals("fromNewSessionActivity"))
+//                    {
+//                        newKey = new Key(newRootNote, newKeyType);
+//
+//                    }
+//                    else if (intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
+//                    {
+//                        session.setKey(new Key(newRootNote, newKeyType));
+//                    }
 
                     Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
                 }
@@ -135,10 +151,23 @@ public class SetKeyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+//                if (intent.getStringExtra("flag").equals("fromNewSessionActivity"))
+//                {
+//                    Intent intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
+//                    intent.putExtra("flag", "fromSetKeyActivity");
+//                    intent.putExtra("newKey", newKey);
+//                }
+//                else if (intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
+//                {
+//                    Intent intent = new Intent(SetKeyActivity.this, SmartKeyboardActivity.class);
+//                    intent.putExtra("flag", "fromSetKeyActivity");
+//                    intent.putExtra("session", session);
+//                }
 
-                Intent intent = new Intent(SetKeyActivity.this, SmartKeyboardActivity.class);
+                Intent intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
                 intent.putExtra("flag", "fromSetKeyActivity");
                 intent.putExtra("session", session);
+                intent.putExtra("newKey", newKey);
                 startActivity(intent);
             }
         });
