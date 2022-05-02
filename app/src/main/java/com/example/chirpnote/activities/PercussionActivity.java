@@ -533,6 +533,7 @@ public class PercussionActivity extends AppCompatActivity
     void testInitSessionPPs() {
         for (int i = 0; i < 32; i++) {
             session.mPercussionPatterns.add("aaa");
+            session.mChords.add("0000300");
         }
     }
 
