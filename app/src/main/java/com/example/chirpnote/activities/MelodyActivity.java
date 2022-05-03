@@ -20,7 +20,6 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -32,6 +31,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.chirpnote.BLL;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.Notation;
 import com.example.chirpnote.Notation.NoteFont;
@@ -40,7 +40,6 @@ import com.example.chirpnote.ChirpNoteSession;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
-import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
 
@@ -70,8 +69,9 @@ public class MelodyActivity extends AppCompatActivity
     private MidiDriver midiDriver;
     private ConstructedMelody consMelody;
     private Notation.MusicFontAdapter mfAdapter;
-    private ChirpNoteSession session;
+    private static ChirpNoteSession session;
     private Key key;
+    private Mixer mixer;
     private int octNum;
     private int melodyPosition;
 
@@ -116,19 +116,18 @@ public class MelodyActivity extends AppCompatActivity
         maxBarLength = 32;
 
         // Init session
-        // TODO: get key from Session Activity
-        key = new Key(Key.RootNote.C, Key.Type.MAJOR);
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         octNum = 4;
-
-        // TODO: get session from Session Activity
-
         String basePath = this.getFilesDir().getPath();
-        session = new ChirpNoteSession("Name", key, 120,
-                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+        if(session == null) {
+            session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+        }
+        key = session.getKey();
+        mixer = new Mixer(session);
 
         // Init Constructed Melody
-        consMelody = new ConstructedMelody(session);
-        consMelody.startRecording();
+        consMelody = mixer.constructedMelody;
         midiDriver = MidiDriver.getInstance();
         melodyPosition = 0;
 
@@ -149,7 +148,6 @@ public class MelodyActivity extends AppCompatActivity
         keyButtons = new ArrayList<>();
         for (int i = 0; i < key.getScaleNotes().length-1; i++)
         {
-            // TODO: Think of a better way to do this
             int rootIdx = (/*currentKey*/key.getScaleNotes()[i] - 60) % 12;
             /** arraylist of all chords that belong to the current key based on the type of chord
              * it takes in the root note of the chord and type of chord
@@ -283,10 +281,8 @@ public class MelodyActivity extends AppCompatActivity
         playButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //toConstructedMelody();
-                if (consMelody.isPlaying()) consMelody.stop();
-                consMelody.play();
+                if (mixer.areTracksPlaying()) mixer.stopTracks();
+                mixer.playTracks();
             }
         });
 
@@ -820,7 +816,7 @@ public class MelodyActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         midiDriver.start();
-        midiDriver.setReverb(ReverbConstants.OFF);
+        mixer.syncWithSession();
     }
 
     @Override
@@ -904,17 +900,16 @@ public class MelodyActivity extends AppCompatActivity
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
 
     // method to activate intent
     private static void redirectActivity(Activity activity, Class aClass) {
-
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("session", session);
         activity.startActivity(intent);
     }
 

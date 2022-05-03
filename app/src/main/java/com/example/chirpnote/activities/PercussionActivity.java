@@ -21,20 +21,18 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.Key;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ChirpNoteSession;
 import com.google.android.material.navigation.NavigationView;
 
-import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
-import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,8 +62,9 @@ public class PercussionActivity extends AppCompatActivity
     private PercussionTrack percussionTrack;
     private ChordTrack chordTrack;
 
-    private ChirpNoteSession session;
+    private static ChirpNoteSession session;
     private Key key;
+    private Mixer mixer;
 
     private String selectedStyle;
     private String selectedPattern;
@@ -101,15 +100,17 @@ public class PercussionActivity extends AppCompatActivity
         // Initialize MIDI driver
         midiDriver = MidiDriver.getInstance();
 
-        // TODO: get session from session activity
-        key = new Key(Key.RootNote.C, Key.Type.MAJOR);
         // Initialize session
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         String basePath = this.getFilesDir().getPath();
-        session = new ChirpNoteSession("Name", key, 120,
-                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
-        percussionTrack = new PercussionTrack(session);
-        chordTrack = new ChordTrack(session);
-        percussionTrack.startRecording();
+        if(session == null) {
+            session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+        }
+        key = session.getKey();
+        mixer = new Mixer(session);
+        percussionTrack = mixer.percussionTrack;
+        chordTrack = mixer.chordTrack;
         percussionIndex = 0;
         measureIndex = 0;
 
@@ -157,9 +158,9 @@ public class PercussionActivity extends AppCompatActivity
 
         // Initialize chords and style scrollbar
         initStyles();
-        // TODO implement initialization in insertChords Activity
-        testInitSessionPPs();
-        initPercussionTrack();
+
+        //testInitSessionPPs(); // Used for testing
+        // initPercussionTrack(); // You do not need to add existing patterns to a percussion track
         updatePercussionChords(get16Measures());
 
         leftButton.setOnClickListener(new View.OnClickListener() {
@@ -541,12 +542,7 @@ public class PercussionActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         midiDriver.start();
-        midiDriver.setReverb(ReverbConstants.OFF);
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 1, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 2, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 3, (byte) 0x07, (byte) 80});
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + 9, (byte) 0x07, (byte) 127});
+        mixer.syncWithSession();
     }
 
     @Override
@@ -595,8 +591,7 @@ public class PercussionActivity extends AppCompatActivity
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -604,6 +599,7 @@ public class PercussionActivity extends AppCompatActivity
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("session", session);
         activity.startActivity(intent);
     }
 }
