@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
@@ -52,6 +54,7 @@ public class SetKeyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key);
+        hideSystemBars();
 
         String username = getIntent().getStringExtra("username");
 
@@ -300,4 +303,14 @@ public class SetKeyActivity extends AppCompatActivity {
         keyTypeList.add("Minor");
     }
 
+    /**
+     * Hides the system status bar and navigation bar
+     */
+    private void hideSystemBars(){
+        WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());
+        if (windowInsetsController != null) {
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
+    }
 }

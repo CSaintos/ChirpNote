@@ -14,6 +14,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.R;
@@ -25,13 +27,12 @@ public class MusicTheoryInfoActivity extends AppCompatActivity implements View.O
     Button next;
     Button back;
 
-    private DrawerLayout drawer;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_theory_info);
+        hideSystemBars();
 
         //actionbar back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -57,19 +58,14 @@ public class MusicTheoryInfoActivity extends AppCompatActivity implements View.O
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+    /**
+     * Hides the system status bar and navigation bar
+     */
+    private void hideSystemBars(){
+        WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());
+        if (windowInsetsController != null) {
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
         }
-        else {
-            super.onBackPressed();
-        }
-    }
-
-    private static void redirectActivity(Activity activity, Class aClass) {
-        Intent intent = new Intent(activity, aClass);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
     }
 }

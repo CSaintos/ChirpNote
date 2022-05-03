@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
@@ -78,12 +80,13 @@ public class NewSessionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_session);
+        hideSystemBars();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         setKeyButton = (Button) findViewById(R.id.setKeyButton);
         setKeyButton.setEnabled(false);
         createSessionButton = (Button) findViewById(R.id.createSessionButton);
         createSessionButton.setEnabled(false);
-
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -228,4 +231,14 @@ public class NewSessionActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Hides the system status bar and navigation bar
+     */
+    private void hideSystemBars(){
+        WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());
+        if (windowInsetsController != null) {
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
+    }
 }

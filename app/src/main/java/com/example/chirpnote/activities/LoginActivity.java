@@ -93,7 +93,6 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Hides the system status bar and navigation bar
-     * TODO: Add this to all other activities once UI navigation is complete
      */
     private void hideSystemBars(){
         WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());

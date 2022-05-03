@@ -1,6 +1,8 @@
 package com.example.chirpnote.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -30,6 +32,7 @@ public class LoadSessionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_session);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        hideSystemBars();
 
         String username = getIntent().getStringExtra("username");
         String basePath = this.getFilesDir().getPath();
@@ -86,5 +89,16 @@ public class LoadSessionActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
         });
+    }
+
+    /**
+     * Hides the system status bar and navigation bar
+     */
+    private void hideSystemBars(){
+        WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());
+        if (windowInsetsController != null) {
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
     }
 }

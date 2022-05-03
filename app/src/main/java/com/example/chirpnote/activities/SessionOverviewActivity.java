@@ -5,6 +5,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.Activity;
@@ -34,6 +36,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session_overview);
+        hideSystemBars();
 
         app = new App(new AppConfiguration.Builder(appID).build());
         username = getIntent().getStringExtra("username");
@@ -118,5 +121,16 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
         intent.putExtra("session", session);
         intent.putExtra("username", username);
         activity.startActivity(intent);
+    }
+
+    /**
+     * Hides the system status bar and navigation bar
+     */
+    private void hideSystemBars(){
+        WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());
+        if (windowInsetsController != null) {
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
     }
 }

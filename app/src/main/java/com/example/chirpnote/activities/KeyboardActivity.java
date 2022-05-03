@@ -24,6 +24,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.ChirpNoteSession;
@@ -50,8 +52,6 @@ public class KeyboardActivity extends AppCompatActivity
     private ArrayList<MusicNote> flatKeys;
     RealTimeMelody melody;
 
-
-
     private Button minimizeBtn;
     private AlertDialog dialog;
 
@@ -70,6 +70,7 @@ public class KeyboardActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keyboard);
+        hideSystemBars();
 //      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().hide();
         // navigation drawer
@@ -574,5 +575,16 @@ public class KeyboardActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Hides the system status bar and navigation bar
+     */
+    private void hideSystemBars(){
+        WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());
+        if (windowInsetsController != null) {
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
     }
 }

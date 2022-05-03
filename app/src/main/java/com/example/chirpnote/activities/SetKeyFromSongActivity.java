@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
@@ -53,6 +55,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        hideSystemBars();
         String username = getIntent().getStringExtra("username");
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
@@ -322,4 +325,14 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         return sb;
     }
 
+    /**
+     * Hides the system status bar and navigation bar
+     */
+    private void hideSystemBars(){
+        WindowInsetsControllerCompat windowInsetsController = new WindowInsetsControllerCompat(this.getWindow(), this.getCurrentFocus());
+        if (windowInsetsController != null) {
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
+    }
 }
