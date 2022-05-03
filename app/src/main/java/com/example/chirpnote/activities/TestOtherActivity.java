@@ -351,8 +351,6 @@ public class TestOtherActivity extends AppCompatActivity {
         dMinor.setAlteration(1);
         chords.add(dMinor);*/
 
-        /*chordTrack = new ChordTrack(session);
-        chordTrack.startRecording();*/
         chordTrack = mixer.chordTrack;
 
         // Setup event listener for each chord button

@@ -458,8 +458,6 @@ public class InsertChordsActivity extends AppCompatActivity
 
     private void removeRowOfMeasures(View view, int rowIndex)
     {
-//        listOfMeasures.remove(rowIndex);
-
         layoutList.removeView(view);
         listOfChords.remove(rowIndex);
         listOfButtons.remove(rowIndex);

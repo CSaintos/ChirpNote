@@ -115,14 +115,21 @@ public class MelodyActivity extends AppCompatActivity
         navPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MelodyActivity.this, "Play", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MelodyActivity.this, "Play", Toast.LENGTH_SHORT).show();
+                if(mixer.areTracksPlaying()){
+                    mixer.stopTracks();
+                }
+                mixer.playTracks();
             }
         });
         ImageView navStopButton = findViewById(R.id.nav_stop_button);
         navStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MelodyActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(InsertChordsActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+                if(mixer.areTracksPlaying()){
+                    mixer.stopTracks();
+                }
             }
         }); //end play and stop
 
