@@ -207,6 +207,15 @@ public class SetKeyActivity extends AppCompatActivity {
 //                    session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
 //                    System.out.println("session key name = " + session.getKey().toString());
                 }
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyFromSongActivity"))
+                {
+                    intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
+                    intent.putExtra("flag", "fromSetKeyActivity");
+                    intent.putExtra("session", session);
+                    intent.putExtra("newKey", newKey);
+//                    session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
+//                    System.out.println("session key name = " + session.getKey().toString());
+                }
 
 //                Intent intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
 //                intent.putExtra("flag", "fromSetKeyActivity");
