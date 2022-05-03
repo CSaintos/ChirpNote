@@ -7,7 +7,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,13 +26,35 @@ public class SetKeyActivity extends AppCompatActivity {
     private List<String> keyNameList = new ArrayList<>();
     boolean flag = false;
 
+    private Button confirmChangesButton;
     private Key newKey;
+//    private TextWatcher checkTextValid = new TextWatcher() {
+//        @Override
+//        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+//
+//        @Override
+//        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+//
+//        @Override
+//        public void afterTextChanged(Editable editable) {
+//            String name = keyNameChoice;
+//            String type = keyTypeChoice;
+//
+//            if(name.equals("Key Name") || type.equals("Key Type")){
+//                confirmChangesButton.setEnabled(false);
+//            } else {
+//                confirmChangesButton.setEnabled(true);
+//            }
+//        }
+//    };
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key);
+        Button confirmChangesButton = (Button) findViewById(R.id.confirmChangesButton);
+        confirmChangesButton.setEnabled(false);
 
         initializeKeyNameList();
         initializeKeyTypeList();
@@ -114,60 +135,83 @@ public class SetKeyActivity extends AppCompatActivity {
             }
         });
 
-        Button setKeyManuallyButton = (Button) findViewById(R.id.setKeyManuallyButton);
-        setKeyManuallyButton.setOnClickListener(new View.OnClickListener() {
+//        Button setKeyManuallyButton = (Button) findViewById(R.id.setKeyManuallyButton);
+//        setKeyManuallyButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
+//                {
+//                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
+//                }
+//                else
+//                {
+//                    Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
+//                    Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
+//
+//
+//                    newKey = new Key(newRootNote, newKeyType);
+//                    session.setKey(newKey);
+//
+////                    if (intent.getStringExtra("flag").equals("fromNewSessionActivity"))
+////                    {
+////                        newKey = new Key(newRootNote, newKeyType);
+////
+////                    }
+////                    else if (intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
+////                    {
+////                        session.setKey(new Key(newRootNote, newKeyType));
+////                    }
+//
+//                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
+
+
+        confirmChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
-                {
-                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
-                }
-                else
-                {
+
+
+
+//                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
+//                {
+//                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
+//                }
+//                else {
                     Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
                     Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
 
 
                     newKey = new Key(newRootNote, newKeyType);
                     session.setKey(newKey);
+//                }
 
-//                    if (intent.getStringExtra("flag").equals("fromNewSessionActivity"))
-//                    {
-//                        newKey = new Key(newRootNote, newKeyType);
-//
-//                    }
-//                    else if (intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
-//                    {
-//                        session.setKey(new Key(newRootNote, newKeyType));
-//                    }
 
-                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
+
+                Intent intent = getIntent();
+                if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
+                {
+                    intent = new Intent(SetKeyActivity.this, SmartKeyboardActivity.class);
+                    intent.putExtra("flag", "fromSetKeyActivity");
+                    intent.putExtra("session", session);
+                    intent.putExtra("newKey", newKey);
+//                    session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
                 }
-            }
-        });
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromNewSessionActivity"))
+                {
+                    intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
+                    intent.putExtra("flag", "fromSetKeyActivity");
+                    intent.putExtra("session", session);
+                    intent.putExtra("newKey", newKey);
+//                    session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
+//                    System.out.println("session key name = " + session.getKey().toString());
+                }
 
-        Button confirmChangesButton = (Button) findViewById(R.id.confirmChangesButton);
-        confirmChangesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-//                if (intent.getStringExtra("flag").equals("fromNewSessionActivity"))
-//                {
-//                    Intent intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
-//                    intent.putExtra("flag", "fromSetKeyActivity");
-//                    intent.putExtra("newKey", newKey);
-//                }
-//                else if (intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
-//                {
-//                    Intent intent = new Intent(SetKeyActivity.this, SmartKeyboardActivity.class);
-//                    intent.putExtra("flag", "fromSetKeyActivity");
-//                    intent.putExtra("session", session);
-//                }
-
-                Intent intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
-                intent.putExtra("flag", "fromSetKeyActivity");
-                intent.putExtra("session", session);
-                intent.putExtra("newKey", newKey);
+//                Intent intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
+//                intent.putExtra("flag", "fromSetKeyActivity");
+//                intent.putExtra("session", session);
+//                intent.putExtra("newKey", newKey);
                 startActivity(intent);
             }
         });
@@ -182,7 +226,16 @@ public class SetKeyActivity extends AppCompatActivity {
                 keyNameChoice = parent.getItemAtPosition(position).toString();
 //                Toast.makeText(getApplicationContext(), keyNameChoice, Toast.LENGTH_LONG).show();
 //                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
-                System.out.println("keyName from SetKeyActivity = " + keyNameChoice);
+//                System.out.println("keyName from SetKeyActivity = " + keyNameChoice);
+
+                if (keyNameChoice == "Key Name" || keyTypeChoice == "Key Type")
+                {
+                    confirmChangesButton.setEnabled(false);
+                }
+                else
+                {
+                    confirmChangesButton.setEnabled(true);
+                }
             }
 
             @Override
@@ -198,8 +251,16 @@ public class SetKeyActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 keyTypeChoice = parent.getItemAtPosition(position).toString();
 //                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
+//                System.out.println("keyType from SetKeyActivity = " + keyTypeChoice);
 
-                System.out.println("keyType from SetKeyActivity = " + keyTypeChoice);
+                if (keyNameChoice == "Key Name" || keyTypeChoice == "Key Type")
+                {
+                    confirmChangesButton.setEnabled(false);
+                }
+                else
+                {
+                    confirmChangesButton.setEnabled(true);
+                }
             }
 
             @Override
