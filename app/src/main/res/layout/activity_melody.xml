@@ -465,14 +465,11 @@
             android:id="@+id/melodyradiogroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="199dp"
-            android:layout_marginEnd="212dp"
             android:orientation="horizontal"
             android:translationY="-40dp"
             app:layout_constraintBottom_toTopOf="@+id/melodynoteFsharpbutton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/melodytextlayout">
+            app:layout_constraintEnd_toEndOf="@+id/melodyoctindicator"
+            app:layout_constraintStart_toStartOf="@+id/melodynoteCbutton">
 
             <RadioButton
                 android:id="@+id/melodywholeradiobutton"
