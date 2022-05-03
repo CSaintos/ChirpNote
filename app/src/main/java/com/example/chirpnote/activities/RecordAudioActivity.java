@@ -183,7 +183,7 @@ public class RecordAudioActivity extends AppCompatActivity
         midiDriver = MidiDriver.getInstance();
 
         // Audio track
-        audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
+        audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime() +".mp3");
         filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
         audio = mixer.audioTrack;
         recordButton.setColorFilter(Color.parseColor("#777777"));
@@ -257,6 +257,7 @@ public class RecordAudioActivity extends AppCompatActivity
                 }
             }
         });
+
         /*
          The listener for the save button
         */
@@ -269,7 +270,7 @@ public class RecordAudioActivity extends AppCompatActivity
                     byte arr[] = readByte(inputStream);
 
                     //file output stream
-                    audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
+                    audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime() +".mp3");
                     FileOutputStream fileOutput = new FileOutputStream(audioFile);
                     fileOutput.write(arr);
                     fileOutput.close();
@@ -330,6 +331,7 @@ public class RecordAudioActivity extends AppCompatActivity
 
         return os.toByteArray();
     }
+
     private void requestSignIn(){
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()

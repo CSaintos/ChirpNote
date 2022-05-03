@@ -31,16 +31,21 @@ public class HomeScreenActivity extends AppCompatActivity {
         Button profileButton = (Button) findViewById(R.id.profileButton);
         Button musicTheoryButton = (Button) findViewById(R.id.musicTheoryButton);
 
-        // For testing only; these will be removed eventually
+        // For testing only
         Button testKeyboardButton = (Button) findViewById(R.id.testKeyboardButton);
         Button testOtherButton = (Button) findViewById(R.id.testOtherButton);
         Button testMelodyButton = (Button) findViewById(R.id.testMelodyButton);
         Button testPercussionButton = (Button) findViewById(R.id.testPercussionButton);
-
-        // create my button here, link it button in xml
         Button testSmartKeyboardButton = (Button) findViewById(R.id.testSmartKeyboardButton);
         Button testInsertChordsButton = (Button) findViewById(R.id.testInsertChords);
 
+        // Hide the testing buttons for the real app
+        testKeyboardButton.setVisibility(View.INVISIBLE);
+        testOtherButton.setVisibility(View.INVISIBLE);
+        testMelodyButton.setVisibility(View.INVISIBLE);
+        testPercussionButton.setVisibility(View.INVISIBLE);
+        testSmartKeyboardButton.setVisibility(View.INVISIBLE);
+        testInsertChordsButton.setVisibility(View.INVISIBLE);
 
         //new session button function
         newSessionButton.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +72,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, UserProfileActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });
@@ -76,6 +82,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, MusicTheoryInfoActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });

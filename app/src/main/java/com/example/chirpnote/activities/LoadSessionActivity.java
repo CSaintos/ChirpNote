@@ -15,6 +15,7 @@ import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 import com.example.chirpnote.Session;
+import com.example.chirpnote.SessionListAdapter;
 
 import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollectionChangeListener;
@@ -43,7 +44,7 @@ public class LoadSessionActivity extends AppCompatActivity {
         Realm realm = Realm.getDefaultInstance();
         sessions = realm.where(Session.class).findAllAsync();
 
-        ArrayAdapter<Session> adapter = new ArrayAdapter<>(LoadSessionActivity.this, android.R.layout.simple_list_item_1, sessions);
+        SessionListAdapter adapter = new SessionListAdapter(LoadSessionActivity.this, R.layout.session_custom_list_row, sessions);
         ListView listView = (ListView) findViewById(R.id.sessionList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -55,7 +56,10 @@ public class LoadSessionActivity extends AppCompatActivity {
                 if(rSession.getMidiFile() != null) {
                     rSession.writeEncodedFile(rSession.getMidiFile(), session.getMidiPath());
                 }
-                Intent intent = new Intent(LoadSessionActivity.this, TestTrackPersistenceActivity.class);
+                if(rSession.getAudioFile() != null){
+                    rSession.writeEncodedFile(rSession.getAudioFile(), session.getAudioPath());
+                }
+                Intent intent = new Intent(LoadSessionActivity.this, SessionOverviewActivity.class);
                 intent.putExtra("session", session);
                 startActivity(intent);
             }

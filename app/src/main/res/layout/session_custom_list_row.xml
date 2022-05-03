@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/SessionNameItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/material_on_background_emphasis_high_type"
+        android:text="Session Name" />
+
+    <TextView
+        android:id="@+id/SessionTempoItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="27dp"
+        android:text="Session Tempo" />
+
+    <TextView
+        android:id="@+id/SessionKeyItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="49dp"
+        android:text="Session Key" />
+</RelativeLayout>

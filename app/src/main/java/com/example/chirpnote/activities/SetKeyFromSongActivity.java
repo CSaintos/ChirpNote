@@ -158,7 +158,6 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             //shows the key that has been set on click
             Toast.makeText(SetKeyFromSongActivity.this, "Session Key Set to " + songArrayListFinished.get(position).getSongKey(),Toast.LENGTH_SHORT).show();
-            //TODO set the key in session, need to find ways to link of current session
             String keyName = StringUtils.substringBetween(songArrayListFinished.get(position).getSongKey(),""," ");
             String keyMajorMinor = StringUtils.substringAfter(songArrayListFinished.get(position).getSongKey()," ").replaceAll(" ","");
             if (flag == true){
