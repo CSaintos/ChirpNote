@@ -1,11 +1,15 @@
 package com.example.chirpnote;
 
+import android.view.View;
+
 public class queryResult {
 
     private String songTitle;
     private String songArtist;
     private String songKey;
     private String image;
+    public Boolean isImageLoaded;
+    public View storeView;
 
     /**
      * A queryResult with relevant song information
@@ -19,6 +23,8 @@ public class queryResult {
         this.songArtist = songArtist;
         this.songKey = songKey;
         this.image = "https://itunes.apple.com/search?term=" + image.replaceAll(" ", "+").replaceAll("\n","") + "&limit=1";
+        isImageLoaded = false;
+        storeView = null;
     }
 
     /**
@@ -47,5 +53,8 @@ public class queryResult {
      */
     public String getSongTitle() {
         return songTitle;
+    }
+    public void setImageLoaded(Boolean imageLoaded) {
+        isImageLoaded = imageLoaded;
     }
 }

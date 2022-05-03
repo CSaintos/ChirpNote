@@ -3,6 +3,7 @@ package com.example.chirpnote;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -94,7 +95,6 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
          * loads in data asynchronously for the images. It's best to just let it work when it does.
          */
         new Thread(new Runnable() {
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void run() {
         try {
@@ -165,7 +165,10 @@ public class SongListAdapter extends ArrayAdapter<queryResult> {
         textView.setText(getItem(position).getSongTitle());
         songArtistView.setText(getItem(position).getSongArtist());
         songKeyView.setText(getItem(position).getSongKey());
-
+        if (getItem(position).storeView == null)
+            getItem(position).storeView = convertView;
+        else
+            convertView = getItem(position).storeView;
         return convertView;
     }
 }
