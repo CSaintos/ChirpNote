@@ -9,12 +9,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,12 +22,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
 import com.example.chirpnote.R;
-import com.example.chirpnote.ChirpNoteSession;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -139,9 +136,9 @@ public class InsertChordsActivity extends AppCompatActivity
 
         layoutList = findViewById(R.id.layout_list); // the space where the rows will be added
 
-        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
-        changeKeyButton.setClickable(true);
-        changeKeyButton.setOnClickListener(this);
+//        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
+//        changeKeyButton.setClickable(true);
+//        changeKeyButton.setOnClickListener(this);
 
         chordSuggestionButton = (Button) findViewById(R.id.chordSuggestionButton);
         chordSuggestionButton.setClickable(true);
@@ -177,40 +174,40 @@ public class InsertChordsActivity extends AppCompatActivity
 
         // Touch this button to play the most recently recorded track
         // Touch it again to stop the playback of the track
-        Button playButton = (Button) findViewById(R.id.testPlayButton);
+//        Button playButton = (Button) findViewById(R.id.testPlayButton);
 //        playButton.setEnabled(false);
 
-        // set user input key name and type to new key in session
-        Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
-        ArrayAdapter keyNameAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyNameList);
-        keyNameSpinner.setAdapter(keyNameAdapter);
-        keyNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                keyNameChoice = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), keyNameChoice, Toast.LENGTH_LONG).show();
-//                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        Spinner keyTypeSpinner = findViewById(R.id.spinner_key_type);
-        ArrayAdapter keyTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyTypeList);
-        keyTypeSpinner.setAdapter(keyTypeAdapter);
-        keyTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                keyTypeChoice = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+//        // set user input key name and type to new key in session
+//        Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
+//        ArrayAdapter keyNameAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyNameList);
+//        keyNameSpinner.setAdapter(keyNameAdapter);
+//        keyNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                keyNameChoice = parent.getItemAtPosition(position).toString();
+////                Toast.makeText(getApplicationContext(), keyNameChoice, Toast.LENGTH_LONG).show();
+////                Toast.makeText(SmartKeyboardActivity.this, keyNameChoice, Toast.LENGTH_LONG).show();
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
+//
+//        Spinner keyTypeSpinner = findViewById(R.id.spinner_key_type);
+//        ArrayAdapter keyTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, keyTypeList);
+//        keyTypeSpinner.setAdapter(keyTypeAdapter);
+//        keyTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                keyTypeChoice = parent.getItemAtPosition(position).toString();
+////                Toast.makeText(getApplicationContext(), keyTypeChoice, Toast.LENGTH_LONG).show();
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
 
 //        suggestedChords = getSuggestedChords(inputChord, keyChords);
 
@@ -234,14 +231,6 @@ public class InsertChordsActivity extends AppCompatActivity
                     chordSuggestionStatus = true;
                     chordSuggestion.setSelected(true);
                 }
-            }
-        });
-
-        // Event listener for play button
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chordTrack.play();
             }
         });
     }

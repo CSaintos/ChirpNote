@@ -58,7 +58,7 @@ public class SetKeyActivity extends AppCompatActivity {
 
 
 //            if (intentName != null && intentName.equals("fromSetKeyFromSong"))
-            if (intent.getStringExtra("flag").equals("fromSetKeyFromSongActivity"))
+            if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyFromSongActivity"))
             {
                 System.out.println("intent = " + "fromSetKeyFromSongActivity");
 
@@ -77,7 +77,7 @@ public class SetKeyActivity extends AppCompatActivity {
                 int keyTypePosition = keyTypeAdapter.getPosition(keyTypeChoice);
                 keyTypeSpinner.setSelection(keyTypePosition);
             }
-            else if (intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
+            else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
             {
                 System.out.println("intent = " + "fromSmartKeyboardActivity");
 
