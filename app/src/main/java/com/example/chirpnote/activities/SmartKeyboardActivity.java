@@ -29,9 +29,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
+import com.example.chirpnote.Session;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -40,8 +42,12 @@ import org.billthefarmer.mididriver.ReverbConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 public class SmartKeyboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static Realm realm;
+    private static String username;
 
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
@@ -50,7 +56,8 @@ public class SmartKeyboardActivity extends AppCompatActivity
 
     private String keyNameChoice;
     private String keyTypeChoice;
-    private ChirpNoteSession session;
+    private static ChirpNoteSession session;
+    private Mixer mixer;
     private Button minimizeBtn;
 
 
@@ -64,6 +71,9 @@ public class SmartKeyboardActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_keyboard);
         hideSystemBars();
+
+        username = getIntent().getStringExtra("username");
+        realm = Realm.getDefaultInstance();
 
         //navigation drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
@@ -84,7 +94,7 @@ public class SmartKeyboardActivity extends AppCompatActivity
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
 //        ChirpNoteSession session = new ChirpNoteSession("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
         {
 
@@ -94,13 +104,19 @@ public class SmartKeyboardActivity extends AppCompatActivity
         {
             session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
             System.out.println("session key name = " + session.getKey().toString());
+        }*/
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+        String basePath = this.getFilesDir().getPath();
+        if(session == null) {
+            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
         }
-
+        mixer = new Mixer(session);
+        melody = mixer.realTimeMelody;
 
         initializeKeys(session);
 
         eventListener(pianoKeys);
-
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
@@ -109,17 +125,6 @@ public class SmartKeyboardActivity extends AppCompatActivity
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
         Button playButton = (Button) findViewById(R.id.playButton);
-
-        Context context = this;
-        String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
-
-
-
-
-
-
-
-        melody = new RealTimeMelody(120, melodyFilePath, playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
 
@@ -139,7 +144,7 @@ public class SmartKeyboardActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if(!melody.isRecording()){
-                    recordButton.setText("End recording");
+                    recordButton.setText("Stop");
                     melody.startRecording();
                 } else {
                     recordButton.setText("Record");
@@ -161,6 +166,7 @@ public class SmartKeyboardActivity extends AppCompatActivity
                 }
             }
         });
+        playButton.setVisibility(View.INVISIBLE);
 
 //        // Setup event listener for each piano key
 //        for(MusicNote note : pianoKeys){
@@ -176,8 +182,6 @@ public class SmartKeyboardActivity extends AppCompatActivity
 //                }
 //            });
 //        }
-
-
 
 
 
@@ -307,7 +311,7 @@ public class SmartKeyboardActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         midiDriver.start();
-        midiDriver.setReverb(ReverbConstants.OFF);
+        mixer.syncWithSession();
     }
 
     @Override
@@ -415,7 +419,17 @@ public class SmartKeyboardActivity extends AppCompatActivity
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("session", session);
+        intent.putExtra("username", username);
+        if(username != null && !session.getName().equals("SessionFreePlay")) saveToDB();
         activity.startActivity(intent);
+    }
+
+    private static void saveToDB(){
+        realm.executeTransactionAsync(r -> {
+            Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
+            realmSession.setMidiFile(realmSession.encodeFile(session.getMidiPath()));
+        });
     }
 
     // pop up menu with session options

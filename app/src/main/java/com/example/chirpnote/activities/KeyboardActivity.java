@@ -30,9 +30,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
+import com.example.chirpnote.Session;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -41,8 +43,12 @@ import org.billthefarmer.mididriver.ReverbConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+
 public class KeyboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
+    private static Realm realm;
+    private static String username;
 
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
@@ -61,7 +67,8 @@ public class KeyboardActivity extends AppCompatActivity
     private String keyTypeChoice;
     private Key currentKey;
     private ArrayList<MusicNote> keyButtons;
-    private ChirpNoteSession session;
+    private static ChirpNoteSession session;
+    private Mixer mixer;
 
     private DrawerLayout drawer;
 
@@ -73,6 +80,10 @@ public class KeyboardActivity extends AppCompatActivity
         hideSystemBars();
 //      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().hide();
+
+        username = getIntent().getStringExtra("username");
+        realm = Realm.getDefaultInstance();
+
         // navigation drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
         toolbar.setTitle("Keyboard");
@@ -93,13 +104,7 @@ public class KeyboardActivity extends AppCompatActivity
 
 
 
-
-
-//        ChirpNoteSession session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
-//        session = (ChirpNoteSession) getIntent().getSerializableExtra("SessionFreePlay"); // coming from keyboard activity
-
-
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
         {
 
@@ -109,19 +114,21 @@ public class KeyboardActivity extends AppCompatActivity
         {
             session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.A, Key.Type.MAJOR), 120);
             System.out.println("session key name = " + session.getKey().toString());
+        }*/
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+        String basePath = this.getFilesDir().getPath();
+        if(session == null) {
+            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
         }
-
-
-
+        mixer = new Mixer(session);
+        melody = mixer.realTimeMelody;
 
 //        initializeKeyNameList(session);
 //        initializeKeyTypeList(session);
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
-        Button playButton = (Button) findViewById(R.id.playButton);
-        Context context = this;
-        String melodyFilePath = context.getFilesDir().getPath() + "/melody.mid";
-        melody = new RealTimeMelody(120, melodyFilePath, playButton);
+        //Button playButton = (Button) findViewById(R.id.playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
         pianoKeys = new ArrayList<>(); // List of notes
@@ -132,7 +139,6 @@ public class KeyboardActivity extends AppCompatActivity
         currentKey = session.getKey(); // gets the key set when session was initialized
         for (int i = 0; i < currentKey.getScaleNotes().length; i++)
         {
-            // TODO: Think of a better way to do this
             int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
             if (keyButtons.contains(pianoKeys.get(0))) // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
             {
@@ -302,19 +308,19 @@ public class KeyboardActivity extends AppCompatActivity
 //            }
 //        });
 
-//        // Event listener for record button (to record melody)
-//        recordButton.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(!melody.isRecording()){
-//                    recordButton.setText("End recording");
-//                    melody.startRecording();
-//                } else {
-//                    recordButton.setText("Record");
-//                    melody.stopRecording();
-//                }
-//            }
-//        });
+        // Event listener for record button (to record melody)
+        recordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!melody.isRecording()){
+                    recordButton.setText("Stop");
+                    melody.startRecording();
+                } else {
+                    recordButton.setText("Record");
+                    melody.stopRecording();
+                }
+            }
+        });
 
         // Event listener for play button (to play recorded melody)
 //        playButton.setOnClickListener(new OnClickListener() {
@@ -506,7 +512,7 @@ public class KeyboardActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         midiDriver.start();
-        midiDriver.setReverb(ReverbConstants.OFF);
+        mixer.syncWithSession();
     }
 
     @Override
@@ -554,7 +560,17 @@ public class KeyboardActivity extends AppCompatActivity
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("session", session);
+        intent.putExtra("username", username);
+        if(username != null && !session.getName().equals("SessionFreePlay")) saveToDB();
         activity.startActivity(intent);
+    }
+
+    private static void saveToDB(){
+        realm.executeTransactionAsync(r -> {
+            Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
+            realmSession.setMidiFile(realmSession.encodeFile(session.getMidiPath()));
+        });
     }
 
     // pop up menu with session options

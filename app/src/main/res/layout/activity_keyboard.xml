@@ -269,17 +269,17 @@
             app:layout_constraintTop_toBottomOf="@+id/noteG4Button"
             app:layout_constraintVertical_bias="0.608" />
 
-        <!--    <Button-->
-        <!--        android:id="@+id/recordButton"-->
-        <!--        android:layout_width="118dp"-->
-        <!--        android:layout_height="48dp"-->
-        <!--        android:text="Rec"-->
-        <!--        app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintHorizontal_bias="0.634"-->
-        <!--        app:layout_constraintStart_toStartOf="parent"-->
-        <!--        app:layout_constraintTop_toBottomOf="@+id/noteB4Button"-->
-        <!--        app:layout_constraintVertical_bias="1.0" />-->
+            <Button
+                android:id="@+id/recordButton"
+                android:layout_width="118dp"
+                android:layout_height="48dp"
+                android:text="Rec"
+                app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.634"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/noteB4Button"
+                app:layout_constraintVertical_bias="1.0" />
 
         <!--    <Button-->
         <!--        android:id="@+id/playButton"-->
