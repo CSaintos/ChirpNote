@@ -20,17 +20,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
-import com.example.chirpnote.ChirpNoteSession;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiConstants;
@@ -146,9 +145,11 @@ public class InsertChordsActivity extends AppCompatActivity
         // Request permission to record audio
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
-        String basePath = this.getFilesDir().getPath();
-        session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+//        String basePath = this.getFilesDir().getPath();
+//        session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+//                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+        Intent intent = getIntent();
+        session = (ChirpNoteSession) intent.getSerializableExtra("session");
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
