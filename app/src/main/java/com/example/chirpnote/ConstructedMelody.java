@@ -1,7 +1,5 @@
 package com.example.chirpnote;
 
-import android.util.Log;
-
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.event.NoteOn;
 
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ConstructedMelody extends Melody {
-
     // Durations for notes
     public enum NoteDuration {
         WHOLE_NOTE,
@@ -25,7 +22,7 @@ public class ConstructedMelody extends Melody {
         SIXTEENTH_NOTE,
         THIRTY_SECOND_NOTE,
     }
-    private HashMap<NoteDuration, Integer> mNoteDurations;
+    private static HashMap<NoteDuration, Integer> mNoteDurations = new HashMap<>();
     public final static Notation notation = new Notation(); // for getElement
     public final static int CHANNEL = 2;
     public int mElementIndex = 0;
@@ -162,7 +159,7 @@ public class ConstructedMelody extends Melody {
      * @param duration The duration to compute the ticks of
      * @return The duration's MIDI ticks
      */
-    private int getDurationTicks(NoteDuration duration){
+    public static int getDurationTicks(NoteDuration duration){
         return RESOLUTION * 4 / mNoteDurations.get(duration);
     }
 

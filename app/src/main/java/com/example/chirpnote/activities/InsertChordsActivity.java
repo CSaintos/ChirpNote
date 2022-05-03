@@ -25,6 +25,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ChordTrack;
+import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
 import com.example.chirpnote.R;
@@ -242,7 +243,7 @@ public class InsertChordsActivity extends AppCompatActivity
         for(int i = 0; i < session.mChords.size(); i++){
             importChords[i % 4] = chordTrack.decodeChord(session.mChords.get(i));
             if ((i + 1) % 4 == 0) {
-                addRowOfMeasures3(importChords, true);
+                addRowOfMeasures(importChords, true);
             }
         }
     }
@@ -252,7 +253,7 @@ public class InsertChordsActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.button_add_row:
                 Chord[] randChords = randomChordProgression(sessionChords);
-                addRowOfMeasures3(randChords, false);
+                addRowOfMeasures(randChords, false);
                 break;
             case R.id.changeKeyButton:
                 changeKey(session);
@@ -260,7 +261,7 @@ public class InsertChordsActivity extends AppCompatActivity
         }
     }
 
-    private void addRowOfMeasures3(Chord[] prefilledMeasures, boolean loadingSession) {
+    private void addRowOfMeasures(Chord[] prefilledMeasures, boolean loadingSession) {
         View rowOfMeasures = getLayoutInflater().inflate(R.layout.add_row, null, false);
         layoutList.addView(rowOfMeasures);
         int rowIdx = layoutList.indexOfChild(rowOfMeasures);
@@ -273,8 +274,6 @@ public class InsertChordsActivity extends AppCompatActivity
                 removeRowOfMeasures(rowOfMeasures, index);
             }
         });
-
-//        listOfChords.add(new Chord[4]);
 
         listOfChords.add(prefilledMeasures);
 
@@ -290,8 +289,6 @@ public class InsertChordsActivity extends AppCompatActivity
 
             if(!loadingSession) chordTrack.addChord(prefilledMeasures[col], (rowIdx * 4) + col);
         }
-
-
 
         for(int colIdx = 0; colIdx < 4; colIdx++){
             int col = colIdx;
@@ -395,10 +392,12 @@ public class InsertChordsActivity extends AppCompatActivity
                             }
                         }
                     }
-
-
                 }
             });
+
+            // Add empty measure to melody and percussion track
+            mixer.constructedMelody.addRest(ConstructedMelody.NoteDuration.WHOLE_NOTE, (rowIdx * 4) + col);
+            mixer.percussionTrack.addPattern(null, (rowIdx * 4) + col);
         }
 
     }
@@ -461,7 +460,7 @@ public class InsertChordsActivity extends AppCompatActivity
         layoutList.removeView(view);
         listOfChords.remove(rowIndex);
         listOfButtons.remove(rowIndex);
-        chordTrack.removeFourChords(rowIndex * 4);
+        chordTrack.removeFourMeasures(rowIndex * 4);
     }
 
     public void initializeSessionChords()
