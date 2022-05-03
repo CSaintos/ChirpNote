@@ -145,11 +145,17 @@ public class InsertChordsActivity extends AppCompatActivity
         // Request permission to record audio
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
-//        String basePath = this.getFilesDir().getPath();
-//        session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-//                basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
         Intent intent = getIntent();
-        session = (ChirpNoteSession) intent.getSerializableExtra("session");
+        if (intent.getStringExtra("flag") != null)
+        {
+            session = (ChirpNoteSession) intent.getSerializableExtra("session");
+        }
+        else
+        {
+            String basePath = this.getFilesDir().getPath();
+            session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+        }
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
