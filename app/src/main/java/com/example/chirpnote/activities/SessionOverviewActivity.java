@@ -25,6 +25,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
 
     App app;
     String appID = "chirpnote-jwrci";
+    static ChirpNoteSession session;
 
     private DrawerLayout drawer;
 
@@ -48,7 +49,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         ((TextView) findViewById(R.id.sessionName)).setText("Name: " + session.getName());
         ((TextView) findViewById(R.id.sessionTempo)).setText("Tempo: " + session.getTempo());
         ((TextView) findViewById(R.id.sessionKey)).setText("Key: " + session.getKey());
@@ -104,8 +105,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -113,6 +113,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("session", session);
         activity.startActivity(intent);
     }
 }
