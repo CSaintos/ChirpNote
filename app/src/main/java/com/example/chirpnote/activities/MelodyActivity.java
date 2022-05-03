@@ -156,6 +156,7 @@ public class MelodyActivity extends AppCompatActivity
 
         // Init Constructed Melody
         consMelody = mixer.constructedMelody;
+
         midiDriver = MidiDriver.getInstance();
         melodyPosition = 0;
 

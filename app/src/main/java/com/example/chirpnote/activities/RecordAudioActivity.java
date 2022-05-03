@@ -38,8 +38,11 @@ import com.anggrayudi.storage.file.DocumentFileCompat;
 import com.anggrayudi.storage.file.DocumentFileUtils;
 import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.BuildConfig;
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.DriveServiceHelper;
 import com.example.chirpnote.ExportHelper;
+import com.example.chirpnote.Key;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.R;
 import com.example.chirpnote.WaveformView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -60,6 +63,8 @@ import com.google.api.services.drive.DriveScopes;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+
+import org.billthefarmer.mididriver.MidiDriver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -90,7 +95,6 @@ public class RecordAudioActivity extends AppCompatActivity
     // An audio track that is recorded with the device's microphone
     private AudioTrack audio;
     Context context = this;
-    private boolean playing = false;
     //This is the minutes/second timer of the recording
     private Chronometer timer;
     //This is the custom view for the waveform generation
@@ -104,6 +108,10 @@ public class RecordAudioActivity extends AppCompatActivity
 
     // navigation drawer
     private DrawerLayout drawer;
+
+    private MidiDriver midiDriver;
+    private static ChirpNoteSession session;
+    private Mixer mixer;
 
     /***
      * onCreate function sets values
@@ -134,14 +142,21 @@ public class RecordAudioActivity extends AppCompatActivity
         navPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RecordAudioActivity.this, "Play", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MelodyActivity.this, "Play", Toast.LENGTH_SHORT).show();
+                if(mixer.areTracksPlaying()){
+                    mixer.stopTracks();
+                }
+                mixer.playTracks();
             }
         });
         ImageView navStopButton = findViewById(R.id.nav_stop_button);
         navStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RecordAudioActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(InsertChordsActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+                if(mixer.areTracksPlaying()){
+                    mixer.stopTracks();
+                }
             }
         }); // play and stop end
 
@@ -156,10 +171,21 @@ public class RecordAudioActivity extends AppCompatActivity
         shareButton = findViewById(R.id.testShareButton);
         waveformView = findViewById(R.id.waveformView);
         exportButton = findViewById(R.id.exportButton);
+
+        // Session
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+        String basePath = this.getFilesDir().getPath();
+        if(session == null) {
+            session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+        }
+        mixer = new Mixer(session);
+        midiDriver = MidiDriver.getInstance();
+
         // Audio track
         audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
         filePath = context.getFilesDir().getPath() + "/audioTrack.mp3";
-        audio = new AudioTrack(filePath, playRecordedAudioButton);
+        audio = mixer.audioTrack;
         recordButton.setColorFilter(Color.parseColor("#777777"));
         //timer logic
         Handler handler = new Handler();
@@ -169,12 +195,6 @@ public class RecordAudioActivity extends AppCompatActivity
                 handler.postDelayed(this,20);
             }
         };
-        //audio setup
-        try {
-            audio.getmMediaRecorder().prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         requestSignIn();
         audio.getmMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -189,8 +209,6 @@ public class RecordAudioActivity extends AppCompatActivity
             }
         });
 
-
-
         // Event listener for record audio button (to record audio from the device's microphone)
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,10 +220,7 @@ public class RecordAudioActivity extends AppCompatActivity
                 timer.setBase(SystemClock.elapsedRealtime());
                 timer.start();
 
-
                 playRecordedAudioButton.setEnabled(audio.isRecording());
-
-
 
                 if(!audio.isRecording()){
                     audio.startRecording();
@@ -231,24 +246,15 @@ public class RecordAudioActivity extends AppCompatActivity
         playRecordedAudioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //if(!playing){
                 if(!audio.isPlaying()){
                     timer.setBase(SystemClock.elapsedRealtime());
                     timer.stop();
                     timer.start();
                     audio.play();
-                    /*realTimeMelody.play();
-                    constructedMelody.play();
-                    audio.play();*/
                 } else {
                     audio.stop();
                     timer.stop();
-                    /*realTimeMelody.stop();
-                    constructedMelody.stop();
-                    audio.stop();*/
                 }
-                playing = !playing;
             }
         });
         /*
@@ -259,9 +265,8 @@ public class RecordAudioActivity extends AppCompatActivity
             public void onClick(View v) {
                 //write to file
                 try {
-                    InputStream inputStream = new FileInputStream(filePath);
+                    InputStream inputStream = new FileInputStream(session.getAudioPath());
                     byte arr[] = readByte(inputStream);
-
 
                     //file output stream
                     audioFile = new File(context.getFilesDir() + "/Session/Audio", "SessionAudio " +Calendar.getInstance().getTime().toString() +".mp3");
@@ -288,18 +293,20 @@ public class RecordAudioActivity extends AppCompatActivity
                 ExportHelper.shareFile(context,audioFile);
             }
         });
-    exportButton.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            System.out.println("find this");
-            try {
-                new ZipFile(getFilesDir() + "/audio.zip").addFolder(new File(getFilesDir() + "/Session/"));
-            } catch (ZipException e) {
-                e.printStackTrace();
+
+        exportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("find this");
+                try {
+                    new ZipFile(getFilesDir() + "/audio.zip").addFolder(new File(getFilesDir() + "/Session/"));
+                } catch (ZipException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(RecordAudioActivity.this,"Directory zipped",Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(RecordAudioActivity.this,"Directory zipped",Toast.LENGTH_SHORT).show();
-        }
-    });
+        });
+
         directoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -343,8 +350,8 @@ public class RecordAudioActivity extends AppCompatActivity
                 }
                 break;
         }
-
     }
+
     private void handleSignInIntent(Intent data){
         GoogleSignIn.getSignedInAccountFromIntent(data)
                 .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
@@ -360,8 +367,6 @@ public class RecordAudioActivity extends AppCompatActivity
                         .setApplicationName("Record Audio")
                         .build();
                 driveServiceHelper = new DriveServiceHelper(googleDriveService);
-
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -369,8 +374,8 @@ public class RecordAudioActivity extends AppCompatActivity
 
             }
         });
-
     }
+    
     public void uploadToDrive(View view){
         ExportHelper.exportToDrive(context,audioFile);
 //        ProgressDialog progressDialog = new ProgressDialog(RecordAudioActivity.this);
@@ -444,6 +449,7 @@ public class RecordAudioActivity extends AppCompatActivity
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("session", session);
         activity.startActivity(intent);
     }
 
@@ -465,5 +471,18 @@ public class RecordAudioActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        midiDriver.start();
+        mixer.syncWithSession();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        midiDriver.stop();
     }
 }

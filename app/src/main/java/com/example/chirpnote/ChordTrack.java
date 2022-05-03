@@ -3,6 +3,7 @@ package com.example.chirpnote;
 import com.example.midiFileLib.src.MidiFile;
 import com.example.midiFileLib.src.MidiTrack;
 import com.example.midiFileLib.src.event.MidiEvent;
+import com.example.midiFileLib.src.event.NoteOff;
 import com.example.midiFileLib.src.event.NoteOn;
 import com.example.midiFileLib.src.event.meta.Tempo;
 import com.example.midiFileLib.src.event.meta.TimeSignature;
@@ -193,12 +194,12 @@ public class ChordTrack implements Track {
     }
 
     /**
-     * Removes the four adjacent chords at the given position, and shifts
-     * all other chords back to fill the empty space (rather than inserting rests)
+     * Removes four measures (a row) from the session (affects all MIDI tracks)
+     * All other MIDI events are moved back to fill the empty space (rather than inserting rests)
      * @param position The position to remove at
      */
-    public void removeFourChords(int position){
-        // Remove the four chords from MIDI file
+    public void removeFourMeasures(int position){
+        // Remove the four measures from MIDI file
         MidiFile midiFile = null;
         File output = new File(mFilePath);
         try {
@@ -217,22 +218,27 @@ public class ChordTrack implements Track {
             if(curr.getTick() >= endTick){
                 break;
             } else if(curr.getTick() >= startTick){
-                if(curr instanceof NoteOn){
-                    NoteOn noteEvent = (NoteOn) curr;
-                    if(noteEvent.getChannel() == CHANNEL){
-                        eventsToRemove.add(curr);
-                    }
+                if(curr instanceof NoteOn || curr instanceof NoteOff){
+                    eventsToRemove.add(curr);
                 }
             }
         }
         for(MidiEvent event : eventsToRemove){
             track.removeEvent(event);
         }
-        // Remove the four chords from session list
+        // Remove the four measures from chord and percussion session lists
         for(int i = 0; i < 4; i++){
             mSession.mChords.remove(position);
+            mSession.mPercussionPatterns.remove(position);
         }
-        // Shift all chords (back) that came after the fourth removed chord
+        // Remove the four measures from the melody session list
+        int currentTickTotal = 0;
+        while(currentTickTotal < RESOLUTION * 16){
+            currentTickTotal += ConstructedMelody.getDurationTicks(ConstructedMelody.NoteDuration.values()[
+                    Integer.parseInt(mSession.mMelodyElements.get(position).substring(6, 7))]);
+            mSession.mMelodyElements.remove(position);
+        }
+        // Shift all MIDI events (back) that came after the fourth removed measure
         MidiEvent next, prev = null;
         if(position < mSession.mChords.size()){
             HashMap<Integer, Integer> noteMap = new HashMap<>(); // {note MIDI number : amount shifted, in ticks}
@@ -243,31 +249,29 @@ public class ChordTrack implements Track {
                 next = it.hasNext() ? it.next() : null;
                 if(curr.getTick() >= startTick && curr instanceof NoteOn) {
                     NoteOn noteEvent = (NoteOn) curr;
-                    if(noteEvent.getChannel() == CHANNEL){
-                        if(noteEvent.getVelocity() == 0 && noteMap.get(noteEvent.getNoteValue()) != null){
-                            curr.setTick(curr.getTick() + noteMap.get(noteEvent.getNoteValue()));
-                            if(prev != null) {
-                                curr.setDelta(curr.getTick() - prev.getTick());
-                            } else {
-                                curr.setDelta(curr.getTick());
-                            }
-                            if(next != null){
-                                next.setDelta(next.getTick() - curr.getTick());
-                            }
-                            noteMap.remove(noteEvent.getNoteValue());
+                    if(noteEvent.getVelocity() == 0 && noteMap.get(noteEvent.getNoteValue()) != null){
+                        curr.setTick(curr.getTick() + noteMap.get(noteEvent.getNoteValue()));
+                        if(prev != null) {
+                            curr.setDelta(curr.getTick() - prev.getTick());
                         } else {
-                            int tickDelta = -(RESOLUTION * 16); // Shift back by 16 beats (4 measures)
-                            curr.setTick(curr.getTick() + tickDelta);
-                            if(prev != null) {
-                                curr.setDelta(curr.getTick() - prev.getTick());
-                            } else {
-                                curr.setDelta(curr.getTick());
-                            }
-                            if(next != null){
-                                next.setDelta(next.getTick() - curr.getTick());
-                            }
-                            noteMap.put(noteEvent.getNoteValue(), tickDelta);
+                            curr.setDelta(curr.getTick());
                         }
+                        if(next != null){
+                            next.setDelta(next.getTick() - curr.getTick());
+                        }
+                        noteMap.remove(noteEvent.getNoteValue());
+                    } else {
+                        int tickDelta = -(RESOLUTION * 16); // Shift back by 16 beats (4 measures)
+                        curr.setTick(curr.getTick() + tickDelta);
+                        if(prev != null) {
+                            curr.setDelta(curr.getTick() - prev.getTick());
+                        } else {
+                            curr.setDelta(curr.getTick());
+                        }
+                        if(next != null){
+                            next.setDelta(next.getTick() - curr.getTick());
+                        }
+                        noteMap.put(noteEvent.getNoteValue(), tickDelta);
                     }
                 }
                 prev = curr;
