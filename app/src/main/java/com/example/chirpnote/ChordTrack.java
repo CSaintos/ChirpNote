@@ -226,10 +226,17 @@ public class ChordTrack implements Track {
         for(MidiEvent event : eventsToRemove){
             track.removeEvent(event);
         }
-        // Remove the four measures from session lists
+        // Remove the four measures from chord and percussion session lists
         for(int i = 0; i < 4; i++){
             mSession.mChords.remove(position);
             mSession.mPercussionPatterns.remove(position);
+        }
+        // Remove the four measures from the melody session list
+        int currentTickTotal = 0;
+        while(currentTickTotal < RESOLUTION * 16){
+            currentTickTotal += ConstructedMelody.getDurationTicks(ConstructedMelody.NoteDuration.values()[
+                    Integer.parseInt(mSession.mMelodyElements.get(position).substring(6, 7))]);
+            mSession.mMelodyElements.remove(position);
         }
         // Shift all MIDI events (back) that came after the fourth removed measure
         MidiEvent next, prev = null;

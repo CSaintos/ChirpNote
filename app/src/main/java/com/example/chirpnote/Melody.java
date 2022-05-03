@@ -19,7 +19,7 @@ abstract class Melody implements Track {
     private boolean mRecorded;
 
     // For recording the melody
-    public final int RESOLUTION = 960;
+    public final static int RESOLUTION = 960;
     private int mBPM;
     private MidiTrack mTempoTrack;
     protected MidiTrack mNoteTrack;
