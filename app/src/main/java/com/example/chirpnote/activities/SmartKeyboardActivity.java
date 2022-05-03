@@ -1,5 +1,6 @@
 package com.example.chirpnote.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,20 +8,29 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.MusicNote;
 import com.example.chirpnote.R;
 import com.example.chirpnote.RealTimeMelody;
+import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
 import org.billthefarmer.mididriver.ReverbConstants;
@@ -28,7 +38,8 @@ import org.billthefarmer.mididriver.ReverbConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SmartKeyboardActivity extends AppCompatActivity {
+public class SmartKeyboardActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
@@ -44,12 +55,28 @@ public class SmartKeyboardActivity extends AppCompatActivity {
     private List<String> keyTypeList = new ArrayList<>();
     private List<String> keyNameList = new ArrayList<>();
 
+    private DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_keyboard);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().hide();
+
+        //navigation drawer
+        Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        toolbar.setTitle("Keyboard");
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.bringToFront();
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
         // keyboard code
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
@@ -346,6 +373,67 @@ public class SmartKeyboardActivity extends AppCompatActivity {
         }
     }
 
+    //navigation drawer
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                redirectActivity(this, HomeScreenActivity.class);
+                break;
+            case R.id.nav_overview:
+                redirectActivity(this, SessionOverviewActivity.class);
+                break;
+            case R.id.nav_melody:
+                redirectActivity(this, MelodyActivity.class);
+                break;
+            case R.id.nav_chords:
+                redirectActivity(this, InsertChordsActivity.class);
+                break;
+            case R.id.nav_percussion:
+                redirectActivity(this, PercussionActivity.class);
+                break;
+            case R.id.nav_keyboard:
+                // Just close the drawer since we're already on this activity
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.nav_mixer:
+                redirectActivity(this, MixerActivity.class);
+                break;
+            case R.id.nav_audio:
+                redirectActivity(this, RecordAudioActivity.class);
+                break;
+            default:
+                break;
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private static void redirectActivity(Activity activity, Class aClass) {
+        Intent intent = new Intent(activity, aClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
+    }
+
+    // pop up menu with session options
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.popup_session_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.subitem1:
+                redirectActivity(this, SessionOptionsActivity.class);
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
 }

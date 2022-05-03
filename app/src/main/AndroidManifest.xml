@@ -108,7 +108,8 @@
         <activity
             android:name=".activities.SmartKeyboardActivity"
             android:exported="false"
-            android:parentActivityName=".activities.HomeScreenActivity" />
+            android:parentActivityName=".activities.HomeScreenActivity"
+            android:theme="@style/Theme.ChirpNote.NoActionBar"/>
         <activity
             android:name=".activities.InsertChordsActivity"
             android:exported="false"
