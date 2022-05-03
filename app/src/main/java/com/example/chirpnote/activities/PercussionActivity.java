@@ -480,6 +480,11 @@ public class PercussionActivity extends AppCompatActivity
 
     void updatePercussionChords(String[][] measures) {
         storedList = new ArrayList<>();
+
+        if (measures.length == 0) {
+            return;
+        }
+
         for (String pattern : measures[0]) {
             PercussionPattern pp = percussionTrack.decodePattern(pattern);
             if (pp == null) {
@@ -535,6 +540,7 @@ public class PercussionActivity extends AppCompatActivity
     }
 
     void next16Measures() {
+        if (get16Measures().length == 0) return;
         String[] measures = get16Measures()[0];
         if (measures.length == 16) {
             measureIndex+=16;
