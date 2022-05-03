@@ -8,6 +8,11 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chirpnote.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
@@ -16,12 +21,27 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     App app;
     String appID = "chirpnote-jwrci";
+    private AdView mAdViewTop;
+    private AdView mAdViewBottom;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         getSupportActionBar().hide();
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        mAdViewTop = findViewById(R.id.adViewTop);
+        mAdViewBottom = findViewById(R.id.adViewBottom);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdViewTop.loadAd(adRequest);
+        mAdViewBottom.loadAd(adRequest);
 
         String username = getIntent().getStringExtra("username");
         app = new App(new AppConfiguration.Builder(appID).build());
