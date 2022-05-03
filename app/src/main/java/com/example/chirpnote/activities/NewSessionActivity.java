@@ -105,7 +105,6 @@ public class NewSessionActivity extends AppCompatActivity {
 
         String basePath = this.getFilesDir().getPath();
 
-
 //        // replaced the initialization of session in createSession onClickListener
 //        Intent intent = getIntent();
 //        if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
@@ -146,6 +145,7 @@ public class NewSessionActivity extends AppCompatActivity {
                 intent.putExtra("flag", "fromNewSessionActivity");
                 dummySession = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.C, Key.Type.MAJOR), Integer.parseInt(setTempo.getText().toString()));
                 intent.putExtra("session", dummySession);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });
@@ -176,6 +176,7 @@ public class NewSessionActivity extends AppCompatActivity {
                                 });
                             }
                             intent.putExtra("session", session);
+                            intent.putExtra("username", username);
                             startActivity(intent);
 
                             mInterstitialAd = null;
@@ -197,6 +198,7 @@ public class NewSessionActivity extends AppCompatActivity {
                         });
                     }
                     intent.putExtra("session", session);
+                    intent.putExtra("username", username);
                     startActivity(intent);
                 }
             }

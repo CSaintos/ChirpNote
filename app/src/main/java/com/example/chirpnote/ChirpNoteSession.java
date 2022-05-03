@@ -182,5 +182,17 @@ public class ChirpNoteSession implements Serializable {
         return mAudioRecorded;
     }
 
+    /**
+     * Sets the key of this session
+     * @param key The key
+     */
     public void setKey(Key key) {mKey = key;}
+
+    /**
+     * Sets the id of this session
+     * @param id The id
+     */
+    public void setId(ObjectId id){
+        _id = id;
+    }
 }

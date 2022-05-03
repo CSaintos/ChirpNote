@@ -44,6 +44,7 @@ import com.example.chirpnote.ExportHelper;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
 import com.example.chirpnote.R;
+import com.example.chirpnote.Session;
 import com.example.chirpnote.WaveformView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -78,11 +79,16 @@ import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.realm.Realm;
+
 /**
  * This class represents recording audio from the user's microphone. It will provide certain monitoring elements such as the current chord and waveform representataion of intensity of amplitude.
  */
 public class RecordAudioActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static Realm realm;
+    private static String username;
+
     //layout items
     private ImageButton recordButton;
     private ImageButton playRecordedAudioButton;
@@ -121,6 +127,9 @@ public class RecordAudioActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_record_audio);
         super.onCreate(savedInstanceState);
+
+        username = getIntent().getStringExtra("username");
+        realm = Realm.getDefaultInstance();
 
         //navigation drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
@@ -452,7 +461,16 @@ public class RecordAudioActivity extends AppCompatActivity
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("session", session);
+        intent.putExtra("username", username);
+        if(username != null) saveToDB();
         activity.startActivity(intent);
+    }
+
+    private static void saveToDB(){
+        realm.executeTransactionAsync(r -> {
+            Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
+            realmSession.setAudioFile(realmSession.encodeFile(session.getAudioPath()));
+        });
     }
 
     // pop up menu with session options

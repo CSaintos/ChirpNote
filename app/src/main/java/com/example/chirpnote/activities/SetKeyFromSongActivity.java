@@ -53,6 +53,8 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        String username = getIntent().getStringExtra("username");
+
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
         //flag to check if the activity came from the right place
@@ -170,6 +172,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                 System.out.println(keyToSend[1]);
                 intent.putExtra("keyArray",keyToSend);
                 intent.putExtra("session",session);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
             else{
@@ -179,6 +182,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
 //                ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
 //                session.setKey(new Key(Key.RootNote.returnRootNote(keyName),Key.Type.valueOf(keyMajorMinor)));
 //                intent.putExtra("session",session);
+//                intent.putExtra("username", username);
             }
 
         }

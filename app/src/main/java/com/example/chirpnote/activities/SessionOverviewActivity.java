@@ -26,6 +26,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
     App app;
     String appID = "chirpnote-jwrci";
     static ChirpNoteSession session;
+    static String username;
 
     private DrawerLayout drawer;
 
@@ -35,6 +36,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
         setContentView(R.layout.activity_session_overview);
 
         app = new App(new AppConfiguration.Builder(appID).build());
+        username = getIntent().getStringExtra("username");
 
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
         setSupportActionBar(toolbar);
@@ -59,7 +61,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
             ((TextView) findViewById(R.id.suggestedAction)).setText("Try adding a melody to your session from the menu on the left");
         } else if(session.mPercussionPatterns.size() == 0) {
             ((TextView) findViewById(R.id.suggestedAction)).setText("Try adding percussion to your session from the menu on the left");
-        } else if(session.isAudioRecorded()) {
+        } else if(!session.isAudioRecorded()) {
             ((TextView) findViewById(R.id.suggestedAction)).setText("Try adding some audio to your session from the menu on the left");
         } else {
             ((TextView) findViewById(R.id.suggestedAction)).setText("");
@@ -114,6 +116,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("session", session);
+        intent.putExtra("username", username);
         activity.startActivity(intent);
     }
 }

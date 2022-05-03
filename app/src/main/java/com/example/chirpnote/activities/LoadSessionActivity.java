@@ -53,14 +53,25 @@ public class LoadSessionActivity extends AppCompatActivity {
                 Session rSession = sessions.get(position);
                 ChirpNoteSession session = new ChirpNoteSession(rSession.getName(), Key.decode(rSession.getKey()), rSession.getTempo(),
                         basePath + "midiTrack.mid", basePath + "audioTrack.mp3", rSession.getUsername());
+                session.setId(rSession.get_id());
+                session.mNextMelodyTick = rSession.getNextMelodyTick();
                 if(rSession.getMidiFile() != null) {
                     rSession.writeEncodedFile(rSession.getMidiFile(), session.getMidiPath());
+                    session.setMidiPrepared();
+                    session.mChords = rSession.realmListToArrayList(rSession.getChords());
+                    session.mMelodyElements = rSession.realmListToArrayList(rSession.getMelodyElements());
+                    session.mPercussionPatterns = rSession.realmListToArrayList(rSession.getPercussionPatterns());
                 }
                 if(rSession.getAudioFile() != null){
                     rSession.writeEncodedFile(rSession.getAudioFile(), session.getAudioPath());
+                    session.setAudioRecorded();
+                }
+                for(int i = 0; i < rSession.getTrackVolumes().size(); i++){
+                    session.mTrackVolumes.set(i, rSession.getTrackVolumes().get(i));
                 }
                 Intent intent = new Intent(LoadSessionActivity.this, SessionOverviewActivity.class);
                 intent.putExtra("session", session);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });

@@ -29,6 +29,7 @@ import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
 import com.example.chirpnote.R;
+import com.example.chirpnote.Session;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -37,9 +38,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import io.realm.Realm;
+
 public class InsertChordsActivity extends AppCompatActivity
         implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener
 {
+    private static Realm realm;
+    private static String username;
+
     private LinearLayout layoutList; // holds all the rows of buttons that are added to it
     private Button buttonAdd;
     private Button buttonSubmitList;
@@ -94,6 +100,9 @@ public class InsertChordsActivity extends AppCompatActivity
         //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().hide();
         setContentView(R.layout.activity_insert_chords);
+
+        username = getIntent().getStringExtra("username");
+        realm = Realm.getDefaultInstance();
 
         // nav drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
@@ -692,7 +701,20 @@ public class InsertChordsActivity extends AppCompatActivity
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("session", session);
+        intent.putExtra("username", username);
+        if(username != null) saveToDB();
         activity.startActivity(intent);
+    }
+
+    private static void saveToDB(){
+        realm.executeTransactionAsync(r -> {
+            Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
+            realmSession.setNextMelodyTick(session.mNextMelodyTick);
+            realmSession.setChords(realmSession.listToRealmList(session.mChords));
+            realmSession.setMelodyElements(realmSession.listToRealmList(session.mMelodyElements));
+            realmSession.setPercussionPatterns(realmSession.listToRealmList(session.mPercussionPatterns));
+            realmSession.setMidiFile(realmSession.encodeFile(session.getMidiPath()));
+        });
     }
 
     // pop up menu with session options

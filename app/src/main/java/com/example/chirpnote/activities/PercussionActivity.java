@@ -34,6 +34,7 @@ import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.Session;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -41,8 +42,12 @@ import org.billthefarmer.mididriver.MidiDriver;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import io.realm.Realm;
+
 public class PercussionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static Realm realm;
+    private static String username;
 
     public static ArrayMap<String, ArrayList<PercussionPattern>> stylePatternMap;
 
@@ -85,6 +90,9 @@ public class PercussionActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_percussion);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        username = getIntent().getStringExtra("username");
+        realm = Realm.getDefaultInstance();
 
         //navigation drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
@@ -633,7 +641,17 @@ public class PercussionActivity extends AppCompatActivity
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("session", session);
+        intent.putExtra("username", username);
+        if(username != null) saveToDB();
         activity.startActivity(intent);
+    }
+
+    private static void saveToDB(){
+        realm.executeTransactionAsync(r -> {
+            Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
+            realmSession.setPercussionPatterns(realmSession.listToRealmList(session.mPercussionPatterns));
+            realmSession.setMidiFile(realmSession.encodeFile(session.getMidiPath()));
+        });
     }
 
     // pop up menu with session options

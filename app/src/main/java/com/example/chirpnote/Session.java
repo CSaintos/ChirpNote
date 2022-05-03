@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Session extends RealmObject {
@@ -159,9 +160,9 @@ public class Session extends RealmObject {
     }
 
     /**
-     * Converts the given list to a Realm list
-     * @param list The list to convert
-     * @return The realm list containing the elements from the given list
+     * Converts the given List to a RealmList
+     * @param list The List to convert
+     * @return A RealmList containing the elements from the given List
      */
     public <T> RealmList<T> listToRealmList(List<T> list){
         RealmList<T> realmList = new RealmList<>();
@@ -170,6 +171,20 @@ public class Session extends RealmObject {
         }
         return realmList;
     }
+
+    /**
+     * Converts the given RealmList to an ArrayList
+     * @param realmList The realm list to convert
+     * @return An ArrayList containing the elements from the given RealmList
+     */
+    public <T> ArrayList<T> realmListToArrayList(List<T> realmList){
+        ArrayList<T> list = new ArrayList<>();
+        for(T item : realmList){
+            list.add(item);
+        }
+        return list;
+    }
+
 
     /**
      * Encodes the file at the given path using the Base64 String encoding
