@@ -476,7 +476,10 @@ public class InsertChordsActivity extends AppCompatActivity
              */
             sessionChords[i] = new Chord(Chord.RootNote.values()[rootIdx], chordTypes[i], session.getTempo(), romanButtons[i]);
         }
-
+        for (int i = 0; i < sessionChords.length; i++)
+        {
+            sessionChords[i].getButton().setText(session.getKey().getRomanTypes()[i]);
+        }
 //        System.out.println("====================================== sessionChords =================================== = " + Arrays.toString(sessionChords));
     }
 
@@ -600,6 +603,14 @@ public class InsertChordsActivity extends AppCompatActivity
         list[4] = findViewById(R.id.roman5);
         list[5] = findViewById(R.id.roman6);
         list[6] = findViewById(R.id.roman7);
+
+//        if (session.getKey().toString().equals("Minor"))
+//        {
+//            for (int i = 0; i < list.length; i++)
+//            {
+//                list[i].setText(session.getKey().getRomanTypes()[i]);
+//            }
+//        }
 
         return list;
     }
