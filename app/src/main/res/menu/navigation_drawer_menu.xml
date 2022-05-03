@@ -19,7 +19,7 @@
             <item
                 android:id="@+id/nav_melody"
                 android:icon="@drawable/ic_baseline_music_note_24"
-                android:title="Melody" />
+                android:title="Compose Melody" />
             <item
                 android:id="@+id/nav_chords"
                 android:icon="@drawable/ic_chords_icon"
@@ -27,11 +27,11 @@
             <item
                 android:id="@+id/nav_percussion"
                 android:icon="@drawable/ic_drum_icon"
-                android:title="Percussion" />
+                android:title="Add Percussion" />
             <item
                 android:id="@+id/nav_keyboard"
                 android:icon="@drawable/ic_pianoicon"
-                android:title="Free Play" />
+                android:title="Record Melody" />
             <item
                 android:id="@+id/nav_mixer"
                 android:icon="@drawable/ic_mixer_icon"
@@ -39,7 +39,7 @@
             <item
                 android:id="@+id/nav_audio"
                 android:icon="@drawable/ic_audio_icon"
-                android:title="Audio" />
+                android:title="RecordAudio" />
         </menu>
     </item>
 
