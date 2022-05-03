@@ -6,10 +6,12 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,20 @@ public class SessionOptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session_options);
+
+        // note suggestion switch ifelse
+        Switch noteSuggestSwitch = findViewById(R.id.switch1);
+        noteSuggestSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) { //if the switch is on
+
+                }
+                else { //if the switch is on
+
+                }
+            }
+        });
 
         LinearLayout setKeyLayout = findViewById(R.id.LayoutSetKey);
         setKeyLayout.setOnClickListener(new View.OnClickListener() {
