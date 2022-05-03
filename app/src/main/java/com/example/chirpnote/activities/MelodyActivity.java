@@ -62,7 +62,7 @@ public class MelodyActivity extends AppCompatActivity
     private Button leftButton;
     private Button rightButton;
     private Button restButton;
-    private Button playButton;
+    //private Button playButton;
     private Button navLeftButton;
     private Button navRightButton;
     private Button octUpButton;
@@ -172,7 +172,7 @@ public class MelodyActivity extends AppCompatActivity
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
         rightButton = (Button) findViewById(R.id.melodyrightbutton);
         restButton = (Button) findViewById(R.id.melodyrestbutton);
-        playButton = (Button) findViewById(R.id.melodyPlayButton);
+        //playButton = (Button) findViewById(R.id.melodyPlayButton);
         navLeftButton = (Button) findViewById(R.id.melodynavleft);
         navRightButton = (Button) findViewById(R.id.melodynavright);
         octUpButton = (Button) findViewById(R.id.melodyoctupbutton);
@@ -309,8 +309,9 @@ public class MelodyActivity extends AppCompatActivity
         });
 
         /**
-         *
+         * Old play button
          */
+        /*
         playButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -318,6 +319,7 @@ public class MelodyActivity extends AppCompatActivity
                 mixer.playTracks();
             }
         });
+         */
 
         /**
          * Navigate to the left note
