@@ -181,6 +181,7 @@ public class Chord {
      */
     private void buildChord(){
         mNotes = new ArrayList<>();
+        mNotes.add(new MusicNote(mRootNum - 12));
         mNotes.add(new MusicNote(mRootNum));
         if(mType == Type.MAJOR){
             mNotes.add(new MusicNote(mRootNum + 4));

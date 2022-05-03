@@ -15,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -105,15 +104,15 @@ public class KeyboardActivity extends AppCompatActivity
         }
         else
         {
-            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.F_SHARP, Key.Type.MAJOR), 120);
+            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.A, Key.Type.MAJOR), 120);
             System.out.println("session key name = " + session.getKey().toString());
         }
 
 
 
 
-        initializeKeyNameList(session);
-        initializeKeyTypeList(session);
+//        initializeKeyNameList(session);
+//        initializeKeyTypeList(session);
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
         Button playButton = (Button) findViewById(R.id.playButton);
@@ -127,6 +126,28 @@ public class KeyboardActivity extends AppCompatActivity
         pianoKeys = getPianoKeys();
 
         keyButtons = new ArrayList<>();
+        currentKey = session.getKey(); // gets the key set when session was initialized
+        for (int i = 0; i < currentKey.getScaleNotes().length; i++)
+        {
+            // TODO: Think of a better way to do this
+            int rootIdx = (currentKey.getScaleNotes()[i] - 60) % 12;
+            if (keyButtons.contains(pianoKeys.get(0))) // because i designed the keyboard to include 2 C's I need to check if the keyboard already contains a c note to highlight the one an octave above
+            {
+//
+                keyButtons.add(pianoKeys.get(12));
+            }
+            /** arraylist of all chords that belong to the current key based on the type of chord
+             * it takes in the root note of the chord and type of chord
+             */
+//            keyButtons.add(new Chord(Chord.RootNote.values()[rootIdx], currentKey.getChordTypes()[i]));
+            keyButtons.add(pianoKeys.get(rootIdx));
+        }
+
+//        Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
+
+        eventListener(pianoKeys);
+
+
 
 //        // set user input key name and type to new key in session
 //        Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
@@ -307,6 +328,25 @@ public class KeyboardActivity extends AppCompatActivity
 //        });
 
         // Setup event listener for each piano key
+//        eventListener(pianoKeys);
+//        for(MusicNote note : pianoKeys){
+//            note.getButton().setOnTouchListener(new OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+//                        note.play();
+//                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//                        note.stop();
+//                    }
+//                    return true;
+//                }
+//            });
+//        }
+    }
+
+    private void eventListener(ArrayList<MusicNote> pianoKeys)
+    {
+        // Setup event listener for each piano key
         for(MusicNote note : pianoKeys){
             note.getButton().setOnTouchListener(new OnTouchListener() {
                 @Override
@@ -458,23 +498,6 @@ public class KeyboardActivity extends AppCompatActivity
         }
     }
 
-    private void initializeKeyNameList(ChirpNoteSession session)
-    {
-        keyNameList.add("Key Name");
-        for (int i = 0; i < Key.RootNote.values().length; i++)
-        {
-            //System.out.println("===============PASS===================");
-            keyNameList.add(Key.RootNote.values()[i].toString());
-            //System.out.println(temp.get(i));
-        }
-    }
-
-    private void initializeKeyTypeList(ChirpNoteSession session)
-    {
-        keyTypeList.add("Key Type");
-        keyTypeList.add("Major");
-        keyTypeList.add("Minor");
-    }
 
     @Override
     protected void onResume() {
