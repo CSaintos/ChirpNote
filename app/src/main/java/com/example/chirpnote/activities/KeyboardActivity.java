@@ -496,7 +496,7 @@ public class KeyboardActivity extends AppCompatActivity
                 redirectActivity(this, HomeScreenActivity.class);
                 break;
             case R.id.nav_overview:
-                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
+                redirectActivity(this, SessionOverviewActivity.class);
                 break;
             case R.id.nav_melody:
                 redirectActivity(this, MelodyActivity.class);
@@ -512,7 +512,7 @@ public class KeyboardActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
                 break;
             case R.id.nav_mixer:
-                Toast.makeText(this, "Mixer", Toast.LENGTH_SHORT).show();
+                redirectActivity(this, MixerActivity.class);
                 break;
             case R.id.nav_audio:
                 redirectActivity(this, RecordAudioActivity.class);

@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.chirpnote">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
@@ -21,6 +20,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChirpNote">
+        <activity
+            android:name=".activities.SessionOverviewActivity"
+            android:theme="@style/Theme.ChirpNote.NoActionBar"
+            android:exported="false" />
         <activity
             android:name=".activities.SessionOptionsActivity"
             android:exported="false" />
@@ -137,13 +140,10 @@
 
         <activity
             android:name=".activities.MixerActivity"
-            android:exported="true" />
-
-        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+            android:exported="true" /> <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
-
+            android:value="ca-app-pub-3940256099942544~3347511713" />
     </application>
 
 </manifest>

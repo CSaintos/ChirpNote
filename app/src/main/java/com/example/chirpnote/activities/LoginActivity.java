@@ -40,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = (Button) findViewById(R.id.loginButton);
         Button signUpButton = (Button) findViewById(R.id.signUpButton);
         Button bypassLoginButton = (Button) findViewById(R.id.bypassLoginButton);
+        // TODO: Hide the bypass button by tonight, once everyone is finished making changes
+        // bypassLoginButton.setVisibility(View.INVISIBLE);
 
         loginButton.setOnClickListener(new OnClickListener() {
             @Override

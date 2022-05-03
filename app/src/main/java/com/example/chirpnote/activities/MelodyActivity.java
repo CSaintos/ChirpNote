@@ -872,7 +872,7 @@ public class MelodyActivity extends AppCompatActivity
                 redirectActivity(this, HomeScreenActivity.class);
                 break;
             case R.id.nav_overview:
-                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
+                redirectActivity(this, SessionOverviewActivity.class);
                 break;
             case R.id.nav_melody:
                 // Just close the drawer since we're already on this activity
@@ -888,7 +888,7 @@ public class MelodyActivity extends AppCompatActivity
                 redirectActivity(this, KeyboardActivity.class);
                 break;
             case R.id.nav_mixer:
-                Toast.makeText(this, "Mixer", Toast.LENGTH_SHORT).show();
+                redirectActivity(this, MixerActivity.class);
                 break;
             case R.id.nav_audio:
                 redirectActivity(this, RecordAudioActivity.class);
