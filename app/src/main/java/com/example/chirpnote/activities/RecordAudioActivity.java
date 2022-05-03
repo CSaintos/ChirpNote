@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -113,6 +114,7 @@ public class RecordAudioActivity extends AppCompatActivity
 
         //navigation drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
@@ -123,7 +125,23 @@ public class RecordAudioActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState(); // nav drawer end
+
+        // actionbar play and stop buttons
+        ImageView navPlayButton = findViewById(R.id.nav_play_button);
+        navPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(RecordAudioActivity.this, "Play", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ImageView navStopButton = findViewById(R.id.nav_stop_button);
+        navStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(RecordAudioActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+            }
+        }); // play and stop end
 
         volSlider = findViewById(R.id.volumeSlider);
         timer = findViewById(R.id.recordTimer);

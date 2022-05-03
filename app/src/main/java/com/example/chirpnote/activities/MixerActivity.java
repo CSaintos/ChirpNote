@@ -3,6 +3,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +41,7 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
         app = new App(new AppConfiguration.Builder(appID).build());
 
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
@@ -49,6 +53,24 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //play and stop button
+        // actionbar play and stop buttons
+        ImageView navPlayButton = findViewById(R.id.nav_play_button);
+        navPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MixerActivity.this, "Play", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ImageView navStopButton = findViewById(R.id.nav_stop_button);
+        navStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MixerActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+            }
+        }); //play and stop end
+
 
         chordsVolumeSlider = findViewById(R.id.chordsVolumeSlider);
         chordsVolumeSlider.addOnChangeListener(new Slider.OnChangeListener() {

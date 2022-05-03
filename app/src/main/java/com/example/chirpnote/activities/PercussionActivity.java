@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -85,6 +86,7 @@ public class PercussionActivity extends AppCompatActivity
 
         //navigation drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
@@ -95,7 +97,23 @@ public class PercussionActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState(); //nav drawer end
+
+        // actionbar play and stop buttons
+        ImageView navPlayButton = findViewById(R.id.nav_play_button);
+        navPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(PercussionActivity.this, "Play", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ImageView navStopButton = findViewById(R.id.nav_stop_button);
+        navStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(PercussionActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+            }
+        }); // play and stop end
 
 
         // Initialize MIDI driver

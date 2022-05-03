@@ -96,6 +96,7 @@ public class InsertChordsActivity extends AppCompatActivity
 
         // nav drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
@@ -122,7 +123,7 @@ public class InsertChordsActivity extends AppCompatActivity
             public void onClick(View v) {
                 Toast.makeText(InsertChordsActivity.this, "Stop", Toast.LENGTH_SHORT).show();
             }
-        });
+        }); // play and stop end
 
         buttonAdd = findViewById(R.id.button_add_row);
         buttonAdd.setOnClickListener(this);

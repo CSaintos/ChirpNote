@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,6 +95,7 @@ public class MelodyActivity extends AppCompatActivity
 
         // navigation menu
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
@@ -106,6 +108,22 @@ public class MelodyActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         // end of navigation menu
+
+        // play and stop button
+        ImageView navPlayButton = findViewById(R.id.nav_play_button);
+        navPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MelodyActivity.this, "Play", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ImageView navStopButton = findViewById(R.id.nav_stop_button);
+        navStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MelodyActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+            }
+        }); //end play and stop
 
         // Init noteList
         noteList = new BLL<>();

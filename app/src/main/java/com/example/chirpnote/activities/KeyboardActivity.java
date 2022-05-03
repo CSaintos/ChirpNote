@@ -73,6 +73,7 @@ public class KeyboardActivity extends AppCompatActivity
         //getSupportActionBar().hide();
         // navigation drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
+        toolbar.setTitle("Keyboard");
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
