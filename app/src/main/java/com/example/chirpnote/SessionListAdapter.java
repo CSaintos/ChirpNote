@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
-
 import io.realm.RealmResults;
 
 public class SessionListAdapter extends ArrayAdapter<Session> {
@@ -35,7 +33,7 @@ public class SessionListAdapter extends ArrayAdapter<Session> {
 
         name.setText(getItem(position).getName());
         tempo.setText("Tempo: " + getItem(position).getTempo() + " BPM");
-        key.setText("Key: " + getItem(position).getKey());
+        key.setText("Key: " + Key.decode(getItem(position).getKey()));
         return convertView;
     }
 }

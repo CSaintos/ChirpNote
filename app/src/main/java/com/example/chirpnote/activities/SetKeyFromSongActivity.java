@@ -54,7 +54,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key_from_song);
-        hideSystemBars();
+        //hideSystemBars();
         String username = getIntent().getStringExtra("username");
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
