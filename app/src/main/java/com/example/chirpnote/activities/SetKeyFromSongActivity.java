@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.KeyEvent;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,7 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.chirpnote.ChirpNoteSession;
-import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 import com.example.chirpnote.SongListAdapter;
 import com.example.chirpnote.queryResult;
@@ -29,7 +27,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -55,6 +52,8 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_set_key_from_song);
         hideSystemBars();
         String username = getIntent().getStringExtra("username");
 
@@ -69,8 +68,6 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         else
             flag = false;
         songArrayList.clear();
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_key_from_song);
         SongListAdapter adapter = new SongListAdapter(SetKeyFromSongActivity.this, R.layout.song_custom_list_row, songArrayListFinished);
         Button searchButton = (Button) findViewById(R.id.keySearchButton);
         ListView listView = (ListView) findViewById(R.id.songListView);
