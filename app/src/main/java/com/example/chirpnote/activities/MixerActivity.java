@@ -19,6 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.slider.Slider;
@@ -33,6 +35,7 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
     private Slider audioVolumeSlider;
     private Slider percussionVolumeSlider;
     private DrawerLayout drawer;
+    private static ChirpNoteSession session;
 
     App app;
     String appID = "chirpnote-jwrci";
@@ -42,6 +45,14 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mixer);
         hideSystemBars();
+
+        // Initialize session
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+        String basePath = this.getFilesDir().getPath();
+        if(session == null) {
+            session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+        }
 
         app = new App(new AppConfiguration.Builder(appID).build());
 
@@ -138,13 +149,15 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
                 redirectActivity(this, PercussionActivity.class);
                 break;
             case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
+//                redirectActivity(this, KeyboardActivity.class);
+//                break;
+                if (session.getSmartKeyboardFlag() == false) {
+                    redirectActivity(this, KeyboardActivity.class);
+                }
+                else {
+                    redirectActivity(this, SmartKeyboardActivity.class);
+                }
                 break;
-//                session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
-//                if(session == null){
-//                    session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-//                            basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
-//                }
             case R.id.nav_mixer:
                 // Just close the drawer since we're already on this activity
                 drawer.closeDrawer(GravityCompat.START);
@@ -171,6 +184,8 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
 
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
+        intent.putExtra("flag", "fromMixerActivity");
+        intent.putExtra("session", session);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
     }

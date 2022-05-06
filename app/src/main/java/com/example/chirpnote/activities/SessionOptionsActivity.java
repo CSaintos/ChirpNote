@@ -112,6 +112,24 @@ public class SessionOptionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = getIntent();
+//                if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromKeyboardActivity")) {
+//                    if (session.getSmartKeyboardFlag() == false) {
+//                        intent = new Intent(SessionOptionsActivity.this, KeyboardActivity.class);
+//                    }
+//                    else
+//                    {
+//                        intent = new Intent(SessionOptionsActivity.this, SmartKeyboardActivity.class);
+//                    }
+//                }
+//                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSmartKeyboardActivity")) {
+//                    if (session.getSmartKeyboardFlag() == false) {
+//                        intent = new Intent(SessionOptionsActivity.this, KeyboardActivity.class);
+//                    }
+//                    else
+//                    {
+//                        intent = new Intent(SessionOptionsActivity.this, SmartKeyboardActivity.class);
+//                    }
+//                }
                 if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromKeyboardActivity")) {
                     if (session.getSmartKeyboardFlag() == false) {
                         intent = new Intent(SessionOptionsActivity.this, KeyboardActivity.class);
@@ -129,6 +147,24 @@ public class SessionOptionsActivity extends AppCompatActivity {
                     {
                         intent = new Intent(SessionOptionsActivity.this, SmartKeyboardActivity.class);
                     }
+                }
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromInsertChordsActivity")) {
+                    intent = new Intent(SessionOptionsActivity.this, InsertChordsActivity.class);
+                }
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromMixerActivity")) {
+                    intent = new Intent(SessionOptionsActivity.this, MixerActivity.class);
+                }
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromMelodyActivity")) {
+                    intent = new Intent(SessionOptionsActivity.this, MelodyActivity.class);
+                }
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromPercussionActivity")) {
+                    intent = new Intent(SessionOptionsActivity.this, PercussionActivity.class);
+                }
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromRecordAudioActivity")) {
+                    intent = new Intent(SessionOptionsActivity.this, RecordAudioActivity.class);
+                }
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSessionOverviewActivity")) {
+                    intent = new Intent(SessionOptionsActivity.this, SessionOverviewActivity.class);
                 }
                 intent.putExtra("flag", "fromSessionOptionsActivity");
                 intent.putExtra("session", session);

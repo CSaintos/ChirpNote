@@ -647,6 +647,7 @@ public class PercussionActivity extends AppCompatActivity
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("flag", "fromPercussionActivity");
         intent.putExtra("session", session);
         intent.putExtra("username", username);
         if(username != null) saveToDB();

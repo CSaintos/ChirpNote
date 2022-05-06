@@ -455,6 +455,7 @@ public class RecordAudioActivity extends AppCompatActivity
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("flag", "fromRecordAudioActivity");
         intent.putExtra("session", session);
         intent.putExtra("username", username);
         if(username != null) saveToDB();

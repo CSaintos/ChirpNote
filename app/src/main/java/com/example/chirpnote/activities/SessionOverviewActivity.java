@@ -125,6 +125,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("flag", "fromSessionOverviewActivity");
         intent.putExtra("session", session);
         intent.putExtra("username", username);
         activity.startActivity(intent);
