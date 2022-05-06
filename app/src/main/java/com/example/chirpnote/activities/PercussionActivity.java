@@ -1,14 +1,5 @@
 package com.example.chirpnote.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -26,8 +17,17 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Chord;
 import com.example.chirpnote.ChordTrack;
 import com.example.chirpnote.Key;
@@ -35,7 +35,6 @@ import com.example.chirpnote.Mixer;
 import com.example.chirpnote.PercussionPattern;
 import com.example.chirpnote.PercussionTrack;
 import com.example.chirpnote.R;
-import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.Session;
 import com.google.android.material.navigation.NavigationView;
 
@@ -616,7 +615,12 @@ public class PercussionActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
                 break;
             case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
+                if (session.getSmartKeyboardFlag() == false) {
+                    redirectActivity(this, KeyboardActivity.class);
+                }
+                else {
+                    redirectActivity(this, SmartKeyboardActivity.class);
+                }
                 break;
             case R.id.nav_mixer:
                 redirectActivity(this, MixerActivity.class);

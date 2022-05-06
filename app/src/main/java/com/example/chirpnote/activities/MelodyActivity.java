@@ -23,7 +23,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -951,7 +950,12 @@ public class MelodyActivity extends AppCompatActivity
                 redirectActivity(this, PercussionActivity.class);
                 break;
             case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
+                if (session.getSmartKeyboardFlag() == false) {
+                    redirectActivity(this, KeyboardActivity.class);
+                }
+                else {
+                    redirectActivity(this, SmartKeyboardActivity.class);
+                }
                 break;
             case R.id.nav_mixer:
                 redirectActivity(this, MixerActivity.class);

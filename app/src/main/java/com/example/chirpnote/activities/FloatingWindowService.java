@@ -179,6 +179,8 @@ public class FloatingWindowService extends Service
                 // 2) FLAG_ACTIVITY_CLEAR_TASK can be used in the conjunction with FLAG_ACTIVITY_NEW_TASK. This flag will
                 // kill the existing task first and then new activity is started.
                 backToHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                backToHome.putExtra("flag", "fromFloatingWindowService");
+                backToHome.putExtra("session", session);
                 startActivity(backToHome);
             }
 

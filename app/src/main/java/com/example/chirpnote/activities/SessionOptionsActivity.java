@@ -1,20 +1,17 @@
 package com.example.chirpnote.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.R;
 
 public class SessionOptionsActivity extends AppCompatActivity {
@@ -24,11 +21,19 @@ public class SessionOptionsActivity extends AppCompatActivity {
     private AlertDialog.Builder setChordInstDialogBuilder;
     private AlertDialog.Builder setMelodyInstDialogBuilder;
     private AlertDialog dialog;
+    private ChirpNoteSession session;
+    private Button confirmChangesButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session_options);
+        confirmChangesButton = findViewById(R.id.confirmChangesButton);
+
+
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
 
         // note suggestion switch ifelse
         Switch noteSuggestSwitch = findViewById(R.id.switch1);
@@ -36,13 +41,40 @@ public class SessionOptionsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) { //if the switch is on
-
+                    session.setNoteSuggestionFlag(true);
                 }
                 else { //if the switch is on
-
+                    session.setNoteSuggestionFlag(false);
                 }
             }
         });
+
+        Switch smartKeyboardSwitch = findViewById(R.id.switch2);
+        smartKeyboardSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) { //if the switch is on
+                    session.setSmartKeyboardFlag(true);
+                }
+                else { //if the switch is on
+                    session.setSmartKeyboardFlag(false);
+                }
+            }
+        });
+
+
+        if (session.getNoteSuggestionFlag() == true)
+        {
+            noteSuggestSwitch.setChecked(true);
+        }
+        else {noteSuggestSwitch.setChecked(false);}
+
+        if (session.getSmartKeyboardFlag() == true)
+        {
+            smartKeyboardSwitch.setChecked(true);
+        }
+        else {smartKeyboardSwitch.setChecked(false);}
+
 
         LinearLayout setKeyLayout = findViewById(R.id.LayoutSetKey);
         setKeyLayout.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +105,34 @@ public class SessionOptionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setMelodyInstDialogBox();
+            }
+        });
+
+        confirmChangesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromKeyboardActivity")) {
+                    if (session.getSmartKeyboardFlag() == false) {
+                        intent = new Intent(SessionOptionsActivity.this, KeyboardActivity.class);
+                    }
+                    else
+                    {
+                        intent = new Intent(SessionOptionsActivity.this, SmartKeyboardActivity.class);
+                    }
+                }
+                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSmartKeyboardActivity")) {
+                    if (session.getSmartKeyboardFlag() == false) {
+                        intent = new Intent(SessionOptionsActivity.this, KeyboardActivity.class);
+                    }
+                    else
+                    {
+                        intent = new Intent(SessionOptionsActivity.this, SmartKeyboardActivity.class);
+                    }
+                }
+                intent.putExtra("flag", "fromSessionOptionsActivity");
+                intent.putExtra("session", session);
+                startActivity(intent);
             }
         });
 

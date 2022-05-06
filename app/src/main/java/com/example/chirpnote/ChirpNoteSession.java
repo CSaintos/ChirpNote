@@ -28,6 +28,8 @@ public class ChirpNoteSession implements Serializable {
     public List<Integer> mTrackVolumes;
     public List<Byte> mInstruments;
     private String mUsername;
+    private boolean noteSuggestionFlag;
+    private boolean smartKeyboardFlag;
 
     // States
     private boolean mMidiPrepared;
@@ -47,6 +49,9 @@ public class ChirpNoteSession implements Serializable {
         } else {
             mTempo = 120;
         }
+
+        noteSuggestionFlag = false;
+        smartKeyboardFlag = false;
     }
 
     /**
@@ -86,6 +91,9 @@ public class ChirpNoteSession implements Serializable {
         mInstruments.add(GeneralMidiConstants.ACOUSTIC_GRAND_PIANO);
         mInstruments.add(GeneralMidiConstants.ACOUSTIC_GRAND_PIANO);
         mUsername = username;
+
+        noteSuggestionFlag = false;
+        smartKeyboardFlag = false;
     }
 
     /**
@@ -194,5 +202,25 @@ public class ChirpNoteSession implements Serializable {
      */
     public void setId(ObjectId id){
         _id = id;
+    }
+
+    public void setNoteSuggestionFlag(boolean status)
+    {
+        noteSuggestionFlag = status;
+    }
+
+    public void setSmartKeyboardFlag(boolean status)
+    {
+        smartKeyboardFlag = status;
+    }
+
+    public boolean getNoteSuggestionFlag()
+    {
+        return noteSuggestionFlag;
+    }
+
+    public boolean getSmartKeyboardFlag()
+    {
+        return smartKeyboardFlag;
     }
 }

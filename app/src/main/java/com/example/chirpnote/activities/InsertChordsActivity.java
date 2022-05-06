@@ -104,6 +104,8 @@ public class InsertChordsActivity extends AppCompatActivity
         setContentView(R.layout.activity_insert_chords);
         hideSystemBars();
 
+
+
         username = getIntent().getStringExtra("username");
         realm = Realm.getDefaultInstance();
 
@@ -170,6 +172,8 @@ public class InsertChordsActivity extends AppCompatActivity
                     basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
         }
         mixer = new Mixer(session);
+
+        System.out.println("================================================== InsertChordsActivity session.getSmartKeyboardFlag = " + session.getSmartKeyboardFlag());
 
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
@@ -267,9 +271,9 @@ public class InsertChordsActivity extends AppCompatActivity
                 Chord[] randChords = randomChordProgression(sessionChords);
                 addRowOfMeasures(randChords, false);
                 break;
-            case R.id.changeKeyButton:
-                changeKey(session);
-                break;
+//            case R.id.changeKeyButton:
+//                changeKey(session);
+//                break;
         }
     }
 
@@ -687,7 +691,12 @@ public class InsertChordsActivity extends AppCompatActivity
                 redirectActivity(this, PercussionActivity.class);
                 break;
             case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
+                if (session.getSmartKeyboardFlag() == false) {
+                    redirectActivity(this, KeyboardActivity.class);
+                }
+                else {
+                    redirectActivity(this, SmartKeyboardActivity.class);
+                }
                 break;
             case R.id.nav_mixer:
                 redirectActivity(this, MixerActivity.class);

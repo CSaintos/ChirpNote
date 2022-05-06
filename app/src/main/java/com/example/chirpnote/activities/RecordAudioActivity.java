@@ -1,16 +1,11 @@
 package com.example.chirpnote.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
-import android.icu.text.AlphabeticIndex;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.view.Menu;
@@ -23,23 +18,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
-import androidx.documentfile.provider.DocumentFile;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.anggrayudi.storage.file.DocumentFileCompat;
-import com.anggrayudi.storage.file.DocumentFileUtils;
 import com.example.chirpnote.AudioTrack;
-import com.example.chirpnote.BuildConfig;
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.DriveServiceHelper;
 import com.example.chirpnote.ExportHelper;
@@ -59,7 +48,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.slider.Slider;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
@@ -79,7 +67,6 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import io.realm.Realm;
 
@@ -434,7 +421,12 @@ public class RecordAudioActivity extends AppCompatActivity
                 redirectActivity(this, PercussionActivity.class);
                 break;
             case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
+                if (session.getSmartKeyboardFlag() == false) {
+                    redirectActivity(this, KeyboardActivity.class);
+                }
+                else {
+                    redirectActivity(this, SmartKeyboardActivity.class);
+                }
                 break;
             case R.id.nav_mixer:
                 redirectActivity(this, MixerActivity.class);

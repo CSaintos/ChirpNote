@@ -1,5 +1,11 @@
 package com.example.chirpnote.activities;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,13 +14,6 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.R;
@@ -91,7 +90,15 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
                 redirectActivity(this, PercussionActivity.class);
                 break;
             case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
+//                System.out.println("================================================== SessionOverviewActivity session.getSmartKeyboardFlag = " + session.getSmartKeyboardFlag());
+                if (session.getSmartKeyboardFlag() == false) {
+//                    System.out.println("========================================= here 1");
+                    redirectActivity(this, KeyboardActivity.class);
+                }
+                else {
+//                    System.out.println("========================================= here 2");
+                    redirectActivity(this, SmartKeyboardActivity.class);
+                }
                 break;
             case R.id.nav_mixer:
                 redirectActivity(this, MixerActivity.class);

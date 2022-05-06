@@ -39,7 +39,6 @@ import com.example.chirpnote.Session;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
-import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -265,34 +264,48 @@ public class KeyboardActivity extends AppCompatActivity
 //        });
 
 
-        Button noteSuggestButton = findViewById(R.id.noteSuggestion);
-        noteSuggestButton.setClickable(true);
-
-        noteSuggestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (noteSuggestButton.isSelected())
-                {
-                    noteSuggestButton.setSelected(false);
-                    for (int i = 0; i < keyButtons.size(); i++)
-                    {
-//                        pianoKeys.get(i).getButton().setSelected(false);
-                        keyButtons.get(i).getButton().setSelected(false);
-                    }
-
-                }
-                else
-                {
-                    noteSuggestButton.setSelected(true);
-                    for (int i = 0; i < keyButtons.size(); i++)
-                    {
-//                        pianoKeys.get(i).getButton().setSelected(true);
-                        keyButtons.get(i).getButton().setSelected(true);
-                    }
-
-                }
+//        Button noteSuggestButton = findViewById(R.id.noteSuggestion);
+//        noteSuggestButton.setClickable(true);
+//
+//        noteSuggestButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (noteSuggestButton.isSelected())
+//                {
+//                    noteSuggestButton.setSelected(false);
+//                    for (int i = 0; i < keyButtons.size(); i++)
+//                    {
+////                        pianoKeys.get(i).getButton().setSelected(false);
+//                        keyButtons.get(i).getButton().setSelected(false);
+//                    }
+//
+//                }
+//                else
+//                {
+//                    noteSuggestButton.setSelected(true);
+//                    for (int i = 0; i < keyButtons.size(); i++)
+//                    {
+////                        pianoKeys.get(i).getButton().setSelected(true);
+//                        keyButtons.get(i).getButton().setSelected(true);
+//                    }
+//
+//                }
+//            }
+//        });
+        if (session.getNoteSuggestionFlag() == true)
+        {
+            for (int i = 0; i < keyButtons.size(); i++)
+            {
+                keyButtons.get(i).getButton().setSelected(true);
             }
-        });
+        }
+        else
+        {
+            for (int i = 0; i < keyButtons.size(); i++)
+            {
+                keyButtons.get(i).getButton().setSelected(false);
+            }
+        }
 
 
 
@@ -589,6 +602,7 @@ public class KeyboardActivity extends AppCompatActivity
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("flag", "fromKeyboardActivity");
         intent.putExtra("session", session);
         intent.putExtra("username", username);
         if(username != null && !session.getName().equals("SessionFreePlay")) saveToDB();

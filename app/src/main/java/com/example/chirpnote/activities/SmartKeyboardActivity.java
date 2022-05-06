@@ -1,7 +1,6 @@
 package com.example.chirpnote.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -38,7 +37,6 @@ import com.example.chirpnote.Session;
 import com.google.android.material.navigation.NavigationView;
 
 import org.billthefarmer.mididriver.MidiDriver;
-import org.billthefarmer.mididriver.ReverbConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +146,7 @@ public class SmartKeyboardActivity extends AppCompatActivity
 //        System.out.println(keyNameList.get(0));
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
-        Button playButton = (Button) findViewById(R.id.playButton);
+//        Button playButton = (Button) findViewById(R.id.playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
 
@@ -177,20 +175,20 @@ public class SmartKeyboardActivity extends AppCompatActivity
             }
         });
 
-        // Event listener for play button (to play recorded melody)
-        playButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!melody.isPlaying()){
-                    playButton.setText("Stop");
-                    melody.play();
-                } else {
-                    playButton.setText("Play");
-                    melody.stop();
-                }
-            }
-        });
-        playButton.setVisibility(View.INVISIBLE);
+//        // Event listener for play button (to play recorded melody)
+//        playButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(!melody.isPlaying()){
+//                    playButton.setText("Stop");
+//                    melody.play();
+//                } else {
+//                    playButton.setText("Play");
+//                    melody.stop();
+//                }
+//            }
+//        });
+//        playButton.setVisibility(View.INVISIBLE);
 
 //        // Setup event listener for each piano key
 //        for(MusicNote note : pianoKeys){
@@ -236,21 +234,21 @@ public class SmartKeyboardActivity extends AppCompatActivity
 //            }
 //        });
         /** Allows the user to switch between keys whenever they want */
-        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
-        changeKeyButton.setClickable(true);
-
-        changeKeyButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(SmartKeyboardActivity.this, SetKeyActivity.class);
-                intent.putExtra("flag", "fromSmartKeyboardActivity");
-                intent.putExtra("session", session);
-                startActivity(intent);
-            }
-//            eventListener(pianoKeys);
-        });
+//        Button changeKeyButton = (Button) findViewById(R.id.changeKeyButton);
+//        changeKeyButton.setClickable(true);
+//
+//        changeKeyButton.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                Intent intent = new Intent(SmartKeyboardActivity.this, SetKeyActivity.class);
+//                intent.putExtra("flag", "fromSmartKeyboardActivity");
+//                intent.putExtra("session", session);
+//                startActivity(intent);
+//            }
+////            eventListener(pianoKeys);
+//        });
 
         // The Main Button that helps to minimize the app
         minimizeBtn.setOnClickListener(new View.OnClickListener() {
@@ -443,6 +441,7 @@ public class SmartKeyboardActivity extends AppCompatActivity
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("flag", "fromSmartKeyboardActivity");
         intent.putExtra("session", session);
         intent.putExtra("username", username);
         if(username != null && !session.getName().equals("SessionFreePlay")) saveToDB();

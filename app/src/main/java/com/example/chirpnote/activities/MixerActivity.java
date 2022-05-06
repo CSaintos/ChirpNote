@@ -140,6 +140,11 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
             case R.id.nav_keyboard:
                 redirectActivity(this, KeyboardActivity.class);
                 break;
+//                session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
+//                if(session == null){
+//                    session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
+//                            basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+//                }
             case R.id.nav_mixer:
                 // Just close the drawer since we're already on this activity
                 drawer.closeDrawer(GravityCompat.START);
