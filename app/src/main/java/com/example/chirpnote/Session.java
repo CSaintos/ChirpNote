@@ -2,11 +2,6 @@ package com.example.chirpnote;
 
 import android.util.Base64;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
-
 import org.bson.types.ObjectId;
 
 import java.io.BufferedInputStream;
@@ -16,6 +11,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class Session extends RealmObject {
     @PrimaryKey

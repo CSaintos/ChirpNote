@@ -52,6 +52,42 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
                 tools:ignore="TouchTargetSizeCheck" />
         </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
+
+            <TextView
+                android:id="@+id/enableSmartKeyboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:paddingTop="20dp"
+                android:text="Smart Keyboard"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/enableSmartKeyboard"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="10dp"
+                android:text="Enable Smart Keyboard during session" />
+
+            <Switch
+                android:id="@+id/switch2"
+                android:paddingTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:switchMinWidth="50dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                tools:ignore="TouchTargetSizeCheck" />
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
