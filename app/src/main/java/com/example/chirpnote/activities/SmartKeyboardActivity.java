@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -88,7 +89,30 @@ public class SmartKeyboardActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState(); //navdrawer end
+
+        // play and stop button
+        ImageView navPlayButton = findViewById(R.id.nav_play_button);
+        navPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(MelodyActivity.this, "Play", Toast.LENGTH_SHORT).show();
+                if (mixer.areTracksPlaying()) {
+                    mixer.stopTracks();
+                }
+                mixer.playTracks();
+            }
+        });
+        ImageView navStopButton = findViewById(R.id.nav_stop_button);
+        navStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(InsertChordsActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+                if (mixer.areTracksPlaying()) {
+                    mixer.stopTracks();
+                }
+            }
+        }); //end play and stop
 
         // keyboard code
         minimizeBtn = findViewById(R.id.buttonMinimize);
@@ -462,4 +486,5 @@ public class SmartKeyboardActivity extends AppCompatActivity
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
         }
     }
+
 }
