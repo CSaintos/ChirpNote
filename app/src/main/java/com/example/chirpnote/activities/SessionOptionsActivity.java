@@ -112,24 +112,6 @@ public class SessionOptionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = getIntent();
-//                if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromKeyboardActivity")) {
-//                    if (session.getSmartKeyboardFlag() == false) {
-//                        intent = new Intent(SessionOptionsActivity.this, KeyboardActivity.class);
-//                    }
-//                    else
-//                    {
-//                        intent = new Intent(SessionOptionsActivity.this, SmartKeyboardActivity.class);
-//                    }
-//                }
-//                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSmartKeyboardActivity")) {
-//                    if (session.getSmartKeyboardFlag() == false) {
-//                        intent = new Intent(SessionOptionsActivity.this, KeyboardActivity.class);
-//                    }
-//                    else
-//                    {
-//                        intent = new Intent(SessionOptionsActivity.this, SmartKeyboardActivity.class);
-//                    }
-//                }
                 if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromKeyboardActivity")) {
                     if (session.getSmartKeyboardFlag() == false) {
                         intent = new Intent(SessionOptionsActivity.this, KeyboardActivity.class);
