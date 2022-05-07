@@ -39,8 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         mPassword = (EditText) findViewById(R.id.editTextPassword);
         Button loginButton = (Button) findViewById(R.id.loginButton);
         Button signUpButton = (Button) findViewById(R.id.signUpButton);
-        Button bypassLoginButton = (Button) findViewById(R.id.bypassLoginButton);
-        bypassLoginButton.setVisibility(View.INVISIBLE);
+//        Button bypassLoginButton = (Button) findViewById(R.id.bypassLoginButton);
+//        bypassLoginButton.setVisibility(View.INVISIBLE);
 
         loginButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -77,12 +77,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        bypassLoginButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, HomeScreenActivity.class));
-            }
-        });
+//        bypassLoginButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(LoginActivity.this, HomeScreenActivity.class));
+//            }
+//        });
     }
 
     @Override
