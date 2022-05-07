@@ -3,5 +3,5 @@
 
     <item android:title="Share" android:id="@+id/item_share" />
     <item android:title="Export to Drive" android:id="@+id/item_export_drive" />
-    <item android:title="Preview Audio" android:id="@+id/item_preview_audio"/>
+    <item android:title="Add to Session" android:id="@+id/item_add_to_session"/>
 </menu>
