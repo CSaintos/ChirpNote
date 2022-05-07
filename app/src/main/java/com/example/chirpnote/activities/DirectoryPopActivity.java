@@ -68,14 +68,14 @@ public class DirectoryPopActivity extends Activity {
                             case R.id.item_share:
                                 ExportHelper.shareFile(DirectoryPopActivity.this,exportFile);
                                 return true;
-                            case R.id.item_preview_audio:
+                            case R.id.item_add_to_session:
                                 System.out.println(exportFile.getName());
+                                //add it to the session
 //                                try {
 //                                    previewAudio(exportFile);
 //                                } catch (IOException e) {
 //                                    e.printStackTrace();
 //                                }
-
                                 return true;
                             case R.id.item_export_drive:
                                 ExportHelper.exportToDrive(DirectoryPopActivity.this,exportFile);
