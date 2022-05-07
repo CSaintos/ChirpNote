@@ -32,8 +32,8 @@ import com.google.android.material.navigation.NavigationView;
 
 import org.w3c.dom.Document;
 
-public class UserProfileActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class UserProfileActivity extends AppCompatActivity {
+       // implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
     Activity context;
@@ -49,7 +49,11 @@ public class UserProfileActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         hideSystemBars();
+        //actionbar back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Profile");
 
+        /* used for testing nav drawer
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -78,7 +82,7 @@ public class UserProfileActivity extends AppCompatActivity
             public void onClick(View v) {
                 Toast.makeText(UserProfileActivity.this, "Stop", Toast.LENGTH_SHORT).show();
             }
-        });
+        }); */
 
         //navigationView.setCheckedItem(R.id.nav_profile);
 
@@ -117,7 +121,7 @@ public class UserProfileActivity extends AppCompatActivity
             }
         });*/
     }
-
+    /*
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -160,7 +164,7 @@ public class UserProfileActivity extends AppCompatActivity
         else {
             super.onBackPressed();
         }
-    }
+    }*/
 
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
