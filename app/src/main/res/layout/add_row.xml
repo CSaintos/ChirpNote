@@ -14,7 +14,7 @@
         android:textAllCaps="false"
         android:layout_marginLeft="70dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/round_grey"
+        android:background="@drawable/button_chord"
         ></Button>
 
     <Button
@@ -23,7 +23,7 @@
         android:layout_height="40dp"
         android:textAllCaps="false"
         android:layout_marginRight="15dp"
-        android:background="@drawable/round_grey"
+        android:background="@drawable/button_chord"
         ></Button>
 
     <Button
@@ -32,7 +32,7 @@
         android:layout_height="40dp"
         android:textAllCaps="false"
         android:layout_marginRight="15dp"
-        android:background="@drawable/round_grey"
+        android:background="@drawable/button_chord"
         ></Button>
 
     <Button
@@ -41,7 +41,7 @@
         android:layout_height="40dp"
         android:textAllCaps="false"
         android:layout_marginRight="15dp"
-        android:background="@drawable/round_grey"
+        android:background="@drawable/button_chord"
         ></Button>
 
 <!--    <EditText-->
