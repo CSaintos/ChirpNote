@@ -23,7 +23,7 @@ import io.realm.mongodb.Credentials;
 import io.realm.mongodb.functions.Functions;
 
 public class SignUpActivity extends AppCompatActivity {
-    private EditText mUsername, mPassword;
+    private EditText textUsername, textName, textEmail, textPassword;
 
     App app;
     String appID = "chirpnote-jwrci";
@@ -38,28 +38,32 @@ public class SignUpActivity extends AppCompatActivity {
         app = new App(new AppConfiguration.Builder(appID).build());
         Credentials credentials = Credentials.anonymous();
 
-        mUsername = (EditText) findViewById(R.id.editTextUsername);
-        mPassword = (EditText) findViewById(R.id.editTextPassword);
+        textUsername = (EditText) findViewById(R.id.editTextUsername);
+        textName = (EditText) findViewById(R.id.editTextName);
+        textEmail = (EditText) findViewById(R.id.editTextEmail);
+        textPassword = (EditText) findViewById(R.id.editTextPassword);
         Button signUpButton = (Button) findViewById(R.id.signUpButton);
 
         signUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = mUsername.getText().toString();
-                String password = mPassword.getText().toString();
+                String username = textUsername.getText().toString();
+                String name = textName.getText().toString();
+                String email = textEmail.getText().toString();
+                String password = textPassword.getText().toString();
 
                 app.loginAsync(credentials, it -> {
                     if (it.isSuccess()) {
                         io.realm.mongodb.User user = app.currentUser();
                         assert user != null;
                         Functions functionsManager = app.getFunctions(user);
-                        functionsManager.callFunctionAsync("signUp", Arrays.asList(username, password), Boolean.class, result -> {
+                        functionsManager.callFunctionAsync("signUp", Arrays.asList(username, name, email, password), Boolean.class, result -> {
                             if (result.isSuccess()) {
                                 if(result.get()){
                                     Toast.makeText(context, "Sign up successful", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                                 } else {
-                                    Toast.makeText(context, "Username taken. Try again", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Username taken. Try again", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });

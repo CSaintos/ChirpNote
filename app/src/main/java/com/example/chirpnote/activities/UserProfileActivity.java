@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -19,28 +20,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import io.realm.mongodb.App;
-import io.realm.mongodb.mongo.MongoClient;
-import io.realm.mongodb.mongo.MongoCollection;
-import io.realm.mongodb.mongo.MongoDatabase;
+import io.realm.mongodb.AppConfiguration;
+import io.realm.mongodb.RealmResultTask;
+import io.realm.mongodb.functions.Functions;
+import io.realm.Realm;
 
 import com.example.chirpnote.R;
+import com.example.chirpnote.User;
 import com.google.android.material.navigation.NavigationView;
 
-import org.w3c.dom.Document;
+import org.bson.Document;
+
+import java.util.Arrays;
 
 public class UserProfileActivity extends AppCompatActivity {
-       // implements NavigationView.OnNavigationItemSelectedListener {
-
-    private DrawerLayout drawer;
-    Activity context;
-
-    MongoClient mongoClient;
-    MongoDatabase mongoDatabase;
-    MongoCollection<Document> mongoCollection;
     App app;
     String appID = "chirpnote-jwrci";
 
@@ -53,38 +51,47 @@ public class UserProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Profile");
 
-        /* used for testing nav drawer
-        Toolbar toolbar = findViewById(R.id.nav_toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
+        Context context = getApplicationContext();
+        String username = getIntent().getStringExtra("username");
+        app = new App(new AppConfiguration.Builder(appID).build());
+		Realm realm = Realm.getDefaultInstance();
+		User user = realm.where(User.class).findFirst();
 
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.bringToFront();
+        EditText usernameText = (EditText) findViewById(R.id.editProfileUsername);
+        EditText nameText = (EditText) findViewById(R.id.editProfileName);
+        EditText emailText = (EditText) findViewById(R.id.editProfileEmail);
+        EditText passwordText = (EditText) findViewById(R.id.editProfilePassword);
+        usernameText.setText(user.getUsername());
+        nameText.setText(user.getName());
+        emailText.setText(user.getEmail());
+        passwordText.setText(user.getPassword());
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        //play and stop button in ActionBar
-        ImageView playButton = findViewById(R.id.nav_play_button);
-        playButton.setOnClickListener(new View.OnClickListener() {
+        Button saveChangesButton = (Button) findViewById(R.id.saveSettingsButton);
+        saveChangesButton.setOnClickListener (new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(UserProfileActivity.this, "Play", Toast.LENGTH_SHORT).show();
+                String oldUsername = username;
+                String newUsername = usernameText.getText().toString();
+                String newName = nameText.getText().toString();
+                String newEmail = emailText.getText().toString();
+                String newPassword = passwordText.getText().toString();
+
+                Functions functionsManager = app.getFunctions(app.currentUser());
+                functionsManager.callFunctionAsync("updateProfile", Arrays.asList(oldUsername, newUsername, newName, newEmail, newPassword),
+                        Boolean.class, result -> {
+                    if (result.isSuccess()) {
+                        if(result.get()){
+                            Toast.makeText(context, "Changes saved", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(UserProfileActivity.this, HomeScreenActivity.class);
+                            intent.putExtra("username", username);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(context, "Username taken. Try again", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         });
-        ImageView stopButton = findViewById(R.id.nav_stop_button);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(UserProfileActivity.this, "Stop", Toast.LENGTH_SHORT).show();
-            }
-        }); */
-
-        //navigationView.setCheckedItem(R.id.nav_profile);
 
         /*
         String username, password;
@@ -121,50 +128,6 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });*/
     }
-    /*
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_home:
-                redirectActivity(this, HomeScreenActivity.class);
-                break;
-            case R.id.nav_overview:
-                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_melody:
-                redirectActivity(this, MelodyActivity.class);
-                break;
-            case R.id.nav_chords:
-                redirectActivity(this, InsertChordsActivity.class);
-                break;
-            case R.id.nav_percussion:
-                redirectActivity(this, PercussionActivity.class);
-                break;
-            case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
-                break;
-            case R.id.nav_mixer:
-                Toast.makeText(this, "Mixer", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_audio:
-                redirectActivity(this, RecordAudioActivity.class);
-                break;
-            default:
-                break;
-        }
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-        else {
-            super.onBackPressed();
-        }
-    }*/
 
     private static void redirectActivity(Activity activity, Class aClass) {
         Intent intent = new Intent(activity, aClass);
