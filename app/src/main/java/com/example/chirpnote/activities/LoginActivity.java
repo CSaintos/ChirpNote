@@ -24,12 +24,21 @@ public class LoginActivity extends AppCompatActivity {
     App app;
     String appID = "chirpnote-jwrci";
 
+//    private InterstitialAd mInterstitialAd;
+
     private EditText mUsername, mPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+//            @Override
+//            public void onInitializationComplete(InitializationStatus initializationStatus) {
+//            }
+//        });
+//        setAds();
 
         //hideSystemBars();
 
@@ -45,6 +54,66 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+
+//                if (mInterstitialAd != null) {
+//                    mInterstitialAd.show(LoginActivity.this);
+//                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+//                        @Override
+//                        public void onAdDismissedFullScreenContent() {
+//                            super.onAdDismissedFullScreenContent();
+//                            String username = mUsername.getText().toString();
+//                            String password = mPassword.getText().toString();
+//                            Credentials customFunctionCredentials =
+//                                    Credentials.customFunction(new org.bson.Document("username", username).append("password", password));
+//                            app.loginAsync(customFunctionCredentials, it -> {
+//                                if (it.isSuccess()) {
+//                                    Toast.makeText(LoginActivity.this, "Login succeeded", Toast.LENGTH_SHORT).show();
+//
+//                                    // Setup a synced MongoDB Realm configuration for the current user
+//                                    SyncConfiguration config = new SyncConfiguration.Builder(
+//                                            app.currentUser(),
+//                                            username)
+//                                            .build();
+//                                    Realm.setDefaultConfiguration(config);
+//
+//                                    Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+//                                    intent.putExtra("username", username);
+//                                    startActivity(intent);
+//                                } else {
+//                                    Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
+//                                }
+//                            });
+//                            mInterstitialAd = null;
+//                            setAds();
+//                        }
+//                    });
+//                }
+//                else
+//                {
+//                    String username = mUsername.getText().toString();
+//                    String password = mPassword.getText().toString();
+//                    Credentials customFunctionCredentials =
+//                            Credentials.customFunction(new org.bson.Document("username", username).append("password", password));
+//                    app.loginAsync(customFunctionCredentials, it -> {
+//                        if (it.isSuccess()) {
+//                            Toast.makeText(LoginActivity.this,"Login succeeded", Toast.LENGTH_SHORT).show();
+//
+//                            // Setup a synced MongoDB Realm configuration for the current user
+//                            SyncConfiguration config = new SyncConfiguration.Builder(
+//                                    app.currentUser(),
+//                                    username)
+//                                    .build();
+//                            Realm.setDefaultConfiguration(config);
+//
+//                            Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+//                            intent.putExtra("username", username);
+//                            startActivity(intent);
+//                        } else {
+//                            Toast.makeText(LoginActivity.this,"Login failed", Toast.LENGTH_LONG).show();
+//                        }
+//                    });
+//                }
+
                 String username = mUsername.getText().toString();
                 String password = mPassword.getText().toString();
                 Credentials customFunctionCredentials =
@@ -90,6 +159,29 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
         //hideSystemBars();
     }
+
+//    public void setAds()
+//    {
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//
+////        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+//        InterstitialAd.load(this,getString(R.string.adsUnit), adRequest, new InterstitialAdLoadCallback() {
+//            @Override
+//            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+//                // The mInterstitialAd reference will be null until
+//                // an ad is loaded.
+//                mInterstitialAd = interstitialAd;
+////                        Log.i(TAG, "onAdLoaded");
+//            }
+//
+//            @Override
+//            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+//                // Handle the error
+////                        Log.i(TAG, loadAdError.getMessage());
+//                mInterstitialAd = null;
+//            }
+//        });
+//    }
 
     /**
      * Hides the system status bar and navigation bar
