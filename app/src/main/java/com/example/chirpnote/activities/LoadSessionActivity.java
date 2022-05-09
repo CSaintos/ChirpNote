@@ -35,6 +35,7 @@ public class LoadSessionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_session);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Load Session");
         hideSystemBars();
 
         user = (ChirpNoteUser) getIntent().getSerializableExtra("user");

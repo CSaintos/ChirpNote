@@ -69,7 +69,7 @@ public class KeyboardActivity extends AppCompatActivity
     private Key currentKey;
     private ArrayList<MusicNote> keyButtons;
     private static ChirpNoteSession session;
-    private Mixer mixer;
+    private static Mixer mixer;
 
     private DrawerLayout drawer;
 
@@ -601,6 +601,9 @@ public class KeyboardActivity extends AppCompatActivity
     }
 
     private static void redirectActivity(Activity activity, Class aClass) {
+        if(mixer.areTracksPlaying()){
+            mixer.stopTracks();
+        }
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromKeyboardActivity");

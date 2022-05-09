@@ -107,7 +107,7 @@ public class RecordAudioActivity extends AppCompatActivity
 
     private MidiDriver midiDriver;
     private static ChirpNoteSession session;
-    private Mixer mixer;
+    private static Mixer mixer;
 
     /***
      * onCreate function sets values
@@ -191,12 +191,12 @@ public class RecordAudioActivity extends AppCompatActivity
         Handler handler = new Handler();
         final Runnable runnableCode = new Runnable() {
             public void run() {
-                waveformView.insertAmplitude((float) (audio.getmMediaRecorder().getMaxAmplitude()));
+                waveformView.insertAmplitude((float) (audio.getMediaRecorder().getMaxAmplitude()));
                 handler.postDelayed(this,20);
             }
         };
         requestSignIn();
-        audio.getmMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        audio.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 timer.stop();
@@ -205,9 +205,10 @@ public class RecordAudioActivity extends AppCompatActivity
         volSlider.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                audio.getmMediaPlayer().setVolume(value,value);
+                audio.getMediaPlayer().setVolume(value,value);
             }
         });
+        volSlider.setVisibility(View.INVISIBLE);
 
         // Event listener for record audio button (to record audio from the device's microphone)
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -454,6 +455,9 @@ public class RecordAudioActivity extends AppCompatActivity
     }
 
     private static void redirectActivity(Activity activity, Class aClass) {
+        if(mixer.areTracksPlaying()){
+            mixer.stopTracks();
+        }
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromRecordAudioActivity");

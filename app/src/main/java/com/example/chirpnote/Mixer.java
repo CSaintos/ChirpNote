@@ -33,6 +33,10 @@ public class Mixer {
     private MidiEventHandler mMidiEventHandler;
     private MidiProcessor mMidiProcessor;
 
+    /**
+     * A Mixer used to manage volume and playback of tracks in a session
+     * @param session The session whose tracks this mixer will manage
+     */
     public Mixer(ChirpNoteSession session){
         mSession = session;
         mMidiEventHandler = new MidiEventHandler("MidiPlayback");
@@ -74,6 +78,9 @@ public class Mixer {
         }
     }
 
+    /**
+     * Syncs the Mixer's volumes with the saved volumes in the session
+     */
     public void syncWithSession(){
         midiDriver.setReverb(ReverbConstants.OFF);
         syncSessionVolume();
@@ -81,11 +88,11 @@ public class Mixer {
     }
 
     private void syncSessionVolume(){
-        setChordVolume(mSession.mTrackVolumes.get(0));
-        setConstructedMelodyVolume(mSession.mTrackVolumes.get(1));
-        setRealTimeMelodyVolume(mSession.mTrackVolumes.get(2));
-        setAudioVolume(mSession.mTrackVolumes.get(3));
-        setPercussionVolume(mSession.mTrackVolumes.get(4));
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ChordTrack.CHANNEL, (byte) 0x07, (byte) (int) mSession.mTrackVolumes.get(0)});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ConstructedMelody.CHANNEL, (byte) 0x07, (byte) (int) mSession.mTrackVolumes.get(1)});
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + RealTimeMelody.CHANNEL, (byte) 0x07, (byte) (int) mSession.mTrackVolumes.get(2)});
+        audioTrack.getMediaPlayer().setVolume(mSession.mTrackVolumes.get(3), mSession.mTrackVolumes.get(3));
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + PercussionTrack.CHANNEL, (byte) 0x07, (byte) (int) mSession.mTrackVolumes.get(4)});
     }
 
     private void syncSessionInstruments(){
@@ -109,41 +116,112 @@ public class Mixer {
         mSession.mInstruments.set(2, instrument);
     }
 
-    public void setChordVolume(int volume){
-        if(volume < 0 || volume > 127){
-            return;
-        }
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ChordTrack.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes.set(0, volume);
+    /**
+     * Gets the volume of the ChordTrack
+     * @return The chord volume
+     */
+    public float getChordVolume(){
+        float volume = mSession.mTrackVolumes.get(0);
+        return (float) Math.ceil((volume * 100) / 80);
     }
 
-    public void setConstructedMelodyVolume(int volume){
-        if(volume < 0 || volume > 127){
-            return;
-        }
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ConstructedMelody.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes.set(1, volume);
+    /**
+     * Gets the volume of the ConstructedMelody
+     * @return The constructed melody volume
+     */
+    public float getConstructedMelodyVolume(){
+        float volume = mSession.mTrackVolumes.get(1);
+        return (float) Math.ceil((volume * 100) / 80);
     }
 
-    public void setRealTimeMelodyVolume(int volume){
-        if(volume < 0 || volume > 127){
-            return;
-        }
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + RealTimeMelody.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes.set(2, volume);
+    /**
+     * Gets the volume of the RealTimeMelody
+     * @return The real time melody volume
+     */
+    public float getRealTimeMelodyVolume(){
+        float volume = mSession.mTrackVolumes.get(2);
+        return (float) Math.ceil((volume * 100) / 80);
     }
 
-    public void setAudioVolume(int volume){
-        // TODO: Implement a way to set the audio volume
-        mSession.mTrackVolumes.set(3, volume);
+    /**
+     * Gets the volume of the AudioTrack
+     * @return The audio volume
+     */
+    public float getAudioVolume(){
+        return mSession.mTrackVolumes.get(3);
     }
 
-    public void setPercussionVolume(int volume){
-        if(volume < 0 || volume > 127){
+    /**
+     * Gets the volume of the PercussionTrack
+     * @return The percussion volume
+     */
+    public float getPercussionVolume(){
+        float volume = mSession.mTrackVolumes.get(4);
+        return (float) Math.ceil((volume * 100) / 127);
+    }
+
+    /**
+     * Sets the volume of the ChordTrack
+     * @param volume A volume value between 0 and 100
+     */
+    public void setChordVolume(float volume){
+        if(volume < 0 || volume > 100){
             return;
         }
-        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + PercussionTrack.CHANNEL, (byte) 0x07, (byte) volume});
-        mSession.mTrackVolumes.set(4, volume);
+        int adjustedVolume = (int) ((volume * 80) / 100);
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ChordTrack.CHANNEL, (byte) 0x07, (byte) adjustedVolume});
+        mSession.mTrackVolumes.set(0, adjustedVolume);
+    }
+
+    /**
+     * Sets the volume of the ConstructedMelody
+     * @param volume A volume value between 0 and 100
+     */
+    public void setConstructedMelodyVolume(float volume){
+        if(volume < 0 || volume > 100){
+            return;
+        }
+        int adjustedVolume = (int) ((volume * 80) / 100);
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + ConstructedMelody.CHANNEL, (byte) 0x07, (byte) adjustedVolume});
+        mSession.mTrackVolumes.set(1, adjustedVolume);
+    }
+
+    /**
+     * Sets the volume of the RealTimeMelody
+     * @param volume A volume value between 0 and 100
+     */
+    public void setRealTimeMelodyVolume(float volume){
+        if(volume < 0 || volume > 100){
+            return;
+        }
+        int adjustedVolume = (int) ((volume * 80) / 100);
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + RealTimeMelody.CHANNEL, (byte) 0x07, (byte) adjustedVolume});
+        mSession.mTrackVolumes.set(2, adjustedVolume);
+    }
+
+    /**
+     * Sets the volume of the AudioTrack
+     * @param volume A volume value between 0 and 100
+     */
+    public void setAudioVolume(float volume){
+        if(volume < 0 || volume > 100){
+            return;
+        }
+        audioTrack.getMediaPlayer().setVolume(volume, volume);
+        mSession.mTrackVolumes.set(3, (int) volume);
+    }
+
+    /**
+     * Sets the volume of the PercussionTrack
+     * @param volume A volume value between 0 and 100
+     */
+    public void setPercussionVolume(float volume){
+        if(volume < 0 || volume > 100){
+            return;
+        }
+        int adjustedVolume = (int) ((volume * 127) / 100);
+        midiDriver.write(new byte[]{MidiConstants.CONTROL_CHANGE + PercussionTrack.CHANNEL, (byte) 0x07, (byte) adjustedVolume});
+        mSession.mTrackVolumes.set(4, adjustedVolume);
     }
 
     /**

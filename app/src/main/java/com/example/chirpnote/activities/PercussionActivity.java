@@ -75,7 +75,7 @@ public class PercussionActivity extends AppCompatActivity
 
     private static ChirpNoteSession session;
     private Key key;
-    private Mixer mixer;
+    private static Mixer mixer;
 
     private String selectedStyle;
     private String selectedPattern;
@@ -646,6 +646,9 @@ public class PercussionActivity extends AppCompatActivity
     }
 
     private static void redirectActivity(Activity activity, Class aClass) {
+        if(mixer.areTracksPlaying()){
+            mixer.stopTracks();
+        }
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromPercussionActivity");

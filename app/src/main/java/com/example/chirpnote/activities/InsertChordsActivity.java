@@ -76,7 +76,7 @@ public class InsertChordsActivity extends AppCompatActivity
     private List<String> keyTypeList = new ArrayList<>();
     private List<String> keyNameList = new ArrayList<>();
     private static ChirpNoteSession session;
-    private Mixer mixer;
+    private static Mixer mixer;
     private String keyNameChoice;
     private String keyTypeChoice;
     private Key currentKey;
@@ -104,8 +104,6 @@ public class InsertChordsActivity extends AppCompatActivity
         //getSupportActionBar().hide();
         setContentView(R.layout.activity_insert_chords);
         hideSystemBars();
-
-
 
         user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
         realm = Realm.getDefaultInstance();
@@ -722,6 +720,9 @@ public class InsertChordsActivity extends AppCompatActivity
     }
 
     private static void redirectActivity(Activity activity, Class aClass) {
+        if(mixer.areTracksPlaying()){
+            mixer.stopTracks();
+        }
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromInsertChordsActivity");

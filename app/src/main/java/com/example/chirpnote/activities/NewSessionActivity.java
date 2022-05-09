@@ -87,6 +87,7 @@ public class NewSessionActivity extends AppCompatActivity {
         hideSystemBars();
         findViewById(android.R.id.content).setFocusableInTouchMode(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("New Session");
 
         setKeyButton = (Button) findViewById(R.id.setKeyButton);
         setKeyButton.setEnabled(false);

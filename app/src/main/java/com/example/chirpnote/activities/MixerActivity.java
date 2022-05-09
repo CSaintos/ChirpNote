@@ -1,4 +1,5 @@
 package com.example.chirpnote.activities;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,11 +20,18 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.Key;
+import com.example.chirpnote.Mixer;
 import com.example.chirpnote.R;
+import com.example.chirpnote.Session;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.slider.Slider;
+import com.google.android.material.slider.Slider.OnChangeListener;
 
+import org.billthefarmer.mididriver.MidiDriver;
+
+import io.realm.Realm;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 
@@ -35,10 +42,15 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
     private Slider audioVolumeSlider;
     private Slider percussionVolumeSlider;
     private DrawerLayout drawer;
+
     private static ChirpNoteSession session;
+    private static ChirpNoteUser user;
+    private MidiDriver midiDriver;
+    private static Mixer mixer;
 
     App app;
     String appID = "chirpnote-jwrci";
+    static Realm realm;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,8 +65,12 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
             session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
                     basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
         }
+        midiDriver = MidiDriver.getInstance();
+        mixer = new Mixer(session);
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
 
         app = new App(new AppConfiguration.Builder(appID).build());
+        realm = Realm.getDefaultInstance();
 
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
         toolbar.setTitle("");
@@ -70,64 +86,69 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        //play and stop button
-        // actionbar play and stop buttons
+        //play and stop buttons
         ImageView navPlayButton = findViewById(R.id.nav_play_button);
         navPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MixerActivity.this, "Play", Toast.LENGTH_SHORT).show();
+                if(mixer.areTracksPlaying()){
+                    mixer.stopTracks();
+                }
+                mixer.playTracks();
             }
         });
         ImageView navStopButton = findViewById(R.id.nav_stop_button);
         navStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MixerActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+                if(mixer.areTracksPlaying()){
+                    mixer.stopTracks();
+                }
             }
-        }); //play and stop end
+        });
 
-
+        OnChangeListener chordListener = (slider, value, fromUser) -> mixer.setChordVolume(value);
         chordsVolumeSlider = findViewById(R.id.chordsVolumeSlider);
-        chordsVolumeSlider.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                System.out.println(value);
+        chordsVolumeSlider.removeOnChangeListener(chordListener);
+        chordsVolumeSlider.setValue(mixer.getChordVolume());
+        chordsVolumeSlider.addOnChangeListener(chordListener);
 
-            }
-        });
-
+        OnChangeListener composedMelodyListener = (slider, value, fromUser) -> mixer.setConstructedMelodyVolume(value);
         composedMelodyVolumeSlider = findViewById(R.id.composedMelodyVolumeSlider);
-        composedMelodyVolumeSlider.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                System.out.println(value);
-            }
-        });
+        composedMelodyVolumeSlider.removeOnChangeListener(composedMelodyListener);
+        composedMelodyVolumeSlider.setValue(mixer.getConstructedMelodyVolume());
+        composedMelodyVolumeSlider.addOnChangeListener(composedMelodyListener);
 
+        OnChangeListener recordedMelodyListener = (slider, value, fromUser) -> mixer.setRealTimeMelodyVolume(value);
         recordedMelodyVolumeSlider = findViewById(R.id.recordedMelodyVolumeSlider);
-        recordedMelodyVolumeSlider.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                System.out.println(value);
-            }
-        });
+        recordedMelodyVolumeSlider.removeOnChangeListener(recordedMelodyListener);
+        recordedMelodyVolumeSlider.setValue(mixer.getRealTimeMelodyVolume());
+        recordedMelodyVolumeSlider.addOnChangeListener(recordedMelodyListener);
 
+        OnChangeListener audioListener = (slider, value, fromUser) -> mixer.setAudioVolume(value);
         audioVolumeSlider = findViewById(R.id.audioVolumeSlider);
-        audioVolumeSlider.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                System.out.println(value);
-            }
-        });
+        audioVolumeSlider.removeOnChangeListener(audioListener);
+        audioVolumeSlider.setValue(mixer.getAudioVolume());
+        audioVolumeSlider.addOnChangeListener(audioListener);
 
+        OnChangeListener percussionListener = (slider, value, fromUser) -> mixer.setPercussionVolume(value);
         percussionVolumeSlider = findViewById(R.id.percussionVolumeSlider);
-        percussionVolumeSlider.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                System.out.println(value);
-            }
-        });
+        percussionVolumeSlider.removeOnChangeListener(percussionListener);
+        percussionVolumeSlider.setValue(mixer.getPercussionVolume());
+        percussionVolumeSlider.addOnChangeListener(percussionListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        midiDriver.start();
+        mixer.syncWithSession();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        midiDriver.stop();
     }
 
     @Override
@@ -149,8 +170,6 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
                 redirectActivity(this, PercussionActivity.class);
                 break;
             case R.id.nav_keyboard:
-//                redirectActivity(this, KeyboardActivity.class);
-//                break;
                 if (session.getSmartKeyboardFlag() == false) {
                     redirectActivity(this, KeyboardActivity.class);
                 }
@@ -183,11 +202,23 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
     }
 
     private static void redirectActivity(Activity activity, Class aClass) {
+        if(mixer.areTracksPlaying()){
+            mixer.stopTracks();
+        }
         Intent intent = new Intent(activity, aClass);
         intent.putExtra("flag", "fromMixerActivity");
         intent.putExtra("session", session);
+        intent.putExtra("user", user);
+        if(user != null) saveToDB();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
+    }
+
+    private static void saveToDB(){
+        realm.executeTransactionAsync(r -> {
+            Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
+            realmSession.setTrackVolumes(realmSession.listToRealmList(session.mTrackVolumes));
+        });
     }
 
     // pop up menu with session options

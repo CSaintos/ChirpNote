@@ -2,6 +2,7 @@ package com.example.chirpnote.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,11 +24,12 @@ import java.util.List;
 public class SetKeyActivity extends AppCompatActivity {
 
     private ChirpNoteSession session;
+    private ChirpNoteUser user;
     private String keyNameChoice;
     private String keyTypeChoice;
     private List<String> keyTypeList = new ArrayList<>();
     private List<String> keyNameList = new ArrayList<>();
-    boolean flag = false;
+    private String flag;
 
     private Button confirmChangesButton;
     private Key newKey;
@@ -56,8 +58,11 @@ public class SetKeyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key);
         hideSystemBars();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Set Key");
 
-        ChirpNoteUser user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
+        flag = getIntent().getStringExtra("flag");
 
         Button confirmChangesButton = (Button) findViewById(R.id.confirmChangesButton);
         confirmChangesButton.setEnabled(false);
@@ -74,16 +79,9 @@ public class SetKeyActivity extends AppCompatActivity {
         keyTypeSpinner.setAdapter(keyTypeAdapter);
 
         Intent intent = getIntent();
-        if (intent != null)
+        if (intent != null && flag != null)
         {
-//            String intentName = intent.getComponent().getClassName(); // intentName = com.example.chirpnote.activities.SetKeyActivity <- WRONG NAME
-//            System.out.println("================================================================================== intentName = " + intentName);
-            String intentName = intent.getType(); // doesn't work
-            System.out.println("================================================================================== intentName = " + intentName);
-
-
-//            if (intentName != null && intentName.equals("fromSetKeyFromSong"))
-            if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyFromSongActivity"))
+            if (flag.equals("fromSetKeyFromSongActivity"))
             {
                 System.out.println("intent = " + "fromSetKeyFromSongActivity");
 
@@ -102,31 +100,21 @@ public class SetKeyActivity extends AppCompatActivity {
                 int keyTypePosition = keyTypeAdapter.getPosition(keyTypeChoice);
                 keyTypeSpinner.setSelection(keyTypePosition);
             }
-            else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
+            else if (flag.equals("fromSmartKeyboardActivity"))
             {
                 System.out.println("intent = " + "fromSmartKeyboardActivity");
 
                 session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
                 System.out.println("key = " + session.getKey().toString());
             }
-            else if (intent.getStringExtra("flag").equals("fromNewSessionActivity"))
+            else if (flag.equals("fromNewSessionActivity"))
             {
                 session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
             }
 
         }
 
-//        String checkFlag = intent.getStringExtra("flag");
-//        if (checkFlag.equals("A")){
-//            flag = true;
-//        }
-//        else
-//            flag = false;
-
-
-
-
-        // Button to go the set key from song activity (for testing)
+        // Button to go the set key from song activity
         Button setKeyTestButton = (Button) findViewById(R.id.changeKeyFromSongButton);
         setKeyTestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,45 +128,9 @@ public class SetKeyActivity extends AppCompatActivity {
             }
         });
 
-//        Button setKeyManuallyButton = (Button) findViewById(R.id.setKeyManuallyButton);
-//        setKeyManuallyButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
-//                {
-//                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
-//                }
-//                else
-//                {
-//                    Key.RootNote newRootNote = Key.RootNote.returnRootNote(keyNameChoice);
-//                    Key.Type newKeyType = Key.Type.valueOf(keyTypeChoice.toUpperCase());
-//
-//
-//                    newKey = new Key(newRootNote, newKeyType);
-//                    session.setKey(newKey);
-//
-////                    if (intent.getStringExtra("flag").equals("fromNewSessionActivity"))
-////                    {
-////                        newKey = new Key(newRootNote, newKeyType);
-////
-////                    }
-////                    else if (intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
-////                    {
-////                        session.setKey(new Key(newRootNote, newKeyType));
-////                    }
-//
-//                    Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-
-
         confirmChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
 //                if (keyNameChoice.equals("Key Name") || keyTypeChoice.equals("Key Type"))
 //                {
 //                    Toast.makeText(getApplicationContext(), "Please make proper selection.", Toast.LENGTH_LONG).show();
@@ -192,52 +144,28 @@ public class SetKeyActivity extends AppCompatActivity {
                     session.setKey(newKey);
 //                }
 
-
-
                 Intent intent = getIntent();
-                if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSmartKeyboardActivity"))
+                if (flag.equals("fromSmartKeyboardActivity"))
                 {
                     intent = new Intent(SetKeyActivity.this, SmartKeyboardActivity.class);
-                    intent.putExtra("flag", "fromSetKeyActivity");
-                    intent.putExtra("session", session);
-                    intent.putExtra("user", user);
-                    intent.putExtra("newKey", newKey);
-//                    session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
                 }
-                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromNewSessionActivity"))
+                else if (flag.equals("fromNewSessionActivity"))
                 {
                     intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
-                    intent.putExtra("flag", "fromSetKeyActivity");
-                    intent.putExtra("session", session);
-                    intent.putExtra("user", user);
-                    intent.putExtra("newKey", newKey);
-//                    session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
-//                    System.out.println("session key name = " + session.getKey().toString());
                 }
-                else if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyFromSongActivity"))
+                else if (flag.equals("fromSetKeyFromSongActivity"))
                 {
                     intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
-                    intent.putExtra("flag", "fromSetKeyActivity");
-                    intent.putExtra("session", session);
-                    intent.putExtra("user", user);
-                    intent.putExtra("newKey", newKey);
-//                    session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
-//                    System.out.println("session key name = " + session.getKey().toString());
                 }
-
-//                Intent intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
-//                intent.putExtra("flag", "fromSetKeyActivity");
-//                intent.putExtra("session", session);
-//                intent.putExtra("user", user);
-//                intent.putExtra("newKey", newKey);
+                intent.putExtra("flag", "fromSetKeyActivity");
+                intent.putExtra("session", session);
+                intent.putExtra("user", user);
+                intent.putExtra("newKey", newKey);
                 startActivity(intent);
             }
         });
 
-
         // set user input key name and type to new key in session
-
-
         keyNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -261,8 +189,6 @@ public class SetKeyActivity extends AppCompatActivity {
 
             }
         });
-
-
 
         keyTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -302,6 +228,32 @@ public class SetKeyActivity extends AppCompatActivity {
         keyTypeList.add("Key Type");
         keyTypeList.add("Major");
         keyTypeList.add("Minor");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = getIntent();
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                if (flag.equals("fromSmartKeyboardActivity"))
+                {
+                    intent = new Intent(SetKeyActivity.this, SmartKeyboardActivity.class);
+                }
+                else if (flag.equals("fromNewSessionActivity"))
+                {
+                    intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
+                }
+                else if (flag.equals("fromSetKeyFromSongActivity"))
+                {
+                    intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
+                }
+                intent.putExtra("user", user);
+                intent.putExtra("session", session);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

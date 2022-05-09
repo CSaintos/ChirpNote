@@ -82,7 +82,7 @@ public class MelodyActivity extends AppCompatActivity
     private Notation.MusicFontAdapter mfAdapter;
     private static ChirpNoteSession session;
     private Key key;
-    private Mixer mixer;
+    private static Mixer mixer;
     private int octNum;
     private int melodyPosition;
 
@@ -996,6 +996,9 @@ public class MelodyActivity extends AppCompatActivity
 
     // method to activate intent
     private static void redirectActivity(Activity activity, Class aClass) {
+        if(mixer.areTracksPlaying()){
+            mixer.stopTracks();
+        }
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromMelodyActivity");

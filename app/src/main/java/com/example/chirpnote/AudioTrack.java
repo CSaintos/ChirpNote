@@ -171,14 +171,18 @@ public class AudioTrack implements Track {
     }
 
     /**
-     * Getter for mediaRecorder
-     * @return mediaRecorder
+     * Gets this audio track's media recorder
+     * @return The media recorder
      */
-    public MediaRecorder getmMediaRecorder() {
+    public MediaRecorder getMediaRecorder() {
         return mMediaRecorder;
     }
 
-    public MediaPlayer getmMediaPlayer(){
+    /**
+     * Gets this audio track's media player
+     * @return The media player
+     */
+    public MediaPlayer getMediaPlayer(){
         return mMediaPlayer;
     }
 

@@ -57,7 +57,7 @@ public class SmartKeyboardActivity extends AppCompatActivity
     private String keyNameChoice;
     private String keyTypeChoice;
     private static ChirpNoteSession session;
-    private Mixer mixer;
+    private static Mixer mixer;
     private Button minimizeBtn;
 
 
@@ -440,6 +440,9 @@ public class SmartKeyboardActivity extends AppCompatActivity
     }
 
     private static void redirectActivity(Activity activity, Class aClass) {
+        if(mixer.areTracksPlaying()){
+            mixer.stopTracks();
+        }
         Intent intent = new Intent(activity, aClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromSmartKeyboardActivity");

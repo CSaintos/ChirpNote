@@ -43,6 +43,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
 
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Session Overview");
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
