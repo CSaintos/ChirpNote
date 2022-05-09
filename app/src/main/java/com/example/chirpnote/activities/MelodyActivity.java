@@ -169,7 +169,9 @@ public class MelodyActivity extends AppCompatActivity
         consMelody = mixer.constructedMelody;
 
         midiDriver = MidiDriver.getInstance();
+
         melodyPosition = 0;
+        consMelody.mElementIndex = melodyPosition;
 
         // Initialize buttons
         leftButton = (Button) findViewById(R.id.melodyleftbutton);
@@ -650,23 +652,11 @@ public class MelodyActivity extends AppCompatActivity
         noteLengthButtons[0].toggle(); // set Whole Note not length button
         currentDuration = notation.new NoteFont(Syntax.REST_WHOLE, -1);
 
-        //currentNote = notation.new NoteFont(currentDuration.symbol, 9);
-        //currentNote.color = Color.BLUE;
-        //currentDuration.noteLength = 32;
-        //currentNote.noteLength = currentDuration.noteLength;
         barLength = 0;
 
         //tempInitSessionMeasures();
         constructNoteList(consMelody.getMeasure());
 
-        // Add default note to staff
-        //itr.insertAfter(notation.new NoteFont(currentNote));
-        //if (itr.hasNext()) itr.next(); // if there was a clef there (supposedly)
-        //currentNote = notation.new NoteFont((NoteFont) itr.get());
-
-        // Add defaults note to constructed melody
-        //mfAdapter = notation.new MusicFontAdapter(currentNote);
-        //consMelody.addRest(mfAdapter.getNoteDuration(), melodyPosition);
     }
 
     // FIXME theres a bug concerning consMelody and noteList compatibility
@@ -791,14 +781,12 @@ public class MelodyActivity extends AppCompatActivity
      * Displays text from the noteList in the order given.
      */
     private void displayText() {
-        //Log.d("display Text", "call 1");
         StringBuffer[] sb = new StringBuffer[staffLines.length];
         SpannableStringBuilder[] ssb = new SpannableStringBuilder[staffLines.length];
         // Initialize string buffers
         for (int i = 0; i < staffLines.length; i++) {
             ssb[i] = new SpannableStringBuilder();
         }
-        //Log.d("display Text", "call 2");
         int strIdx = 0;
         // Add notes to noteList
         BLL.ListIterator itr2 = noteList.listIterator();
@@ -845,39 +833,11 @@ public class MelodyActivity extends AppCompatActivity
             //ssb[i].setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, ssb[i].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             staffLines[i].setText(ssb[i]);
         }
-        //Log.d("display Text", "call 3");
     }
 
-    /**
-     * Temporary method to construct melody
-     * DO NOT REMOVE
-     */
-    /*
-    private void toConstructedMelody() {
-        ConstructedMelody constructedMelody = new ConstructedMelody(session);
-        constructedMelody.startRecording();
-        int position = 0;
-
-        BLL.ListIterator itr2 = noteList.listIterator();
-        for (int i = 0; i < noteList.size(); i++) {
-            NoteFont nf = (NoteFont)itr2.get();
-            if (itr2.hasNext()) itr2.next();
-
-            Notation.MusicFontAdapter mfAdapter = notation.new MusicFontAdapter(nf);
-            if (Notation.Syntax.REST.contains(nf.symbol)) {
-                constructedMelody.addRest(mfAdapter.getNoteDuration(), position);
-            } else if (Notation.Syntax.NOTE.contains(nf.symbol)) {
-                constructedMelody.addNote(mfAdapter.getMusicNote(), mfAdapter.getNoteDuration(), position);
-            }
-
-            position++;
-        }
-
-        constructedMelody.play();
-        constructedMelody.stopRecording();
-    }
-     */
     private void constructNoteList(String[] measure) {
+        Log.d("ConstructNoteList", "measure length: " + measure.length);
+        Log.d("ConstructNoteList", "elements length: " + session.mMelodyElements.size()); // FIXME not retrieving
         if (measure.length == 0) return;
         noteList = new BLL<>();
         itr = noteList.listIterator();
@@ -1012,8 +972,11 @@ public class MelodyActivity extends AppCompatActivity
         realm.executeTransactionAsync(r -> {
             Session realmSession = r.where(Session.class).equalTo("_id", session.getId()).findFirst();
             realmSession.setNextMelodyTick(session.mNextMelodyTick);
+            Log.d("saveToDB melody", Integer.toString(session.mMelodyElements.size()));
+            //Log.d("saveToDB realm melody", Integer.toString(realmSession.getMelodyElements().size()));
             realmSession.setMelodyElements(realmSession.listToRealmList(session.mMelodyElements));
             realmSession.setMidiFile(realmSession.encodeFile(session.getMidiPath()));
+            Log.d("saveToDB realm melody", Integer.toString(realmSession.getMelodyElements().size()));
         });
     }
 
@@ -1047,4 +1010,35 @@ public class MelodyActivity extends AppCompatActivity
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
         }
     }
+
+
+    /**
+     * Temporary method to construct melody
+     * DO NOT REMOVE
+     */
+    /*
+    private void toConstructedMelody() {
+        ConstructedMelody constructedMelody = new ConstructedMelody(session);
+        constructedMelody.startRecording();
+        int position = 0;
+
+        BLL.ListIterator itr2 = noteList.listIterator();
+        for (int i = 0; i < noteList.size(); i++) {
+            NoteFont nf = (NoteFont)itr2.get();
+            if (itr2.hasNext()) itr2.next();
+
+            Notation.MusicFontAdapter mfAdapter = notation.new MusicFontAdapter(nf);
+            if (Notation.Syntax.REST.contains(nf.symbol)) {
+                constructedMelody.addRest(mfAdapter.getNoteDuration(), position);
+            } else if (Notation.Syntax.NOTE.contains(nf.symbol)) {
+                constructedMelody.addNote(mfAdapter.getMusicNote(), mfAdapter.getNoteDuration(), position);
+            }
+
+            position++;
+        }
+
+        constructedMelody.play();
+        constructedMelody.stopRecording();
+    }
+     */
 }
