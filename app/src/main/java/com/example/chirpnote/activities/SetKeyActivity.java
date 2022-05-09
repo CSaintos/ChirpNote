@@ -286,8 +286,8 @@ public class SetKeyActivity extends AppCompatActivity {
 
             }
         });
-
     }
+
     private void initializeKeyNameList()
     {
         keyNameList.add("Key Name");

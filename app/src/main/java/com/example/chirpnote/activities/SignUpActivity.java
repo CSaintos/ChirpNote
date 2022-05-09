@@ -1,10 +1,13 @@
 package com.example.chirpnote.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,6 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         Context context = getApplicationContext();
         hideSystemBars();
+        findViewById(android.R.id.content).setFocusableInTouchMode(true);
 
         app = new App(new AppConfiguration.Builder(appID).build());
         Credentials credentials = Credentials.anonymous();
@@ -71,6 +75,37 @@ public class SignUpActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        View v = getCurrentFocus();
+
+        if (v != null && (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) &&
+                v instanceof EditText &&
+                !v.getClass().getName().startsWith("android.webkit.")) {
+            int[] sourceCoordinates = new int[2];
+            v.getLocationOnScreen(sourceCoordinates);
+            float x = ev.getRawX() + v.getLeft() - sourceCoordinates[0];
+            float y = ev.getRawY() + v.getTop() - sourceCoordinates[1];
+
+            if (x < v.getLeft() || x > v.getRight() || y < v.getTop() || y > v.getBottom()) {
+                hideKeyboard(this);
+            }
+
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void hideKeyboard(Activity activity) {
+        if (activity != null && activity.getWindow() != null) {
+            activity.getWindow().getDecorView();
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+                findViewById(android.R.id.content).clearFocus();
+            }
+        }
     }
 
     /**
