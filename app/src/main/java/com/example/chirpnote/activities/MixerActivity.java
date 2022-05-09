@@ -51,7 +51,7 @@ public class MixerActivity extends AppCompatActivity implements NavigationView.O
         String basePath = this.getFilesDir().getPath();
         if(session == null) {
             session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
         }
 
         app = new App(new AppConfiguration.Builder(appID).build());

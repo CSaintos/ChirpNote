@@ -27,7 +27,6 @@ public class ChirpNoteSession implements Serializable {
     public List<String> mPercussionPatterns;
     public List<Integer> mTrackVolumes;
     public List<Byte> mInstruments;
-    private String mUsername;
     private boolean noteSuggestionFlag;
     private boolean smartKeyboardFlag;
 
@@ -61,9 +60,8 @@ public class ChirpNoteSession implements Serializable {
      * @param tempo The tempo of this session
      * @param midiPath The file path to store the MIDI tracks at
      * @param audioPath The file path to store the audio at
-     * @param username The username of the user creating the session
      */
-    public ChirpNoteSession(String name, Key key, int tempo, String midiPath, String audioPath, String username){
+    public ChirpNoteSession(String name, Key key, int tempo, String midiPath, String audioPath){
         _id = new ObjectId();
         mName = name;
         mKey = key;
@@ -90,7 +88,6 @@ public class ChirpNoteSession implements Serializable {
         mInstruments.add(GeneralMidiConstants.ACOUSTIC_GRAND_PIANO);
         mInstruments.add(GeneralMidiConstants.ACOUSTIC_GRAND_PIANO);
         mInstruments.add(GeneralMidiConstants.ACOUSTIC_GRAND_PIANO);
-        mUsername = username;
 
         noteSuggestionFlag = false;
         smartKeyboardFlag = false;
@@ -142,14 +139,6 @@ public class ChirpNoteSession implements Serializable {
      */
     public String getAudioPath(){
         return mAudioPath;
-    }
-
-    /**
-     * Gets the username of the user that created this session
-     * @return The user's username
-     */
-    public String getUsername(){
-        return mUsername;
     }
 
     /**

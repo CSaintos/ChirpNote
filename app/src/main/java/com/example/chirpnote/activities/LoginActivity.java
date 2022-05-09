@@ -1,5 +1,6 @@
 package com.example.chirpnote.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.R;
+
+import org.bson.Document;
 
 import io.realm.Realm;
 import io.realm.mongodb.App;
@@ -45,25 +49,58 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+                progressDialog.setTitle("Log in");
+                progressDialog.setMessage("Logging you in...");
+                progressDialog.show();
+                progressDialog.setCancelable(false);
                 String username = mUsername.getText().toString();
                 String password = mPassword.getText().toString();
                 Credentials customFunctionCredentials =
                         Credentials.customFunction(new org.bson.Document("username", username).append("password", password));
                 app.loginAsync(customFunctionCredentials, it -> {
                     if (it.isSuccess()) {
-                        Toast.makeText(LoginActivity.this,"Login succeeded", Toast.LENGTH_SHORT).show();
-
                         // Setup a synced MongoDB Realm configuration for the current user
                         SyncConfiguration config = new SyncConfiguration.Builder(
                                 app.currentUser(),
                                 username)
+                                .allowWritesOnUiThread(true)
                                 .build();
                         Realm.setDefaultConfiguration(config);
 
+                        // Get user data on separate thread
+                        ChirpNoteUser user = new ChirpNoteUser();
+                        Thread getUserThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Query database
+                                Document userDoc = app.currentUser()
+                                        .getMongoClient("mongodb-atlas")
+                                        .getDatabase("ChirpNote")
+                                        .getCollection("Users")
+                                        .findOne(new Document("username", username)).get();
+
+                                // Update user object
+                                user.setUsername(userDoc.getString("username"));
+                                user.setName(userDoc.getString("name"));
+                                user.setEmail(userDoc.getString("email"));
+                                user.setPassword(userDoc.getString("password"));
+                            }
+                        });
+                        getUserThread.start();
+                        try {
+                            getUserThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        // Go to home screen
                         Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
-                        intent.putExtra("username", username);
+                        intent.putExtra("user", user);
+                        progressDialog.dismiss();
+                        Toast.makeText(LoginActivity.this,"Login succeeded", Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     } else {
+                        progressDialog.dismiss();
                         Toast.makeText(LoginActivity.this,"Login failed", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -86,8 +123,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {}
+
+    @Override
     protected void onResume(){
         super.onResume();
+        mUsername.setText("");
+        mPassword.setText("");
         //hideSystemBars();
     }
 

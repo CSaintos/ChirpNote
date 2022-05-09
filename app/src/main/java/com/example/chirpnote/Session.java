@@ -53,14 +53,14 @@ public class Session extends RealmObject {
      * A Session that can be stored in a Realm object
      * @param session The session whose data to use to create the Realm Session
      */
-    public Session(ChirpNoteSession session){
+    public Session(ChirpNoteSession session, String username){
         // No need to set any of the track lists or files, as they will be empty when a session is first created
         set_id(session.getId());
         setName(session.getName());
         setKey(Key.encode(session.getKey()));
         setTempo(session.getTempo());
         setTrackVolumes(listToRealmList(session.mTrackVolumes));
-        setUsername(session.getUsername());
+        setUsername(username);
     }
 
     public ObjectId get_id(){

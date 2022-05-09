@@ -30,6 +30,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.AudioTrack;
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.DriveServiceHelper;
 import com.example.chirpnote.ExportHelper;
 import com.example.chirpnote.Key;
@@ -76,7 +77,7 @@ import io.realm.Realm;
 public class RecordAudioActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static Realm realm;
-    private static String username;
+    private static ChirpNoteUser user;
 
     //layout items
     private ImageButton recordButton;
@@ -118,7 +119,7 @@ public class RecordAudioActivity extends AppCompatActivity
         setContentView(R.layout.activity_record_audio);
         hideSystemBars();
 
-        username = getIntent().getStringExtra("username");
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
         realm = Realm.getDefaultInstance();
 
         //navigation drawer
@@ -176,7 +177,7 @@ public class RecordAudioActivity extends AppCompatActivity
         String basePath = this.getFilesDir().getPath();
         if(session == null) {
             session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
         }
         mixer = new Mixer(session);
         midiDriver = MidiDriver.getInstance();
@@ -457,8 +458,8 @@ public class RecordAudioActivity extends AppCompatActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromRecordAudioActivity");
         intent.putExtra("session", session);
-        intent.putExtra("username", username);
-        if(username != null) saveToDB();
+        intent.putExtra("user", user);
+        if(user != null) saveToDB();
         activity.startActivity(intent);
     }
 

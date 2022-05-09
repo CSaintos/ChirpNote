@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 
@@ -56,7 +57,7 @@ public class SetKeyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_key);
         hideSystemBars();
 
-        String username = getIntent().getStringExtra("username");
+        ChirpNoteUser user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
 
         Button confirmChangesButton = (Button) findViewById(R.id.confirmChangesButton);
         confirmChangesButton.setEnabled(false);
@@ -134,7 +135,7 @@ public class SetKeyActivity extends AppCompatActivity {
 //                intent.putExtra("session", session);
                 intent.putExtra("flag", "fromSetKeyActivity");
                 intent.putExtra("session", session);
-                intent.putExtra("username", username);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -199,7 +200,7 @@ public class SetKeyActivity extends AppCompatActivity {
                     intent = new Intent(SetKeyActivity.this, SmartKeyboardActivity.class);
                     intent.putExtra("flag", "fromSetKeyActivity");
                     intent.putExtra("session", session);
-                    intent.putExtra("username", username);
+                    intent.putExtra("user", user);
                     intent.putExtra("newKey", newKey);
 //                    session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
                 }
@@ -208,7 +209,7 @@ public class SetKeyActivity extends AppCompatActivity {
                     intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
                     intent.putExtra("flag", "fromSetKeyActivity");
                     intent.putExtra("session", session);
-                    intent.putExtra("username", username);
+                    intent.putExtra("user", user);
                     intent.putExtra("newKey", newKey);
 //                    session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
 //                    System.out.println("session key name = " + session.getKey().toString());
@@ -218,7 +219,7 @@ public class SetKeyActivity extends AppCompatActivity {
                     intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
                     intent.putExtra("flag", "fromSetKeyActivity");
                     intent.putExtra("session", session);
-                    intent.putExtra("username", username);
+                    intent.putExtra("user", user);
                     intent.putExtra("newKey", newKey);
 //                    session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
 //                    System.out.println("session key name = " + session.getKey().toString());
@@ -227,7 +228,7 @@ public class SetKeyActivity extends AppCompatActivity {
 //                Intent intent = new Intent(SetKeyActivity.this, NewSessionActivity.class);
 //                intent.putExtra("flag", "fromSetKeyActivity");
 //                intent.putExtra("session", session);
-//                intent.putExtra("username", username);
+//                intent.putExtra("user", user);
 //                intent.putExtra("newKey", newKey);
                 startActivity(intent);
             }

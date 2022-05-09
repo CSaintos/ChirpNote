@@ -1,6 +1,9 @@
 package com.example.chirpnote.activities;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -46,7 +50,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         mAdViewTop.loadAd(adRequest);
         mAdViewBottom.loadAd(adRequest);
 
-        String username = getIntent().getStringExtra("username");
+        ChirpNoteUser user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
         app = new App(new AppConfiguration.Builder(appID).build());
 
         Button newSessionButton = (Button) findViewById(R.id.newSessionButton);
@@ -75,7 +79,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, NewSessionActivity.class);
-                intent.putExtra("username", username);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -85,7 +89,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, LoadSessionActivity.class);
-                intent.putExtra("username", username);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -95,7 +99,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, UserProfileActivity.class);
-                intent.putExtra("username", username);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -105,7 +109,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeScreenActivity.this, MusicTheoryInfoActivity.class);
-                intent.putExtra("username", username);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -162,6 +166,13 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        // Log out in the background
+        new LogOut(this).execute(app);
+        startActivity(new Intent(HomeScreenActivity.this, LoginActivity.class));
+    }
+
     /**
      * Hides the system status bar and navigation bar
      */
@@ -170,6 +181,32 @@ public class HomeScreenActivity extends AppCompatActivity {
         if (windowInsetsController != null) {
             windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
+    }
+
+    private class LogOut extends AsyncTask<App, Void, String> {
+        private ProgressDialog mDialog;
+        private Context mContext;
+
+        public LogOut(Context context){
+            mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute(){
+            mDialog = ProgressDialog.show(mContext, "Log out", "Logging you out...", true);
+            mDialog.setCancelable(false);
+        }
+
+        @Override
+        protected String doInBackground(App... app){
+            app[0].currentUser().logOut();
+            return "Done";
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            mDialog.dismiss();
         }
     }
 }

@@ -30,6 +30,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
 import com.example.chirpnote.MusicNote;
@@ -48,7 +49,7 @@ import io.realm.Realm;
 public class KeyboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
     private static Realm realm;
-    private static String username;
+    private static ChirpNoteUser user;
 
     private MidiDriver midiDriver;
     private ArrayList<MusicNote> pianoKeys;
@@ -81,7 +82,7 @@ public class KeyboardActivity extends AppCompatActivity
 //      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().hide();
 
-        username = getIntent().getStringExtra("username");
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
         realm = Realm.getDefaultInstance();
 
         // navigation drawer
@@ -142,7 +143,7 @@ public class KeyboardActivity extends AppCompatActivity
         String basePath = this.getFilesDir().getPath();
         if(session == null) {
             session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
         }
         mixer = new Mixer(session);
         melody = mixer.realTimeMelody;
@@ -604,8 +605,8 @@ public class KeyboardActivity extends AppCompatActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromKeyboardActivity");
         intent.putExtra("session", session);
-        intent.putExtra("username", username);
-        if(username != null && !session.getName().equals("SessionFreePlay")) saveToDB();
+        intent.putExtra("user", user);
+        if(user != null && !session.getName().equals("SessionFreePlay")) saveToDB();
         activity.startActivity(intent);
     }
 
