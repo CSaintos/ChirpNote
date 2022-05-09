@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.R;
 import com.example.chirpnote.SongListAdapter;
 import com.example.chirpnote.queryResult;
@@ -55,7 +56,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_key_from_song);
         //hideSystemBars();
-        String username = getIntent().getStringExtra("username");
+        ChirpNoteUser user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
@@ -172,7 +173,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
                 System.out.println(keyToSend[1]);
                 intent.putExtra("keyArray",keyToSend);
                 intent.putExtra("session",session);
-                intent.putExtra("username", username);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
             else{
@@ -182,7 +183,7 @@ public class SetKeyFromSongActivity extends AppCompatActivity {
 //                ChirpNoteSession session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
 //                session.setKey(new Key(Key.RootNote.returnRootNote(keyName),Key.Type.valueOf(keyMajorMinor)));
 //                intent.putExtra("session",session);
-//                intent.putExtra("username", username);
+//                intent.putExtra("user", user);
             }
 
         }

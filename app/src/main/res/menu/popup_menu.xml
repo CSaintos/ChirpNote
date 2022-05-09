@@ -13,6 +13,8 @@
                 android:title="Light Mode"/>
             <item android:id="@+id/subitem3"
                 android:title="Use System Preference"/>
+            <item android:id="@+id/subitem4"
+                android:title="Log out"/>
         </menu>
     </item>
 

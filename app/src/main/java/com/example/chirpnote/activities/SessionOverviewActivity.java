@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.R;
 import com.google.android.material.navigation.NavigationView;
 
@@ -27,7 +28,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
     App app;
     String appID = "chirpnote-jwrci";
     static ChirpNoteSession session;
-    static String username;
+    static ChirpNoteUser user;
 
     private DrawerLayout drawer;
 
@@ -38,7 +39,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
         hideSystemBars();
 
         app = new App(new AppConfiguration.Builder(appID).build());
-        username = getIntent().getStringExtra("username");
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
 
         Toolbar toolbar = findViewById(R.id.nav_toolbar);
         setSupportActionBar(toolbar);
@@ -127,7 +128,7 @@ public class SessionOverviewActivity extends AppCompatActivity implements Naviga
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromSessionOverviewActivity");
         intent.putExtra("session", session);
-        intent.putExtra("username", username);
+        intent.putExtra("user", user);
         activity.startActivity(intent);
     }
 

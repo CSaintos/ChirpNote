@@ -35,6 +35,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chirpnote.BLL;
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.ConstructedMelody;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.Mixer;
@@ -54,7 +55,7 @@ import io.realm.Realm;
 public class MelodyActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static Realm realm;
-    private static String username;
+    private static ChirpNoteUser user;
 
     private Notation notation = new Notation();
 
@@ -103,7 +104,7 @@ public class MelodyActivity extends AppCompatActivity
         setContentView(R.layout.activity_melody);
         hideSystemBars();
 
-        username = getIntent().getStringExtra("username");
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
         realm = Realm.getDefaultInstance();
 
         // navigation menu
@@ -159,7 +160,7 @@ public class MelodyActivity extends AppCompatActivity
         String basePath = this.getFilesDir().getPath();
         if (session == null) {
             session = new ChirpNoteSession("Name", new Key(Key.RootNote.C, Key.Type.MAJOR), 120,
-                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", "username");
+                    basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
         }
         key = session.getKey();
         mixer = new Mixer(session);
@@ -999,8 +1000,8 @@ public class MelodyActivity extends AppCompatActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("flag", "fromMelodyActivity");
         intent.putExtra("session", session);
-        intent.putExtra("username", username);
-        if (username != null) saveToDB();
+        intent.putExtra("user", user);
+        if (user != null) saveToDB();
         activity.startActivity(intent);
     }
 

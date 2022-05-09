@@ -18,10 +18,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.R;
 import com.google.android.material.navigation.NavigationView;
 
 public class MusicTheoryInfoActivity extends AppCompatActivity implements View.OnClickListener {
+    ChirpNoteUser user;
 
     ViewFlipper viewFlipper;
     Button next;
@@ -33,6 +35,8 @@ public class MusicTheoryInfoActivity extends AppCompatActivity implements View.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_theory_info);
         hideSystemBars();
+
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
 
         //actionbar back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,6 +59,27 @@ public class MusicTheoryInfoActivity extends AppCompatActivity implements View.O
         else if (v == back)
         {
             viewFlipper.showPrevious();
+        }
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(MusicTheoryInfoActivity.this, HomeScreenActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                intent = new Intent(MusicTheoryInfoActivity.this, HomeScreenActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

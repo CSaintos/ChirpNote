@@ -4,18 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 import com.example.chirpnote.Session;
@@ -34,6 +38,7 @@ import io.realm.mongodb.App;
 public class NewSessionActivity extends AppCompatActivity {
     App app;
     String appID = "chirpnote-jwrci";
+    ChirpNoteUser user;
 
     private InterstitialAd mInterstitialAd;
 
@@ -95,7 +100,7 @@ public class NewSessionActivity extends AppCompatActivity {
         });
         setAds();
 
-        String username = getIntent().getStringExtra("username");
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
         Realm realm = Realm.getDefaultInstance();
 
         tempoInvalid = (TextView) findViewById(R.id.tempoInvalidText);
@@ -122,7 +127,7 @@ public class NewSessionActivity extends AppCompatActivity {
 ////            System.out.println("session key name = " + session.getKey().toString());
 //            System.out.println("intent = " + "fromNewSessionActivity");
 //            session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.C, Key.Type.MAJOR),
-//                    Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
+//                    Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3");
 //        }
 
         Intent intent = getIntent();
@@ -148,7 +153,7 @@ public class NewSessionActivity extends AppCompatActivity {
                 intent.putExtra("flag", "fromNewSessionActivity");
                 dummySession = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.C, Key.Type.MAJOR), Integer.parseInt(setTempo.getText().toString()));
                 intent.putExtra("session", dummySession);
-                intent.putExtra("username", username);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -167,19 +172,19 @@ public class NewSessionActivity extends AppCompatActivity {
                             super.onAdDismissedFullScreenContent();
                             Intent intent = new Intent(NewSessionActivity.this, SessionOverviewActivity.class);
 //                            ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
-//                                    Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
+//                                    Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3");
                             session = new ChirpNoteSession(setName.getText().toString(), newKey,
-                                    Integer.parseInt(setTempo.getText().toString()), basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", username);
+                                    Integer.parseInt(setTempo.getText().toString()), basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
 
                             // Insert the new session into the realm database
-                            if(username != null) {
+                            if(user != null) {
                                 realm.executeTransactionAsync(r -> {
-                                    Session sessionToInsert = new Session(session);
+                                    Session sessionToInsert = new Session(session, user.getUsername());
                                     r.insert(sessionToInsert);
                                 });
                             }
                             intent.putExtra("session", session);
-                            intent.putExtra("username", username);
+                            intent.putExtra("user", user);
                             startActivity(intent);
 
                             mInterstitialAd = null;
@@ -189,23 +194,44 @@ public class NewSessionActivity extends AppCompatActivity {
                 } else {
                     Intent intent = new Intent(NewSessionActivity.this, SessionOverviewActivity.class);
 //                    ChirpNoteSession session = new ChirpNoteSession(setName.getText().toString(), new Key(Key.RootNote.A, Key.Type.MAJOR),
-//                            Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3", username);
+//                            Integer.parseInt(setTempo.getText().toString()), basePath + "midiTrack.mid", basePath + "audioTrack.mp3");
                     session = new ChirpNoteSession(setName.getText().toString(), newKey,
-                            Integer.parseInt(setTempo.getText().toString()), basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3", username);
+                            Integer.parseInt(setTempo.getText().toString()), basePath + "/midiTrack.mid", basePath + "/audioTrack.mp3");
 
                     // Insert the new session into the realm database
-                    if(username != null) {
+                    if(user != null) {
                         realm.executeTransactionAsync(r -> {
-                            Session sessionToInsert = new Session(session);
+                            Session sessionToInsert = new Session(session, user.getUsername());
                             r.insert(sessionToInsert);
                         });
                     }
                     intent.putExtra("session", session);
-                    intent.putExtra("username", username);
+                    intent.putExtra("user", user);
                     startActivity(intent);
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(NewSessionActivity.this, HomeScreenActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                intent = new Intent(NewSessionActivity.this, HomeScreenActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void setAds()

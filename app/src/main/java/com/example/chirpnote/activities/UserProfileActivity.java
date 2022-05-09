@@ -1,175 +1,116 @@
 package com.example.chirpnote.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import io.realm.mongodb.App;
-import io.realm.mongodb.mongo.MongoClient;
-import io.realm.mongodb.mongo.MongoCollection;
-import io.realm.mongodb.mongo.MongoDatabase;
+import io.realm.mongodb.AppConfiguration;
+import io.realm.mongodb.functions.Functions;
 
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.R;
-import com.google.android.material.navigation.NavigationView;
 
-import org.w3c.dom.Document;
+import java.util.Arrays;
 
 public class UserProfileActivity extends AppCompatActivity {
-       // implements NavigationView.OnNavigationItemSelectedListener {
-
-    private DrawerLayout drawer;
-    Activity context;
-
-    MongoClient mongoClient;
-    MongoDatabase mongoDatabase;
-    MongoCollection<Document> mongoCollection;
     App app;
     String appID = "chirpnote-jwrci";
+    ChirpNoteUser user;
+
+    EditText usernameText;
+    EditText nameText;
+    EditText emailText;
+    EditText passwordText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        hideSystemBars();
+        //hideSystemBars();
         //actionbar back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Profile");
 
-        /* used for testing nav drawer
-        Toolbar toolbar = findViewById(R.id.nav_toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.bringToFront();
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        //play and stop button in ActionBar
-        ImageView playButton = findViewById(R.id.nav_play_button);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(UserProfileActivity.this, "Play", Toast.LENGTH_SHORT).show();
-            }
-        });
-        ImageView stopButton = findViewById(R.id.nav_stop_button);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(UserProfileActivity.this, "Stop", Toast.LENGTH_SHORT).show();
-            }
-        }); */
-
-        //navigationView.setCheckedItem(R.id.nav_profile);
-
-        /*
-        String username, password;
-        AtomicReference<User> user = new AtomicReference<>();
         Context context = getApplicationContext();
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
         app = new App(new AppConfiguration.Builder(appID).build());
-        Credentials customFunctionCredentials =
-                Credentials.customFunction(new org.bson.Document("username", username).append("password", password));
-        TextView displayCurrentName = (TextView) findViewById(R.id.currentNameText);
-        displayCurrentName.setText(username);
 
-        EditText editNewName = (EditText) findViewById(R.id.editNewName);
+        usernameText = (EditText) findViewById(R.id.editProfileUsername);
+        nameText = (EditText) findViewById(R.id.editProfileName);
+        emailText = (EditText) findViewById(R.id.editProfileEmail);
+        passwordText = (EditText) findViewById(R.id.editProfilePassword);
+        // Set the current user profile data
+        usernameText.setText(user.getUsername());
+        nameText.setText(user.getName());
+        emailText.setText(user.getEmail());
+        passwordText.setText(user.getPassword());
 
-        Button changeNameButton2 = (Button) findViewById(R.id.changeNameButton2);
-        changeNameButton2.setOnClickListener(new View.OnClickListener() {
+        Button saveChangesButton = (Button) findViewById(R.id.saveSettingsButton);
+        saveChangesButton.setOnClickListener (new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = editNewName.getText().toString();
+                ProgressDialog progressDialog = new ProgressDialog(UserProfileActivity.this);
+                progressDialog.setTitle("Update profile");
+                progressDialog.setMessage("Saving changes...");
+                progressDialog.show();
+                progressDialog.setCancelable(false);
 
+                String oldUsername = user.getUsername();
+                String newUsername = usernameText.getText().toString();
+                String newName = nameText.getText().toString();
+                String newEmail = emailText.getText().toString();
+                String newPassword = passwordText.getText().toString();
+
+                Functions functionsManager = app.getFunctions(app.currentUser());
+                functionsManager.callFunctionAsync("updateProfile",
+                        Arrays.asList(oldUsername, newUsername, newName, newEmail, newPassword),
+                        Boolean.class, result -> {
+                    if (result.isSuccess()) {
+                        if(result.get()){
+                            user.setUsername(newUsername);
+                            user.setName(newName);
+                            user.setEmail(newEmail);
+                            user.setPassword(newPassword);
+
+                            Intent intent = new Intent(UserProfileActivity.this, HomeScreenActivity.class);
+                            intent.putExtra("user", user);
+                            progressDialog.dismiss();
+                            Toast.makeText(context, "Changes saved", Toast.LENGTH_SHORT).show();
+                            startActivity(intent);
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(context, "Username taken. Try again", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(context, "Request failed. Try again", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
-
-        TextView displayCurrentEmail = (TextView) findViewById(R.id.currentEmailText);
-        displayCurrentEmail.setText(username);
-
-        EditText editNewEmail = (EditText) findViewById(R.id.editNewEmail);
-
-        Button changeEmailButton2 = (Button) findViewById(R.id.changeEmailButton2);
-        changeEmailButton2.setOnClickListener (new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = editNewEmail.getText().toString();
-
-            }
-        });*/
-    }
-    /*
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_home:
-                redirectActivity(this, HomeScreenActivity.class);
-                break;
-            case R.id.nav_overview:
-                Toast.makeText(this, "Overview", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_melody:
-                redirectActivity(this, MelodyActivity.class);
-                break;
-            case R.id.nav_chords:
-                redirectActivity(this, InsertChordsActivity.class);
-                break;
-            case R.id.nav_percussion:
-                redirectActivity(this, PercussionActivity.class);
-                break;
-            case R.id.nav_keyboard:
-                redirectActivity(this, KeyboardActivity.class);
-                break;
-            case R.id.nav_mixer:
-                Toast.makeText(this, "Mixer", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.nav_audio:
-                redirectActivity(this, RecordAudioActivity.class);
-                break;
-            default:
-                break;
-        }
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-        else {
-            super.onBackPressed();
-        }
-    }*/
-
-    private static void redirectActivity(Activity activity, Class aClass) {
-        Intent intent = new Intent(activity, aClass);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
+    public void onBackPressed(){
+        Intent intent = new Intent(UserProfileActivity.this, HomeScreenActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
     }
 
     @Override
@@ -181,6 +122,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch(item.getItemId()) {
             case R.id.subitem1: //subitem 1 = dark mode
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -203,6 +145,16 @@ public class UserProfileActivity extends AppCompatActivity {
                     Toast.makeText(this, "Dark Mode Enabled", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.subitem4:
+                new LogOut(this).execute(app);
+                intent = new Intent(UserProfileActivity.this, LoginActivity.class);
+                startActivity(intent);
+                return true;
+            case android.R.id.home:
+                intent = new Intent(UserProfileActivity.this, HomeScreenActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -230,6 +182,32 @@ public class UserProfileActivity extends AppCompatActivity {
         if (windowInsetsController != null) {
             windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
+    }
+
+    private class LogOut extends AsyncTask<App, Void, String> {
+        private ProgressDialog mDialog;
+        private Context mContext;
+
+        public LogOut(Context context){
+            mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute(){
+            mDialog = ProgressDialog.show(mContext, "Log out", "Logging you out...", true);
+            mDialog.setCancelable(false);
+        }
+
+        @Override
+        protected String doInBackground(App... app){
+            app[0].currentUser().logOut();
+            return "Done";
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            mDialog.dismiss();
         }
     }
 }

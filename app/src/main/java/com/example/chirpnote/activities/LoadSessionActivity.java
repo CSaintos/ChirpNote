@@ -7,6 +7,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.chirpnote.ChirpNoteSession;
+import com.example.chirpnote.ChirpNoteUser;
 import com.example.chirpnote.Key;
 import com.example.chirpnote.R;
 import com.example.chirpnote.Session;
@@ -26,6 +28,7 @@ import io.realm.RealmResults;
 
 public class LoadSessionActivity extends AppCompatActivity {
     RealmResults<Session> sessions;
+    ChirpNoteUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,7 @@ public class LoadSessionActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         hideSystemBars();
 
-        String username = getIntent().getStringExtra("username");
+        user = (ChirpNoteUser) getIntent().getSerializableExtra("user");
         String basePath = this.getFilesDir().getPath();
 
         // To let user know that results are loading
@@ -55,7 +58,7 @@ public class LoadSessionActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Session rSession = sessions.get(position);
                 ChirpNoteSession session = new ChirpNoteSession(rSession.getName(), Key.decode(rSession.getKey()), rSession.getTempo(),
-                        basePath + "midiTrack.mid", basePath + "audioTrack.mp3", rSession.getUsername());
+                        basePath + "midiTrack.mid", basePath + "audioTrack.mp3");
                 session.setId(rSession.get_id());
                 session.mNextMelodyTick = rSession.getNextMelodyTick();
                 if(rSession.getMidiFile() != null) {
@@ -74,7 +77,7 @@ public class LoadSessionActivity extends AppCompatActivity {
                 }
                 Intent intent = new Intent(LoadSessionActivity.this, SessionOverviewActivity.class);
                 intent.putExtra("session", session);
-                intent.putExtra("username", username);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -89,6 +92,27 @@ public class LoadSessionActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(LoadSessionActivity.this, HomeScreenActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                intent = new Intent(LoadSessionActivity.this, HomeScreenActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
