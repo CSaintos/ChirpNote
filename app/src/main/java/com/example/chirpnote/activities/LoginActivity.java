@@ -28,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
     App app;
     String appID = "chirpnote-jwrci";
 
+//    private InterstitialAd mInterstitialAd;
+
     private EditText mUsername, mPassword;
 
     @Override
@@ -52,8 +54,9 @@ public class LoginActivity extends AppCompatActivity {
                 ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setTitle("Log in");
                 progressDialog.setMessage("Logging you in...");
-                progressDialog.show();
                 progressDialog.setCancelable(false);
+                progressDialog.show();
+
                 String username = mUsername.getText().toString();
                 String password = mPassword.getText().toString();
                 Credentials customFunctionCredentials =
