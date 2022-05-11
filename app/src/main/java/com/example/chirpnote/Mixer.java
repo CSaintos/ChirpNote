@@ -207,7 +207,7 @@ public class Mixer {
         if(volume < 0 || volume > 100){
             return;
         }
-        audioTrack.getMediaPlayer().setVolume(volume, volume);
+        audioTrack.getMediaPlayer().setVolume(volume/100, volume/100);
         mSession.mTrackVolumes.set(3, (int) volume);
     }
 
