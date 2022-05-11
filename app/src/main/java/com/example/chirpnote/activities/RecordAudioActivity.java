@@ -72,7 +72,7 @@ import java.util.Timer;
 import io.realm.Realm;
 
 /**
- * This class represents recording audio from the user's microphone. It will provide certain monitoring elements such as the current chord and waveform representataion of intensity of amplitude.
+ * This class represents recording audio from the user's microphone. It will provide certain monitoring elements such as the current chord and waveform representation of intensity of amplitude.
  */
 public class RecordAudioActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -195,7 +195,6 @@ public class RecordAudioActivity extends AppCompatActivity
                 handler.postDelayed(this,20);
             }
         };
-        requestSignIn();
         audio.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -312,7 +311,9 @@ public class RecordAudioActivity extends AppCompatActivity
         directoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(RecordAudioActivity.this,DirectoryPopActivity.class));
+                Intent intent = new Intent(RecordAudioActivity.this,DirectoryPopActivity.class);
+                intent.putExtra("session",session);
+                startActivity(intent);
             }
         });
     }

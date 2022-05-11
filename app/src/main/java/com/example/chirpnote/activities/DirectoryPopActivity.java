@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 
 import com.example.chirpnote.BuildConfig;
+import com.example.chirpnote.ChirpNoteSession;
 import com.example.chirpnote.ExportHelper;
 import com.example.chirpnote.R;
 
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 public class DirectoryPopActivity extends Activity {
     ArrayList<String> dirAudioArrayList = new ArrayList<>();
     Context context = this;
-    MediaPlayer mMediaPlayer = new MediaPlayer();
+    ChirpNoteSession session;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +55,7 @@ public class DirectoryPopActivity extends Activity {
         traverseAndAdd(dir);
         adapter.notifyDataSetChanged();
         getWindow().setLayout((int)(width * 0.85),(int) (height * 0.85));
-
+        session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -70,12 +71,10 @@ public class DirectoryPopActivity extends Activity {
                                 return true;
                             case R.id.item_add_to_session:
                                 System.out.println(exportFile.getName());
-                                //add it to the session
-//                                try {
-//                                    previewAudio(exportFile);
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
+                                session.setAudioPath(exportFile.getPath());
+                                Intent intent = new Intent(DirectoryPopActivity.this,RecordAudioActivity.class);
+                                intent.putExtra("session",session);
+                                startActivity(intent);
                                 return true;
                             case R.id.item_export_drive:
                                 ExportHelper.exportToDrive(DirectoryPopActivity.this,exportFile);
@@ -91,11 +90,6 @@ public class DirectoryPopActivity extends Activity {
         });
 
     }
-
-    private void previewAudio(File exportFile) throws IOException {
-        //method for previewing audio
-    }   
-
     public void traverseAndAdd (File dir) {
         if (dir.exists()) {
             File[] files = dir.listFiles();
