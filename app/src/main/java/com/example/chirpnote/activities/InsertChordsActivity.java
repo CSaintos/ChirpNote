@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -269,10 +270,22 @@ public class InsertChordsActivity extends AppCompatActivity
             case R.id.button_add_row:
                 Chord[] randChords = randomChordProgression(sessionChords);
                 addRowOfMeasures(randChords, false);
+                addOtherMeasures(randChords.length);
                 break;
 //            case R.id.changeKeyButton:
 //                changeKey(session);
 //                break;
+        }
+    }
+
+    // Add empty measure to melody and percussion track
+    // FIXME if you added chords, but then added melody, then add more chords, it breaks
+    private void addOtherMeasures(int size) {
+        Log.d("LayoutList", "size " + layoutList.getChildCount());
+        int position = layoutList.getChildCount() * 4 - 4;
+        for (int i = 0; i < size; i++) {
+            mixer.constructedMelody.addRest(ConstructedMelody.NoteDuration.WHOLE_NOTE, i + position);
+            mixer.percussionTrack.addPattern(null, i + position);
         }
     }
 
@@ -410,9 +423,9 @@ public class InsertChordsActivity extends AppCompatActivity
                 }
             });
 
-            // Add empty measure to melody and percussion track
-            mixer.constructedMelody.addRest(ConstructedMelody.NoteDuration.WHOLE_NOTE, (rowIdx * 4) + col);
-            mixer.percussionTrack.addPattern(null, (rowIdx * 4) + col);
+            // Add empty measure to melody and percussion track //TODO remove
+            //mixer.constructedMelody.addRest(ConstructedMelody.NoteDuration.WHOLE_NOTE, (rowIdx * 4) + col);
+            //mixer.percussionTrack.addPattern(null, (rowIdx * 4) + col);
         }
 
     }
