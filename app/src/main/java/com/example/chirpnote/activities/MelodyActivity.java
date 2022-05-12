@@ -266,6 +266,9 @@ public class MelodyActivity extends AppCompatActivity
                 (RadioButton) findViewById(R.id.melody32ndradiobutton)
         };
 
+        /**
+         * Navigate to the previous measure
+         */
         leftButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -284,6 +287,9 @@ public class MelodyActivity extends AppCompatActivity
             }
         });
 
+        /**
+         * Navigate to the next measure
+         */
         rightButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,6 +337,7 @@ public class MelodyActivity extends AppCompatActivity
 
         /**
          * Old play button
+         * TODO remove
          */
         /*
         playButton.setOnClickListener(new OnClickListener() {
@@ -343,7 +350,7 @@ public class MelodyActivity extends AppCompatActivity
          */
 
         /**
-         * Navigate to the left note
+         * Navigate to the left note on the staff
          */
         navLeftButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -373,7 +380,8 @@ public class MelodyActivity extends AppCompatActivity
         });
 
         /**
-         * Navigate to the right note
+         * Navigate to the right note on the staff
+         * Fixme after navigating right, you shouldn't be able to add notes after completing the note constraint, but it happens
          */
         navRightButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -417,6 +425,10 @@ public class MelodyActivity extends AppCompatActivity
             }
         });
 
+        /**
+         * OctaveDownButton Listener
+         * sets the octave down for the view and logically
+         */
         octDownButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -432,6 +444,10 @@ public class MelodyActivity extends AppCompatActivity
             }
         });
 
+        /**
+         * OctaveUpButton listener
+         * sets the octave up for the view and logically
+         */
         octUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -584,18 +600,18 @@ public class MelodyActivity extends AppCompatActivity
                                 break;
                         }
 
-                        /*
-                        Implement Note/Rest Replacement
-                         */
+                        // replace note on staff with new note
                         if (session.mMelodyElements.size() != 0)
                             replaceElement(currentNote, replacedSymbol);
 
                         // Double check the note
                         //Log.d("NoteList", currentNote.symbol.toString() + " " + Integer.toString(currentNote.lineNum));
 
+                        // update the staff text view
                         displayText();
 
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        // stop playing the note
                         pianoKeys.get(finalI).stop();
                     }
                     return true;
@@ -603,8 +619,8 @@ public class MelodyActivity extends AppCompatActivity
             });
         }
 
+        // lastly after all is initialized, display the staff text/notes
         displayText();
-
     }
 
     /**
@@ -636,6 +652,7 @@ public class MelodyActivity extends AppCompatActivity
         Log.d("NoteList 2", ((NoteFont) itr.get()).symbol.toString());
     }
 
+    // TODO remove
     private void tempInitSessionMeasures() {
         currentNote = notation.new NoteFont(currentDuration.symbol, Syntax.EMPTY, Syntax.EMPTY, 32, 9, Color.DKGRAY);
 
@@ -649,6 +666,9 @@ public class MelodyActivity extends AppCompatActivity
         Log.d("consMelody size", Integer.toString(session.mMelodyElements.size()));
     }
 
+    /**
+     * Initialize noteList from session melody elements
+     */
     private void initNoteText() {
         // Default noteLength and noteLengthButton
         noteLengthButtons[0].toggle(); // set Whole Note not length button
@@ -661,7 +681,19 @@ public class MelodyActivity extends AppCompatActivity
 
     }
 
-    // FIXME theres a bug concerning consMelody and noteList compatibility
+    /**
+     * replaceElement
+     *
+     * replaces the current noteFont with the replaced one.
+     * - respects note constraint
+     * - adds rests where needed
+     * - replaces multiple notes where needed
+     * - needs noteList iterator to be at currentNote location
+     *
+     * FIXME consMelody and noteList compatibility (idk if i fixed this already, should have been more descriptive)
+     * @param nf noteFont to place
+     * @param replaced noteFont to replaced (used for reference of information)
+     */
     private void replaceElement(NoteFont nf, NoteFont replaced) {
         /*
         if (nf.symbol == Syntax.EMPTY) {
@@ -774,6 +806,9 @@ public class MelodyActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Displays the octave onto the octave indicator
+     */
     private void displayOctaveText() {
         Spannable octave = new SpannableString(key.getRootNote().toString() + Integer.toString(octNum));
         octaveText.setText(octave);
@@ -781,6 +816,7 @@ public class MelodyActivity extends AppCompatActivity
 
     /**
      * Displays text from the noteList in the order given.
+     * In other words, displays note fonts onto the staff.
      */
     private void displayText() {
         StringBuffer[] sb = new StringBuffer[staffLines.length];
@@ -837,6 +873,14 @@ public class MelodyActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * ConstructNoteList
+     *
+     * Using the encoded string of melody elements,
+     * build the noteList to place onto the staff.
+     *
+     * @param measure encoded string of melody elements
+     */
     private void constructNoteList(String[] measure) {
         Log.d("ConstructNoteList", "measure length: " + measure.length);
         Log.d("ConstructNoteList", "elements length: " + session.mMelodyElements.size()); // FIXME not retrieving

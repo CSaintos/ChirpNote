@@ -270,7 +270,7 @@ public class InsertChordsActivity extends AppCompatActivity
             case R.id.button_add_row:
                 Chord[] randChords = randomChordProgression(sessionChords);
                 addRowOfMeasures(randChords, false);
-                addOtherMeasures(randChords.length);
+                //addOtherMeasures(randChords.length);
                 break;
 //            case R.id.changeKeyButton:
 //                changeKey(session);
@@ -423,9 +423,12 @@ public class InsertChordsActivity extends AppCompatActivity
                 }
             });
 
-            // Add empty measure to melody and percussion track //TODO remove
-            //mixer.constructedMelody.addRest(ConstructedMelody.NoteDuration.WHOLE_NOTE, (rowIdx * 4) + col);
-            //mixer.percussionTrack.addPattern(null, (rowIdx * 4) + col);
+            // Add empty measure to melody and percussion track
+            // FIXME if you added chords, but then added melody, then add more chords, it breaks
+            if (!loadingSession) {
+                mixer.constructedMelody.addRest(ConstructedMelody.NoteDuration.WHOLE_NOTE, (rowIdx * 4) + col);
+                mixer.percussionTrack.addPattern(null, (rowIdx * 4) + col);
+            }
         }
 
     }
