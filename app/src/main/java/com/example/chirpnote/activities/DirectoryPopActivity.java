@@ -74,6 +74,8 @@ public class DirectoryPopActivity extends Activity {
                                 session.setAudioPath(exportFile.getPath());
                                 Intent intent = new Intent(DirectoryPopActivity.this,RecordAudioActivity.class);
                                 intent.putExtra("session",session);
+                                intent.putExtra("flag","fromPopActivity");
+                                intent.putExtra("selectedFile",exportFile);
                                 startActivity(intent);
                                 return true;
                             case R.id.item_export_drive:

@@ -208,7 +208,15 @@ public class RecordAudioActivity extends AppCompatActivity
             }
         });
         volSlider.setVisibility(View.INVISIBLE);
-
+        //TODO HERE
+        //I'm not sure how to go about this, its sending it to the overview after "adding the file" is the idea
+        if (getIntent().getStringExtra("flag").equals("fromPopActivity")){
+            audioFile = (File) getIntent().getSerializableExtra("selectedFile");
+            System.out.println(audioFile.getTotalSpace());
+            audioFile.renameTo(new File("audioTrack.mp3"));
+            System.out.println(audioFile.getPath() + "\n" + audioFile.getName() + "\n" + session.getAudioPath());
+            redirectActivity(this,SessionOverviewActivity.class);
+        }
         // Event listener for record audio button (to record audio from the device's microphone)
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,7 +249,6 @@ public class RecordAudioActivity extends AppCompatActivity
 
         /*
         OnClick Listener for the play button
-        TODO chronometer needs to be stopped after audio is played.
          */
         playRecordedAudioButton.setOnClickListener(new View.OnClickListener() {
             @Override
