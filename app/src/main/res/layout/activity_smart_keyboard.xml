@@ -219,6 +219,16 @@
 <!--            app:layout_constraintTop_toBottomOf="@+id/key5" />-->
 
         <Button
+            android:id="@+id/quantizeButtonSmart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantize"
+            app:layout_constraintBottom_toTopOf="@+id/buttonMinimize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/key2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
             android:id="@+id/buttonMinimize"
             android:layout_width="83dp"
             android:layout_height="49dp"

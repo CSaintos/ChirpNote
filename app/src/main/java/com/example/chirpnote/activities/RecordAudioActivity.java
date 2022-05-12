@@ -213,7 +213,8 @@ public class RecordAudioActivity extends AppCompatActivity
         if (getIntent().getStringExtra("flag").equals("fromPopActivity")){
             audioFile = (File) getIntent().getSerializableExtra("selectedFile");
             System.out.println(audioFile.getTotalSpace());
-            audioFile.renameTo(new File("audioTrack.mp3"));
+            audio.setmFilePath(audioFile.getPath());
+            session.setAudioPath(audioFile.getPath());
             System.out.println(audioFile.getPath() + "\n" + audioFile.getName() + "\n" + session.getAudioPath());
             redirectActivity(this,SessionOverviewActivity.class);
         }

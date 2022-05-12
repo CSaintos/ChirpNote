@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -394,6 +396,38 @@ public class KeyboardActivity extends AppCompatActivity
 //                }
 //            });
 //        }
+        // Touch this button to quantize the melody by preset options
+        Button quantizeButton = (Button) findViewById(R.id.quantizeButtonKey);
+        quantizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(KeyboardActivity.this,v);
+                popupMenu.getMenuInflater().inflate(R.menu.quantize_popup_menu,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.quantize_quarter:
+                                melody.quantize((long) 960);
+                                Toast.makeText(KeyboardActivity.this,"Quantized Melody 1/4ths", Toast.LENGTH_SHORT).show();
+                                return true;
+                            case R.id.quantize_eigth:
+                                melody.quantize((long) 480);
+                                Toast.makeText(KeyboardActivity.this,"Quantized Melody 1/8ths", Toast.LENGTH_SHORT).show();
+
+                                return true;
+                            case R.id.quantize_sixteenth:
+                                melody.quantize((long) 240);
+                                Toast.makeText(KeyboardActivity.this,"Quantized Melody 1/16ths", Toast.LENGTH_SHORT).show();
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
+            }
+        });
     }
 
     private void eventListener(ArrayList<MusicNote> pianoKeys)

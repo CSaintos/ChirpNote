@@ -19,6 +19,11 @@ public class AudioTrack implements Track {
 
     // For recording the audio
     private MediaRecorder mMediaRecorder;
+
+    public void setmFilePath(String mFilePath) {
+        this.mFilePath = mFilePath;
+    }
+
     private String mFilePath;
 
     // For playback
