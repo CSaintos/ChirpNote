@@ -165,6 +165,8 @@ public class MelodyActivity extends AppCompatActivity
         key = session.getKey();
         mixer = new Mixer(session);
 
+        Log.d("SessionRetrieval", "elements size " + session.mMelodyElements.size());
+
         // Init Constructed Melody
         consMelody = mixer.constructedMelody;
 
@@ -650,7 +652,7 @@ public class MelodyActivity extends AppCompatActivity
     private void initNoteText() {
         // Default noteLength and noteLengthButton
         noteLengthButtons[0].toggle(); // set Whole Note not length button
-        currentDuration = notation.new NoteFont(Syntax.REST_WHOLE, -1);
+        currentDuration = notation.new NoteFont(Syntax.REST_WHOLE,Syntax.EMPTY, Syntax.EMPTY, 32, -1, Color.DKGRAY);
 
         barLength = 0;
 
