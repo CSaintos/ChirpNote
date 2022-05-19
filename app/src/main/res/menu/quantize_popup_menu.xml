@@ -3,5 +3,5 @@
 
     <item android:title="Quarter" android:id="@+id/quantize_quarter" />
     <item android:title="Eighth" android:id="@+id/quantize_eigth"/>
-    <item android:title="16th" android:id="@+id/quantize_sixteenth"/>
+    <item android:title="Sixteenth" android:id="@+id/quantize_sixteenth"/>
 </menu>

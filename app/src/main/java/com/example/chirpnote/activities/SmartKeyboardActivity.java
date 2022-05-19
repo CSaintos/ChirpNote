@@ -118,18 +118,6 @@ public class SmartKeyboardActivity extends AppCompatActivity
         // keyboard code
         minimizeBtn = findViewById(R.id.buttonMinimize);
 
-//        ChirpNoteSession session = new ChirpNoteSession("Session1", new Key(Key.RootNote.D, Key.Type.HARMONIC_MINOR), 120);
-        /*Intent intent = getIntent();
-        if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
-        {
-
-            session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
-        }
-        else
-        {
-            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.C, Key.Type.MAJOR), 120);
-            System.out.println("session key name = " + session.getKey().toString());
-        }*/
         session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         String basePath = this.getFilesDir().getPath();
         if(session == null) {
@@ -146,10 +134,7 @@ public class SmartKeyboardActivity extends AppCompatActivity
         initializeKeyNameList(session);
         initializeKeyTypeList(session);
 
-//        System.out.println(keyNameList.get(0));
-
         Button recordButton = (Button) findViewById(R.id.recordButton);
-//        Button playButton = (Button) findViewById(R.id.playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
 
@@ -169,9 +154,16 @@ public class SmartKeyboardActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if(!melody.isRecording()){
-                    recordButton.setText("Stop");
                     melody.startRecording();
+                    recordButton.setText("Stop");
+                    if (mixer.areTracksPlaying()) {
+                        mixer.stopTracks();
+                    }
+                    mixer.playTracks();
                 } else {
+                    if (mixer.areTracksPlaying()) {
+                        mixer.stopTracks();
+                    }
                     recordButton.setText("Record");
                     melody.stopRecording();
                 }

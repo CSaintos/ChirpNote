@@ -285,11 +285,11 @@
 
         <Button
             android:id="@+id/recordButton"
-            android:layout_width="91dp"
-            android:layout_height="44dp"
+            android:layout_width="95dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="35dp"
-            android:text="Rec"
+            android:text="Record"
             app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.634"
@@ -299,8 +299,8 @@
 
         <Button
             android:id="@+id/quantizeButtonKey"
-            android:layout_width="91dp"
-            android:layout_height="44dp"
+            android:layout_width="95dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="35dp"
             android:text="Quantize"
@@ -310,18 +310,6 @@
             app:layout_constraintStart_toEndOf="@+id/recordButton"
             app:layout_constraintTop_toBottomOf="@+id/noteASharp4Button"
             app:layout_constraintVertical_bias="1.0" />
-
-        <!--    <Button-->
-        <!--        android:id="@+id/playButton"-->
-        <!--        android:layout_width="79dp"-->
-        <!--        android:layout_height="46dp"-->
-        <!--        android:text="Play"-->
-        <!--        app:layout_constraintBottom_toBottomOf="@+id/noteC5Button"-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintHorizontal_bias="0.951"-->
-        <!--        app:layout_constraintStart_toStartOf="parent"-->
-        <!--        app:layout_constraintTop_toTopOf="@+id/noteC5Button"-->
-        <!--        app:layout_constraintVertical_bias="1.0" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

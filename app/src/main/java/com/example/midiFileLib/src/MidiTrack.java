@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.TreeSet;
 
 import com.example.midiFileLib.src.event.MidiEvent;
@@ -326,20 +327,26 @@ public class MidiTrack
     }
 
     public boolean removeChannel(int channel) {
+        LinkedList<MidiEvent> eventsToRemove = new LinkedList<>();
         Iterator<MidiEvent> it = mEvents.iterator();
         MidiEvent prev = null, curr = null, next = null;
         while(it.hasNext()){
             next = it.next();
-            if(curr instanceof NoteOn && ((NoteOn) curr).getChannel() == channel){
-                mEvents.remove(curr);
+            if((curr instanceof NoteOn && ((NoteOn) curr).getChannel() == channel) ||
+                    (curr instanceof NoteOff && ((NoteOff) curr).getChannel() == channel)){
                 if (prev != null) {
                     next.setDelta(next.getTick() - prev.getTick());
                 } else {
                     next.setDelta(next.getTick());
                 }
+                eventsToRemove.add(curr);
+            } else {
+                prev = curr;
             }
-            prev = curr;
             curr = next;
+        }
+        for(MidiEvent event : eventsToRemove){
+            mEvents.remove(event);
         }
         return true;
     }

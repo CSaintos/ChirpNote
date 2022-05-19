@@ -128,19 +128,6 @@ public class KeyboardActivity extends AppCompatActivity
 //        // keyboard code
 //        minimizeBtn = findViewById(R.id.buttonMinimize);
 
-
-
-        /*Intent intent = getIntent();
-        if (intent.getStringExtra("flag") != null && intent.getStringExtra("flag").equals("fromSetKeyActivity"))
-        {
-
-            session = (ChirpNoteSession) getIntent().getSerializableExtra("session"); // coming from keyboard activity
-        }
-        else
-        {
-            session = new ChirpNoteSession("SessionFreePlay", new Key(Key.RootNote.A, Key.Type.MAJOR), 120);
-            System.out.println("session key name = " + session.getKey().toString());
-        }*/
         session = (ChirpNoteSession) getIntent().getSerializableExtra("session");
         String basePath = this.getFilesDir().getPath();
         if(session == null) {
@@ -154,7 +141,6 @@ public class KeyboardActivity extends AppCompatActivity
 //        initializeKeyTypeList(session);
 
         Button recordButton = (Button) findViewById(R.id.recordButton);
-        //Button playButton = (Button) findViewById(R.id.playButton);
 
         midiDriver = MidiDriver.getInstance(); // MIDI driver to send MIDI events to
         pianoKeys = new ArrayList<>(); // List of notes
@@ -181,8 +167,6 @@ public class KeyboardActivity extends AppCompatActivity
 //        Toast.makeText(getApplicationContext(), "New Key: " + keyNameChoice + " " + keyTypeChoice, Toast.LENGTH_LONG).show();
 
         eventListener(pianoKeys);
-
-
 
 //        // set user input key name and type to new key in session
 //        Spinner keyNameSpinner = findViewById(R.id.spinner_key_name);
@@ -310,9 +294,6 @@ public class KeyboardActivity extends AppCompatActivity
             }
         }
 
-
-
-
         // If the app is started again while the floating window service is running
         // then the floating window service will stop
         if (isMyServiceRunning()) {
@@ -353,33 +334,21 @@ public class KeyboardActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if(!melody.isRecording()){
-                    recordButton.setText("Stop");
                     melody.startRecording();
+                    recordButton.setText("Stop");
                     if (mixer.areTracksPlaying()) {
                         mixer.stopTracks();
                     }
                     mixer.playTracks();
                 } else {
+                    if (mixer.areTracksPlaying()) {
+                        mixer.stopTracks();
+                    }
                     recordButton.setText("Record");
                     melody.stopRecording();
-                    mixer.stopTracks();
                 }
             }
         });
-
-        // Event listener for play button (to play recorded melody)
-//        playButton.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(!melody.isPlaying()){
-//                    playButton.setText("Stop");
-//                    melody.play();
-//                } else {
-//                    playButton.setText("Play");
-//                    melody.stop();
-//                }
-//            }
-//        });
 
         // Setup event listener for each piano key
 //        eventListener(pianoKeys);

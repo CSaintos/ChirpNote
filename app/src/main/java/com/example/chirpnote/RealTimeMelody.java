@@ -39,6 +39,7 @@ public class RealTimeMelody extends Melody {
 
     @Override
     public void startRecording() throws IllegalStateException {
+        // Remove existing melody
         tempMidiFile = null;
         tempOutput = new File(mFilePath);
         try {
@@ -48,6 +49,20 @@ public class RealTimeMelody extends Melody {
         }
         mNoteTrack = tempMidiFile.getTracks().get(1);
         mNoteTrack.removeChannel(CHANNEL);
+        try {
+            tempMidiFile.writeToFile(tempOutput);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Start recording new melody
+        tempOutput = new File(mFilePath);
+        try {
+            tempMidiFile = new MidiFile(tempOutput);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mNoteTrack = tempMidiFile.getTracks().get(1);
         mRecording = true;
         mRecordingStartTime = System.currentTimeMillis();
     }
